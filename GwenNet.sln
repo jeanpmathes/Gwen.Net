@@ -1,17 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen", "GwenNet\Gwen.csproj", "{A71A5D74-48C7-4E4F-A041-7E60183C8D18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net.OpenTk", "Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj", "{196C7620-B69D-4712-A97B-4A26E63D4F4C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Platform.NetCore", "GwenNet.Platform.NetCore\Gwen.Platform.NetCore.csproj", "{CC595B4B-F355-4277-8BC9-25EBDA8C8C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net.Tests.Components", "Gwen.Net.Tests.Components\Gwen.Net.Tests.Components.csproj", "{BFEF0809-600E-4FED-A47C-99185D148182}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Renderer.OpenTK", "Gwen.Renderer.OpenTK\Gwen.Renderer.OpenTK.csproj", "{196C7620-B69D-4712-A97B-4A26E63D4F4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net.Tests", "Gwen.Net.Tests\Gwen.Net.Tests.csproj", "{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.UnitTest", "Gwen.UnitTest\Gwen.UnitTest.csproj", "{BFEF0809-600E-4FED-A47C-99185D148182}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{648CCDE0-5133-40A4-AB9A-980EFB3E91E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.UnitTest.OpenTK", "Gwen.UnitTest.OpenTK\Gwen.UnitTest.OpenTK.csproj", "{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5DF9662C-433B-464B-A970-C0F54093779C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net", "Gwen.Net\Gwen.Net.csproj", "{DA9F8CB7-2196-4515-AEEB-B4044FF30995}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E36E617-D5AC-4A4C-9173-88EC4B500B82}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A71A5D74-48C7-4E4F-A041-7E60183C8D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A71A5D74-48C7-4E4F-A041-7E60183C8D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A71A5D74-48C7-4E4F-A041-7E60183C8D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A71A5D74-48C7-4E4F-A041-7E60183C8D18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC595B4B-F355-4277-8BC9-25EBDA8C8C5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC595B4B-F355-4277-8BC9-25EBDA8C8C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC595B4B-F355-4277-8BC9-25EBDA8C8C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC595B4B-F355-4277-8BC9-25EBDA8C8C5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{196C7620-B69D-4712-A97B-4A26E63D4F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{196C7620-B69D-4712-A97B-4A26E63D4F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{196C7620-B69D-4712-A97B-4A26E63D4F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,9 +38,19 @@ Global
 		{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA9F8CB7-2196-4515-AEEB-B4044FF30995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA9F8CB7-2196-4515-AEEB-B4044FF30995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA9F8CB7-2196-4515-AEEB-B4044FF30995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA9F8CB7-2196-4515-AEEB-B4044FF30995}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{196C7620-B69D-4712-A97B-4A26E63D4F4C} = {5DF9662C-433B-464B-A970-C0F54093779C}
+		{BFEF0809-600E-4FED-A47C-99185D148182} = {648CCDE0-5133-40A4-AB9A-980EFB3E91E8}
+		{88FC6CFB-7A24-44F7-85AA-3BDAE59C79B9} = {648CCDE0-5133-40A4-AB9A-980EFB3E91E8}
+		{DA9F8CB7-2196-4515-AEEB-B4044FF30995} = {5DF9662C-433B-464B-A970-C0F54093779C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5657524E-9349-4227-B100-CAF53AB31CEE}
