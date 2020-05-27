@@ -261,11 +261,11 @@ namespace Gwen.Control
 		/// Handles keyboard events. Called from Input subsystems.
 		/// </summary>
 		/// <returns>True if handled.</returns>
-		public bool Input_Key(Key key, bool down)
+		public bool Input_Key(GwenMappedKey key, bool down)
 		{
 			if (IsHidden || IsCollapsed) return false;
-			if (key <= Key.Invalid) return false;
-			if (key >= Key.Count) return false;
+			if (key <= GwenMappedKey.Invalid) return false;
+			if (key >= GwenMappedKey.Count) return false;
 
 			return InputHandler.OnKeyEvent(this, key, down);
 		}

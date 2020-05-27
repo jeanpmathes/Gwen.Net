@@ -7,7 +7,7 @@ using Gwen.Control.Internal;
 
 namespace Gwen.UnitTest
 {
-	public class UnitTest : ControlBase
+	public class UnitTestHarnessControls : ControlBase
 	{
 		private Control.ControlBase m_LastControl;
 		private readonly Control.StatusBar m_StatusBar;
@@ -20,10 +20,11 @@ namespace Gwen.UnitTest
 		private readonly Control.Button m_IncScale;
 		private readonly Control.Label m_UIScaleText;
 
-		public double Fps; // set this in your rendering loop
-		public string Note; // additional text to display in status bar
+		public double RenderFps;
+		public double UpdateFps;
+		public string Note;
 
-		public UnitTest(ControlBase parent) : base(parent)
+		public UnitTestHarnessControls(ControlBase parent) : base(parent)
 		{
 			Dock = Dock.Fill;
 
@@ -80,7 +81,7 @@ namespace Gwen.UnitTest
 			m_Center = new Control.Layout.DockLayout(dock);
 			m_Center.Dock = Dock.Fill;
 
-			List<Type> tests = typeof(UnitTest).Assembly.GetTypes().Where(t => t.IsDefined(typeof(UnitTestAttribute), false)).ToList();
+			List<Type> tests = typeof(UnitTestHarnessControls).Assembly.GetTypes().Where(t => t.IsDefined(typeof(UnitTestAttribute), false)).ToList();
 			tests.Sort((t1, t2) =>
 			{
 				object[] a1s = t1.GetCustomAttributes(typeof(UnitTestAttribute), false);
@@ -166,7 +167,7 @@ namespace Gwen.UnitTest
 
 		protected override void Render(Skin.SkinBase skin)
 		{
-			m_StatusBar.Text = String.Format("GWEN.Net Unit Test - {0:F0} fps. {1}", Fps, Note);
+			m_StatusBar.Text = String.Format("GWEN.Net Unit Test - {0} Render Frames, {1} Update Frames. {2}", RenderFps, UpdateFps, Note);
 
 			base.Render(skin);
 		}

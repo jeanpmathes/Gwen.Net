@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
   </PropertyGroup>
@@ -18,10 +18,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Collections.Generic.CircularBuffer" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Gwen.Renderer.OpenTK\Gwen.Renderer.OpenTK.csproj" />
     <ProjectReference Include="..\Gwen.UnitTest\Gwen.UnitTest.csproj" />
     <ProjectReference Include="..\GwenNet.Platform.NetCore\Gwen.Platform.NetCore.csproj" />
     <ProjectReference Include="..\GwenNet\Gwen.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DefaultSkin2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="gwen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="test16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

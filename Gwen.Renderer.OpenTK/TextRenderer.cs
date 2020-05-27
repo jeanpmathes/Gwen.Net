@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Text;
-using OpenTK.Graphics;
-using OpenTK;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace Gwen.Renderer.OpenTK
@@ -13,7 +11,7 @@ namespace Gwen.Renderer.OpenTK
     public sealed class TextRenderer : IDisposable
     {
         private readonly Bitmap m_Bitmap;
-		private readonly System.Drawing.Graphics m_Graphics;
+		private readonly Graphics m_Graphics;
 		private readonly Texture m_Texture;
 		private bool m_Disposed;
 
@@ -25,17 +23,15 @@ namespace Gwen.Renderer.OpenTK
         /// <param name="width">The width of the backing store in pixels.</param>
         /// <param name="height">The height of the backing store in pixels.</param>
         /// <param name="renderer">GWEN renderer.</param>
-        public TextRenderer(int width, int height, OpenTKBase renderer)
+        public TextRenderer(int width, int height, OpenTKRendererBase renderer)
         {
             if (width <= 0)
                 throw new ArgumentOutOfRangeException("width");
             if (height <= 0)
                 throw new ArgumentOutOfRangeException("height");
-            if (GraphicsContext.CurrentContext == null)
-                throw new InvalidOperationException("No GraphicsContext is current on the calling thread.");
 
             m_Bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            m_Graphics = System.Drawing.Graphics.FromImage(m_Bitmap);
+            m_Graphics = Graphics.FromImage(m_Bitmap);
 
             // NOTE:    TextRenderingHint.AntiAliasGridFit looks sharper and in most cases better
             //          but it comes with a some problems.
@@ -48,10 +44,7 @@ namespace Gwen.Renderer.OpenTK
             //          Until 1st problem is fixed we should use TextRenderingHint.AntiAlias...  :-(
 
             m_Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-			if (Configuration.RunningOnMono)
-				m_Graphics.Clear(System.Drawing.Color.Black);
-			else
-				m_Graphics.Clear(System.Drawing.Color.Transparent);
+			m_Graphics.Clear(System.Drawing.Color.Transparent);
 			m_Texture = new Texture(renderer) { Width = width, Height = height };
         }
 
@@ -65,43 +58,9 @@ namespace Gwen.Renderer.OpenTK
         /// The origin (0, 0) lies at the top-left corner of the backing store.</param>
         public void DrawString(string text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
         {
-			if (Configuration.RunningOnMono)
-			{
-				// from https://stackoverflow.com/questions/5167937/ugly-looking-text-problem
-				m_Graphics.DrawString(text, font, Brushes.White, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
-				var lockData = m_Bitmap.LockBits(new System.Drawing.Rectangle(0, 0, m_Bitmap.Width, m_Bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				unsafe
-				{
-					// Pointer to the current pixel
-					uint* pPixel = (uint*)lockData.Scan0;
-					// Pointer value at which we terminate the loop (end of pixel data)
-					var pLastPixel = pPixel + m_Bitmap.Width * m_Bitmap.Height;
-					uint pixelValue, brightness;
+			m_Graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
 
-					while (pPixel < pLastPixel)
-					{
-						// Get pixel data
-						pixelValue = *pPixel;
-						// Average RGB
-						brightness = (((pixelValue & 0xff) + ((pixelValue >> 8) & 0xff) + ((pixelValue >> 16) & 0xff)) * 21845) >> 16; // Division by 3
-
-						// Use brightness for alpha value, set R, G, and B 0xff (white)
-						pixelValue = brightness << 24 | 0xffffff;
-
-						// Copy back to image
-						*pPixel = pixelValue;
-						// Next pixel
-						pPixel++;
-					}
-				}
-				m_Bitmap.UnlockBits(lockData);
-			}
-			else
-			{
-				m_Graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
-			}
-
-			OpenTKBase.LoadTextureInternal(m_Texture, m_Bitmap); // copy bitmap to gl texture
+			OpenTKRendererBase.LoadTextureInternal(m_Texture, m_Bitmap); // copy bitmap to gl texture
         }
 
         void Dispose(bool manual)

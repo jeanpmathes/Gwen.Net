@@ -5,7 +5,7 @@ namespace Gwen
     /// <summary>
     /// Key constants.
     /// </summary>
-    public enum Key
+    public enum GwenMappedKey
     {
         Invalid = 0,
         Return = 1,

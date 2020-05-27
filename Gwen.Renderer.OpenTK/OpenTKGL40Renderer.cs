@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using OpenTK.Graphics.OpenGL;
+using OpenToolkit.Graphics.OpenGL;
 
 namespace Gwen.Renderer.OpenTK{
-	public class OpenTKGL40 : OpenTKBase
+	public class OpenTKGL40Renderer : OpenTKRendererBase
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vertex
@@ -28,7 +28,7 @@ namespace Gwen.Renderer.OpenTK{
 
 		private GLShader40 m_GuiShader;
 
-		public OpenTKGL40(bool restoreRenderState = true)
+		public OpenTKGL40Renderer(bool restoreRenderState = true)
 			: base()
 		{
 			m_Vertices = new Vertex[MaxVerts];
@@ -87,7 +87,7 @@ namespace Gwen.Renderer.OpenTK{
 			}
 
 			// Set default values and enable/disable caps.
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 			GL.Enable(EnableCap.Blend);
 			GL.Disable(EnableCap.DepthTest);
 
@@ -111,7 +111,7 @@ namespace Gwen.Renderer.OpenTK{
 				m_LastTextureID = 0;
 
 				// Restore the previous parameter values.
-				GL.BlendFunc((BlendingFactorSrc)m_PrevBlendSrc, (BlendingFactorDest)m_PrevBlendDst);
+				GL.BlendFunc((BlendingFactor)m_PrevBlendSrc, (BlendingFactor)m_PrevBlendDst);
 
 				if (!m_WasBlendEnabled)
 					GL.Disable(EnableCap.Blend);

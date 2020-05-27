@@ -2090,23 +2090,23 @@ namespace Gwen.Control
 		/// <param name="key">Key pressed.</param>
 		/// <param name="down">Indicates whether the key was pressed or released.</param>
 		/// <returns>True if handled.</returns>
-		protected virtual bool OnKeyPressed(Key key, bool down = true)
+		protected virtual bool OnKeyPressed(GwenMappedKey key, bool down = true)
 		{
 			bool handled = false;
 			switch (key)
 			{
-				case Key.Tab: handled = OnKeyTab(down); break;
-				case Key.Space: handled = OnKeySpace(down); break;
-				case Key.Home: handled = OnKeyHome(down); break;
-				case Key.End: handled = OnKeyEnd(down); break;
-				case Key.Return: handled = OnKeyReturn(down); break;
-				case Key.Backspace: handled = OnKeyBackspace(down); break;
-				case Key.Delete: handled = OnKeyDelete(down); break;
-				case Key.Right: handled = OnKeyRight(down); break;
-				case Key.Left: handled = OnKeyLeft(down); break;
-				case Key.Up: handled = OnKeyUp(down); break;
-				case Key.Down: handled = OnKeyDown(down); break;
-				case Key.Escape: handled = OnKeyEscape(down); break;
+				case GwenMappedKey.Tab: handled = OnKeyTab(down); break;
+				case GwenMappedKey.Space: handled = OnKeySpace(down); break;
+				case GwenMappedKey.Home: handled = OnKeyHome(down); break;
+				case GwenMappedKey.End: handled = OnKeyEnd(down); break;
+				case GwenMappedKey.Return: handled = OnKeyReturn(down); break;
+				case GwenMappedKey.Backspace: handled = OnKeyBackspace(down); break;
+				case GwenMappedKey.Delete: handled = OnKeyDelete(down); break;
+				case GwenMappedKey.Right: handled = OnKeyRight(down); break;
+				case GwenMappedKey.Left: handled = OnKeyLeft(down); break;
+				case GwenMappedKey.Up: handled = OnKeyUp(down); break;
+				case GwenMappedKey.Down: handled = OnKeyDown(down); break;
+				case GwenMappedKey.Escape: handled = OnKeyEscape(down); break;
 				default: break;
 			}
 
@@ -2119,7 +2119,7 @@ namespace Gwen.Control
 		/// <summary>
 		/// Invokes key press event (used by input system).
 		/// </summary>
-		internal bool InputKeyPressed(Key key, bool down = true)
+		internal bool InputKeyPressed(GwenMappedKey key, bool down = true)
 		{
 			return OnKeyPressed(key, down);
 		}
@@ -2129,7 +2129,7 @@ namespace Gwen.Control
 		/// </summary>
 		/// <param name="key">Key pressed.</param>
 		/// <returns>True if handled.</returns>
-		protected virtual bool OnKeyReleaseed(Key key)
+		protected virtual bool OnKeyReleaseed(GwenMappedKey key)
 		{
 			return OnKeyPressed(key, false);
 		}

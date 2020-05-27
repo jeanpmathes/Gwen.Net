@@ -11,7 +11,7 @@ namespace GwenNet.Platform
 {
     public class NetCore : IPlatform
     {
-        private DateTime m_FirstTime = DateTime.Now;
+        private DateTime firstTime = DateTime.Now;
 
         /// <summary>
         /// Gets text from clipboard.
@@ -19,27 +19,27 @@ namespace GwenNet.Platform
         /// <returns>Clipboard text.</returns>
         public string GetClipboardText()
         {
-            
+
             // code from http://forums.getpaint.net/index.php?/topic/13712-trouble-accessing-the-clipboard/page__view__findpost__p__226140
             string ret = String.Empty;
-             Thread staThread = new Thread(
-                 () =>
-                 {
-                     try
-                     {
-                         if (!Clipboard.ContainsText())
-                             return;
-                         ret = Clipboard.GetText();
-                     }
-                     catch (Exception)
-                     {
-                         return;
-                     }
-                 });
-             staThread.SetApartmentState(ApartmentState.STA);
-             staThread.Start();
-             staThread.Join();
-             // at this point either you have clipboard data or an exception*/
+            Thread staThread = new Thread(
+                () =>
+                {
+                    try
+                    {
+                        if (!Clipboard.ContainsText())
+                            return;
+                        ret = Clipboard.GetText();
+                    }
+                    catch (Exception)
+                    {
+                        return;
+                    }
+                });
+            staThread.SetApartmentState(ApartmentState.STA);
+            staThread.Start();
+            staThread.Join();
+            // at this point either you have clipboard data or an exception*/
             return ret;
         }
 
@@ -77,7 +77,7 @@ namespace GwenNet.Platform
         /// <returns>Time interval in seconds.</returns>
         public float GetTimeInSeconds()
         {
-            return (float)((DateTime.Now - m_FirstTime).TotalSeconds);
+            return (float)((DateTime.Now - firstTime).TotalSeconds);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace GwenNet.Platform
         /// <param name="cursor">Cursor type.</param>
         public void SetCursor(Cursor cursor)
         {
-            
+
         }
 
         /// <summary>

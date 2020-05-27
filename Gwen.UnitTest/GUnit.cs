@@ -6,7 +6,7 @@ namespace Gwen.UnitTest
 {
     public class GUnit : ControlBase
     {
-        public UnitTest UnitTest;
+        public UnitTestHarnessControls UnitTest;
 
         public GUnit(ControlBase parent) : base(parent)
         {

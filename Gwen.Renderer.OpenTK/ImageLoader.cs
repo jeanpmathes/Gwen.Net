@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using Gwen.Control;
 
 namespace Gwen.Renderer.OpenTK
 {
-    public static class ImageLoader{
+    public static class ImageLoader
+    {
 
         public delegate Bitmap Loader(string filename);
 
@@ -20,9 +19,9 @@ namespace Gwen.Renderer.OpenTK
             { "bmp",StandartLoader},
             { "dib",StandartLoader},
             { "rle",StandartLoader},
-            
+
             { "png",StandartLoader},
-            
+
             { "gif",StandartLoader},
 
             { "tif",StandartLoader},
@@ -32,20 +31,27 @@ namespace Gwen.Renderer.OpenTK
             { "emf",StandartLoader},
         };
 
-        public static Bitmap StandartLoader(string s){
+        public static Bitmap StandartLoader(string s)
+        {
             return new Bitmap(s);
         }
 
-        public static Bitmap Load(string filename){
-            try{
+        public static Bitmap Load(string filename)
+        {
+            try
+            {
                 string s = filename.ToLower().Split('.').Last();
-                if (loaders.ContainsKey(s)){
+                if (loaders.ContainsKey(s))
+                {
                     return loaders[s].Invoke(filename);
-                }else{
+                }
+                else
+                {
                     throw new Exception("не найден загрузчик формата. Add format loader in ImageLoader.loaders");
                 }
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 throw new Exception("Image not found: " + filename);
             }
         }

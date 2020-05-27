@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Gwen.Control;
@@ -14,11 +14,24 @@ namespace Gwen.Input
         private static readonly KeyData m_KeyData = new KeyData();
         private static readonly float[] m_LastClickTime = new float[MaxMouseButtons];
         private static Point m_LastClickPos;
+        private static ControlBase hoveredControl;
 
         /// <summary>
         /// Control currently hovered by mouse.
         /// </summary>
-        public static ControlBase HoveredControl;
+        public static ControlBase HoveredControl
+        {
+            get { return hoveredControl; }
+            set 
+            { 
+                if(value is null)
+                {
+                    Debug.Write("Clearing Hover");
+                }
+
+                hoveredControl = value; 
+            }
+        }
 
         /// <summary>
         /// Control that corrently has keyboard focus.
@@ -68,19 +81,19 @@ namespace Gwen.Input
         /// <summary>
         /// Indicates whether the shift key is down.
         /// </summary>
-        public static bool IsShiftDown { get { return IsKeyDown(Key.Shift); } }
+        public static bool IsShiftDown { get { return IsKeyDown(GwenMappedKey.Shift); } }
 
         /// <summary>
         /// Indicates whether the control key is down.
         /// </summary>
-        public static bool IsControlDown { get { return IsKeyDown(Key.Control); } }
+        public static bool IsControlDown { get { return IsKeyDown(GwenMappedKey.Control); } }
 
         /// <summary>
         /// Checks if the given key is pressed.
         /// </summary>
         /// <param name="key">Key to check.</param>
         /// <returns>True if the key is down.</returns>
-        public static bool IsKeyDown(Key key)
+        public static bool IsKeyDown(GwenMappedKey key)
         {
             return m_KeyData.KeyState[(int)key];
         }
@@ -178,7 +191,7 @@ namespace Gwen.Input
             //
             // Simulate Key-Repeats
             //
-            for (int i = 0; i < (int)Key.Count; i++)
+            for (int i = 0; i < (int)GwenMappedKey.Count; i++)
             {
                 if (m_KeyData.KeyState[i] && m_KeyData.Target != KeyboardFocus)
                 {
@@ -192,7 +205,7 @@ namespace Gwen.Input
 
                     if (KeyboardFocus != null)
                     {
-                        KeyboardFocus.InputKeyPressed((Key)i);
+                        KeyboardFocus.InputKeyPressed((GwenMappedKey)i);
                     }
                 }
             }
@@ -331,7 +344,7 @@ namespace Gwen.Input
         /// <param name="key">Key.</param>
         /// <param name="down">True if the key is down.</param>
         /// <returns>True if handled.</returns>
-        public static bool OnKeyEvent(ControlBase canvas, Key key, bool down)
+        public static bool OnKeyEvent(ControlBase canvas, GwenMappedKey key, bool down)
         {
             if (null == KeyboardFocus) return false;
             if (KeyboardFocus.GetCanvas() != canvas) return false;
