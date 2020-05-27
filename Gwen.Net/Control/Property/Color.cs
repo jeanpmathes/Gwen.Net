@@ -18,8 +18,8 @@ namespace Gwen.Net.Control.Property
         public ColorProperty(Control.ControlBase parent) : base(parent)
         {
             m_Button = new ColorButton(m_TextBox);
-			m_Button.Dock = Dock.Right;
-			m_Button.Width = 20;
+            m_Button.Dock = Dock.Right;
+            m_Button.Width = 20;
             m_Button.Margin = new Margin(1, 1, 1, 2);
             m_Button.Clicked += OnButtonPressed;
         }
@@ -30,26 +30,26 @@ namespace Gwen.Net.Control.Property
         /// <param name="control">Event source.</param>
 		protected virtual void OnButtonPressed(Control.ControlBase control, EventArgs args)
         {
-			Canvas canvas = GetCanvas();
+            Canvas canvas = GetCanvas();
 
-			canvas.CloseMenus();
+            canvas.CloseMenus();
 
-			Popup popup = new Popup(canvas);
-			popup.DeleteOnClose = true;
-			popup.IsHidden = false;
-			popup.BringToFront();
+            Popup popup = new Popup(canvas);
+            popup.DeleteOnClose = true;
+            popup.IsHidden = false;
+            popup.BringToFront();
 
-			HSVColorPicker picker = new HSVColorPicker(popup);
+            HSVColorPicker picker = new HSVColorPicker(popup);
             picker.SetColor(GetColorFromText(), false, true);
             picker.ColorChanged += OnColorChanged;
 
-			Point p = m_Button.LocalPosToCanvas(Point.Zero);
+            Point p = m_Button.LocalPosToCanvas(Point.Zero);
 
-			popup.DoMeasure(canvas.ActualSize);
-			popup.DoArrange(new Rectangle(p.X + m_Button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight, popup.MeasuredSize.Width, popup.MeasuredSize.Height));
+            popup.DoMeasure(canvas.ActualSize);
+            popup.DoArrange(new Rectangle(p.X + m_Button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight, popup.MeasuredSize.Width, popup.MeasuredSize.Height));
 
-			popup.Open(new Point(p.X + m_Button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight));
-		}
+            popup.Open(new Point(p.X + m_Button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight));
+        }
 
         /// <summary>
         /// Color changed handler.
@@ -126,5 +126,5 @@ namespace Gwen.Net.Control.Property
             base.DoChanged();
             m_Button.Color = GetColorFromText();
         }
-	}
+    }
 }

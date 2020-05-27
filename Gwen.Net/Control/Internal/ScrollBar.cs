@@ -31,7 +31,7 @@ namespace Gwen.Net.Control.Internal
         /// Bar position (in pixels).
         /// </summary>
         public virtual int BarPos { get { return 0; } }
-        
+
         /// <summary>
         /// Button size (in pixels).
         /// </summary>
@@ -83,18 +83,18 @@ namespace Gwen.Net.Control.Internal
             return true;
         }
 
-		public void SetContentSize(float contentSize, float viewableContentSize)
-		{
-			m_ContentSize = contentSize;
-			m_ViewableContentSize = viewableContentSize;
+        public void SetContentSize(float contentSize, float viewableContentSize)
+        {
+            m_ContentSize = contentSize;
+            m_ViewableContentSize = viewableContentSize;
 
-			UpdateBarSize();
-		}
+            UpdateBarSize();
+        }
 
-		protected virtual void UpdateBarSize()
-		{
+        protected virtual void UpdateBarSize()
+        {
 
-		}
+        }
 
         /// <summary>
         /// Handler invoked on mouse click (left) event.
@@ -123,7 +123,7 @@ namespace Gwen.Net.Control.Internal
 		protected virtual void OnBarMoved(ControlBase control, EventArgs args)
         {
             if (BarMoved != null)
-				BarMoved.Invoke(this, EventArgs.Empty);
+                BarMoved.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual float CalculateScrolledAmount()
@@ -134,9 +134,9 @@ namespace Gwen.Net.Control.Internal
         protected virtual int CalculateBarSize()
         {
             return 0;
-        } 
+        }
 
-        public virtual void ScrollToLeft() { } 
+        public virtual void ScrollToLeft() { }
         public virtual void ScrollToRight() { }
         public virtual void ScrollToTop() { }
         public virtual void ScrollToBottom() { }

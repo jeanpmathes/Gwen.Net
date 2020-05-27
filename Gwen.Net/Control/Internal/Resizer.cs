@@ -53,11 +53,11 @@ namespace Gwen.Net.Control.Internal
                 bounds.X -= delta.X;
                 bounds.Width += delta.X;
 
-				if (bounds.X < 0)
-				{
-					bounds.Width += bounds.X;
-					bounds.X = 0;
-				}
+                if (bounds.X < 0)
+                {
+                    bounds.Width += bounds.X;
+                    bounds.X = 0;
+                }
 
                 // Conform to minimum size here so we don't
                 // go all weird when we snap it in the base conrt
@@ -69,66 +69,66 @@ namespace Gwen.Net.Control.Internal
                     bounds.X -= diff;
                 }
 
-				m_Target.Left = bounds.Left;
-				m_Target.Width = bounds.Width;
-			}
+                m_Target.Left = bounds.Left;
+                m_Target.Width = bounds.Width;
+            }
 
-			if (0 != (m_ResizeDir & Dock.Top))
+            if (0 != (m_ResizeDir & Dock.Top))
             {
                 bounds.Y -= delta.Y;
                 bounds.Height += delta.Y;
 
-				if (bounds.Y < 0)
-				{
-					bounds.Height += bounds.Y;
-					bounds.Y = 0;
-				}
+                if (bounds.Y < 0)
+                {
+                    bounds.Height += bounds.Y;
+                    bounds.Y = 0;
+                }
 
-				// Conform to minimum size here so we don't
-				// go all weird when we snap it in the base conrt
+                // Conform to minimum size here so we don't
+                // go all weird when we snap it in the base conrt
 
-				if (bounds.Height < min.Height)
+                if (bounds.Height < min.Height)
                 {
                     int diff = min.Height - bounds.Height;
                     bounds.Height += diff;
                     bounds.Y -= diff;
                 }
 
-				m_Target.Top = bounds.Top;
-				m_Target.Height = bounds.Height;
-			}
+                m_Target.Top = bounds.Top;
+                m_Target.Height = bounds.Height;
+            }
 
-			if (0 != (m_ResizeDir & Dock.Right))
+            if (0 != (m_ResizeDir & Dock.Right))
             {
-				bounds.Width -= delta.X;
+                bounds.Width -= delta.X;
 
-				if (bounds.Width < min.Width) bounds.Width = min.Width;
+                if (bounds.Width < min.Width) bounds.Width = min.Width;
 
-				m_HoldPos.X += bounds.Width - oldBounds.Width;
+                m_HoldPos.X += bounds.Width - oldBounds.Width;
 
-				m_Target.Left = bounds.Left;
-				m_Target.Width = bounds.Width;
-			}
+                m_Target.Left = bounds.Left;
+                m_Target.Width = bounds.Width;
+            }
 
-			if (0 != (m_ResizeDir & Dock.Bottom))
+            if (0 != (m_ResizeDir & Dock.Bottom))
             {
-				bounds.Height -= delta.Y;
+                bounds.Height -= delta.Y;
 
-				if (bounds.Height < min.Height) bounds.Height = min.Height;
+                if (bounds.Height < min.Height) bounds.Height = min.Height;
 
-				m_HoldPos.Y += bounds.Height - oldBounds.Height;
+                m_HoldPos.Y += bounds.Height - oldBounds.Height;
 
-				m_Target.Top = bounds.Top;
-				m_Target.Height = bounds.Height;
-			}
+                m_Target.Top = bounds.Top;
+                m_Target.Height = bounds.Height;
+            }
 
-			// Lets set quickly new bounds and let the layout measure and arrange child controls later
-			m_Target.SetBounds(bounds);
-			// Set bounds that are checked by SetBounds() implementations
-			if (!Util.IsIgnore(m_Target.Width)) m_Target.Width = m_Target.Bounds.Width;
-			if (!Util.IsIgnore(m_Target.Height)) m_Target.Height = m_Target.Bounds.Height;
+            // Lets set quickly new bounds and let the layout measure and arrange child controls later
+            m_Target.SetBounds(bounds);
+            // Set bounds that are checked by SetBounds() implementations
+            if (!Util.IsIgnore(m_Target.Width)) m_Target.Width = m_Target.Bounds.Width;
+            if (!Util.IsIgnore(m_Target.Height)) m_Target.Height = m_Target.Bounds.Height;
 
-			m_Target.Invalidate();
+            m_Target.Invalidate();
 
             if (Resized != null)
                 Resized.Invoke(this, EventArgs.Empty);

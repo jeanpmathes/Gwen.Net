@@ -28,18 +28,18 @@ namespace Gwen.Net.Control
             m_TitleBar.Dock = Dock.Top;
             m_TitleBar.IsCollapsed = true;
 
-			AllowReorder = true;
-		}
+            AllowReorder = true;
+        }
 
-		protected override Size Measure(Size availableSize)
-		{
-			TabStrip.Collapse(TabCount <= 1, false);
-			UpdateTitleBar();
+        protected override Size Measure(Size availableSize)
+        {
+            TabStrip.Collapse(TabCount <= 1, false);
+            UpdateTitleBar();
 
-			return base.Measure(availableSize);
-		}
+            return base.Measure(availableSize);
+        }
 
-		private void UpdateTitleBar()
+        private void UpdateTitleBar()
         {
             if (CurrentButton == null)
                 return;
@@ -51,14 +51,14 @@ namespace Gwen.Net.Control
         {
             base.DragAndDrop_StartDragging(package, x, y);
 
-			IsCollapsed = true;
+            IsCollapsed = true;
             // This hiding our parent thing is kind of lousy.
             Parent.IsCollapsed = true;
         }
 
         public override void DragAndDrop_EndDragging(bool success, int x, int y)
         {
-			IsCollapsed = false;
+            IsCollapsed = false;
             if (!success)
             {
                 Parent.IsCollapsed = false;

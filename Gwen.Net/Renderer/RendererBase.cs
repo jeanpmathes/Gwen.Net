@@ -11,14 +11,14 @@ namespace Gwen.Net.Renderer
         //public Random rnd;
         private Point m_RenderOffset;
         private Rectangle m_ClipRegion;
-		private float m_Scale;
+        private float m_Scale;
         //protected ICacheToTexture m_RTT;
 
-		public float Scale { get { return m_Scale; } set { float oldScale = m_Scale; m_Scale = value; OnScaleChanged(oldScale); } }
+        public float Scale { get { return m_Scale; } set { float oldScale = m_Scale; m_Scale = value; OnScaleChanged(oldScale); } }
 
-		protected virtual void OnScaleChanged(float oldScale)
-		{
-		}
+        protected virtual void OnScaleChanged(float oldScale)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RendererBase"/> class.
@@ -196,15 +196,15 @@ namespace Gwen.Net.Renderer
         public virtual void FreeFont(Font font)
         { }
 
-		/// <summary>
-		/// Gets the font metrics.
-		/// </summary>
-		/// <param name="font">Font.</param>
-		/// <returns>The font metrics.</returns>
-		public virtual FontMetrics GetFontMetrics(Font font)
-		{
-			return new FontMetrics(font);
-		}
+        /// <summary>
+        /// Gets the font metrics.
+        /// </summary>
+        /// <param name="font">Font.</param>
+        /// <returns>The font metrics.</returns>
+        public virtual FontMetrics GetFontMetrics(Font font)
+        {
+            return new FontMetrics(font);
+        }
 
         /// <summary>
         /// Returns dimensions of the text using specified font.
@@ -446,39 +446,39 @@ namespace Gwen.Net.Renderer
             m_ClipRegion = r;
         }
 
-		/// <summary>
-		/// Sets a rectangle to the clipping region.
-		/// </summary>
-		/// <param name="rect">Rectangle to set.</param>
-		public void SetClipRegion(Rectangle rect)
-		{
-			rect.X += m_RenderOffset.X;
-			rect.Y += m_RenderOffset.Y;
+        /// <summary>
+        /// Sets a rectangle to the clipping region.
+        /// </summary>
+        /// <param name="rect">Rectangle to set.</param>
+        public void SetClipRegion(Rectangle rect)
+        {
+            rect.X += m_RenderOffset.X;
+            rect.Y += m_RenderOffset.Y;
 
-			Rectangle r = rect;
-			if (rect.X < m_ClipRegion.X)
-			{
-				r.Width -= (m_ClipRegion.X - r.X);
-				r.X = m_ClipRegion.X;
-			}
+            Rectangle r = rect;
+            if (rect.X < m_ClipRegion.X)
+            {
+                r.Width -= (m_ClipRegion.X - r.X);
+                r.X = m_ClipRegion.X;
+            }
 
-			if (rect.Y < m_ClipRegion.Y)
-			{
-				r.Height -= (m_ClipRegion.Y - r.Y);
-				r.Y = m_ClipRegion.Y;
-			}
+            if (rect.Y < m_ClipRegion.Y)
+            {
+                r.Height -= (m_ClipRegion.Y - r.Y);
+                r.Y = m_ClipRegion.Y;
+            }
 
-			if (rect.Right > m_ClipRegion.Right)
-			{
-				r.Width = m_ClipRegion.Right - r.X + 1;
-			}
+            if (rect.Right > m_ClipRegion.Right)
+            {
+                r.Width = m_ClipRegion.Right - r.X + 1;
+            }
 
-			if (rect.Bottom > m_ClipRegion.Bottom)
-			{
-				r.Height = m_ClipRegion.Bottom - r.Y + 1;
-			}
+            if (rect.Bottom > m_ClipRegion.Bottom)
+            {
+                r.Height = m_ClipRegion.Bottom - r.Y + 1;
+            }
 
-			m_ClipRegion = r;
-		}
-	}
+            m_ClipRegion = r;
+        }
+    }
 }

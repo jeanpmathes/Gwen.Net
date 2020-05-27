@@ -17,21 +17,21 @@ namespace Gwen.Net.Control.Internal
         {
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			return new Size(10, 1);
-		}
+        protected override Size Measure(Size availableSize)
+        {
+            return new Size(10, 1);
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			return new Size(finalSize.Width, 1);
-		}
+        protected override Size Arrange(Size finalSize)
+        {
+            return new Size(finalSize.Width, 1);
+        }
 
-		/// <summary>
-		/// Renders the control using specified skin.
-		/// </summary>
-		/// <param name="skin">Skin to use.</param>
-		protected override void Render(Skin.SkinBase skin)
+        /// <summary>
+        /// Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(Skin.SkinBase skin)
         {
             skin.DrawMenuDivider(this);
         }

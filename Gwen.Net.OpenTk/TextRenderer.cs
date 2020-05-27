@@ -13,9 +13,9 @@ namespace Gwen.Net.OpenTk
     public sealed class TextRenderer : IDisposable
     {
         private readonly Bitmap m_Bitmap;
-		private readonly Graphics m_Graphics;
-		private readonly Texture m_Texture;
-		private bool m_Disposed;
+        private readonly Graphics m_Graphics;
+        private readonly Texture m_Texture;
+        private bool m_Disposed;
 
         public Texture Texture { get { return m_Texture; } }
 
@@ -46,8 +46,8 @@ namespace Gwen.Net.OpenTk
             //          Until 1st problem is fixed we should use TextRenderingHint.AntiAlias...  :-(
 
             m_Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-			m_Graphics.Clear(System.Drawing.Color.Transparent);
-			m_Texture = new Texture(renderer) { Width = width, Height = height };
+            m_Graphics.Clear(System.Drawing.Color.Transparent);
+            m_Texture = new Texture(renderer) { Width = width, Height = height };
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace Gwen.Net.OpenTk
         /// The origin (0, 0) lies at the top-left corner of the backing store.</param>
         public void DrawString(string text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
         {
-			m_Graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
+            m_Graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
 
-			OpenTKRendererBase.LoadTextureInternal(m_Texture, m_Bitmap); // copy bitmap to gl texture
+            OpenTKRendererBase.LoadTextureInternal(m_Texture, m_Bitmap); // copy bitmap to gl texture
         }
 
         void Dispose(bool manual)
@@ -87,10 +87,10 @@ namespace Gwen.Net.OpenTk
         }
 
 #if DEBUG
-		~TextRenderer()
+        ~TextRenderer()
         {
-			throw new InvalidOperationException(String.Format("[Warning] Resource leaked: {0}", typeof(TextRenderer)));
+            throw new InvalidOperationException(String.Format("[Warning] Resource leaked: {0}", typeof(TextRenderer)));
         }
 #endif
-	}
+    }
 }

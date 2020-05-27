@@ -22,7 +22,7 @@ namespace Gwen.Net.Control.Internal
         public SliderBar(ControlBase parent)
             : base(parent)
         {
-			Size = new Size(BaseUnit);
+            Size = new Size(BaseUnit);
 
             Target = this;
             RestrictToParent = true;

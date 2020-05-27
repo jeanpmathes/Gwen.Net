@@ -3,7 +3,7 @@
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Non-Interactive", Order = 106)]
-	public class StatusBarTest : GUnit
+    public class StatusBarTest : GUnit
     {
         public StatusBarTest(ControlBase parent)
             : base(parent)

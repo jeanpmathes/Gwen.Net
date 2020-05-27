@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// Numeric up arrow.
     /// </summary>
     public class UpDownButton_Up : ButtonBase
-	{
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="UpDownButton_Up"/> class.
         /// </summary>
@@ -15,7 +15,7 @@ namespace Gwen.Net.Control.Internal
         public UpDownButton_Up(ControlBase parent)
             : base(parent)
         {
-			Width = BaseUnit / 2;
+            Width = BaseUnit / 2;
         }
 
         /// <summary>

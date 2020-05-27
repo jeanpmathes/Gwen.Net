@@ -17,7 +17,7 @@ namespace Gwen.Net.Control.Internal
         {
             MouseInputEnabled = false;
 
-			Size = new Size(BaseUnit);
+            Size = new Size(BaseUnit);
         }
 
         /// <summary>

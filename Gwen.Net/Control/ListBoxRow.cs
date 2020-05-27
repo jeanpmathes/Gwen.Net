@@ -11,8 +11,8 @@ namespace Gwen.Net.Control
     {
         private bool m_Selected;
 
-		private ListBox m_ListBox;
-		public ListBox ListBox { get { return m_ListBox; } }
+        private ListBox m_ListBox;
+        public ListBox ListBox { get { return m_ListBox; } }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListBoxRow"/> class.
@@ -21,9 +21,9 @@ namespace Gwen.Net.Control
         public ListBoxRow(ControlBase parent)
             : base(parent)
         {
-			m_ListBox = parent as ListBox;
+            m_ListBox = parent as ListBox;
 
-			MouseInputEnabled = true;
+            MouseInputEnabled = true;
             IsSelected = false;
         }
 
@@ -35,7 +35,7 @@ namespace Gwen.Net.Control
             get { return m_Selected; }
             set
             {
-                m_Selected = value;             
+                m_Selected = value;
                 if (value)
                     SetTextColor(Skin.Colors.ListBox.Text_Selected);
                 else
@@ -60,7 +60,7 @@ namespace Gwen.Net.Control
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-			base.OnMouseClickedLeft(x, y, down);
+            base.OnMouseClickedLeft(x, y, down);
             if (down)
             {
                 //IsSelected = true; // [omeg] ListBox manages that
@@ -68,31 +68,31 @@ namespace Gwen.Net.Control
             }
         }
 
-		internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
-		{
-			ListBoxRow element = new ListBoxRow(parent);
-			parser.ParseAttributes(element);
-			if (parser.MoveToContent())
-			{
-				int colIndex = 1;
-				foreach (string elementName in parser.NextElement())
-				{
-					if (elementName == "Column")
-					{
-						if (parser.MoveToContent())
-						{
-							ControlBase column = parser.ParseElement(element);
-							element.SetCellContents(colIndex++, column, true);
-						}
-						else
-						{
-							string colText = parser.GetAttribute("Text");
-							element.SetCellText(colIndex++, colText != null ? colText : String.Empty);
-						}
-					}
-				}
-			}
-			return element;
-		}
-	}
+        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        {
+            ListBoxRow element = new ListBoxRow(parent);
+            parser.ParseAttributes(element);
+            if (parser.MoveToContent())
+            {
+                int colIndex = 1;
+                foreach (string elementName in parser.NextElement())
+                {
+                    if (elementName == "Column")
+                    {
+                        if (parser.MoveToContent())
+                        {
+                            ControlBase column = parser.ParseElement(element);
+                            element.SetCellContents(colIndex++, column, true);
+                        }
+                        else
+                        {
+                            string colText = parser.GetAttribute("Text");
+                            element.SetCellText(colIndex++, colText != null ? colText : String.Empty);
+                        }
+                    }
+                }
+            }
+            return element;
+        }
+    }
 }

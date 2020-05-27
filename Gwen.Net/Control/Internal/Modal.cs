@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Modal : ControlBase
     {
-		public Color? BackgroundColor { get; set; }
+        public Color? BackgroundColor { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Modal"/> class.
@@ -19,28 +19,28 @@ namespace Gwen.Net.Control.Internal
             KeyboardInputEnabled = true;
             MouseInputEnabled = true;
             ShouldDrawBackground = true;
-			BackgroundColor = null;
+            BackgroundColor = null;
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			base.Measure(availableSize);
+        protected override Size Measure(Size availableSize)
+        {
+            base.Measure(availableSize);
 
-			return availableSize;
-		}
+            return availableSize;
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			base.Arrange(finalSize);
+        protected override Size Arrange(Size finalSize)
+        {
+            base.Arrange(finalSize);
 
-			return finalSize;
-		}
+            return finalSize;
+        }
 
-		/// <summary>
-		/// Renders the control using specified skin.
-		/// </summary>
-		/// <param name="skin">Skin to use.</param>
-		protected override void Render(Skin.SkinBase skin)
+        /// <summary>
+        /// Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(Skin.SkinBase skin)
         {
             skin.DrawModalControl(this, BackgroundColor);
         }

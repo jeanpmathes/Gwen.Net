@@ -33,52 +33,52 @@ namespace Gwen.Net
             Right = right;
         }
 
-		public Margin(int horizontal, int vertical)
-		{
-			Top = vertical;
-			Bottom = vertical;
-			Left = horizontal;
-			Right = horizontal;
-		}
+        public Margin(int horizontal, int vertical)
+        {
+            Top = vertical;
+            Bottom = vertical;
+            Left = horizontal;
+            Right = horizontal;
+        }
 
-		public Margin(int margin)
-		{
-			Top = margin;
-			Bottom = margin;
-			Left = margin;
-			Right = margin;
-		}
+        public Margin(int margin)
+        {
+            Top = margin;
+            Bottom = margin;
+            Left = margin;
+            Right = margin;
+        }
 
-		public bool Equals(Margin other)
+        public bool Equals(Margin other)
         {
             return other.Top == Top && other.Bottom == Bottom && other.Left == Left && other.Right == Right;
         }
 
-        public static bool operator==(Margin lhs, Margin rhs)
+        public static bool operator ==(Margin lhs, Margin rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator!=(Margin lhs, Margin rhs)
+        public static bool operator !=(Margin lhs, Margin rhs)
         {
             return !lhs.Equals(rhs);
         }
 
-		public static Margin operator +(Margin lhs, Margin rhs)
-		{
-			return new Margin(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
-		}
+        public static Margin operator +(Margin lhs, Margin rhs)
+        {
+            return new Margin(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
+        }
 
-		public static Margin operator -(Margin lhs, Margin rhs)
-		{
-			return new Margin(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
-		}
+        public static Margin operator -(Margin lhs, Margin rhs)
+        {
+            return new Margin(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
+        }
 
-		public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            if (obj.GetType() != typeof (Margin)) return false;
-            return Equals((Margin) obj);
+            if (obj.GetType() != typeof(Margin)) return false;
+            return Equals((Margin)obj);
         }
 
         public override int GetHashCode()
@@ -86,21 +86,21 @@ namespace Gwen.Net
             unchecked
             {
                 int result = Top;
-                result = (result*397) ^ Bottom;
-                result = (result*397) ^ Left;
-                result = (result*397) ^ Right;
+                result = (result * 397) ^ Bottom;
+                result = (result * 397) ^ Left;
+                result = (result * 397) ^ Right;
                 return result;
             }
         }
 
-		public static explicit operator Margin(Padding padding)
-		{
-			return new Margin(padding.Left, padding.Top, padding.Right, padding.Bottom);
-		}
+        public static explicit operator Margin(Padding padding)
+        {
+            return new Margin(padding.Left, padding.Top, padding.Right, padding.Bottom);
+        }
 
-		public override string ToString()
-		{
-			return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
-		}
-	}
+        public override string ToString()
+        {
+            return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
+        }
+    }
 }

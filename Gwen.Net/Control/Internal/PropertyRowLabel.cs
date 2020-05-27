@@ -16,7 +16,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="parent">Parent control.</param>
         public PropertyRowLabel(PropertyRow parent) : base(parent)
         {
-			//AutoSizeToContents = false;
+            //AutoSizeToContents = false;
             Alignment = Alignment.Left | Alignment.CenterV;
             m_PropertyRow = parent;
         }

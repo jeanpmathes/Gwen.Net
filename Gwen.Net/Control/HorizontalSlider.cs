@@ -3,11 +3,11 @@ using Gwen.Net.Control.Internal;
 
 namespace Gwen.Net.Control
 {
-	/// <summary>
-	/// Horizontal slider.
-	/// </summary>
-	[Xml.XmlControl]
-	public class HorizontalSlider : Slider
+    /// <summary>
+    /// Horizontal slider.
+    /// </summary>
+    [Xml.XmlControl]
+    public class HorizontalSlider : Slider
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HorizontalSlider"/> class.
@@ -16,7 +16,7 @@ namespace Gwen.Net.Control
         public HorizontalSlider(ControlBase parent)
             : base(parent)
         {
-			Height = BaseUnit;
+            Height = BaseUnit;
 
             m_SliderBar.IsHorizontal = true;
         }
@@ -39,7 +39,7 @@ namespace Gwen.Net.Control
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-			base.OnMouseClickedLeft(x, y, down);
+            base.OnMouseClickedLeft(x, y, down);
             m_SliderBar.MoveTo((int)(CanvasPosToLocal(new Point(x, y)).X - m_SliderBar.ActualWidth / 2), (this.ActualHeight - m_SliderBar.ActualHeight) / 2);
             m_SliderBar.InputMouseClickedLeft(x, y, down);
             OnMoved(m_SliderBar, EventArgs.Empty);

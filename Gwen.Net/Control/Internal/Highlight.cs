@@ -14,7 +14,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="parent">Parent control.</param>
         public Highlight(ControlBase parent) : base(parent)
         {
-            
+
         }
 
         /// <summary>

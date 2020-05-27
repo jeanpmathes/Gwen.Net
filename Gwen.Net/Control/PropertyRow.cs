@@ -52,10 +52,10 @@ namespace Gwen.Net.Control
         public PropertyRow(ControlBase parent, Property.PropertyBase prop)
             : base(parent)
         {
-			Padding = new Padding(2, 2, 2, 2);
+            Padding = new Padding(2, 2, 2, 2);
 
-			m_Label = new PropertyRowLabel(this);
-			m_Label.Alignment = Alignment.Left | Alignment.Top;
+            m_Label = new PropertyRowLabel(this);
+            m_Label.Alignment = Alignment.Left | Alignment.Top;
 
             m_Property = prop;
             m_Property.Parent = this;
@@ -85,38 +85,38 @@ namespace Gwen.Net.Control
             skin.DrawPropertyRow(this, m_Label.ActualRight, IsEditing, IsHovered | m_Property.IsHovered);
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			Properties parent = Parent as Properties;
-			if (parent != null)
-			{
-				Size labelSize = m_Label.DoMeasure(new Size(parent.LabelWidth - Padding.Left - Padding.Right, availableSize.Height)) + Padding;
-				Size propertySize = m_Property.DoMeasure(new Size(availableSize.Width - parent.LabelWidth, availableSize.Height)) + Padding;
+        protected override Size Measure(Size availableSize)
+        {
+            Properties parent = Parent as Properties;
+            if (parent != null)
+            {
+                Size labelSize = m_Label.DoMeasure(new Size(parent.LabelWidth - Padding.Left - Padding.Right, availableSize.Height)) + Padding;
+                Size propertySize = m_Property.DoMeasure(new Size(availableSize.Width - parent.LabelWidth, availableSize.Height)) + Padding;
 
-				return new Size(labelSize.Width + propertySize.Width, Math.Max(labelSize.Height, propertySize.Height));
-			}
+                return new Size(labelSize.Width + propertySize.Width, Math.Max(labelSize.Height, propertySize.Height));
+            }
 
-			return Size.Zero;
-		}
+            return Size.Zero;
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			Properties parent = Parent as Properties;
-			if (parent != null)
-			{
-				m_Label.DoArrange(new Rectangle(Padding.Left, Padding.Top, parent.LabelWidth - Padding.Left - Padding.Right, m_Label.MeasuredSize.Height));
-				m_Property.DoArrange(new Rectangle(parent.LabelWidth + Padding.Left, Padding.Top, finalSize.Width - parent.LabelWidth - Padding.Left - Padding.Right, m_Property.MeasuredSize.Height));
+        protected override Size Arrange(Size finalSize)
+        {
+            Properties parent = Parent as Properties;
+            if (parent != null)
+            {
+                m_Label.DoArrange(new Rectangle(Padding.Left, Padding.Top, parent.LabelWidth - Padding.Left - Padding.Right, m_Label.MeasuredSize.Height));
+                m_Property.DoArrange(new Rectangle(parent.LabelWidth + Padding.Left, Padding.Top, finalSize.Width - parent.LabelWidth - Padding.Left - Padding.Right, m_Property.MeasuredSize.Height));
 
-				return new Size(finalSize.Width, Math.Max(m_Label.MeasuredSize.Height, m_Property.MeasuredSize.Height) + Padding.Top + Padding.Bottom);
-			}
+                return new Size(finalSize.Width, Math.Max(m_Label.MeasuredSize.Height, m_Property.MeasuredSize.Height) + Padding.Top + Padding.Bottom);
+            }
 
-			return Size.Zero;
-		}
+            return Size.Zero;
+        }
 
-		protected virtual void OnValueChanged(ControlBase control, EventArgs args)
+        protected virtual void OnValueChanged(ControlBase control, EventArgs args)
         {
             if (ValueChanged != null)
-				ValueChanged.Invoke(this, EventArgs.Empty);
+                ValueChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void OnEditingChanged()

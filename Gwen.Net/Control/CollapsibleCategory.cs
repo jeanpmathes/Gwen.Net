@@ -44,12 +44,12 @@ namespace Gwen.Net.Control
             m_List = parent;
 
             Padding = new Padding(1, 0, 1, 2);
-		}
+        }
 
-		/// <summary>
-		/// Gets the selected entry.
-		/// </summary>
-		public Button GetSelectedButton()
+        /// <summary>
+        /// Gets the selected entry.
+        /// </summary>
+        public Button GetSelectedButton()
         {
             foreach (ControlBase child in Children)
             {
@@ -70,10 +70,10 @@ namespace Gwen.Net.Control
         /// <param name="control">Source control.</param>
 		protected virtual void OnHeaderToggle(ControlBase control, EventArgs args)
         {
-			Invalidate();
+            Invalidate();
 
             if (Collapsed != null)
-				Collapsed.Invoke(this, EventArgs.Empty);
+                Collapsed.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace Gwen.Net.Control
             button.Padding = new Padding(5, 2, 2, 2);
             button.Clicked += OnSelected;
 
-			Invalidate();
+            Invalidate();
 
-			return button;
+            return button;
         }
 
         /// <summary>
@@ -142,69 +142,69 @@ namespace Gwen.Net.Control
             }
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			Size headerSize = m_HeaderButton.DoMeasure(availableSize);
+        protected override Size Measure(Size availableSize)
+        {
+            Size headerSize = m_HeaderButton.DoMeasure(availableSize);
 
-			if (IsCategoryCollapsed)
-			{
-				return headerSize;
-			}
-			else
-			{
-				int width = headerSize.Width;
-				int height = headerSize.Height + Padding.Top + Padding.Bottom;
+            if (IsCategoryCollapsed)
+            {
+                return headerSize;
+            }
+            else
+            {
+                int width = headerSize.Width;
+                int height = headerSize.Height + Padding.Top + Padding.Bottom;
 
-				foreach (ControlBase child in Children)
-				{
-					CategoryButton button = child as CategoryButton;
-					if (button == null)
-						continue;
+                foreach (ControlBase child in Children)
+                {
+                    CategoryButton button = child as CategoryButton;
+                    if (button == null)
+                        continue;
 
-					Size size = child.DoMeasure(availableSize);
-					if (size.Width > width)
-						width = child.Width;
-					height += size.Height;
-				}
+                    Size size = child.DoMeasure(availableSize);
+                    if (size.Width > width)
+                        width = child.Width;
+                    height += size.Height;
+                }
 
-				width += Padding.Left + Padding.Right;
+                width += Padding.Left + Padding.Right;
 
-				return new Size(width, height);
-			}
-		}
+                return new Size(width, height);
+            }
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			m_HeaderButton.DoArrange(new Rectangle(0, 0, finalSize.Width, m_HeaderButton.MeasuredSize.Height));
+        protected override Size Arrange(Size finalSize)
+        {
+            m_HeaderButton.DoArrange(new Rectangle(0, 0, finalSize.Width, m_HeaderButton.MeasuredSize.Height));
 
-			if (IsCategoryCollapsed)
-			{
-				return new Size(finalSize.Width, m_HeaderButton.MeasuredSize.Height);
-			}
-			else
-			{
-				int y = m_HeaderButton.MeasuredSize.Height + Padding.Top;
-				int width = finalSize.Width - Padding.Left - Padding.Right;
-				bool b = true;
+            if (IsCategoryCollapsed)
+            {
+                return new Size(finalSize.Width, m_HeaderButton.MeasuredSize.Height);
+            }
+            else
+            {
+                int y = m_HeaderButton.MeasuredSize.Height + Padding.Top;
+                int width = finalSize.Width - Padding.Left - Padding.Right;
+                bool b = true;
 
-				foreach (ControlBase child in Children)
-				{
-					CategoryButton button = child as CategoryButton;
-					if (button == null)
-						continue;
+                foreach (ControlBase child in Children)
+                {
+                    CategoryButton button = child as CategoryButton;
+                    if (button == null)
+                        continue;
 
-					button.m_Alt = b;
-					button.UpdateColors();
-					b = !b;
+                    button.m_Alt = b;
+                    button.UpdateColors();
+                    b = !b;
 
-					child.DoArrange(new Rectangle(Padding.Left, y, width, child.MeasuredSize.Height));
-					y += child.MeasuredSize.Height;
-				}
+                    child.DoArrange(new Rectangle(Padding.Left, y, width, child.MeasuredSize.Height));
+                    y += child.MeasuredSize.Height;
+                }
 
-				y += Padding.Bottom;
+                y += Padding.Bottom;
 
-				return new Size(finalSize.Width, y);
-			}
-		}
+                return new Size(finalSize.Width, y);
+            }
+        }
     }
 }

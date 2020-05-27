@@ -5,8 +5,8 @@ using Gwen.Net.Control.Internal;
 
 namespace Gwen.Net.Tests.Components
 {
-	[UnitTest(Category = "Containers", Order = 304)]
-	public class TabControlTest : GUnit
+    [UnitTest(Category = "Containers", Order = 304)]
+    public class TabControlTest : GUnit
     {
         private readonly TabControl m_DockControl;
 
@@ -15,19 +15,19 @@ namespace Gwen.Net.Tests.Components
         {
             {
                 m_DockControl = new TabControl(this);
-				m_DockControl.Margin = Margin.Zero;
-				m_DockControl.Width = 200;
-				//m_DockControl.Height = 150;
-				m_DockControl.Dock = Dock.Top;
+                m_DockControl.Margin = Margin.Zero;
+                m_DockControl.Width = 200;
+                //m_DockControl.Height = 150;
+                m_DockControl.Dock = Dock.Top;
 
                 {
                     TabButton button = m_DockControl.AddPage("Controls");
                     ControlBase page = button.Page;
 
                     {
-						GroupBox group = new GroupBox(page);
-						group.Text = "Tab position";
-						RadioButtonGroup radio = new RadioButtonGroup(group);
+                        GroupBox group = new GroupBox(page);
+                        group.Text = "Tab position";
+                        RadioButtonGroup radio = new RadioButtonGroup(group);
 
                         radio.AddOption("Top").Select();
                         radio.AddOption("Bottom");
@@ -41,15 +41,15 @@ namespace Gwen.Net.Tests.Components
                 m_DockControl.AddPage("Red");
                 m_DockControl.AddPage("Green");
                 m_DockControl.AddPage("Blue");
-				m_DockControl.AddPage("Blue");
-				m_DockControl.AddPage("Blue");
-			}
+                m_DockControl.AddPage("Blue");
+                m_DockControl.AddPage("Blue");
+            }
 
-			{
+            {
                 TabControl dragMe = new TabControl(this);
-				dragMe.Margin = Margin.Five;
-				dragMe.Width = 200;
-				dragMe.Dock = Dock.Top;
+                dragMe.Margin = Margin.Five;
+                dragMe.Width = 200;
+                dragMe.Dock = Dock.Top;
 
                 dragMe.AddPage("You");
                 dragMe.AddPage("Can");
@@ -61,7 +61,7 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-		void OnDockChange(ControlBase control, EventArgs args)
+        void OnDockChange(ControlBase control, EventArgs args)
         {
             RadioButtonGroup rc = (RadioButtonGroup)control;
 

@@ -51,18 +51,18 @@ namespace Gwen.Net.Skin
             public Color Highlight;
         }
 
-		public struct _TextBox
-		{
-			public Color Text;
-			public Color Background_Selected;
-			public Color Caret;
-		}
+        public struct _TextBox
+        {
+            public Color Text;
+            public Color Background_Selected;
+            public Color Caret;
+        }
 
-		public struct _ListBox
-		{
-			public Color Text_Normal;
-			public Color Text_Selected;
-		}
+        public struct _ListBox
+        {
+            public Color Text_Normal;
+            public Color Text_Selected;
+        }
 
         public struct _Tree
         {
@@ -123,8 +123,8 @@ namespace Gwen.Net.Skin
         public _Button Button;
         public _Tab Tab;
         public _Label Label;
-		public _TextBox TextBox;
-		public _ListBox ListBox;
+        public _TextBox TextBox;
+        public _ListBox ListBox;
         public _Tree Tree;
         public _Properties Properties;
         public _Category Category;

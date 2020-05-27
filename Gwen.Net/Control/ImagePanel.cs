@@ -10,62 +10,62 @@ namespace Gwen.Net.Control
         private readonly Texture m_Texture;
         private readonly float[] m_uv;
         private Color m_DrawColor;
-		private Size m_ImageSize;
+        private Size m_ImageSize;
 
-		/// <summary>
-		/// Texture name.
-		/// </summary>
-		public string ImageName
-		{
-			get { return m_Texture.Name; }
-			set { m_Texture.Load(value); }
-		}
+        /// <summary>
+        /// Texture name.
+        /// </summary>
+        public string ImageName
+        {
+            get { return m_Texture.Name; }
+            set { m_Texture.Load(value); }
+        }
 
-		/// <summary>
-		/// Gets or sets the size of the image.
-		/// </summary>
-		public Size ImageSize
-		{
-			get { return m_ImageSize; }
-			set { if (value == m_ImageSize) return; m_ImageSize = value; Invalidate(); }
-		}
+        /// <summary>
+        /// Gets or sets the size of the image.
+        /// </summary>
+        public Size ImageSize
+        {
+            get { return m_ImageSize; }
+            set { if (value == m_ImageSize) return; m_ImageSize = value; Invalidate(); }
+        }
 
-		/// <summary>
-		/// Gets or sets the texture coordinates of the image in pixels.
-		/// </summary>
-		public Rectangle TextureRect
-		{
-			get
-			{
-				if (m_Texture == null)
-					return Rectangle.Empty;
-				
-				int x1 = (int)(m_uv[0] * m_Texture.Width);
-				int y1 = (int)(m_uv[1] * m_Texture.Height);
-				int x2 = Util.Ceil(m_uv[2] * m_Texture.Width);
-				int y2 = Util.Ceil(m_uv[3] * m_Texture.Height);
-				return new Rectangle(x1, y1, x2 - x1, y2 - y1);
-			}
-			set
-			{
-				if (m_Texture == null)
-					return;
-				
-				m_uv[0] = (float)value.X / (float)m_Texture.Width;
-				m_uv[1] = (float)value.Y / (float)m_Texture.Height;
-				m_uv[2] = m_uv[0] + (float)value.Width / (float)m_Texture.Width;
-				m_uv[3] = m_uv[1] + (float)value.Height / (float)m_Texture.Height;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the texture coordinates of the image in pixels.
+        /// </summary>
+        public Rectangle TextureRect
+        {
+            get
+            {
+                if (m_Texture == null)
+                    return Rectangle.Empty;
 
-		/// <summary>
-		/// Gets or sets the color of the image.
-		/// </summary>
-		public Color ImageColor
-		{
-			get { return m_DrawColor; }
-			set { m_DrawColor = value; }
-		}
+                int x1 = (int)(m_uv[0] * m_Texture.Width);
+                int y1 = (int)(m_uv[1] * m_Texture.Height);
+                int x2 = Util.Ceil(m_uv[2] * m_Texture.Width);
+                int y2 = Util.Ceil(m_uv[3] * m_Texture.Height);
+                return new Rectangle(x1, y1, x2 - x1, y2 - y1);
+            }
+            set
+            {
+                if (m_Texture == null)
+                    return;
+
+                m_uv[0] = (float)value.X / (float)m_Texture.Width;
+                m_uv[1] = (float)value.Y / (float)m_Texture.Height;
+                m_uv[2] = m_uv[0] + (float)value.Width / (float)m_Texture.Width;
+                m_uv[3] = m_uv[1] + (float)value.Height / (float)m_Texture.Height;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the color of the image.
+        /// </summary>
+        public Color ImageColor
+        {
+            get { return m_DrawColor; }
+            set { m_DrawColor = value; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImagePanel"/> class.
@@ -76,7 +76,7 @@ namespace Gwen.Net.Control
         {
             m_uv = new float[4];
             m_Texture = new Texture(Skin.Renderer);
-			m_ImageSize = Size.Zero;
+            m_ImageSize = Size.Zero;
             SetUV(0, 0, 1, 1);
             MouseInputEnabled = true;
             m_DrawColor = Color.White;
@@ -101,7 +101,7 @@ namespace Gwen.Net.Control
             m_uv[2] = u2;
             m_uv[3] = v2;
         }
-			
+
         /// <summary>
         /// Renders the control using specified skin.
         /// </summary>
@@ -121,33 +121,33 @@ namespace Gwen.Net.Control
             base.Touch();
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			if (m_Texture == null)
-				return Size.Zero;
-			
-			float scale = this.Scale;
+        protected override Size Measure(Size availableSize)
+        {
+            if (m_Texture == null)
+                return Size.Zero;
 
-			Size size = m_ImageSize;
-			if (size.Width == 0) size.Width = m_Texture.Width;
-			if (size.Height == 0) size.Height = m_Texture.Height;
-			
-			return new Size(Util.Ceil(size.Width * scale), Util.Ceil(size.Height * scale));
-		}
+            float scale = this.Scale;
 
-		protected override Size Arrange(Size finalSize)
-		{
-			return finalSize;
-		}
+            Size size = m_ImageSize;
+            if (size.Width == 0) size.Width = m_Texture.Width;
+            if (size.Height == 0) size.Height = m_Texture.Height;
 
-		/// <summary>
-		/// Handler for Space keyboard event.
-		/// </summary>
-		/// <param name="down">Indicates whether the key was pressed or released.</param>
-		/// <returns>
-		/// True if handled.
-		/// </returns>
-		protected override bool OnKeySpace(bool down)
+            return new Size(Util.Ceil(size.Width * scale), Util.Ceil(size.Height * scale));
+        }
+
+        protected override Size Arrange(Size finalSize)
+        {
+            return finalSize;
+        }
+
+        /// <summary>
+        /// Handler for Space keyboard event.
+        /// </summary>
+        /// <param name="down">Indicates whether the key was pressed or released.</param>
+        /// <returns>
+        /// True if handled.
+        /// </returns>
+        protected override bool OnKeySpace(bool down)
         {
             if (down)
                 base.OnMouseClickedLeft(0, 0, true);

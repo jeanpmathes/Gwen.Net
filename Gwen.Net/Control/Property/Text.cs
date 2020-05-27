@@ -14,11 +14,11 @@ namespace Gwen.Net.Control.Property
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Text(Control.ControlBase parent)
-			: base(parent)
+            : base(parent)
         {
             m_TextBox = new TextBox(this);
-			m_TextBox.Dock = Dock.Fill;
-			m_TextBox.Padding = Padding.Zero;
+            m_TextBox.Dock = Dock.Fill;
+            m_TextBox.Padding = Padding.Zero;
             m_TextBox.ShouldDrawBackground = false;
             m_TextBox.TextChanged += OnValueChanged;
         }
@@ -58,7 +58,7 @@ namespace Gwen.Net.Control.Property
             get { return base.IsHovered | m_TextBox.IsHovered; }
         }
 
-		/*
+        /*
 		protected override Size Measure(Size availableSize)
 		{
 			return m_TextBox.DoMeasure(availableSize);
@@ -71,5 +71,5 @@ namespace Gwen.Net.Control.Property
 			return new Size(finalSize.Width, m_TextBox.MeasuredSize.Height);
 		}
 		*/
-	}
+    }
 }

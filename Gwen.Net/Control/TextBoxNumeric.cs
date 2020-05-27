@@ -2,11 +2,11 @@
 
 namespace Gwen.Net.Control
 {
-	/// <summary>
-	/// Numeric text box - accepts only float numbers.
-	/// </summary>
-	[Xml.XmlControl]
-	public class TextBoxNumeric : TextBox
+    /// <summary>
+    /// Numeric text box - accepts only float numbers.
+    /// </summary>
+    [Xml.XmlControl]
+    public class TextBoxNumeric : TextBox
     {
         /// <summary>
         /// Current numeric value.
@@ -42,11 +42,11 @@ namespace Gwen.Net.Control
             return IsTextAllowed(newText);
         }
 
-		/// <summary>
-		/// Current numerical value.
-		/// </summary>
-		[Xml.XmlProperty]
-		public virtual float Value
+        /// <summary>
+        /// Current numerical value.
+        /// </summary>
+        [Xml.XmlProperty]
+        public virtual float Value
         {
             get { return m_Value; }
             set
@@ -55,7 +55,7 @@ namespace Gwen.Net.Control
                 Text = value.ToString();
             }
         }
-        
+
         // text -> value
         /// <summary>
         /// Handler for text changed event.
@@ -83,15 +83,15 @@ namespace Gwen.Net.Control
                 base.SetText(str, doEvents);
         }
 
-		/// <summary>
-		/// Sets the control value.
-		/// </summary>
-		/// <param name="value">Value to set.</param>
-		/// <param name="doEvents">Determines whether to invoke "text changed" event.</param>
-		public virtual void SetValue(float value, bool doEvents = true)
-		{
-			m_Value = value;
-			base.SetText(value.ToString(), doEvents);
-		}
+        /// <summary>
+        /// Sets the control value.
+        /// </summary>
+        /// <param name="value">Value to set.</param>
+        /// <param name="doEvents">Determines whether to invoke "text changed" event.</param>
+        public virtual void SetValue(float value, bool doEvents = true)
+        {
+            m_Value = value;
+            base.SetText(value.ToString(), doEvents);
+        }
     }
 }

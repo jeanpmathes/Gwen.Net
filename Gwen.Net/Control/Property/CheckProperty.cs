@@ -17,8 +17,8 @@ namespace Gwen.Net.Control.Property
             : base(parent)
         {
             m_CheckBox = new Control.CheckBox(this);
-			m_CheckBox.Dock = Dock.Left;
-			m_CheckBox.ShouldDrawBackground = false;
+            m_CheckBox.Dock = Dock.Left;
+            m_CheckBox.ShouldDrawBackground = false;
             m_CheckBox.CheckChanged += OnValueChanged;
             m_CheckBox.IsTabable = true;
             m_CheckBox.KeyboardInputEnabled = true;
@@ -65,5 +65,5 @@ namespace Gwen.Net.Control.Property
         {
             get { return base.IsHovered || m_CheckBox.IsHovered; }
         }
-	}
+    }
 }

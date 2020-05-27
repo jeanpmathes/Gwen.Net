@@ -63,7 +63,7 @@ namespace Gwen.Net.Control.Internal
 
         public override void DragAndDrop_EndDragging(bool success, int x, int y)
         {
-			IsCollapsed = false;
+            IsCollapsed = false;
             IsDepressed = false;
         }
 

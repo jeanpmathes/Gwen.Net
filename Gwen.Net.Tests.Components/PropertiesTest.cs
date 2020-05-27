@@ -5,36 +5,36 @@ using Gwen.Net.Control.Property;
 
 namespace Gwen.Net.Tests.Components
 {
-	[UnitTest(Category = "Containers", Order = 303)]
-	public class PropertiesTest : GUnit
+    [UnitTest(Category = "Containers", Order = 303)]
+    public class PropertiesTest : GUnit
     {
         public PropertiesTest(ControlBase parent)
             : base(parent)
         {
             {
                 Properties props = new Properties(this);
-				props.Dock = Dock.Top;
-				props.Width = 300;
+                props.Dock = Dock.Top;
+                props.Width = 300;
                 props.ValueChanged += OnChanged;
 
                 {
-					{
-						PropertyRow pRow = props.Add("First Name");
+                    {
+                        PropertyRow pRow = props.Add("First Name");
                     }
 
                     props.Add("Middle Name");
                     props.Add("Last Name");
-				}
-			}
+                }
+            }
 
-			{
+            {
                 PropertyTree ptree = new PropertyTree(this);
-				ptree.Dock = Dock.Top;
-				ptree.Width = 300;
-				ptree.AutoSizeToContent = true;
+                ptree.Dock = Dock.Top;
+                ptree.Width = 300;
+                ptree.AutoSizeToContent = true;
 
-				{
-					Properties props = ptree.Add("Item One");
+                {
+                    Properties props = ptree.Add("Item One");
                     props.ValueChanged += OnChanged;
 
                     props.Add("Middle Name");
@@ -45,7 +45,7 @@ namespace Gwen.Net.Tests.Components
                 {
                     Properties props = ptree.Add("Item Two");
                     props.ValueChanged += OnChanged;
-                    
+
                     props.Add("More Items");
                     props.Add("Bacon", new CheckProperty(props), "1");
                     props.Add("To Fill");

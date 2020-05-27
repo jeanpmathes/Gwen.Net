@@ -34,20 +34,20 @@ namespace Gwen.Net.DragDrop
 
             CurrentPackage = null;
             SourceControl = null;
-			HoveredControl = null;
+            HoveredControl = null;
 
-			return true;
+            return true;
         }
 
-        private static bool ShouldStartDraggingControl( int x, int y )
+        private static bool ShouldStartDraggingControl(int x, int y)
         {
             // We're not holding a control down..
-            if (m_LastPressedControl == null) 
+            if (m_LastPressedControl == null)
                 return false;
 
             // Not been dragged far enough
             int length = Math.Abs(x - m_LastPressedPos.X) + Math.Abs(y - m_LastPressedPos.Y);
-            if (length < 5) 
+            if (length < 5)
                 return false;
 
             // Create the dragging package
@@ -59,8 +59,8 @@ namespace Gwen.Net.DragDrop
             {
                 m_LastPressedControl = null;
                 SourceControl = null;
-				HoveredControl = null;
-				return false;
+                HoveredControl = null;
+                return false;
             }
 
             // Now we're dragging something!
@@ -75,8 +75,8 @@ namespace Gwen.Net.DragDrop
             {
                 SourceControl = null;
                 CurrentPackage = null;
-				HoveredControl = null;
-				return false;
+                HoveredControl = null;
+                return false;
             }
 
             SourceControl.DragAndDrop_StartDragging(CurrentPackage, m_LastPressedPos.X, m_LastPressedPos.Y);
@@ -94,28 +94,28 @@ namespace Gwen.Net.DragDrop
             //
             m_NewHoveredControl = control;
 
-			// Check to see if the new potential control can accept this type of package.
-			// If not, ignore it and show an error cursor.
-			while (m_NewHoveredControl != null && !m_NewHoveredControl.DragAndDrop_CanAcceptPackage(CurrentPackage))
-			{
-				// We can't drop on this control, so lets try to drop
-				// onto its parent..
-				m_NewHoveredControl = m_NewHoveredControl.Parent;
+            // Check to see if the new potential control can accept this type of package.
+            // If not, ignore it and show an error cursor.
+            while (m_NewHoveredControl != null && !m_NewHoveredControl.DragAndDrop_CanAcceptPackage(CurrentPackage))
+            {
+                // We can't drop on this control, so lets try to drop
+                // onto its parent..
+                m_NewHoveredControl = m_NewHoveredControl.Parent;
 
-				// Its parents are dead. We can't drop it here.
-				// Show the NO WAY cursor.
-				if (m_NewHoveredControl == null)
-				{
-					Platform.Platform.SetCursor(Cursor.No);
-				}
-			}
+                // Its parents are dead. We can't drop it here.
+                // Show the NO WAY cursor.
+                if (m_NewHoveredControl == null)
+                {
+                    Platform.Platform.SetCursor(Cursor.No);
+                }
+            }
 
-			// Nothing to change..
-			if (HoveredControl == m_NewHoveredControl)
+            // Nothing to change..
+            if (HoveredControl == m_NewHoveredControl)
                 return;
 
-			// We changed - tell the old hovered control that it's no longer hovered.
-			if (HoveredControl != null)
+            // We changed - tell the old hovered control that it's no longer hovered.
+            if (HoveredControl != null)
                 HoveredControl.DragAndDrop_HoverLeave(CurrentPackage);
 
             // If we're hovering where the control came from, just forget it.
@@ -163,9 +163,9 @@ namespace Gwen.Net.DragDrop
                 return true;
             }
 
-            if (hoveredControl == null) 
+            if (hoveredControl == null)
                 return false;
-            if (!hoveredControl.DragAndDrop_Draggable()) 
+            if (!hoveredControl.DragAndDrop_Draggable())
                 return false;
 
             // Store the last clicked on control. Don't do anything yet, 
@@ -198,18 +198,18 @@ namespace Gwen.Net.DragDrop
             // the dropped control will land etc..
             HoveredControl.DragAndDrop_Hover(CurrentPackage, x, y);
 
-			// Override the cursor - since it might have been set my underlying controls
-			// Ideally this would show the 'being dragged' control. TODO
-			Platform.Platform.SetCursor(Cursor.Normal);
+            // Override the cursor - since it might have been set my underlying controls
+            // Ideally this would show the 'being dragged' control. TODO
+            Platform.Platform.SetCursor(Cursor.Normal);
 
             hoveredControl.Redraw();
         }
 
         public static void RenderOverlay(Canvas canvas, Skin.SkinBase skin)
         {
-            if (CurrentPackage == null) 
+            if (CurrentPackage == null)
                 return;
-            if (CurrentPackage.DrawControl == null) 
+            if (CurrentPackage.DrawControl == null)
                 return;
 
             Point old = skin.Renderer.RenderOffset;

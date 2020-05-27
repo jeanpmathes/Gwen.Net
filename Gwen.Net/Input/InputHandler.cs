@@ -22,14 +22,14 @@ namespace Gwen.Net.Input
         public static ControlBase HoveredControl
         {
             get { return hoveredControl; }
-            set 
-            { 
-                if(value is null)
+            set
+            {
+                if (value is null)
                 {
                     Debug.Write("Clearing Hover");
                 }
 
-                hoveredControl = value; 
+                hoveredControl = value;
             }
         }
 
@@ -171,11 +171,11 @@ namespace Gwen.Net.Input
             return false;
         }
 
-		/// <summary>
-		/// Handles focus updating and key autorepeats.
-		/// </summary>
-		/// <param name="control">Unused.</param>
-		public static void OnCanvasThink(ControlBase control)
+        /// <summary>
+        /// Handles focus updating and key autorepeats.
+        /// </summary>
+        /// <param name="control">Unused.</param>
+        public static void OnCanvasThink(ControlBase control)
         {
             if (MouseFocus != null && !MouseFocus.IsVisible)
                 MouseFocus = null;
@@ -211,43 +211,43 @@ namespace Gwen.Net.Input
             }
         }
 
-		/// <summary>
-		/// Mouse moved handler.
-		/// </summary>
-		/// <param name="canvas">Canvas.</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="dx"></param>
-		/// <param name="dy"></param>
-		/// <returns>True if handled.</returns>
-		public static bool OnMouseMoved(ControlBase canvas, int x, int y, int dx, int dy)
-		{
-			// Send input to canvas for study
-			MousePosition.X = x;
-			MousePosition.Y = y;
+        /// <summary>
+        /// Mouse moved handler.
+        /// </summary>
+        /// <param name="canvas">Canvas.</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        /// <returns>True if handled.</returns>
+        public static bool OnMouseMoved(ControlBase canvas, int x, int y, int dx, int dy)
+        {
+            // Send input to canvas for study
+            MousePosition.X = x;
+            MousePosition.Y = y;
 
-			UpdateHoveredControl(canvas);
+            UpdateHoveredControl(canvas);
 
-			if (InputHandler.HoveredControl == null) return false;
-			if (InputHandler.HoveredControl == canvas) return false;
-			if (InputHandler.HoveredControl.GetCanvas() != canvas) return false;
+            if (InputHandler.HoveredControl == null) return false;
+            if (InputHandler.HoveredControl == canvas) return false;
+            if (InputHandler.HoveredControl.GetCanvas() != canvas) return false;
 
-			InputHandler.HoveredControl.InputMouseMoved(x, y, dx, dy);
-			InputHandler.HoveredControl.UpdateCursor();
+            InputHandler.HoveredControl.InputMouseMoved(x, y, dx, dy);
+            InputHandler.HoveredControl.UpdateCursor();
 
-			DragAndDrop.OnMouseMoved(InputHandler.HoveredControl, x, y);
+            DragAndDrop.OnMouseMoved(InputHandler.HoveredControl, x, y);
 
-			return true;
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// Mouse click handler.
-		/// </summary>
-		/// <param name="canvas">Canvas.</param>
-		/// <param name="mouseButton">Mouse button number.</param>
-		/// <param name="down">Specifies if the button is down.</param>
-		/// <returns>True if handled.</returns>
-		public static bool OnMouseClicked(ControlBase canvas, int mouseButton, bool down)
+        /// <summary>
+        /// Mouse click handler.
+        /// </summary>
+        /// <param name="canvas">Canvas.</param>
+        /// <param name="mouseButton">Mouse button number.</param>
+        /// <param name="down">Specifies if the button is down.</param>
+        /// <returns>True if handled.</returns>
+        public static bool OnMouseClicked(ControlBase canvas, int mouseButton, bool down)
         {
             // If we click on a control that isn't a menu we want to close
             // all the open menus. Menus are children of the canvas.
@@ -318,18 +318,18 @@ namespace Gwen.Net.Input
                             return true;
 
                         if (isDoubleClick)
-							HoveredControl.InputMouseDoubleClickedLeft(MousePosition.X, MousePosition.Y);
+                            HoveredControl.InputMouseDoubleClickedLeft(MousePosition.X, MousePosition.Y);
                         else
-							HoveredControl.InputMouseClickedLeft(MousePosition.X, MousePosition.Y, down);
+                            HoveredControl.InputMouseClickedLeft(MousePosition.X, MousePosition.Y, down);
                         return true;
                     }
 
-                case 1: 
+                case 1:
                     {
                         if (isDoubleClick)
-							HoveredControl.InputMouseDoubleClickedRight(MousePosition.X, MousePosition.Y);
+                            HoveredControl.InputMouseDoubleClickedRight(MousePosition.X, MousePosition.Y);
                         else
-							HoveredControl.InputMouseClickedRight(MousePosition.X, MousePosition.Y, down);
+                            HoveredControl.InputMouseClickedRight(MousePosition.X, MousePosition.Y, down);
                         return true;
                     }
             }

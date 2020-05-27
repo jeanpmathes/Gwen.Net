@@ -5,7 +5,7 @@ using Gwen.Net.Control;
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Layout", Order = 403)]
-	public class CrossSplitterTest : GUnit
+    public class CrossSplitterTest : GUnit
     {
         private int m_CurZoom;
         private readonly CrossSplitter m_Splitter;
@@ -54,7 +54,7 @@ namespace Gwen.Net.Tests.Components
             {
                 VerticalSplitter splitter = new VerticalSplitter(m_Splitter);
                 Button button1 = new Button(splitter);
-				button1.Text = "Vertical left";
+                button1.Text = "Vertical left";
                 Button button2 = new Button(splitter);
                 button2.Text = "Vertical right";
                 splitter.SetPanel(0, button1);
@@ -95,7 +95,7 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-		void ZoomTest(ControlBase control, EventArgs args)
+        void ZoomTest(ControlBase control, EventArgs args)
         {
             m_Splitter.Zoom(m_CurZoom);
             m_CurZoom++;
@@ -103,18 +103,18 @@ namespace Gwen.Net.Tests.Components
                 m_CurZoom = 0;
         }
 
-		void UnZoomTest(ControlBase control, EventArgs args)
+        void UnZoomTest(ControlBase control, EventArgs args)
         {
             m_Splitter.UnZoom();
         }
 
-		void CenterPanels(ControlBase control, EventArgs args)
+        void CenterPanels(ControlBase control, EventArgs args)
         {
             m_Splitter.CenterPanels();
             m_Splitter.UnZoom();
         }
 
-		void ToggleSplitters(ControlBase control, EventArgs args)
+        void ToggleSplitters(ControlBase control, EventArgs args)
         {
             m_Splitter.SplittersVisible = !m_Splitter.SplittersVisible;
         }

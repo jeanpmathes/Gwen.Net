@@ -8,13 +8,13 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class TabControlInner : ControlBase
     {
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TabControlInner"/> class.
-		/// </summary>
-		/// <param name="parent">Parent control.</param>
-		internal TabControlInner(ControlBase parent) : base(parent)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabControlInner"/> class.
+        /// </summary>
+        /// <param name="parent">Parent control.</param>
+        internal TabControlInner(ControlBase parent) : base(parent)
         {
-		}
+        }
 
         /// <summary>
         /// Renders the control using specified skin.

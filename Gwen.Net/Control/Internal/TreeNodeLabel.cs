@@ -20,10 +20,10 @@ namespace Gwen.Net.Control.Internal
             TextPadding = new Padding(3, 0, 5, 0);
         }
 
-		/// <summary>
-		/// Updates control colors.
-		/// </summary>
-		public override void UpdateColors()
+        /// <summary>
+        /// Updates control colors.
+        /// </summary>
+        public override void UpdateColors()
         {
             if (IsDisabled)
             {
@@ -31,7 +31,7 @@ namespace Gwen.Net.Control.Internal
                 return;
             }
 
-			if (ToggleState)
+            if (ToggleState)
             {
                 TextColor = Skin.Colors.Tree.Selected;
                 return;

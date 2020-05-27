@@ -6,11 +6,11 @@ using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Control
 {
-	/// <summary>
-	/// ListBox control.
-	/// </summary>
-	[Xml.XmlControl(CustomHandler = "XmlElementHandler")]
-	public class ListBox : ScrollControl
+    /// <summary>
+    /// ListBox control.
+    /// </summary>
+    [Xml.XmlControl(CustomHandler = "XmlElementHandler")]
+    public class ListBox : ScrollControl
     {
         private readonly Table m_Table;
         private readonly List<ListBoxRow> m_SelectedRows;
@@ -18,11 +18,11 @@ namespace Gwen.Net.Control
         private bool m_MultiSelect;
         private bool m_IsToggle;
 
-		/// <summary>
-		/// Determines whether multiple rows can be selected at once.
-		/// </summary>
-		[Xml.XmlProperty]
-		public bool AllowMultiSelect
+        /// <summary>
+        /// Determines whether multiple rows can be selected at once.
+        /// </summary>
+        [Xml.XmlProperty]
+        public bool AllowMultiSelect
         {
             get { return m_MultiSelect; }
             set
@@ -33,14 +33,14 @@ namespace Gwen.Net.Control
             }
         }
 
-		[Xml.XmlProperty]
-		public bool AlternateColor { get { return m_Table.AlternateColor; } set { m_Table.AlternateColor = value; } }
+        [Xml.XmlProperty]
+        public bool AlternateColor { get { return m_Table.AlternateColor; } set { m_Table.AlternateColor = value; } }
 
-		/// <summary>
-		/// Determines whether rows can be unselected by clicking on them again.
-		/// </summary>
-		[Xml.XmlProperty]
-		public bool IsToggle { get { return m_IsToggle; } set { m_IsToggle = value; } }
+        /// <summary>
+        /// Determines whether rows can be unselected by clicking on them again.
+        /// </summary>
+        [Xml.XmlProperty]
+        public bool IsToggle { get { return m_IsToggle; } set { m_IsToggle = value; } }
 
         /// <summary>
         /// Number of rows in the list box.
@@ -86,11 +86,11 @@ namespace Gwen.Net.Control
             }
         }
 
-		/// <summary>
-		/// Gets the selected row number.
-		/// </summary>
-		[Xml.XmlProperty]
-		public int SelectedRowIndex
+        /// <summary>
+        /// Gets the selected row number.
+        /// </summary>
+        [Xml.XmlProperty]
+        public int SelectedRowIndex
         {
             get
             {
@@ -105,50 +105,50 @@ namespace Gwen.Net.Control
             }
         }
 
-		/// <summary>
-		/// Column count of table rows.
-		/// </summary>
-		[Xml.XmlProperty]
-		public int ColumnCount { get { return m_Table.ColumnCount; } set { m_Table.ColumnCount = value; Invalidate(); } }
+        /// <summary>
+        /// Column count of table rows.
+        /// </summary>
+        [Xml.XmlProperty]
+        public int ColumnCount { get { return m_Table.ColumnCount; } set { m_Table.ColumnCount = value; Invalidate(); } }
 
-		/// <summary>
-		/// Invoked when a row has been selected.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<ItemSelectedEventArgs> RowSelected;
+        /// <summary>
+        /// Invoked when a row has been selected.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<ItemSelectedEventArgs> RowSelected;
 
-		/// <summary>
-		/// Invoked whan a row has beed unselected.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<ItemSelectedEventArgs> RowUnselected;
+        /// <summary>
+        /// Invoked whan a row has beed unselected.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<ItemSelectedEventArgs> RowUnselected;
 
-		/// <summary>
-		/// Invoked whan a row has beed double clicked.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<ItemSelectedEventArgs> RowDoubleClicked;
+        /// <summary>
+        /// Invoked whan a row has beed double clicked.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<ItemSelectedEventArgs> RowDoubleClicked;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ListBox"/> class.
-		/// </summary>
-		/// <param name="parent">Parent control.</param>
-		public ListBox(ControlBase parent)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListBox"/> class.
+        /// </summary>
+        /// <param name="parent">Parent control.</param>
+        public ListBox(ControlBase parent)
             : base(parent)
         {
-			Padding = Padding.One;
+            Padding = Padding.One;
 
             m_SelectedRows = new List<ListBoxRow>();
 
-			MouseInputEnabled = true;
+            MouseInputEnabled = true;
             EnableScroll(false, true);
             AutoHideBars = true;
 
-			m_Table = new Table(this);
-			m_Table.AutoSizeToContent = true;
+            m_Table = new Table(this);
+            m_Table.AutoSizeToContent = true;
             m_Table.ColumnCount = 1;
 
-			m_MultiSelect = false;
+            m_MultiSelect = false;
             m_IsToggle = false;
         }
 
@@ -212,7 +212,7 @@ namespace Gwen.Net.Control
             row.IsSelected = true;
             m_SelectedRows.Add(row);
             if (RowSelected != null)
-				RowSelected.Invoke(this, new ItemSelectedEventArgs(row));
+                RowSelected.Invoke(this, new ItemSelectedEventArgs(row));
         }
 
         /// <summary>
@@ -270,37 +270,37 @@ namespace Gwen.Net.Control
             row.UserData = UserData;
 
             row.Selected += OnRowSelected;
-			row.DoubleClicked += OnRowDoubleClicked;
+            row.DoubleClicked += OnRowDoubleClicked;
 
-			Invalidate();
+            Invalidate();
 
             return row;
         }
 
-		/// <summary>
-		/// Add row.
-		/// </summary>
-		/// <param name="row">Row.</param>
-		public void AddRow(ListBoxRow row)
-		{
-			row.Parent = this;
+        /// <summary>
+        /// Add row.
+        /// </summary>
+        /// <param name="row">Row.</param>
+        public void AddRow(ListBoxRow row)
+        {
+            row.Parent = this;
 
-			m_Table.AddRow(row);
+            m_Table.AddRow(row);
 
-			row.Selected += OnRowSelected;
+            row.Selected += OnRowSelected;
 
-			Invalidate();
-		}
+            Invalidate();
+        }
 
-		/// <summary>
-		/// Sets the column width (in pixels).
-		/// </summary>
-		/// <param name="column">Column index.</param>
-		/// <param name="width">Column width.</param>
-		public void SetColumnWidth(int column, int width)
+        /// <summary>
+        /// Sets the column width (in pixels).
+        /// </summary>
+        /// <param name="column">Column index.</param>
+        /// <param name="width">Column width.</param>
+        public void SetColumnWidth(int column, int width)
         {
             m_Table.SetColumnWidth(column, width);
-			Invalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace Gwen.Net.Control
             {
                 row.IsSelected = false;
                 if (RowUnselected != null)
-					RowUnselected.Invoke(this, new ItemSelectedEventArgs(row));
+                    RowUnselected.Invoke(this, new ItemSelectedEventArgs(row));
             }
             m_SelectedRows.Clear();
         }
@@ -339,41 +339,41 @@ namespace Gwen.Net.Control
                 RowUnselected.Invoke(this, new ItemSelectedEventArgs(row));
         }
 
-		/// <summary>
-		/// Handler for the row selection event.
-		/// </summary>
-		/// <param name="control">Event source.</param>
-		protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
-		{
-			// [omeg] changed default behavior
-			bool clear = false;// !InputHandler.InputHandler.IsShiftDown;
-			ListBoxRow row = args.SelectedItem as ListBoxRow;
-			if (row == null)
-				return;
-
-			if (row.IsSelected)
-			{
-				if (IsToggle)
-					UnselectRow(row);
-			}
-			else
-			{
-				SelectRow(row, clear);
-			}
-		}
-
-		/// <summary>
-		/// Handler for the row double click event.
-		/// </summary>
-		/// <param name="control">Event source.</param>
-		protected virtual void OnRowDoubleClicked(ControlBase control, ClickedEventArgs args)
+        /// <summary>
+        /// Handler for the row selection event.
+        /// </summary>
+        /// <param name="control">Event source.</param>
+        protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
         {
-			ListBoxRow row = control as ListBoxRow;
+            // [omeg] changed default behavior
+            bool clear = false;// !InputHandler.InputHandler.IsShiftDown;
+            ListBoxRow row = args.SelectedItem as ListBoxRow;
             if (row == null)
                 return;
 
-			if (RowDoubleClicked != null)
-				RowDoubleClicked.Invoke(this, new ItemSelectedEventArgs(row));
+            if (row.IsSelected)
+            {
+                if (IsToggle)
+                    UnselectRow(row);
+            }
+            else
+            {
+                SelectRow(row, clear);
+            }
+        }
+
+        /// <summary>
+        /// Handler for the row double click event.
+        /// </summary>
+        /// <param name="control">Event source.</param>
+        protected virtual void OnRowDoubleClicked(ControlBase control, ClickedEventArgs args)
+        {
+            ListBoxRow row = control as ListBoxRow;
+            if (row == null)
+                return;
+
+            if (RowDoubleClicked != null)
+                RowDoubleClicked.Invoke(this, new ItemSelectedEventArgs(row));
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace Gwen.Net.Control
         {
             UnselectAll();
             m_Table.RemoveAll();
-			Invalidate();
+            Invalidate();
         }
 
         /// <summary>
@@ -446,21 +446,21 @@ namespace Gwen.Net.Control
             }
         }
 
-		internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
-		{
-			ListBox element = new ListBox(parent);
-			parser.ParseAttributes(element);
-			if (parser.MoveToContent())
-			{
-				foreach (string elementName in parser.NextElement())
-				{
-					if (elementName == "Row")
-					{
-						element.AddRow(parser.ParseElement<ListBoxRow>(element));
-					}
-				}
-			}
-			return element;
-		}
-	}
+        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        {
+            ListBox element = new ListBox(parent);
+            parser.ParseAttributes(element);
+            if (parser.MoveToContent())
+            {
+                foreach (string elementName in parser.NextElement())
+                {
+                    if (elementName == "Row")
+                    {
+                        element.AddRow(parser.ParseElement<ListBoxRow>(element));
+                    }
+                }
+            }
+            return element;
+        }
+    }
 }

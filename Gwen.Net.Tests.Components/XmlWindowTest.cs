@@ -7,193 +7,193 @@ using Gwen.Net.Control.Layout;
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Xml", Order = 600)]
-	public class XmlWindowTest : GUnit
-	{
-		public XmlWindowTest(ControlBase parent)
+    public class XmlWindowTest : GUnit
+    {
+        public XmlWindowTest(ControlBase parent)
             : base(parent)
         {
-			HorizontalLayout layout = new HorizontalLayout(this);
-			layout.VerticalAlignment = VerticalAlignment.Top;
+            HorizontalLayout layout = new HorizontalLayout(this);
+            layout.VerticalAlignment = VerticalAlignment.Top;
 
-			Button button1 = new Button(layout);
-			button1.Text = "Open a Window (method)";
-			button1.Clicked += OpenMethodWindow;
+            Button button1 = new Button(layout);
+            button1.Text = "Open a Window (method)";
+            button1.Clicked += OpenMethodWindow;
 
-			Button button2 = new Button(layout);
-			button2.Text = "Open a Window (interface)";
-			button2.Clicked += OpenInterfaceWindow;
-		}
+            Button button2 = new Button(layout);
+            button2.Text = "Open a Window (interface)";
+            button2.Clicked += OpenInterfaceWindow;
+        }
 
-		private class MethodTestComponent : Component
-		{
-			public MethodTestComponent(GUnit unit, string xml)
-				: base(unit, new XmlStringSource(xml))
-			{
-				m_unit = unit;
-			}
+        private class MethodTestComponent : Component
+        {
+            public MethodTestComponent(GUnit unit, string xml)
+                : base(unit, new XmlStringSource(xml))
+            {
+                m_unit = unit;
+            }
 
             public void OnButtonClicked(ControlBase sender, ClickedEventArgs args)
-			{
-				m_unit.UnitPrint(sender.Name + ": Clicked");
-			}
+            {
+                m_unit.UnitPrint(sender.Name + ": Clicked");
+            }
 
-			public void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
-			{
-				m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem)args.SelectedItem).Text);
-			}
+            public void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
+            {
+                m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem)args.SelectedItem).Text);
+            }
 
-			public void OnSelectionChanged(ControlBase sender, ItemSelectedEventArgs args)
-			{
-				m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton)args.SelectedItem).Text);
-			}
+            public void OnSelectionChanged(ControlBase sender, ItemSelectedEventArgs args)
+            {
+                m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton)args.SelectedItem).Text);
+            }
 
-			public void OnValueChanged(ControlBase sender, EventArgs args)
-			{
-				float value = 0.0f;
-				if (sender is NumericUpDown)
-					value = ((NumericUpDown)sender).Value;
-				else if (sender is VerticalSlider)
-					value = ((VerticalSlider)sender).Value;
-				else if (sender is HorizontalSlider)
-					value = ((HorizontalSlider)sender).Value;
+            public void OnValueChanged(ControlBase sender, EventArgs args)
+            {
+                float value = 0.0f;
+                if (sender is NumericUpDown)
+                    value = ((NumericUpDown)sender).Value;
+                else if (sender is VerticalSlider)
+                    value = ((VerticalSlider)sender).Value;
+                else if (sender is HorizontalSlider)
+                    value = ((HorizontalSlider)sender).Value;
 
-				m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
-			}
+                m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
+            }
 
-			public void OnTextChanged(ControlBase sender, EventArgs args)
-			{
-				if (sender is MultilineTextBox)
-					m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
-				else if (sender is TextBox)
-					m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
-			}
+            public void OnTextChanged(ControlBase sender, EventArgs args)
+            {
+                if (sender is MultilineTextBox)
+                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
+                else if (sender is TextBox)
+                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
+            }
 
-			public void OnSubmitPressed(ControlBase sender, EventArgs args)
-			{
-				if (sender is TextBox)
-					m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
-			}
+            public void OnSubmitPressed(ControlBase sender, EventArgs args)
+            {
+                if (sender is TextBox)
+                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
+            }
 
-			public void OnCheckChanged(ControlBase sender, EventArgs args)
-			{
-				if (sender is CheckBox)
-					m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
-				else if (sender is LabeledCheckBox)
-					m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
-			}
+            public void OnCheckChanged(ControlBase sender, EventArgs args)
+            {
+                if (sender is CheckBox)
+                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
+                else if (sender is LabeledCheckBox)
+                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
+            }
 
-			public void OnRowSelected(ControlBase sender, ItemSelectedEventArgs args)
-			{
-				m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow)((ItemSelectedEventArgs)args).SelectedItem).Text);
-			}
+            public void OnRowSelected(ControlBase sender, ItemSelectedEventArgs args)
+            {
+                m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow)((ItemSelectedEventArgs)args).SelectedItem).Text);
+            }
 
-			public void OnSelected(ControlBase sender, EventArgs args)
-			{
-				m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
-			}
+            public void OnSelected(ControlBase sender, EventArgs args)
+            {
+                m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
+            }
 
-			public void OnClosed(ControlBase sender, EventArgs args)
-			{
-				m_unit.UnitPrint(sender.Name + ": Closed ");
-			}
+            public void OnClosed(ControlBase sender, EventArgs args)
+            {
+                m_unit.UnitPrint(sender.Name + ": Closed ");
+            }
 
-			private GUnit m_unit;
-		}
+            private GUnit m_unit;
+        }
 
-		private class InterfaceTestComponent : Component
-		{
-			public InterfaceTestComponent(GUnit unit, string xml)
-				: base(unit, new XmlStringSource(xml))
-			{
-				m_unit = unit;
-			}
+        private class InterfaceTestComponent : Component
+        {
+            public InterfaceTestComponent(GUnit unit, string xml)
+                : base(unit, new XmlStringSource(xml))
+            {
+                m_unit = unit;
+            }
 
-			public override bool HandleEvent(string eventName, string handlerName, ControlBase sender, System.EventArgs args)
-			{
-				if (handlerName == "OnButtonClicked")
-				{
-					m_unit.UnitPrint(sender.Name + ": Clicked");
-					return true;
+            public override bool HandleEvent(string eventName, string handlerName, ControlBase sender, System.EventArgs args)
+            {
+                if (handlerName == "OnButtonClicked")
+                {
+                    m_unit.UnitPrint(sender.Name + ": Clicked");
+                    return true;
                 }
-				else if (handlerName == "OnItemSelected")
-				{
-					m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem)((ItemSelectedEventArgs)args).SelectedItem).Text);
-					return true;
-				}
-				else if (handlerName == "OnSelectionChanged")
-				{
-					m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton)((ItemSelectedEventArgs)args).SelectedItem).Text);
-					return true;
-				}
-				else if (handlerName == "OnValueChanged")
-				{
-					float value = 0.0f;
-					if (sender is NumericUpDown)
-						value = ((NumericUpDown)sender).Value;
-					else if (sender is VerticalSlider)
-						value = ((VerticalSlider)sender).Value;
-					else if (sender is HorizontalSlider)
-						value = ((HorizontalSlider)sender).Value;
+                else if (handlerName == "OnItemSelected")
+                {
+                    m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                    return true;
+                }
+                else if (handlerName == "OnSelectionChanged")
+                {
+                    m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                    return true;
+                }
+                else if (handlerName == "OnValueChanged")
+                {
+                    float value = 0.0f;
+                    if (sender is NumericUpDown)
+                        value = ((NumericUpDown)sender).Value;
+                    else if (sender is VerticalSlider)
+                        value = ((VerticalSlider)sender).Value;
+                    else if (sender is HorizontalSlider)
+                        value = ((HorizontalSlider)sender).Value;
 
-					m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
-					return true;
-				}
-				else if (handlerName == "OnTextChanged")
-				{
-					if (sender is TextBox)
-						m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
-					else if (sender is MultilineTextBox)
-						m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
-					return true;
-				}
-				else if (handlerName == "OnSubmitPressed")
-				{
-					m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
-					return true;
-				}
-				else if (handlerName == "OnCheckChanged")
-				{
-					if (sender is CheckBox)
-						m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
-					else if (sender is LabeledCheckBox)
-						m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
-					return true;
-				}
-				else if (handlerName == "OnRowSelected")
-				{
-					m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow)((ItemSelectedEventArgs)args).SelectedItem).Text);
-					return true;
-				}
-				else if (handlerName == "OnSelected")
-				{
-					m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
-					return true;
-				}
-				else if (handlerName == "OnClosed")
-				{
-					m_unit.UnitPrint(sender.Name + ": Closed ");
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
+                    m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
+                    return true;
+                }
+                else if (handlerName == "OnTextChanged")
+                {
+                    if (sender is TextBox)
+                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
+                    else if (sender is MultilineTextBox)
+                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
+                    return true;
+                }
+                else if (handlerName == "OnSubmitPressed")
+                {
+                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
+                    return true;
+                }
+                else if (handlerName == "OnCheckChanged")
+                {
+                    if (sender is CheckBox)
+                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
+                    else if (sender is LabeledCheckBox)
+                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
+                    return true;
+                }
+                else if (handlerName == "OnRowSelected")
+                {
+                    m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                    return true;
+                }
+                else if (handlerName == "OnSelected")
+                {
+                    m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
+                    return true;
+                }
+                else if (handlerName == "OnClosed")
+                {
+                    m_unit.UnitPrint(sender.Name + ": Closed ");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
-			private GUnit m_unit;
-		}
+            private GUnit m_unit;
+        }
 
-		void OpenMethodWindow(ControlBase control, EventArgs args)
-		{
-			new MethodTestComponent(this, m_xml);
-		}
+        void OpenMethodWindow(ControlBase control, EventArgs args)
+        {
+            new MethodTestComponent(this, m_xml);
+        }
 
-		void OpenInterfaceWindow(ControlBase control, EventArgs args)
-		{
-			new InterfaceTestComponent(this, m_xml);
-		}
+        void OpenInterfaceWindow(ControlBase control, EventArgs args)
+        {
+            new InterfaceTestComponent(this, m_xml);
+        }
 
-		private readonly string m_xml = @"<?xml version='1.0' encoding='UTF-8'?>
+        private readonly string m_xml = @"<?xml version='1.0' encoding='UTF-8'?>
 			<Window Name='Window' Position='100, 100' Size='500, 500' MinimumSize='200,200' Padding='6' Title='Xml Window'>
 				<VerticalSplitter>
 					<VerticalLayout>
@@ -264,5 +264,5 @@ namespace Gwen.Net.Tests.Components
 				</VerticalSplitter>
 			</Window>
 ";
-	}
+    }
 }

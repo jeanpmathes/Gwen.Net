@@ -16,26 +16,26 @@ namespace Gwen.Net.Control
         public MenuStrip(ControlBase parent)
             : base(parent)
         {
-			Collapse(false, false);
+            Collapse(false, false);
 
             Padding = new Padding(5, 0, 0, 0);
-			IconMarginDisabled = true;
-			EnableScroll(true, false);
+            IconMarginDisabled = true;
+            EnableScroll(true, false);
 
-			this.HorizontalAlignment = HorizontalAlignment.Stretch;
-			this.VerticalAlignment = VerticalAlignment.Top;
+            this.HorizontalAlignment = HorizontalAlignment.Stretch;
+            this.VerticalAlignment = VerticalAlignment.Top;
 
-			m_Layout.Horizontal = true;
-			m_Layout.HorizontalAlignment = HorizontalAlignment.Left;
-			m_Layout.VerticalAlignment = VerticalAlignment.Stretch;
-		}
+            m_Layout.Horizontal = true;
+            m_Layout.HorizontalAlignment = HorizontalAlignment.Left;
+            m_Layout.VerticalAlignment = VerticalAlignment.Stretch;
+        }
 
-		/// <summary>
-		/// Closes the current menu.
-		/// </summary>
-		public override void Close()
+        /// <summary>
+        /// Closes the current menu.
+        /// </summary>
+        public override void Close()
         {
-            
+
         }
 
         /// <summary>
@@ -55,10 +55,10 @@ namespace Gwen.Net.Control
             skin.DrawMenuStrip(this);
         }
 
-		/// <summary>
-		/// Determines whether the menu should open on mouse hover.
-		/// </summary>
-		protected override bool ShouldHoverOpenMenu
+        /// <summary>
+        /// Determines whether the menu should open on mouse hover.
+        /// </summary>
+        protected override bool ShouldHoverOpenMenu
         {
             get { return IsMenuOpen(); }
         }
@@ -74,21 +74,21 @@ namespace Gwen.Net.Control
             item.HoverEnter += OnHoverItem;
         }
 
-		internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
-		{
-			MenuStrip element = new MenuStrip(parent);
-			parser.ParseAttributes(element);
-			if (parser.MoveToContent())
-			{
-				foreach (string elementName in parser.NextElement())
-				{
-					if (elementName == "MenuItem")
-					{
-						element.AddItem(parser.ParseElement<MenuItem>(element));
-					}
-				}
-			}
-			return element;
-		}
-	}
+        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        {
+            MenuStrip element = new MenuStrip(parent);
+            parser.ParseAttributes(element);
+            if (parser.MoveToContent())
+            {
+                foreach (string elementName in parser.NextElement())
+                {
+                    if (elementName == "MenuItem")
+                    {
+                        element.AddItem(parser.ParseElement<MenuItem>(element));
+                    }
+                }
+            }
+            return element;
+        }
+    }
 }

@@ -24,9 +24,9 @@ namespace Gwen.Net.Control
         public ColorSlider(ControlBase parent)
             : base(parent)
         {
-			Width = BaseUnit * 2;
+            Width = BaseUnit * 2;
 
-			MouseInputEnabled = true;
+            MouseInputEnabled = true;
             m_Depressed = false;
         }
 
@@ -71,8 +71,8 @@ namespace Gwen.Net.Control
             }
 
             skin.Renderer.DrawColor = Color.White;
-            skin.Renderer.DrawTexturedRect(m_Texture, new Rectangle(5, 0, ActualWidth-10, ActualHeight));
-            
+            skin.Renderer.DrawTexturedRect(m_Texture, new Rectangle(5, 0, ActualWidth - 10, ActualHeight));
+
             int drawHeight = m_SelectedDist - 3;
 
             //Draw our selectors
@@ -95,7 +95,7 @@ namespace Gwen.Net.Control
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-			base.OnMouseClickedLeft(x, y, down);
+            base.OnMouseClickedLeft(x, y, down);
             m_Depressed = down;
             if (down)
                 InputHandler.MouseFocus = this;
@@ -150,14 +150,14 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color SelectedColor { get { return GetColorAtHeight(m_SelectedDist); } set { SetColor(value); } }
 
-		protected override Size Measure(Size availableSize)
-		{
-			return new Size(32, 10);
-		}
+        protected override Size Measure(Size availableSize)
+        {
+            return new Size(32, 10);
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			return new Size(MeasuredSize.Width, finalSize.Height);
-		}
-	}
+        protected override Size Arrange(Size finalSize)
+        {
+            return new Size(MeasuredSize.Width, finalSize.Height);
+        }
+    }
 }

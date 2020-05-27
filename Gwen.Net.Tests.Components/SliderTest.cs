@@ -7,19 +7,19 @@ using Gwen.Net.Control.Layout;
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Standard", Order = 207)]
-	public class SliderTest : GUnit
+    public class SliderTest : GUnit
     {
         public SliderTest(ControlBase parent)
             : base(parent)
         {
-			HorizontalLayout hlayout = new HorizontalLayout(this);
+            HorizontalLayout hlayout = new HorizontalLayout(this);
 
-			VerticalLayout vlayout = new VerticalLayout(hlayout);
+            VerticalLayout vlayout = new VerticalLayout(hlayout);
 
             {
                 HorizontalSlider slider = new HorizontalSlider(vlayout);
-				slider.Margin = Margin.Ten;
-				slider.Width = 150;
+                slider.Margin = Margin.Ten;
+                slider.Width = 150;
                 slider.SetRange(0, 100);
                 slider.Value = 25;
                 slider.ValueChanged += SliderMoved;
@@ -27,8 +27,8 @@ namespace Gwen.Net.Tests.Components
 
             {
                 HorizontalSlider slider = new HorizontalSlider(vlayout);
-				slider.Margin = Margin.Ten;
-				slider.Width = 150;
+                slider.Margin = Margin.Ten;
+                slider.Width = 150;
                 slider.SetRange(0, 100);
                 slider.Value = 20;
                 slider.NotchCount = 10;
@@ -38,8 +38,8 @@ namespace Gwen.Net.Tests.Components
 
             {
                 VerticalSlider slider = new VerticalSlider(hlayout);
-				slider.Margin = Margin.Ten;
-				slider.Height = 200;
+                slider.Margin = Margin.Ten;
+                slider.Height = 200;
                 slider.SetRange(0, 100);
                 slider.Value = 25;
                 slider.ValueChanged += SliderMoved;
@@ -47,8 +47,8 @@ namespace Gwen.Net.Tests.Components
 
             {
                 VerticalSlider slider = new VerticalSlider(hlayout);
-				slider.Margin = Margin.Ten;
-				slider.Height = 200;
+                slider.Margin = Margin.Ten;
+                slider.Height = 200;
                 slider.SetRange(0, 100);
                 slider.Value = 20;
                 slider.NotchCount = 10;
@@ -57,7 +57,7 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-		void SliderMoved(ControlBase control, EventArgs args)
+        void SliderMoved(ControlBase control, EventArgs args)
         {
             Slider slider = control as Slider;
             UnitPrint(String.Format("Slider moved: ValueChanged: {0}", slider.Value));

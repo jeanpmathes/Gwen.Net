@@ -54,43 +54,43 @@ namespace Gwen.Net.Control.Layout
             return m_Panel[panelIndex];
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			Size size = Size.Zero;
+        protected override Size Measure(Size availableSize)
+        {
+            Size size = Size.Zero;
 
-			if (m_Panel[0] != null)
-			{
-				m_Panel[0].DoMeasure(new Size(availableSize.Width, availableSize.Height / 2));
-				size = m_Panel[0].MeasuredSize;
-			}
+            if (m_Panel[0] != null)
+            {
+                m_Panel[0].DoMeasure(new Size(availableSize.Width, availableSize.Height / 2));
+                size = m_Panel[0].MeasuredSize;
+            }
 
-			if (m_Panel[1] != null)
-			{
-				m_Panel[1].DoMeasure(new Size(availableSize.Width, availableSize.Height / 2));
-				size.Width = Math.Max(size.Width, m_Panel[1].MeasuredSize.Width);
-				size.Height += m_Panel[1].MeasuredSize.Height;
-			}
+            if (m_Panel[1] != null)
+            {
+                m_Panel[1].DoMeasure(new Size(availableSize.Width, availableSize.Height / 2));
+                size.Width = Math.Max(size.Width, m_Panel[1].MeasuredSize.Width);
+                size.Height += m_Panel[1].MeasuredSize.Height;
+            }
 
-			return size;
-		}
+            return size;
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			int y = 0;
+        protected override Size Arrange(Size finalSize)
+        {
+            int y = 0;
 
-			if (m_Panel[0] != null)
-			{
-				m_Panel[0].DoArrange(new Rectangle(0, 0, finalSize.Width, finalSize.Height / 2));
-				y = m_Panel[0].ActualHeight;
-			}
+            if (m_Panel[0] != null)
+            {
+                m_Panel[0].DoArrange(new Rectangle(0, 0, finalSize.Width, finalSize.Height / 2));
+                y = m_Panel[0].ActualHeight;
+            }
 
-			if (m_Panel[1] != null)
-			{
-				m_Panel[1].DoArrange(new Rectangle(0, y, finalSize.Width, finalSize.Height / 2));
-				y += m_Panel[1].ActualHeight;
-			}
+            if (m_Panel[1] != null)
+            {
+                m_Panel[1].DoArrange(new Rectangle(0, y, finalSize.Width, finalSize.Height / 2));
+                y += m_Panel[1].ActualHeight;
+            }
 
-			return new Size(finalSize.Width, y);
-		}
+            return new Size(finalSize.Width, y);
+        }
     }
 }

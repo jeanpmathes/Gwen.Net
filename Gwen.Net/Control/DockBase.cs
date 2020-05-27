@@ -54,8 +54,8 @@ namespace Gwen.Net.Control
             : base(parent)
         {
             Padding = Padding.One;
-			MinimumSize = new Size(30, 30);
-			MouseInputEnabled = true;
+            MinimumSize = new Size(30, 30);
+            MouseInputEnabled = true;
         }
 
         /// <summary>
@@ -83,11 +83,11 @@ namespace Gwen.Net.Control
                 m_DockedTabControl.TabRemoved += OnTabRemoved;
                 m_DockedTabControl.TabStripPosition = Dock.Bottom;
                 m_DockedTabControl.TitleBarVisible = true;
-			}
+            }
 
             Dock = pos;
 
-			Dock sizeDir;
+            Dock sizeDir;
             if (pos == Dock.Right) sizeDir = Dock.Left;
             else if (pos == Dock.Left) sizeDir = Dock.Right;
             else if (pos == Dock.Top) sizeDir = Dock.Bottom;
@@ -100,10 +100,10 @@ namespace Gwen.Net.Control
             m_Sizer = new Resizer(this);
             m_Sizer.Dock = sizeDir;
             m_Sizer.ResizeDir = sizeDir;
-			if (sizeDir == Dock.Left || sizeDir == Dock.Right)
-				m_Sizer.Width = 2;
-			else
-				m_Sizer.Height = 2;
+            if (sizeDir == Dock.Left || sizeDir == Dock.Right)
+                m_Sizer.Width = 2;
+            else
+                m_Sizer.Height = 2;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Gwen.Net.Control
                     if (m_Left == null)
                     {
                         m_Left = new DockBase(this);
-						m_Left.Width = 200;
+                        m_Left.Width = 200;
                         m_Left.SetupChildDock(pos);
                     }
                     dock = m_Left;
@@ -140,8 +140,8 @@ namespace Gwen.Net.Control
                     if (m_Right == null)
                     {
                         m_Right = new DockBase(this);
-						m_Right.Width = 200;
-						m_Right.SetupChildDock(pos);
+                        m_Right.Width = 200;
+                        m_Right.SetupChildDock(pos);
                     }
                     dock = m_Right;
                     break;
@@ -150,8 +150,8 @@ namespace Gwen.Net.Control
                     if (m_Top == null)
                     {
                         m_Top = new DockBase(this);
-						m_Top.Height = 200;
-						m_Top.SetupChildDock(pos);
+                        m_Top.Height = 200;
+                        m_Top.SetupChildDock(pos);
                     }
                     dock = m_Top;
                     break;
@@ -160,8 +160,8 @@ namespace Gwen.Net.Control
                     if (m_Bottom == null)
                     {
                         m_Bottom = new DockBase(this);
-						m_Bottom.Height = 200;
-						m_Bottom.SetupChildDock(pos);
+                        m_Bottom.Height = 200;
+                        m_Bottom.SetupChildDock(pos);
                     }
                     dock = m_Bottom;
                     break;
@@ -222,11 +222,11 @@ namespace Gwen.Net.Control
         public override bool DragAndDrop_HandleDrop(Package p, int x, int y)
         {
             Point pos = CanvasPosToLocal(new Point(x, y));
-			Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
+            Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
 
-			Invalidate();
+            Invalidate();
 
-			DockedTabControl addTo = m_DockedTabControl;
+            DockedTabControl addTo = m_DockedTabControl;
             if (dir == Dock.Fill && addTo == null)
                 return false;
 
@@ -261,7 +261,7 @@ namespace Gwen.Net.Control
                 tabControl.MoveTabsTo(addTo);
             }
 
-			return true;
+            return true;
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Gwen.Net.Control
             }
         }
 
-		protected virtual void OnTabRemoved(ControlBase control, EventArgs args)
+        protected virtual void OnTabRemoved(ControlBase control, EventArgs args)
         {
             DoRedundancyCheck();
             DoConsolidateCheck();
@@ -349,7 +349,7 @@ namespace Gwen.Net.Control
         public override void DragAndDrop_Hover(Package p, int x, int y)
         {
             Point pos = CanvasPosToLocal(new Point(x, y));
-			Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
+            Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
 
             if (dir == Dock.Fill)
             {

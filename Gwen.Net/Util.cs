@@ -65,45 +65,45 @@ namespace Gwen.Net
 
         public static HSV ToHSV(this Color color)
         {
-			HSV hsv = new HSV();
+            HSV hsv = new HSV();
 
-			float r = (float)color.R / 255.0f;
-			float g = (float)color.G / 255.0f;
-			float b = (float)color.B / 255.0f;
+            float r = (float)color.R / 255.0f;
+            float g = (float)color.G / 255.0f;
+            float b = (float)color.B / 255.0f;
 
-			float max = Math.Max(r, Math.Max(g, b));
-			float min = Math.Min(r, Math.Min(g, b));
+            float max = Math.Max(r, Math.Max(g, b));
+            float min = Math.Min(r, Math.Min(g, b));
 
-			hsv.V = max;
+            hsv.V = max;
 
-			float delta = max - min;
+            float delta = max - min;
 
-			if (max != 0)
-			{
-				hsv.S = delta / max;
-			}
-			else
-			{
-				hsv.S = 0;
-			}
+            if (max != 0)
+            {
+                hsv.S = delta / max;
+            }
+            else
+            {
+                hsv.S = 0;
+            }
 
-			if (delta != 0)
-			{
-				if (r == max)
-					hsv.H = (g - b) / delta;
-				else if (g == max)
-					hsv.H = 2 + (b - r) / delta;
-				else
-					hsv.H = 4 + (r - g) / delta;
+            if (delta != 0)
+            {
+                if (r == max)
+                    hsv.H = (g - b) / delta;
+                else if (g == max)
+                    hsv.H = 2 + (b - r) / delta;
+                else
+                    hsv.H = 4 + (r - g) / delta;
 
-				hsv.H *= 60;
-				if (hsv.H < 0)
-					hsv.H += 360;
-			}
-			else
-			{
-				hsv.H = 0;
-			}
+                hsv.H *= 60;
+                if (hsv.H < 0)
+                    hsv.H += 360;
+            }
+            else
+            {
+                hsv.H = 0;
+            }
 
             return hsv;
         }
@@ -161,38 +161,38 @@ namespace Gwen.Net
         /// <returns>Split strings.</returns>
         public static string[] SplitAndKeep(string text, string separators)
         {
-			List<string> strs = new List<string>();
-			int offset = 0;
-			int length = text.Length;
-			int sepLen = separators.Length;
-			int i = text.IndexOf(separators);
-			string word;
+            List<string> strs = new List<string>();
+            int offset = 0;
+            int length = text.Length;
+            int sepLen = separators.Length;
+            int i = text.IndexOf(separators);
+            string word;
 
-			while (i != -1)
-			{
-				word = text.Substring(offset, i - offset);
-				if (!String.IsNullOrWhiteSpace(word))
-					strs.Add(word);
-				offset = i + sepLen;
-				i = text.IndexOf(separators, offset);
-				offset -= sepLen;
-			}
+            while (i != -1)
+            {
+                word = text.Substring(offset, i - offset);
+                if (!String.IsNullOrWhiteSpace(word))
+                    strs.Add(word);
+                offset = i + sepLen;
+                i = text.IndexOf(separators, offset);
+                offset -= sepLen;
+            }
 
-			strs.Add(text.Substring(offset, length - offset));
+            strs.Add(text.Substring(offset, length - offset));
 
-			return strs.ToArray();
+            return strs.ToArray();
         }
 
-		public const int Ignore = -1;
-		public static bool IsIgnore(int value)
-		{
-			return value == Ignore;
-		}
+        public const int Ignore = -1;
+        public static bool IsIgnore(int value)
+        {
+            return value == Ignore;
+        }
 
-		public const int Infinity = 0xfffffff;
-		public static bool IsInfinity(int value)
-		{
-			return value > 0xffffff;
-		}
+        public const int Infinity = 0xfffffff;
+        public static bool IsInfinity(int value)
+        {
+            return value > 0xffffff;
+        }
     }
 }

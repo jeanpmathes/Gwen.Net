@@ -80,26 +80,26 @@ namespace Gwen.Net.Control.Internal
             //m_Target->SetPosition( p.x, p.y );
             m_Target.MoveTo(p.X, p.Y);
             if (Dragged != null)
-				Dragged.Invoke(this, EventArgs.Empty);
+                Dragged.Invoke(this, EventArgs.Empty);
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			return availableSize;
-		}
-
-		protected override Size Arrange(Size finalSize)
-		{
-			return finalSize;
-		}
-
-		/// <summary>
-		/// Renders the control using specified skin.
-		/// </summary>
-		/// <param name="skin">Skin to use.</param>
-		protected override void Render(Skin.SkinBase skin)
+        protected override Size Measure(Size availableSize)
         {
-            
+            return availableSize;
+        }
+
+        protected override Size Arrange(Size finalSize)
+        {
+            return finalSize;
+        }
+
+        /// <summary>
+        /// Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(Skin.SkinBase skin)
+        {
+
         }
     }
 }

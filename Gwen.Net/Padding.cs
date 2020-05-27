@@ -28,23 +28,23 @@ namespace Gwen.Net
             Right = right;
         }
 
-		public Padding(int horizontal, int vertical)
-		{
-			Top = vertical;
-			Bottom = vertical;
-			Left = horizontal;
-			Right = horizontal;
-		}
+        public Padding(int horizontal, int vertical)
+        {
+            Top = vertical;
+            Bottom = vertical;
+            Left = horizontal;
+            Right = horizontal;
+        }
 
-		public Padding(int padding)
-		{
-			Top = padding;
-			Bottom = padding;
-			Left = padding;
-			Right = padding;
-		}
+        public Padding(int padding)
+        {
+            Top = padding;
+            Bottom = padding;
+            Left = padding;
+            Right = padding;
+        }
 
-		public bool Equals(Padding other)
+        public bool Equals(Padding other)
         {
             return other.Top == Top && other.Bottom == Bottom && other.Left == Left && other.Right == Right;
         }
@@ -59,21 +59,21 @@ namespace Gwen.Net
             return !lhs.Equals(rhs);
         }
 
-		public static Padding operator +(Padding lhs, Padding rhs)
-		{
-			return new Padding(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
-		}
+        public static Padding operator +(Padding lhs, Padding rhs)
+        {
+            return new Padding(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
+        }
 
-		public static Padding operator -(Padding lhs, Padding rhs)
-		{
-			return new Padding(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
-		}
+        public static Padding operator -(Padding lhs, Padding rhs)
+        {
+            return new Padding(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
+        }
 
-		public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            if (obj.GetType() != typeof (Padding)) return false;
-            return Equals((Padding) obj);
+            if (obj.GetType() != typeof(Padding)) return false;
+            return Equals((Padding)obj);
         }
 
         public override int GetHashCode()
@@ -81,21 +81,21 @@ namespace Gwen.Net
             unchecked
             {
                 int result = Top;
-                result = (result*397) ^ Bottom;
-                result = (result*397) ^ Left;
-                result = (result*397) ^ Right;
+                result = (result * 397) ^ Bottom;
+                result = (result * 397) ^ Left;
+                result = (result * 397) ^ Right;
                 return result;
             }
         }
 
-		public static explicit operator Padding(Margin margin)
-		{
-			return new Padding(margin.Left, margin.Top, margin.Right, margin.Bottom);
-		}
+        public static explicit operator Padding(Margin margin)
+        {
+            return new Padding(margin.Left, margin.Top, margin.Right, margin.Bottom);
+        }
 
-		public override string ToString()
-		{
-			return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
-		}
-	}
+        public override string ToString()
+        {
+            return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
+        }
+    }
 }

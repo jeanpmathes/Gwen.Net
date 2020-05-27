@@ -3,21 +3,21 @@ using Gwen.Net.Control.Internal;
 
 namespace Gwen.Net.Control
 {
-	/// <summary>
-	/// CheckBox control.
-	/// </summary>
-	[Xml.XmlControl]
-	public class CheckBox : ButtonBase
+    /// <summary>
+    /// CheckBox control.
+    /// </summary>
+    [Xml.XmlControl]
+    public class CheckBox : ButtonBase
     {
         private bool m_Checked;
 
-		/// <summary>
-		/// Indicates whether the checkbox is checked.
-		/// </summary>
-		[Xml.XmlProperty]
-		public bool IsChecked
+        /// <summary>
+        /// Indicates whether the checkbox is checked.
+        /// </summary>
+        [Xml.XmlProperty]
+        public bool IsChecked
         {
-            get { return m_Checked; } 
+            get { return m_Checked; }
             set
             {
                 if (m_Checked == value) return;
@@ -33,8 +33,8 @@ namespace Gwen.Net.Control
         public CheckBox(ControlBase parent)
             : base(parent)
         {
-			Size = new Size(BaseUnit);
-			IsToggle = true;
+            Size = new Size(BaseUnit);
+            IsToggle = true;
         }
 
         /// <summary>
@@ -46,23 +46,23 @@ namespace Gwen.Net.Control
             IsChecked = !IsChecked;
         }
 
-		/// <summary>
-		/// Invoked when the checkbox has been checked.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<EventArgs> Checked;
+        /// <summary>
+        /// Invoked when the checkbox has been checked.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<EventArgs> Checked;
 
-		/// <summary>
-		/// Invoked when the checkbox has been unchecked.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<EventArgs> UnChecked;
+        /// <summary>
+        /// Invoked when the checkbox has been unchecked.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<EventArgs> UnChecked;
 
-		/// <summary>
-		/// Invoked when the checkbox state has been changed.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<EventArgs> CheckChanged;
+        /// <summary>
+        /// Invoked when the checkbox state has been changed.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<EventArgs> CheckChanged;
 
         /// <summary>
         /// Determines whether unchecking is allowed.
@@ -75,35 +75,35 @@ namespace Gwen.Net.Control
         protected virtual void OnCheckChanged()
         {
             if (IsChecked)
-            { 
+            {
                 if (Checked != null)
-					Checked.Invoke(this, EventArgs.Empty);
+                    Checked.Invoke(this, EventArgs.Empty);
             }
             else
             {
                 if (UnChecked != null)
-					UnChecked.Invoke(this, EventArgs.Empty);
+                    UnChecked.Invoke(this, EventArgs.Empty);
             }
 
             if (CheckChanged != null)
-				CheckChanged.Invoke(this, EventArgs.Empty);
+                CheckChanged.Invoke(this, EventArgs.Empty);
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			return new Size(15, 15);
-		}
+        protected override Size Measure(Size availableSize)
+        {
+            return new Size(15, 15);
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			return MeasuredSize;
-		}
+        protected override Size Arrange(Size finalSize)
+        {
+            return MeasuredSize;
+        }
 
-		/// <summary>
-		/// Renders the control using specified skin.
-		/// </summary>
-		/// <param name="skin">Skin to use.</param>
-		protected override void Render(Skin.SkinBase skin)
+        /// <summary>
+        /// Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(Skin.SkinBase skin)
         {
             base.Render(skin);
             skin.DrawCheckBox(this, m_Checked, IsDepressed);
@@ -116,13 +116,13 @@ namespace Gwen.Net.Control
         {
             if (IsDisabled)
                 return;
-            
+
             if (IsChecked && !AllowUncheck)
             {
                 return;
             }
 
-			base.OnClicked(x, y);
+            base.OnClicked(x, y);
         }
     }
 }

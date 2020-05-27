@@ -8,7 +8,7 @@ namespace Gwen.Net.Tests.Components
 
         public GUnit(ControlBase parent) : base(parent)
         {
-			this.IsVirtualControl = true;
+            this.IsVirtualControl = true;
         }
 
         public void UnitPrint(string str)
@@ -16,5 +16,5 @@ namespace Gwen.Net.Tests.Components
             if (UnitTest != null)
                 UnitTest.PrintText(str);
         }
-	}
+    }
 }

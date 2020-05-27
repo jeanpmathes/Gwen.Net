@@ -7,20 +7,20 @@ using Gwen.Net.Control.Layout;
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Standard", Order = 205)]
-	public class ListBoxTest : GUnit
+    public class ListBoxTest : GUnit
     {
         public ListBoxTest(ControlBase parent)
             : base(parent)
         {
-			HorizontalLayout hlayout = new HorizontalLayout(this);
-			hlayout.Dock = Dock.Top;
+            HorizontalLayout hlayout = new HorizontalLayout(this);
+            hlayout.Dock = Dock.Top;
 
-			{
+            {
                 ListBox ctrl = new ListBox(hlayout);
-				ctrl.AutoSizeToContent = true;
-				ctrl.AllowMultiSelect = true;
+                ctrl.AutoSizeToContent = true;
+                ctrl.AllowMultiSelect = true;
 
-				ctrl.AddRow("First");
+                ctrl.AddRow("First");
                 ctrl.AddRow("Blue");
                 ctrl.AddRow("Yellow");
                 ctrl.AddRow("Orange");
@@ -44,7 +44,7 @@ namespace Gwen.Net.Tests.Components
             {
                 Table ctrl = new Table(hlayout);
 
-				ctrl.AddRow("First");
+                ctrl.AddRow("First");
                 ctrl.AddRow("Blue");
                 ctrl.AddRow("Yellow");
                 ctrl.AddRow("Orange");
@@ -64,8 +64,8 @@ namespace Gwen.Net.Tests.Components
 
             {
                 ListBox ctrl = new ListBox(hlayout);
-				ctrl.AutoSizeToContent = true;
-				ctrl.ColumnCount = 3;
+                ctrl.AutoSizeToContent = true;
+                ctrl.ColumnCount = 3;
                 ctrl.RowSelected += RowSelected;
                 ctrl.RowUnselected += RowUnSelected;
 
@@ -86,38 +86,20 @@ namespace Gwen.Net.Tests.Components
                     row.SetCellText(1, "\u5355\u5143\u6D4B\u8BD5");
                     row.SetCellText(2, "£8.95");
                 }
-			}
+            }
 
-			VerticalLayout vlayout = new VerticalLayout(hlayout);
+            VerticalLayout vlayout = new VerticalLayout(hlayout);
 
             {
                 // fixed-size list box
                 ListBox ctrl = new ListBox(vlayout);
-				ctrl.AutoSizeToContent = true;
-				ctrl.HorizontalAlignment = HorizontalAlignment.Left;
+                ctrl.AutoSizeToContent = true;
+                ctrl.HorizontalAlignment = HorizontalAlignment.Left;
                 ctrl.ColumnCount = 3;
 
                 ctrl.SetColumnWidth(0, 150);
                 ctrl.SetColumnWidth(1, 150);
                 ctrl.SetColumnWidth(2, 150);
-
-				var row1 = ctrl.AddRow("Row 1");
-                row1.SetCellText(1, "R1 cell 1");
-                row1.SetCellText(2, "Row 1 cell 2");
-
-                ctrl.AddRow("Row 2, slightly bigger");
-                ctrl[1].SetCellText(1, "Center cell");
-
-                ctrl.AddRow("Row 3, medium");
-                ctrl[2].SetCellText(2, "Last cell");
-			}
-
-            {
-                // autosized list box
-                ListBox ctrl = new ListBox(vlayout);
-				ctrl.AutoSizeToContent = true;
-				ctrl.HorizontalAlignment = HorizontalAlignment.Left;
-				ctrl.ColumnCount = 3;
 
                 var row1 = ctrl.AddRow("Row 1");
                 row1.SetCellText(1, "R1 cell 1");
@@ -128,36 +110,54 @@ namespace Gwen.Net.Tests.Components
 
                 ctrl.AddRow("Row 3, medium");
                 ctrl[2].SetCellText(2, "Last cell");
-			}
+            }
 
-			hlayout = new HorizontalLayout(this);
-			hlayout.Dock = Dock.Top;
+            {
+                // autosized list box
+                ListBox ctrl = new ListBox(vlayout);
+                ctrl.AutoSizeToContent = true;
+                ctrl.HorizontalAlignment = HorizontalAlignment.Left;
+                ctrl.ColumnCount = 3;
 
-			/* Selecting Rows in Code */
-			{
-				ListBox ctrl = new ListBox(hlayout);
-				ctrl.AutoSizeToContent = true;
+                var row1 = ctrl.AddRow("Row 1");
+                row1.SetCellText(1, "R1 cell 1");
+                row1.SetCellText(2, "Row 1 cell 2");
 
-				ListBoxRow Row = ctrl.AddRow("Row");
+                ctrl.AddRow("Row 2, slightly bigger");
+                ctrl[1].SetCellText(1, "Center cell");
+
+                ctrl.AddRow("Row 3, medium");
+                ctrl[2].SetCellText(2, "Last cell");
+            }
+
+            hlayout = new HorizontalLayout(this);
+            hlayout.Dock = Dock.Top;
+
+            /* Selecting Rows in Code */
+            {
+                ListBox ctrl = new ListBox(hlayout);
+                ctrl.AutoSizeToContent = true;
+
+                ListBoxRow Row = ctrl.AddRow("Row");
                 ctrl.AddRow("Text");
                 ctrl.AddRow("InternalName", "Name");
                 ctrl.AddRow("UserData", "Internal", 12);
 
                 LabeledCheckBox multiline = new LabeledCheckBox(this);
-				multiline.Dock = Dock.Top;
-				multiline.Text = "Enable MultiSelect";
-				multiline.CheckChanged += delegate(ControlBase sender, EventArgs args)
+                multiline.Dock = Dock.Top;
+                multiline.Text = "Enable MultiSelect";
+                multiline.CheckChanged += delegate (ControlBase sender, EventArgs args)
                 {
                     ctrl.AllowMultiSelect = multiline.IsChecked;
                 };
 
-				vlayout = new VerticalLayout(hlayout);
+                vlayout = new VerticalLayout(hlayout);
                 //Select by Menu Item
                 {
                     Button TriangleButton = new Button(vlayout);
                     TriangleButton.Text = "Row";
                     TriangleButton.Width = 100;
-                    TriangleButton.Clicked += delegate(ControlBase sender, ClickedEventArgs args)
+                    TriangleButton.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
                     {
                         ctrl.SelectedRow = Row;
                     };
@@ -168,7 +168,7 @@ namespace Gwen.Net.Tests.Components
                     Button TestBtn = new Button(vlayout);
                     TestBtn.Text = "Text";
                     TestBtn.Width = 100;
-                    TestBtn.Clicked += delegate(ControlBase sender, ClickedEventArgs args)
+                    TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
                     {
                         ctrl.SelectByText("Text");
                     };
@@ -179,7 +179,7 @@ namespace Gwen.Net.Tests.Components
                     Button TestBtn = new Button(vlayout);
                     TestBtn.Text = "Name";
                     TestBtn.Width = 100;
-                    TestBtn.Clicked += delegate(ControlBase sender, ClickedEventArgs args)
+                    TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
                     {
                         ctrl.SelectByName("Name");
                     };
@@ -190,7 +190,7 @@ namespace Gwen.Net.Tests.Components
                     Button TestBtn = new Button(vlayout);
                     TestBtn.Text = "UserData";
                     TestBtn.Width = 100;
-                    TestBtn.Clicked += delegate(ControlBase sender, ClickedEventArgs args)
+                    TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
                     {
                         ctrl.SelectByUserData(12);
                     };
@@ -198,13 +198,13 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-		void RowSelected(ControlBase control, EventArgs args)
+        void RowSelected(ControlBase control, EventArgs args)
         {
             ListBox list = control as ListBox;
             UnitPrint(String.Format("ListBox: RowSelected: {0} [{1}]", list.SelectedRows.Last().Text, list[list.SelectedRowIndex].Text));
         }
 
-		void RowUnSelected(ControlBase control, EventArgs args)
+        void RowUnSelected(ControlBase control, EventArgs args)
         {
             // todo: how to determine which one was unselected (store somewhere)
             // or pass row as the event param?

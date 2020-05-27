@@ -41,79 +41,79 @@ namespace Gwen.Net.Control
             get { return ActualHeight; }
         }
 
-		public override int Height
-		{
-			get
-			{
-				return base.Height;
-			}
-
-			set
-			{
-				base.Height = value;
-
-				m_ScrollButton[0].Width = this.Height;
-				m_ScrollButton[1].Width = this.Height;
-			}
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HorizontalScrollBar"/> class.
-		/// </summary>
-		/// <param name="parent">Parent control.</param>
-		public HorizontalScrollBar(ControlBase parent)
-            : base(parent)
+        public override int Height
         {
-			Height = BaseUnit;
+            get
+            {
+                return base.Height;
+            }
 
-			m_Bar.IsHorizontal = true;
+            set
+            {
+                base.Height = value;
 
-			m_ScrollButton[0].Dock = Dock.Left;
-			m_ScrollButton[0].SetDirectionLeft();
-            m_ScrollButton[0].Clicked += NudgeLeft;
-
-			m_ScrollButton[1].Dock = Dock.Right;
-			m_ScrollButton[1].SetDirectionRight();
-            m_ScrollButton[1].Clicked += NudgeRight;
-
-			m_Bar.Dock = Dock.Fill;
-			m_Bar.Dragged += OnBarMoved;
+                m_ScrollButton[0].Width = this.Height;
+                m_ScrollButton[1].Width = this.Height;
+            }
         }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			Size size = base.Arrange(finalSize);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HorizontalScrollBar"/> class.
+        /// </summary>
+        /// <param name="parent">Parent control.</param>
+        public HorizontalScrollBar(ControlBase parent)
+            : base(parent)
+        {
+            Height = BaseUnit;
 
-			SetScrollAmount(ScrollAmount, true);
+            m_Bar.IsHorizontal = true;
 
-			return size;
-		}
+            m_ScrollButton[0].Dock = Dock.Left;
+            m_ScrollButton[0].SetDirectionLeft();
+            m_ScrollButton[0].Clicked += NudgeLeft;
 
-		protected override void UpdateBarSize()
-		{
-			float barWidth = 0.0f;
-			if (m_ContentSize > 0.0f) barWidth = (m_ViewableContentSize / m_ContentSize) * (ActualWidth - (ButtonSize * 2));
+            m_ScrollButton[1].Dock = Dock.Right;
+            m_ScrollButton[1].SetDirectionRight();
+            m_ScrollButton[1].Clicked += NudgeRight;
 
-			if (barWidth < ButtonSize * 0.5f)
-				barWidth = (int)(ButtonSize * 0.5f);
+            m_Bar.Dock = Dock.Fill;
+            m_Bar.Dragged += OnBarMoved;
+        }
 
-			m_Bar.SetSize((int)barWidth, m_Bar.ActualHeight);
-			m_Bar.IsHidden = ActualWidth - (ButtonSize * 2) <= barWidth;
+        protected override Size Arrange(Size finalSize)
+        {
+            Size size = base.Arrange(finalSize);
 
-			//Based on our last scroll amount, produce a position for the bar
-			if (!m_Bar.IsHeld)
-			{
-				SetScrollAmount(ScrollAmount, true);
-			}
-		}
+            SetScrollAmount(ScrollAmount, true);
 
-		public void NudgeLeft(ControlBase control, EventArgs args)
+            return size;
+        }
+
+        protected override void UpdateBarSize()
+        {
+            float barWidth = 0.0f;
+            if (m_ContentSize > 0.0f) barWidth = (m_ViewableContentSize / m_ContentSize) * (ActualWidth - (ButtonSize * 2));
+
+            if (barWidth < ButtonSize * 0.5f)
+                barWidth = (int)(ButtonSize * 0.5f);
+
+            m_Bar.SetSize((int)barWidth, m_Bar.ActualHeight);
+            m_Bar.IsHidden = ActualWidth - (ButtonSize * 2) <= barWidth;
+
+            //Based on our last scroll amount, produce a position for the bar
+            if (!m_Bar.IsHeld)
+            {
+                SetScrollAmount(ScrollAmount, true);
+            }
+        }
+
+        public void NudgeLeft(ControlBase control, EventArgs args)
         {
             if (!IsDisabled)
                 SetScrollAmount(ScrollAmount - NudgeAmount, true);
         }
 
-		public void NudgeRight(ControlBase control, EventArgs args)
+        public void NudgeRight(ControlBase control, EventArgs args)
         {
             if (!IsDisabled)
                 SetScrollAmount(ScrollAmount + NudgeAmount, true);
@@ -152,7 +152,7 @@ namespace Gwen.Net.Control
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-			base.OnMouseClickedLeft(x, y, down);
+            base.OnMouseClickedLeft(x, y, down);
             if (down)
             {
                 m_Depressed = true;
@@ -162,10 +162,10 @@ namespace Gwen.Net.Control
             {
                 Point clickPos = CanvasPosToLocal(new Point(x, y));
                 if (clickPos.X < m_Bar.ActualLeft)
-					NudgeLeft(this, EventArgs.Empty);
+                    NudgeLeft(this, EventArgs.Empty);
                 else
                     if (clickPos.X > m_Bar.ActualLeft + m_Bar.ActualWidth)
-						NudgeRight(this, EventArgs.Empty);
+                    NudgeRight(this, EventArgs.Empty);
 
                 m_Depressed = false;
                 InputHandler.MouseFocus = null;
@@ -174,10 +174,10 @@ namespace Gwen.Net.Control
 
         protected override float CalculateScrolledAmount()
         {
-			float value = (float)(m_Bar.ActualLeft - ButtonSize) / (ActualWidth - m_Bar.ActualWidth - (ButtonSize * 2));
-			if (Single.IsNaN(value))
-				value = 0.0f;
-			return value;
+            float value = (float)(m_Bar.ActualLeft - ButtonSize) / (ActualWidth - m_Bar.ActualWidth - (ButtonSize * 2));
+            if (Single.IsNaN(value))
+                value = 0.0f;
+            return value;
         }
 
         /// <summary>
@@ -210,12 +210,12 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source.</param>
 		protected override void OnBarMoved(ControlBase control, EventArgs args)
         {
-			if (m_Bar.IsHeld)
-			{
-				SetScrollAmount(CalculateScrolledAmount(), false);
-			}
+            if (m_Bar.IsHeld)
+            {
+                SetScrollAmount(CalculateScrolledAmount(), false);
+            }
 
-			base.OnBarMoved(control, EventArgs.Empty);
-		}
-	}
+            base.OnBarMoved(control, EventArgs.Empty);
+        }
+    }
 }

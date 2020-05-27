@@ -24,24 +24,24 @@ namespace Gwen.Net.Control
         {
             MouseInputEnabled = true;
             IsTabable = false;
-			IsToggle = true; //[halfofastaple] technically true. "Toggle" isn't the best word, "Sticky" is a better one.
+            IsToggle = true; //[halfofastaple] technically true. "Toggle" isn't the best word, "Sticky" is a better one.
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			return new Size(15, 15);
-		}
+        protected override Size Measure(Size availableSize)
+        {
+            return new Size(15, 15);
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			return MeasuredSize;
-		}
+        protected override Size Arrange(Size finalSize)
+        {
+            return MeasuredSize;
+        }
 
-		/// <summary>
-		/// Renders the control using specified skin.
-		/// </summary>
-		/// <param name="skin">Skin to use.</param>
-		protected override void Render(Skin.SkinBase skin)
+        /// <summary>
+        /// Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(Skin.SkinBase skin)
         {
             skin.DrawRadioButton(this, IsChecked, IsDepressed);
         }

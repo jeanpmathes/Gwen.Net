@@ -29,7 +29,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="control">Control to be rendered.</param>
         void CreateControlCacheTexture(Control.ControlBase control);
-        
+
         void UpdateControlCacheTexture(Control.ControlBase control);
         void SetRenderer(RendererBase renderer);
     }

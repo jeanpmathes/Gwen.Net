@@ -52,21 +52,21 @@ namespace Gwen.Net.Control.Internal
         {
             base.OnMouseMoved(x, y, dx, dy);
 
-			int buttonSize = (Parent as ScrollBar).ButtonSize;
-			if (m_Horizontal)
-			{
-				if (ActualLeft < buttonSize)
-					MoveTo(buttonSize, ActualTop);
-				else if (ActualLeft > Parent.ActualWidth - ActualWidth - buttonSize)
-					MoveTo(Parent.ActualWidth - ActualWidth - buttonSize, ActualTop);
-			}
-			else
-			{
-				if (ActualTop < buttonSize)
-					MoveTo(ActualLeft, buttonSize);
-				else if (ActualTop > Parent.ActualHeight - ActualHeight - buttonSize)
-					MoveTo(ActualLeft, Parent.ActualHeight - ActualHeight - buttonSize);
-			}
+            int buttonSize = (Parent as ScrollBar).ButtonSize;
+            if (m_Horizontal)
+            {
+                if (ActualLeft < buttonSize)
+                    MoveTo(buttonSize, ActualTop);
+                else if (ActualLeft > Parent.ActualWidth - ActualWidth - buttonSize)
+                    MoveTo(Parent.ActualWidth - ActualWidth - buttonSize, ActualTop);
+            }
+            else
+            {
+                if (ActualTop < buttonSize)
+                    MoveTo(ActualLeft, buttonSize);
+                else if (ActualTop > Parent.ActualHeight - ActualHeight - buttonSize)
+                    MoveTo(ActualLeft, Parent.ActualHeight - ActualHeight - buttonSize);
+            }
         }
 
         /// <summary>

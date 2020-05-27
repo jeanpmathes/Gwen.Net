@@ -55,59 +55,59 @@ namespace Gwen.Net.Control
             SelectedColor = new Color(255, 50, 60, 70);
         }
 
-		private void CreateControls()
-		{
-			VerticalLayout colorControlLayout = new VerticalLayout(this);
-			colorControlLayout.Dock = Dock.Fill;
+        private void CreateControls()
+        {
+            VerticalLayout colorControlLayout = new VerticalLayout(this);
+            colorControlLayout.Dock = Dock.Fill;
 
-			CreateColorControl(colorControlLayout, "Red");
-			CreateColorControl(colorControlLayout, "Green");
-			CreateColorControl(colorControlLayout, "Blue");
-			CreateColorControl(colorControlLayout, "Alpha");
+            CreateColorControl(colorControlLayout, "Red");
+            CreateColorControl(colorControlLayout, "Green");
+            CreateColorControl(colorControlLayout, "Blue");
+            CreateColorControl(colorControlLayout, "Alpha");
 
-			GroupBox finalGroup = new GroupBox(this);
-			finalGroup.Dock = Dock.Right;
-			finalGroup.Text = "Result";
-			finalGroup.Name = "ResultGroupBox";
+            GroupBox finalGroup = new GroupBox(this);
+            finalGroup.Dock = Dock.Right;
+            finalGroup.Text = "Result";
+            finalGroup.Name = "ResultGroupBox";
 
-			DockLayout finalLayout = new DockLayout(finalGroup);
+            DockLayout finalLayout = new DockLayout(finalGroup);
 
-			ColorDisplay disp = new ColorDisplay(finalLayout);
-			disp.Dock = Dock.Fill;
-			disp.Name = "Result";
-			disp.Width = Util.Ignore;
-			disp.Height = Util.Ignore;
-		}
+            ColorDisplay disp = new ColorDisplay(finalLayout);
+            disp.Dock = Dock.Fill;
+            disp.Name = "Result";
+            disp.Width = Util.Ignore;
+            disp.Height = Util.Ignore;
+        }
 
-		private void CreateColorControl(ControlBase parent, string name)
+        private void CreateColorControl(ControlBase parent, string name)
         {
             GroupBox colorGroup = new GroupBox(parent);
             colorGroup.Text = name;
             colorGroup.Name = name + "groupbox";
 
-			DockLayout layout = new DockLayout(colorGroup);
+            DockLayout layout = new DockLayout(colorGroup);
 
             ColorDisplay disp = new ColorDisplay(layout);
-			disp.Height = Util.Ignore;
-			disp.Dock = Dock.Left;
+            disp.Height = Util.Ignore;
+            disp.Dock = Dock.Left;
             disp.Name = name;
 
             TextBoxNumeric numeric = new TextBoxNumeric(layout);
-			numeric.Dock = Dock.Right;
-			numeric.FitToText = "000";
-			numeric.Name = name + "Box";
+            numeric.Dock = Dock.Right;
+            numeric.FitToText = "000";
+            numeric.Name = name + "Box";
             numeric.SelectAllOnFocus = true;
             numeric.TextChanged += NumericTyped;
 
             HorizontalSlider slider = new HorizontalSlider(layout);
-			slider.Dock = Dock.Fill;
-			slider.VerticalAlignment = VerticalAlignment.Center;
+            slider.Dock = Dock.Fill;
+            slider.VerticalAlignment = VerticalAlignment.Center;
             slider.SetRange(0, 255);
             slider.Name = name + "Slider";
             slider.ValueChanged += SlidersMoved;
         }
 
-		private void NumericTyped(ControlBase control, EventArgs args)
+        private void NumericTyped(ControlBase control, EventArgs args)
         {
             TextBoxNumeric box = control as TextBoxNumeric;
             if (null == box)

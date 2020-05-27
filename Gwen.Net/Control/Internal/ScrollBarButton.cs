@@ -3,15 +3,15 @@ using Gwen.Net.Control;
 
 namespace Gwen.Net.Control.Internal
 {
-	public enum ScrollBarButtonDirection
-	{
-		Left, Top, Right, Bottom
-	}
+    public enum ScrollBarButtonDirection
+    {
+        Left, Top, Right, Bottom
+    }
 
-	/// <summary>
-	/// Scrollbar button.
-	/// </summary>
-	public class ScrollBarButton : ButtonBase
+    /// <summary>
+    /// Scrollbar button.
+    /// </summary>
+    public class ScrollBarButton : ButtonBase
     {
         private ScrollBarButtonDirection m_Direction;
 

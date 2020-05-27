@@ -19,7 +19,7 @@ namespace Gwen.Net.Control.Internal
         {
             MouseInputEnabled = false;
 
-			Size = new Size(BaseUnit);
+            Size = new Size(BaseUnit);
 
             m_ComboBox = parent;
         }

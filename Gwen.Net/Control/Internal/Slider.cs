@@ -16,35 +16,35 @@ namespace Gwen.Net.Control.Internal
         protected float m_Min;
         protected float m_Max;
 
-		/// <summary>
-		/// Number of notches on the slider axis.
-		/// </summary>
-		[Xml.XmlProperty]
-		public int NotchCount { get { return m_NotchCount; } set { m_NotchCount = value; } }
+        /// <summary>
+        /// Number of notches on the slider axis.
+        /// </summary>
+        [Xml.XmlProperty]
+        public int NotchCount { get { return m_NotchCount; } set { m_NotchCount = value; } }
 
-		/// <summary>
-		/// Determines whether the slider should snap to notches.
-		/// </summary>
-		[Xml.XmlProperty]
-		public bool SnapToNotches { get { return m_SnapToNotches; } set { m_SnapToNotches = value; } }
+        /// <summary>
+        /// Determines whether the slider should snap to notches.
+        /// </summary>
+        [Xml.XmlProperty]
+        public bool SnapToNotches { get { return m_SnapToNotches; } set { m_SnapToNotches = value; } }
 
-		/// <summary>
-		/// Minimum value.
-		/// </summary>
-		[Xml.XmlProperty]
-		public float Min { get { return m_Min; } set { SetRange(value, m_Max); } }
+        /// <summary>
+        /// Minimum value.
+        /// </summary>
+        [Xml.XmlProperty]
+        public float Min { get { return m_Min; } set { SetRange(value, m_Max); } }
 
-		/// <summary>
-		/// Maximum value.
-		/// </summary>
-		[Xml.XmlProperty]
-		public float Max { get { return m_Max; } set { SetRange(m_Min, value); } }
+        /// <summary>
+        /// Maximum value.
+        /// </summary>
+        [Xml.XmlProperty]
+        public float Max { get { return m_Max; } set { SetRange(m_Min, value); } }
 
-		/// <summary>
-		/// Current value.
-		/// </summary>
-		[Xml.XmlProperty]
-		public float Value
+        /// <summary>
+        /// Current value.
+        /// </summary>
+        [Xml.XmlProperty]
+        public float Value
         {
             get { return m_Min + (m_Value * (m_Max - m_Min)); }
             set
@@ -58,11 +58,11 @@ namespace Gwen.Net.Control.Internal
             }
         }
 
-		/// <summary>
-		/// Invoked when the value has been changed.
-		/// </summary>
-		[Xml.XmlEvent]
-		public event GwenEventHandler<EventArgs> ValueChanged;
+        /// <summary>
+        /// Invoked when the value has been changed.
+        /// </summary>
+        [Xml.XmlEvent]
+        public event GwenEventHandler<EventArgs> ValueChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Slider"/> class.
@@ -177,10 +177,10 @@ namespace Gwen.Net.Control.Internal
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-            
+
         }
 
-		protected virtual void OnMoved(ControlBase control, EventArgs args)
+        protected virtual void OnMoved(ControlBase control, EventArgs args)
         {
             SetValueInternal(CalculateValue());
         }
@@ -192,7 +192,7 @@ namespace Gwen.Net.Control.Internal
 
         protected virtual void UpdateBarFromValue()
         {
-            
+
         }
 
         protected virtual void SetValueInternal(float val)
@@ -207,7 +207,7 @@ namespace Gwen.Net.Control.Internal
             {
                 m_Value = val;
                 if (ValueChanged != null)
-					ValueChanged.Invoke(this, EventArgs.Empty);
+                    ValueChanged.Invoke(this, EventArgs.Empty);
             }
 
             UpdateBarFromValue();
@@ -230,35 +230,35 @@ namespace Gwen.Net.Control.Internal
         /// <param name="skin">Skin to use.</param>
         protected override void RenderFocus(Skin.SkinBase skin)
         {
-			if (InputHandler.KeyboardFocus != this) return;
+            if (InputHandler.KeyboardFocus != this) return;
             if (!IsTabable) return;
-            
+
             skin.DrawKeyboardHighlight(this, RenderBounds, 0);
         }
 
-		protected override Size Measure(Size availableSize)
-		{
-			m_SliderBar.DoMeasure(availableSize);
+        protected override Size Measure(Size availableSize)
+        {
+            m_SliderBar.DoMeasure(availableSize);
 
-			return m_SliderBar.MeasuredSize;
-		}
+            return m_SliderBar.MeasuredSize;
+        }
 
-		protected override Size Arrange(Size finalSize)
-		{
-			m_SliderBar.DoArrange(new Rectangle(Point.Zero, m_SliderBar.MeasuredSize));
+        protected override Size Arrange(Size finalSize)
+        {
+            m_SliderBar.DoArrange(new Rectangle(Point.Zero, m_SliderBar.MeasuredSize));
 
-			UpdateBarFromValue();
+            UpdateBarFromValue();
 
-			return finalSize;
-		}
+            return finalSize;
+        }
 
-		protected override void OnBoundsChanged(Rectangle oldBounds)
-		{
-			base.OnBoundsChanged(oldBounds);
+        protected override void OnBoundsChanged(Rectangle oldBounds)
+        {
+            base.OnBoundsChanged(oldBounds);
 
-			// We need to know if bounds are changed to update the bar.
-			// In Arrange() we don't know yet new bounds.
-			UpdateBarFromValue();
-		}
-	}
+            // We need to know if bounds are changed to update the bar.
+            // In Arrange() we don't know yet new bounds.
+            UpdateBarFromValue();
+        }
+    }
 }

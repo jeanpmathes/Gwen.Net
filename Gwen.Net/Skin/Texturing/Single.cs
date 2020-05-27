@@ -12,7 +12,7 @@ namespace Gwen.Net.Skin.Texturing
         private readonly int m_Width;
         private readonly int m_Height;
 
-        public Single(Texture texture, float x, float y, float w, float h )
+        public Single(Texture texture, float x, float y, float w, float h)
         {
             m_Texture = texture;
 
@@ -25,8 +25,8 @@ namespace Gwen.Net.Skin.Texturing
             m_uv[2] = (x + w) / texw;
             m_uv[3] = (y + h) / texh;
 
-            m_Width = (int) w;
-            m_Height = (int) h;
+            m_Width = (int)w;
+            m_Height = (int)h;
         }
 
         // can't have this as default param

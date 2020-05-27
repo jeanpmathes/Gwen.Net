@@ -48,7 +48,7 @@ namespace Gwen.Net.Control.Property
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
         public virtual void SetValue(string value, bool fireEvents = false)
         {
-            
+
         }
     }
 }
