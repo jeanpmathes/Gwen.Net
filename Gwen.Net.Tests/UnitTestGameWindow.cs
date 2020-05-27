@@ -14,18 +14,15 @@ using OpenToolkit.Windowing.Desktop;
 
 namespace Gwen.Net.Tests
 {
-    /// <summary>
-    /// Demonstrates the GameWindow class.
-    /// </summary>
     public class UnitTestGameWindow : GameWindow
     {
-        const int MaxFrameSampleSize = 10000;
+        private const int MaxFrameSampleSize = 10000;
 
-        private OpenTkInputTranslator m_Input;
-        private OpenTKRendererBase m_Renderer;
-        private SkinBase m_Skin;
-        private Canvas m_Canvas;
-        private UnitTestHarnessControls m_UnitTest;
+        private OpenTkInputTranslator input;
+        private OpenTKRendererBase renderer;
+        private SkinBase skin;
+        private Canvas canvas;
+        private UnitTestHarnessControls unitTestControls;
 
         private readonly CircularBuffer<double> updateFrameTimes;
         private readonly CircularBuffer<double> renderFrameTimes;
@@ -50,25 +47,25 @@ namespace Gwen.Net.Tests
 
         protected override void Dispose(bool disposing)
         {
-            if (m_Canvas != null)
+            if (canvas != null)
             {
-                m_Canvas.Dispose();
-                m_Canvas = null;
+                canvas.Dispose();
+                canvas = null;
             }
-            if (m_Skin != null)
+            if (skin != null)
             {
-                m_Skin.Dispose();
-                m_Skin = null;
+                skin.Dispose();
+                skin = null;
             }
-            if (m_Renderer != null)
+            if (renderer != null)
             {
-                m_Renderer.Dispose();
-                m_Renderer = null;
+                renderer.Dispose();
+                renderer = null;
             }
             base.Dispose(disposing);
         }
 
-        void Keyboard_KeyDown(KeyboardKeyEventArgs e)
+        private void Keyboard_KeyDown(KeyboardKeyEventArgs e)
         {
             if (e.Key == OpenToolkit.Windowing.Common.Input.Key.Escape)
                 Close();
@@ -80,33 +77,33 @@ namespace Gwen.Net.Tests
                 else
                     WindowState = WindowState.Fullscreen;
 
-            m_Input.ProcessKeyDown(e);
+            input.ProcessKeyDown(e);
         }
 
-        void Keyboard_KeyUp(KeyboardKeyEventArgs e)
+        private void Keyboard_KeyUp(KeyboardKeyEventArgs e)
         {
             m_AltDown = false;
-            m_Input.ProcessKeyUp(e);
+            input.ProcessKeyUp(e);
         }
 
-        void Mouse_ButtonDown(MouseButtonEventArgs args)
+        private void Mouse_ButtonDown(MouseButtonEventArgs args)
         {
-            m_Input.ProcessMouseDown(args);
+            input.ProcessMouseDown(args);
         }
 
-        void Mouse_ButtonUp(MouseButtonEventArgs args)
+        private void Mouse_ButtonUp(MouseButtonEventArgs args)
         {
-            m_Input.ProcessMouseDown(args);
+            input.ProcessMouseDown(args);
         }
 
-        void Mouse_Move(MouseMoveEventArgs args)
+        private void Mouse_Move(MouseMoveEventArgs args)
         {
-            m_Input.ProcessMouseMove(args);
+            input.ProcessMouseMove(args);
         }
 
-        void Mouse_Wheel(MouseWheelEventArgs args)
+        private void Mouse_Wheel(MouseWheelEventArgs args)
         {
-            m_Input.ProcessMouseWheel(args);
+            input.ProcessMouseWheel(args);
         }
 
         protected override void OnLoad()
@@ -117,25 +114,25 @@ namespace Gwen.Net.Tests
 
             //m_Renderer = new OpenTKGL10Renderer();
             //m_Renderer = new OpenTKGL20Renderer();
-            m_Renderer = new OpenTKGL40Renderer();
+            renderer = new OpenTKGL40Renderer();
 
-            m_Skin = new Skin.TexturedBase(m_Renderer, "DefaultSkin2.png");
+            skin = new Skin.TexturedBase(renderer, "DefaultSkin2.png");
 
-            m_Skin.DefaultFont = new Font(m_Renderer, "Calibri", 11);
-            m_Canvas = new Canvas(m_Skin);
-            m_Input = new OpenTkInputTranslator(m_Canvas);
+            skin.DefaultFont = new Font(renderer, "Calibri", 11);
+            canvas = new Canvas(skin);
+            input = new OpenTkInputTranslator(canvas);
 
-            m_Canvas.SetSize(Size.X, Size.Y);
-            m_Canvas.ShouldDrawBackground = true;
-            m_Canvas.BackgroundColor = m_Skin.Colors.ModalBackground;
+            canvas.SetSize(Size.X, Size.Y);
+            canvas.ShouldDrawBackground = true;
+            canvas.BackgroundColor = skin.Colors.ModalBackground;
 
-            m_UnitTest = new UnitTestHarnessControls(m_Canvas);
+            unitTestControls = new UnitTestHarnessControls(canvas);
         }
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            m_Renderer.Resize(e.Width, e.Height);
-            m_Canvas.SetSize(e.Width, e.Height);
+            renderer.Resize(e.Width, e.Height);
+            canvas.SetSize(e.Width, e.Height);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -147,12 +144,12 @@ namespace Gwen.Net.Tests
                 {
                     int frames = updateFrameTimes.Count();
                     updateFrameTimes.Clear();
-                    m_UnitTest.UpdateFps = frames;
+                    unitTestControls.UpdateFps = frames;
                 }
             }
             else
             {
-                m_UnitTest.UpdateFps = UpdateFrequency;
+                unitTestControls.UpdateFps = UpdateFrequency;
             }
         }
 
@@ -164,7 +161,7 @@ namespace Gwen.Net.Tests
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-            m_Canvas.RenderCanvas();
+            canvas.RenderCanvas();
             SwapBuffers();
 
             if (RenderFrequency == 0)
@@ -174,12 +171,12 @@ namespace Gwen.Net.Tests
                 {
                     int frames = renderFrameTimes.Count();
                     renderFrameTimes.Clear();
-                    m_UnitTest.RenderFps = frames;
+                    unitTestControls.RenderFps = frames;
                 }
             }
             else
             {
-                m_UnitTest.RenderFps = RenderFrequency;
+                unitTestControls.RenderFps = RenderFrequency;
             }
         }
 

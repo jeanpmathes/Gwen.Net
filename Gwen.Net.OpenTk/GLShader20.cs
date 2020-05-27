@@ -33,8 +33,8 @@ namespace Gwen.Net.OpenTk
 
         public void Load(string vertexShaderName, string fragmentShaderName)
         {
-            string vSource = vShaderSource;
-            string fSource = fShaderSource;
+            string vSource = EmbeddedShaderLoader.GetShader<GLShader20>("vert");
+            string fSource = EmbeddedShaderLoader.GetShader<GLShader20>("frag");
 
             int vShader = GL.CreateShader(ShaderType.VertexShader);
             int fShader = GL.CreateShader(ShaderType.FragmentShader);
@@ -98,48 +98,5 @@ namespace Gwen.Net.OpenTk
         {
             GL.DeleteProgram(this.Program);
         }
-
-        private const string vShaderSource = @"
-#version 120
-
-attribute vec2 in_screen_coords;
-attribute vec2 in_uv;
-attribute vec4 in_color;
-
-varying vec2 frag_uv;
-varying vec4 frag_color;
-
-uniform vec2 uScreenSize;
-
-void main(void)
-{
-	frag_uv = in_uv;
-	frag_color = in_color;
-
-	vec2 ndc_position = 2.0 * (in_screen_coords / uScreenSize) - 1.0;
-	ndc_position.y *= -1.0;
-
-	gl_Position = vec4(ndc_position, 0.0, 1);
-}";
-
-        private const string fShaderSource = @"
-#version 120
-
-varying vec2 frag_uv;
-varying vec4 frag_color;
-
-uniform sampler2D tex;
-
-uniform float uUseTexture;
-
-void main(void)
-{
-	vec4 texColor = texture2D(tex, frag_uv);
-	if (uUseTexture > 0.0)
-		gl_FragColor = texColor * frag_color;
-	else
-		gl_FragColor = frag_color;
-}";
-
     }
 }
