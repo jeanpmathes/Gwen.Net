@@ -55,10 +55,10 @@ namespace Gwen.Net.OpenTk
             GL.Disable(EnableCap.Texture2D);
 
             m_VertNum = 0;
-            m_DrawCallCount = 0;
-            m_ClipEnabled = false;
-            m_TextureEnabled = false;
-            m_LastTextureID = -1;
+            drawCallCount = 0;
+            clipEnabled = false;
+            textureEnabled = false;
+            lastTextureID = -1;
 
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.ColorArray);
@@ -72,7 +72,7 @@ namespace Gwen.Net.OpenTk
             if (m_RestoreRenderState)
             {
                 GL.BindTexture(TextureTarget.Texture2D, 0);
-                m_LastTextureID = 0;
+                lastTextureID = 0;
 
                 // Restore the previous parameter values.
                 GL.BlendFunc((BlendingFactor)m_PrevBlendSrc, (BlendingFactor)m_PrevBlendDst);
@@ -81,7 +81,7 @@ namespace Gwen.Net.OpenTk
                 if (!m_WasBlendEnabled)
                     GL.Disable(EnableCap.Blend);
 
-                if (m_WasTexture2DEnabled && !m_TextureEnabled)
+                if (m_WasTexture2DEnabled && !textureEnabled)
                     GL.Enable(EnableCap.Texture2D);
 
                 if (m_WasDepthTestEnabled)
@@ -110,7 +110,7 @@ namespace Gwen.Net.OpenTk
                 GL.DrawArrays(PrimitiveType.Quads, 0, m_VertNum);
             }
 
-            m_DrawCallCount++;
+            drawCallCount++;
             m_VertNum = 0;
         }
 
@@ -121,7 +121,7 @@ namespace Gwen.Net.OpenTk
                 Flush();
             }
 
-            if (m_ClipEnabled)
+            if (clipEnabled)
             {
                 // cpu scissors test
 
@@ -199,40 +199,40 @@ namespace Gwen.Net.OpenTk
             m_Vertices[vertexIndex].y = (short)rect.Y;
             m_Vertices[vertexIndex].u = u1;
             m_Vertices[vertexIndex].v = v1;
-            m_Vertices[vertexIndex].r = m_Color.R;
-            m_Vertices[vertexIndex].g = m_Color.G;
-            m_Vertices[vertexIndex].b = m_Color.B;
-            m_Vertices[vertexIndex].a = m_Color.A;
+            m_Vertices[vertexIndex].r = color.R;
+            m_Vertices[vertexIndex].g = color.G;
+            m_Vertices[vertexIndex].b = color.B;
+            m_Vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             m_Vertices[vertexIndex].x = (short)(rect.X + rect.Width);
             m_Vertices[vertexIndex].y = (short)rect.Y;
             m_Vertices[vertexIndex].u = u2;
             m_Vertices[vertexIndex].v = v1;
-            m_Vertices[vertexIndex].r = m_Color.R;
-            m_Vertices[vertexIndex].g = m_Color.G;
-            m_Vertices[vertexIndex].b = m_Color.B;
-            m_Vertices[vertexIndex].a = m_Color.A;
+            m_Vertices[vertexIndex].r = color.R;
+            m_Vertices[vertexIndex].g = color.G;
+            m_Vertices[vertexIndex].b = color.B;
+            m_Vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             m_Vertices[vertexIndex].x = (short)(rect.X + rect.Width);
             m_Vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
             m_Vertices[vertexIndex].u = u2;
             m_Vertices[vertexIndex].v = v2;
-            m_Vertices[vertexIndex].r = m_Color.R;
-            m_Vertices[vertexIndex].g = m_Color.G;
-            m_Vertices[vertexIndex].b = m_Color.B;
-            m_Vertices[vertexIndex].a = m_Color.A;
+            m_Vertices[vertexIndex].r = color.R;
+            m_Vertices[vertexIndex].g = color.G;
+            m_Vertices[vertexIndex].b = color.B;
+            m_Vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             m_Vertices[vertexIndex].x = (short)rect.X;
             m_Vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
             m_Vertices[vertexIndex].u = u1;
             m_Vertices[vertexIndex].v = v2;
-            m_Vertices[vertexIndex].r = m_Color.R;
-            m_Vertices[vertexIndex].g = m_Color.G;
-            m_Vertices[vertexIndex].b = m_Color.B;
-            m_Vertices[vertexIndex].a = m_Color.A;
+            m_Vertices[vertexIndex].r = color.R;
+            m_Vertices[vertexIndex].g = color.G;
+            m_Vertices[vertexIndex].b = color.B;
+            m_Vertices[vertexIndex].a = color.A;
 
             m_VertNum += 4;
         }

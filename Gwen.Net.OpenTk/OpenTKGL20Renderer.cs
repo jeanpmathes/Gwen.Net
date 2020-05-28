@@ -5,31 +5,28 @@ using OpenToolkit.Graphics.OpenGL;
 
 namespace Gwen.Net.OpenTk
 {
-    public class OpenTKGL40Renderer : OpenTKRendererBase
+    public class OpenTKGL20Renderer : OpenTKRendererBase
     {
         private const int MaxVerts = 4096;
 
         private readonly Vertex[] vertices;
         private readonly int vertexSize;
-        private readonly IShader shader;
         private readonly bool restoreRenderState;
+        private readonly IShader shader;
 
-
+        private int vertNum;
+        private int totalVertNum;
         private bool wasBlendEnabled;
         private bool wasDepthTestEnabled;
         private int prevBlendSrc;
         private int prevBlendDst;
         private int prevAlphaFunc;
         private float prevAlphaRef;
-
         private int vbo;
-        private int vao;
-        private int vertNum;
-        private int totalVertNum;
 
         public override int VertexCount => totalVertNum;
 
-        public OpenTKGL40Renderer(bool restoreRenderState = true)
+        public OpenTKGL20Renderer(bool restoreRenderState = true)
             : base()
         {
             vertices = new Vertex[MaxVerts];
@@ -37,15 +34,11 @@ namespace Gwen.Net.OpenTk
             this.restoreRenderState = restoreRenderState;
 
             CreateBuffers();
-
-            shader = new GL40ShaderLoader().Load("gui.gl40");
+            shader = new GL20ShaderLoader().Load("gui.gl20");
         }
 
         private void CreateBuffers()
         {
-            GL.GenVertexArrays(1, out vao);
-            GL.BindVertexArray(vao);
-
             GL.GenBuffers(1, out vbo);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw); // Allocate
@@ -63,7 +56,6 @@ namespace Gwen.Net.OpenTk
             GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, vertexSize, 2 * (sizeof(float) + sizeof(float)));
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
         }
 
         public override void Begin()
@@ -71,7 +63,6 @@ namespace Gwen.Net.OpenTk
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.UseProgram(shader.Program);
 
-            GL.BindVertexArray(vao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
 
             if (restoreRenderState)
@@ -102,7 +93,7 @@ namespace Gwen.Net.OpenTk
         public override void End()
         {
             Flush();
-            GL.BindVertexArray(0);
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             if (restoreRenderState)
@@ -121,17 +112,11 @@ namespace Gwen.Net.OpenTk
             }
         }
 
-        protected override void Flush()
+        protected override unsafe void Flush()
         {
             if (vertNum == 0) return;
 
-            if (GLVersion >= 43)
-                GL.InvalidateBufferData(vbo);
-            //else
-            // This will slow down rendering. It seems to work without this but there could be synchronization problems with some drivers.
-            // If that's the case then enable this.
-            //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(m_VertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw);
-
+            //GL.InvalidateBufferData(m_Vbo);
             GL.BufferSubData<Vertex>(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(vertNum * vertexSize), vertices);
 
             GL.Uniform1(shader.Uniforms["uUseTexture"], textureEnabled ? 1.0f : 0.0f);
@@ -154,11 +139,13 @@ namespace Gwen.Net.OpenTk
             {
                 // cpu scissors test
 
-                if (rect.Y < ClipRegion.Y)
+                Rectangle clipRect = ClipRegion;
+
+                if (rect.Y < clipRect.Y)
                 {
                     int oldHeight = rect.Height;
-                    int delta = ClipRegion.Y - rect.Y;
-                    rect.Y = ClipRegion.Y;
+                    int delta = clipRect.Y - rect.Y;
+                    rect.Y = clipRect.Y;
                     rect.Height -= delta;
 
                     if (rect.Height <= 0)
@@ -171,10 +158,10 @@ namespace Gwen.Net.OpenTk
                     v1 += dv * (v2 - v1);
                 }
 
-                if ((rect.Y + rect.Height) > (ClipRegion.Y + ClipRegion.Height))
+                if ((rect.Y + rect.Height) > (clipRect.Y + clipRect.Height))
                 {
                     int oldHeight = rect.Height;
-                    int delta = (rect.Y + rect.Height) - (ClipRegion.Y + ClipRegion.Height);
+                    int delta = (rect.Y + rect.Height) - (clipRect.Y + clipRect.Height);
 
                     rect.Height -= delta;
 
@@ -188,11 +175,11 @@ namespace Gwen.Net.OpenTk
                     v2 -= dv * (v2 - v1);
                 }
 
-                if (rect.X < ClipRegion.X)
+                if (rect.X < clipRect.X)
                 {
                     int oldWidth = rect.Width;
-                    int delta = ClipRegion.X - rect.X;
-                    rect.X = ClipRegion.X;
+                    int delta = clipRect.X - rect.X;
+                    rect.X = clipRect.X;
                     rect.Width -= delta;
 
                     if (rect.Width <= 0)
@@ -205,10 +192,10 @@ namespace Gwen.Net.OpenTk
                     u1 += du * (u2 - u1);
                 }
 
-                if ((rect.X + rect.Width) > (ClipRegion.X + ClipRegion.Width))
+                if ((rect.X + rect.Width) > (clipRect.X + clipRect.Width))
                 {
                     int oldWidth = rect.Width;
-                    int delta = (rect.X + rect.Width) - (ClipRegion.X + ClipRegion.Width);
+                    int delta = (rect.X + rect.Width) - (clipRect.X + clipRect.Width);
 
                     rect.Width -= delta;
 

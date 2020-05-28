@@ -2,58 +2,45 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Gwen.Net.OpenTk.Exceptions;
 
 namespace Gwen.Net.OpenTk
 {
     public static class ImageLoader
     {
-
         public delegate Bitmap Loader(string filename);
 
-        public static Dictionary<string, Loader> loaders = new Dictionary<string, Loader>(){
-            { "jpeg",StandartLoader},
-            { "jpe",StandartLoader},
-            { "jfif",StandartLoader},
-            { "jpg",StandartLoader},
-
-            { "bmp",StandartLoader},
-            { "dib",StandartLoader},
-            { "rle",StandartLoader},
-
-            { "png",StandartLoader},
-
-            { "gif",StandartLoader},
-
-            { "tif",StandartLoader},
-            { "exif",StandartLoader},
-
-            { "wmf",StandartLoader},
-            { "emf",StandartLoader},
+        public static readonly Dictionary<string, Loader> loaders = new Dictionary<string, Loader>
+        {
+            { "jpeg", StandardLoader},
+            { "jpe", StandardLoader},
+            { "jfif", StandardLoader},
+            { "jpg", StandardLoader},
+            { "bmp", StandardLoader},
+            { "dib", StandardLoader},
+            { "rle", StandardLoader},
+            { "png", StandardLoader},
+            { "gif", StandardLoader},
+            { "tif", StandardLoader},
+            { "exif", StandardLoader},
+            { "wmf", StandardLoader},
+            { "emf", StandardLoader},
         };
 
-        public static Bitmap StandartLoader(string s)
+        public static Bitmap StandardLoader(string s)
         {
             return new Bitmap(s);
         }
 
         public static Bitmap Load(string filename)
         {
-            try
+            string resourceType = filename.ToLower().Split('.').Last();
+            if (loaders.TryGetValue(resourceType, out var loader))
             {
-                string s = filename.ToLower().Split('.').Last();
-                if (loaders.ContainsKey(s))
-                {
-                    return loaders[s].Invoke(filename);
-                }
-                else
-                {
-                    throw new Exception("не найден загрузчик формата. Add format loader in ImageLoader.loaders");
-                }
+                return loader.Invoke(filename);
             }
-            catch (Exception e)
-            {
-                throw new Exception("Image not found: " + filename);
-            }
+
+            throw new ResourceLoaderNotFoundException(resourceType);
         }
     }
 }

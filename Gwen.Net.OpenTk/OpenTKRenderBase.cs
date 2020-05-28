@@ -13,28 +13,34 @@ namespace Gwen.Net.OpenTk
 {
     public abstract class OpenTKRendererBase : RendererBase
     {
-        protected Color m_Color;
+        protected static int lastTextureID;
 
-        private readonly Dictionary<Tuple<String, Font>, TextRenderer> m_StringCache;
-        private readonly Graphics m_Graphics; // only used for text measurement
-        protected int m_DrawCallCount;
-        protected bool m_ClipEnabled;
-        protected bool m_TextureEnabled;
-        static protected int m_LastTextureID;
+        private readonly Dictionary<Tuple<string, Font>, TextRenderer> stringCache;
+        private readonly Graphics graphics;
+        private readonly StringFormat stringFormat;
 
-        private StringFormat m_StringFormat;
+        protected int drawCallCount;
+        protected bool clipEnabled;
+        protected bool textureEnabled;
+        protected Color color;
 
-        private int m_GLVersion;
+        public int TextCacheSize => stringCache.Count;
+
+        public int DrawCallCount => drawCallCount;
+
+        public abstract int VertexCount { get; }
+
+        public int GLVersion { get; }
 
         public OpenTKRendererBase()
             : base()
         {
-            m_GLVersion = GL.GetInteger(GetPName.MajorVersion) * 10 + GL.GetInteger(GetPName.MinorVersion);
+            GLVersion = GL.GetInteger(GetPName.MajorVersion) * 10 + GL.GetInteger(GetPName.MinorVersion);
 
-            m_StringCache = new Dictionary<Tuple<String, Font>, TextRenderer>();
-            m_Graphics = Graphics.FromImage(new Bitmap(1024, 1024));
-            m_StringFormat = new StringFormat(StringFormat.GenericTypographic);
-            m_StringFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            stringCache = new Dictionary<Tuple<string, Font>, TextRenderer>();
+            graphics = Graphics.FromImage(new Bitmap(1024, 1024));
+            stringFormat = new StringFormat(StringFormat.GenericTypographic);
+            stringFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
         }
 
         public override void Dispose()
@@ -50,37 +56,23 @@ namespace Gwen.Net.OpenTk
 
         protected abstract void Flush();
 
-        /// <summary>
-        /// Returns number of cached strings in the text cache.
-        /// </summary>
-        public int TextCacheSize { get { return m_StringCache.Count; } }
-
-        public int DrawCallCount { get { return m_DrawCallCount; } }
-
-        public abstract int VertexCount { get; }
-
-        public int GLVersion { get { return m_GLVersion; } }
-
-        /// <summary>
-        /// Clears the text rendering cache. Make sure to call this if cached strings size becomes too big (check TextCacheSize).
-        /// </summary>
         public void FlushTextCache()
         {
             // todo: some auto-expiring cache? based on number of elements or age
-            foreach (var textRenderer in m_StringCache.Values)
+            foreach (var textRenderer in stringCache.Values)
             {
                 textRenderer.Dispose();
             }
-            m_StringCache.Clear();
+            stringCache.Clear();
         }
 
         public override void DrawFilledRect(Rectangle rect)
         {
-            if (m_TextureEnabled)
+            if (textureEnabled)
             {
                 Flush();
                 GL.Disable(EnableCap.Texture2D);
-                m_TextureEnabled = false;
+                textureEnabled = false;
             }
 
             rect = Translate(rect);
@@ -90,21 +82,21 @@ namespace Gwen.Net.OpenTk
 
         public override Color DrawColor
         {
-            get { return m_Color; }
+            get { return color; }
             set
             {
-                m_Color = value;
+                color = value;
             }
         }
 
         public override void StartClip()
         {
-            m_ClipEnabled = true;
+            clipEnabled = true;
         }
 
         public override void EndClip()
         {
-            m_ClipEnabled = false;
+            clipEnabled = false;
         }
 
         public override void DrawTexturedRect(Texture t, Rectangle rect, float u1 = 0, float v1 = 0, float u2 = 1, float v2 = 1)
@@ -119,22 +111,22 @@ namespace Gwen.Net.OpenTk
             int tex = (int)t.RendererData;
             rect = Translate(rect);
 
-            bool differentTexture = (tex != m_LastTextureID);
-            if (!m_TextureEnabled || differentTexture)
+            bool differentTexture = (tex != lastTextureID);
+            if (!textureEnabled || differentTexture)
             {
                 Flush();
             }
 
-            if (!m_TextureEnabled)
+            if (!textureEnabled)
             {
                 GL.Enable(EnableCap.Texture2D);
-                m_TextureEnabled = true;
+                textureEnabled = true;
             }
 
             if (differentTexture)
             {
                 GL.BindTexture(TextureTarget.Texture2D, tex);
-                m_LastTextureID = tex;
+                lastTextureID = tex;
             }
 
             DrawRect(rect, u1, v1, u2, v2);
@@ -218,11 +210,11 @@ namespace Gwen.Net.OpenTk
         {
             switch (unit)
             {
-                case GraphicsUnit.Document: value *= m_Graphics.DpiX / 300; break;
-                case GraphicsUnit.Inch: value *= m_Graphics.DpiX; break;
-                case GraphicsUnit.Millimeter: value *= m_Graphics.DpiX / 25.4F; break;
+                case GraphicsUnit.Document: value *= graphics.DpiX / 300; break;
+                case GraphicsUnit.Inch: value *= graphics.DpiX; break;
+                case GraphicsUnit.Millimeter: value *= graphics.DpiX / 25.4F; break;
                 case GraphicsUnit.Pixel: break;
-                case GraphicsUnit.Point: value *= m_Graphics.DpiX / 72; break;
+                case GraphicsUnit.Point: value *= graphics.DpiX / 72; break;
                 default: throw new Exception("Unknown unit " + unit.ToString());
             }
 
@@ -242,16 +234,16 @@ namespace Gwen.Net.OpenTk
 
             var key = new Tuple<String, Font>(text, font);
 
-            if (m_StringCache.ContainsKey(key))
+            if (stringCache.ContainsKey(key))
             {
-                var tex = m_StringCache[key].Texture;
+                var tex = stringCache[key].Texture;
                 return new Size(tex.Width, tex.Height);
             }
 
-            SizeF TabSize = m_Graphics.MeasureString("....", sysFont); //Spaces are not being picked up, let's just use .'s.
-            m_StringFormat.SetTabStops(0f, new float[] { TabSize.Width });
+            SizeF TabSize = graphics.MeasureString("....", sysFont); //Spaces are not being picked up, let's just use .'s.
+            stringFormat.SetTabStops(0f, new float[] { TabSize.Width });
 
-            SizeF size = m_Graphics.MeasureString(text, sysFont, System.Drawing.Point.Empty, m_StringFormat);
+            SizeF size = graphics.MeasureString(text, sysFont, System.Drawing.Point.Empty, stringFormat);
 
             return new Size(Util.Ceil(size.Width), Util.Ceil(size.Height));
         }
@@ -271,20 +263,20 @@ namespace Gwen.Net.OpenTk
 
             var key = new Tuple<String, Font>(text, font);
 
-            if (!m_StringCache.ContainsKey(key))
+            if (!stringCache.ContainsKey(key))
             {
                 // not cached - create text renderer
                 Size size = MeasureText(font, text);
                 TextRenderer tr = new TextRenderer(size.Width, size.Height, this);
-                tr.DrawString(text, sysFont, Brushes.White, Gwen.Net.Point.Zero, m_StringFormat); // renders string on the texture
+                tr.DrawString(text, sysFont, Brushes.White, Gwen.Net.Point.Zero, stringFormat); // renders string on the texture
 
                 DrawTexturedRect(tr.Texture, new Rectangle(position.X, position.Y, tr.Texture.Width, tr.Texture.Height));
 
-                m_StringCache[key] = tr;
+                stringCache[key] = tr;
             }
             else
             {
-                TextRenderer tr = m_StringCache[key];
+                TextRenderer tr = stringCache[key];
                 DrawTexturedRect(tr.Texture, new Rectangle(position.X, position.Y, tr.Texture.Width, tr.Texture.Height));
             }
         }
@@ -313,7 +305,7 @@ namespace Gwen.Net.OpenTk
             GL.GenTextures(1, out glTex);
 
             GL.BindTexture(TextureTarget.Texture2D, glTex);
-            m_LastTextureID = glTex;
+            lastTextureID = glTex;
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -409,7 +401,7 @@ namespace Gwen.Net.OpenTk
             // even if the previous one was the same), we are probably making draw calls where we shouldn't be?
             // Eventually the bug needs to be fixed (color picker in a window causes graphical errors), but for now,
             // this is fine.
-            GL.BindTexture(TextureTarget.Texture2D, m_LastTextureID);
+            GL.BindTexture(TextureTarget.Texture2D, lastTextureID);
 
         }
 
@@ -436,7 +428,7 @@ namespace Gwen.Net.OpenTk
             Color pixel;
 
             GL.BindTexture(TextureTarget.Texture2D, tex);
-            m_LastTextureID = tex;
+            lastTextureID = tex;
 
             long offset = 4 * (x + y * texture.Width);
             byte[] data = new byte[4 * texture.Width * texture.Height];
