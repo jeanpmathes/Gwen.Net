@@ -1,4 +1,5 @@
 ﻿using System;
+using Gwen.Net.Platform;
 
 namespace Gwen.Net.Anim
 {
@@ -15,7 +16,7 @@ namespace Gwen.Net.Anim
 
         public TimedAnimation(float length, float delay = 0.0f, float ease = 1.0f)
         {
-            m_Start = Platform.Platform.GetTimeInSeconds() + delay;
+            m_Start = GwenPlatform.GetTimeInSeconds() + delay;
             m_End = m_Start + length;
             m_Ease = ease;
             m_Started = false;
@@ -29,7 +30,7 @@ namespace Gwen.Net.Anim
             if (m_Finished)
                 return;
 
-            float current = Platform.Platform.GetTimeInSeconds();
+            float current = GwenPlatform.GetTimeInSeconds();
             float secondsIn = current - m_Start;
             if (secondsIn < 0.0)
                 return;

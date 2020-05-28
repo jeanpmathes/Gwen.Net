@@ -3,7 +3,7 @@ using System.Linq;
 using Gwen.Net.Control;
 using Gwen.Net.Xml;
 using Gwen.Net.Platform;
-using static Gwen.Net.Platform.Platform;
+using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.CommonDialog
 {
@@ -386,7 +386,7 @@ namespace Gwen.Net.CommonDialog
         {
             m_Folders.RemoveAllNodes();
 
-            foreach (ISpecialFolder folder in Platform.Platform.GetSpecialFolders())
+            foreach (ISpecialFolder folder in Platform.GwenPlatform.GetSpecialFolders())
             {
                 TreeNode category = m_Folders.FindNodeByName(folder.Category, false);
                 if (category == null)

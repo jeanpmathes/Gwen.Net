@@ -1,30 +1,20 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Text;
-using Gwen.Net;
-using Gwen.Net.OpenTk;
+using Gwen.Net.OpenTk.Renderers;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace Gwen.Net.OpenTk
 {
-    /// <summary>
-    /// Uses System.Drawing for 2d text rendering.
-    /// </summary>
     public sealed class TextRenderer : IDisposable
     {
-        private readonly Bitmap m_Bitmap;
-        private readonly Graphics m_Graphics;
-        private readonly Texture m_Texture;
-        private bool m_Disposed;
+        private readonly Bitmap bitmap;
+        private readonly Graphics graphics;
+        private readonly Texture texture;
+        private bool disposed;
 
-        public Texture Texture { get { return m_Texture; } }
+        public Texture Texture => texture;
 
-        /// <summary>
-        /// Constructs a new instance.
-        /// </summary>
-        /// <param name="width">The width of the backing store in pixels.</param>
-        /// <param name="height">The height of the backing store in pixels.</param>
-        /// <param name="renderer">GWEN renderer.</param>
         public TextRenderer(int width, int height, OpenTKRendererBase renderer)
         {
             if (width <= 0)
@@ -32,22 +22,15 @@ namespace Gwen.Net.OpenTk
             if (height <= 0)
                 throw new ArgumentOutOfRangeException("height");
 
-            m_Bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            m_Graphics = Graphics.FromImage(m_Bitmap);
-
-            // NOTE:    TextRenderingHint.AntiAliasGridFit looks sharper and in most cases better
-            //          but it comes with a some problems.
-            //
-            //          1.  Graphic.MeasureString and format.MeasureCharacterRanges 
-            //              seem to return wrong values because of this.
-            //
-            //          2.  While typing the kerning changes in random places in the sentence.
-            // 
-            //          Until 1st problem is fixed we should use TextRenderingHint.AntiAlias...  :-(
-
-            m_Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-            m_Graphics.Clear(System.Drawing.Color.Transparent);
-            m_Texture = new Texture(renderer) { Width = width, Height = height };
+            bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            graphics = Graphics.FromImage(bitmap);
+            graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.Clear(System.Drawing.Color.Transparent);
+            texture = new Texture(renderer)
+            {
+                Width = width,
+                Height = height
+            };
         }
 
         /// <summary>
@@ -60,23 +43,23 @@ namespace Gwen.Net.OpenTk
         /// The origin (0, 0) lies at the top-left corner of the backing store.</param>
         public void DrawString(string text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
         {
-            m_Graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
+            graphics.DrawString(text, font, brush, new System.Drawing.Point(point.X, point.Y), format); // render text on the bitmap
 
-            OpenTKRendererBase.LoadTextureInternal(m_Texture, m_Bitmap); // copy bitmap to gl texture
+            OpenTKRendererBase.LoadTextureInternal(texture, bitmap); // copy bitmap to gl texture
         }
 
         void Dispose(bool manual)
         {
-            if (!m_Disposed)
+            if (!disposed)
             {
                 if (manual)
                 {
-                    m_Bitmap.Dispose();
-                    m_Graphics.Dispose();
-                    m_Texture.Dispose();
+                    bitmap.Dispose();
+                    graphics.Dispose();
+                    texture.Dispose();
                 }
 
-                m_Disposed = true;
+                disposed = true;
             }
         }
 

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Gwen.Net.OpenTk.Shaders;
 using OpenToolkit.Graphics.OpenGL;
 
-namespace Gwen.Net.OpenTk
+namespace Gwen.Net.OpenTk.Renderers
 {
     public class OpenTKGL20Renderer : OpenTKRendererBase
     {

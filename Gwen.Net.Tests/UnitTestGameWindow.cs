@@ -10,7 +10,9 @@ using Gwen.Net.Tests.Components;
 using OpenToolkit.Graphics.OpenGL;
 using OpenToolkit.Mathematics;
 using OpenToolkit.Windowing.Common;
+using OpenToolkit.Windowing.Common.Input;
 using OpenToolkit.Windowing.Desktop;
+using OpenToolkit.Windowing.GraphicsLibraryFramework;
 
 namespace Gwen.Net.Tests
 {
@@ -18,28 +20,22 @@ namespace Gwen.Net.Tests
     {
         private const int MaxFrameSampleSize = 10000;
 
-        private OpenTkInputTranslator input;
-        private OpenTKRendererBase renderer;
-        private SkinBase skin;
-        private Canvas canvas;
         private UnitTestHarnessControls unitTestControls;
 
         private readonly CircularBuffer<double> updateFrameTimes;
         private readonly CircularBuffer<double> renderFrameTimes;
-
-        private bool m_AltDown = false;
+        private readonly IGwenGui gui;
 
         public UnitTestGameWindow()
             : base(GameWindowSettings.Default, NativeWindowSettings.Default)
         {
             UpdateFrequency = 30;
-            KeyDown += Keyboard_KeyDown;
-            KeyUp += Keyboard_KeyUp;
 
-            MouseDown += Mouse_ButtonDown;
-            MouseUp += Mouse_ButtonUp;
-            MouseMove += Mouse_Move;
-            MouseWheel += Mouse_Wheel;
+            gui = GwenGuiFactory.CreateFromGame(this, GwenGuiSettings.Default.From((settings) => 
+            {
+                //Have the skin come from somewhere else.
+                settings.SkinFile = new System.IO.FileInfo("DefaultSkin2.png");
+            }));
 
             updateFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
             renderFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
@@ -47,92 +43,20 @@ namespace Gwen.Net.Tests
 
         protected override void Dispose(bool disposing)
         {
-            if (canvas != null)
-            {
-                canvas.Dispose();
-                canvas = null;
-            }
-            if (skin != null)
-            {
-                skin.Dispose();
-                skin = null;
-            }
-            if (renderer != null)
-            {
-                renderer.Dispose();
-                renderer = null;
-            }
+            gui.Dispose();
             base.Dispose(disposing);
-        }
-
-        private void Keyboard_KeyDown(KeyboardKeyEventArgs e)
-        {
-            if (e.Key == OpenToolkit.Windowing.Common.Input.Key.Escape)
-                Close();
-            else if (e.Key == OpenToolkit.Windowing.Common.Input.Key.AltLeft)
-                m_AltDown = true;
-            else if (m_AltDown && e.Key == OpenToolkit.Windowing.Common.Input.Key.Enter)
-                if (WindowState == WindowState.Fullscreen)
-                    WindowState = WindowState.Normal;
-                else
-                    WindowState = WindowState.Fullscreen;
-
-            input.ProcessKeyDown(e);
-        }
-
-        private void Keyboard_KeyUp(KeyboardKeyEventArgs e)
-        {
-            m_AltDown = false;
-            input.ProcessKeyUp(e);
-        }
-
-        private void Mouse_ButtonDown(MouseButtonEventArgs args)
-        {
-            input.ProcessMouseDown(args);
-        }
-
-        private void Mouse_ButtonUp(MouseButtonEventArgs args)
-        {
-            input.ProcessMouseDown(args);
-        }
-
-        private void Mouse_Move(MouseMoveEventArgs args)
-        {
-            input.ProcessMouseMove(args);
-        }
-
-        private void Mouse_Wheel(MouseWheelEventArgs args)
-        {
-            input.ProcessMouseWheel(args);
         }
 
         protected override void OnLoad()
         {
             GL.ClearColor(Color4.MidnightBlue);
-
-            Platform.Platform.Init(new NetCorePlatform());
-
-            //m_Renderer = new OpenTKGL10Renderer();
-            //m_Renderer = new OpenTKGL20Renderer();
-            renderer = new OpenTKGL40Renderer();
-
-            skin = new Skin.TexturedBase(renderer, "DefaultSkin2.png");
-
-            skin.DefaultFont = new Font(renderer, "Calibri", 11);
-            canvas = new Canvas(skin);
-            input = new OpenTkInputTranslator(canvas);
-
-            canvas.SetSize(Size.X, Size.Y);
-            canvas.ShouldDrawBackground = true;
-            canvas.BackgroundColor = skin.Colors.ModalBackground;
-
-            unitTestControls = new UnitTestHarnessControls(canvas);
+            gui.Load();
+            unitTestControls = new UnitTestHarnessControls(gui.Root);
         }
 
         protected override void OnResize(ResizeEventArgs e)
         {
-            renderer.Resize(e.Width, e.Height);
-            canvas.SetSize(e.Width, e.Height);
+            gui.Resize(e.Size);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -153,15 +77,10 @@ namespace Gwen.Net.Tests
             }
         }
 
-        /// <summary>
-        /// Add your game rendering code here.
-        /// </summary>
-        /// <param name="e">Contains timing information.</param>
-        /// <remarks>There is no need to call the base implementation.</remarks>
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-            canvas.RenderCanvas();
+            gui.Render();
             SwapBuffers();
 
             if (RenderFrequency == 0)
@@ -180,9 +99,6 @@ namespace Gwen.Net.Tests
             }
         }
 
-        /// <summary>
-        /// Entry point of this example.
-        /// </summary>
         [STAThread]
         public static void Main()
         {

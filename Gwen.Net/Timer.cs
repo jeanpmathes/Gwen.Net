@@ -91,7 +91,7 @@ namespace Gwen.Net
             if (m_Timers.Count == 0)
                 return;
 
-            float currentTime = Platform.Platform.GetTimeInSeconds();
+            float currentTime = Platform.GwenPlatform.GetTimeInSeconds();
 
             if (!m_Started)
             {

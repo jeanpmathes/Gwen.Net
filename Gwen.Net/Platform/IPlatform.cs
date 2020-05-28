@@ -22,7 +22,7 @@ namespace Gwen.Net.Platform
         /// Gets elapsed time. Initialization time is platform specific.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
-        float GetTimeInSeconds();
+        double GetTimeInSeconds();
 
         /// <summary>
         /// Changes the mouse cursor.

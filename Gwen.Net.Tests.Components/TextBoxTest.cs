@@ -227,17 +227,17 @@ namespace Gwen.Net.Tests.Components
                 dialog.Title = "Open Text File";
                 dialog.OkButtonText = "Open";
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-                dialog.InitialFolder = m_Path == null ? Platform.Platform.CurrentDirectory : Platform.Platform.GetDirectoryName(m_Path);
+                dialog.InitialFolder = m_Path == null ? Platform.GwenPlatform.CurrentDirectory : Platform.GwenPlatform.GetDirectoryName(m_Path);
                 dialog.Callback = path =>
                 {
                     if (!String.IsNullOrWhiteSpace(path))
                     {
                         try
                         {
-                            StreamReader reader = new StreamReader(Platform.Platform.GetFileStream(path, false), System.Text.Encoding.UTF8);
+                            StreamReader reader = new StreamReader(Platform.GwenPlatform.GetFileStream(path, false), System.Text.Encoding.UTF8);
                             m_TextBox.Text = reader.ReadToEnd();
                             m_Path = path;
-                            Title = Platform.Platform.GetFileName(m_Path) + " - TextPad";
+                            Title = Platform.GwenPlatform.GetFileName(m_Path) + " - TextPad";
                         }
                         catch (Exception)
                         {
@@ -252,7 +252,7 @@ namespace Gwen.Net.Tests.Components
                 {
                     try
                     {
-                        StreamWriter writer = new StreamWriter(Platform.Platform.GetFileStream(m_Path, true), System.Text.Encoding.UTF8);
+                        StreamWriter writer = new StreamWriter(Platform.GwenPlatform.GetFileStream(m_Path, true), System.Text.Encoding.UTF8);
                         writer.Write(m_TextBox.Text);
                     }
                     catch (Exception)
@@ -272,7 +272,7 @@ namespace Gwen.Net.Tests.Components
                 dialog.OkButtonText = "Save";
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
                 if (m_Path == null)
-                    dialog.InitialFolder = Platform.Platform.CurrentDirectory;
+                    dialog.InitialFolder = Platform.GwenPlatform.CurrentDirectory;
                 else
                     dialog.CurrentItem = m_Path;
                 dialog.Callback = path =>
@@ -281,10 +281,10 @@ namespace Gwen.Net.Tests.Components
                     {
                         try
                         {
-                            StreamWriter writer = new StreamWriter(Platform.Platform.GetFileStream(path, true), System.Text.Encoding.UTF8);
+                            StreamWriter writer = new StreamWriter(Platform.GwenPlatform.GetFileStream(path, true), System.Text.Encoding.UTF8);
                             writer.Write(m_TextBox.Text);
                             m_Path = path;
-                            Title = Platform.Platform.GetFileName(m_Path) + " - TextPad";
+                            Title = Platform.GwenPlatform.GetFileName(m_Path) + " - TextPad";
                         }
                         catch (Exception)
                         {

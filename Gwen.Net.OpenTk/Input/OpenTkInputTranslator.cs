@@ -63,7 +63,7 @@ namespace Gwen.Net.OpenTk.Input
             return ' ';
         }
 
-        public void ProcessMouseDown(MouseButtonEventArgs args)
+        public void ProcessMouseButton(MouseButtonEventArgs args)
         {
             if (canvas is null)
                 return;
@@ -103,10 +103,18 @@ namespace Gwen.Net.OpenTk.Input
             GwenMappedKey iKey = TranslateKeyCode(eventArgs.Key);
             if (iKey == GwenMappedKey.Invalid)
             {
-                return canvas.Input_Character(ch);
+                return false;
             }
 
             return canvas.Input_Key(iKey, true);
+        }
+
+        public void ProcessTextInput(TextInputEventArgs obj)
+        {
+            foreach (char c in obj.AsString)
+            {
+                canvas.Input_Character(c);
+            }
         }
 
         public bool ProcessKeyUp(KeyboardKeyEventArgs eventArgs)

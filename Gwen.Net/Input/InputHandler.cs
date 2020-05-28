@@ -186,7 +186,7 @@ namespace Gwen.Net.Input
             if (null == KeyboardFocus) return;
             if (KeyboardFocus.GetCanvas() != control) return;
 
-            float time = Platform.Platform.GetTimeInSeconds();
+            float time = Platform.GwenPlatform.GetTimeInSeconds();
 
             //
             // Simulate Key-Repeats
@@ -201,7 +201,7 @@ namespace Gwen.Net.Input
 
                 if (m_KeyData.KeyState[i] && time > m_KeyData.NextRepeat[i])
                 {
-                    m_KeyData.NextRepeat[i] = Platform.Platform.GetTimeInSeconds() + KeyRepeatRate;
+                    m_KeyData.NextRepeat[i] = Platform.GwenPlatform.GetTimeInSeconds() + KeyRepeatRate;
 
                     if (KeyboardFocus != null)
                     {
@@ -276,14 +276,14 @@ namespace Gwen.Net.Input
             if (down &&
                 m_LastClickPos.X == MousePosition.X &&
                 m_LastClickPos.Y == MousePosition.Y &&
-                (Platform.Platform.GetTimeInSeconds() - m_LastClickTime[mouseButton]) < DoubleClickSpeed)
+                (Platform.GwenPlatform.GetTimeInSeconds() - m_LastClickTime[mouseButton]) < DoubleClickSpeed)
             {
                 isDoubleClick = true;
             }
 
             if (down && !isDoubleClick)
             {
-                m_LastClickTime[mouseButton] = Platform.Platform.GetTimeInSeconds();
+                m_LastClickTime[mouseButton] = Platform.GwenPlatform.GetTimeInSeconds();
                 m_LastClickPos = MousePosition;
             }
 
@@ -356,7 +356,7 @@ namespace Gwen.Net.Input
                 if (!m_KeyData.KeyState[iKey])
                 {
                     m_KeyData.KeyState[iKey] = true;
-                    m_KeyData.NextRepeat[iKey] = Platform.Platform.GetTimeInSeconds() + KeyRepeatDelay;
+                    m_KeyData.NextRepeat[iKey] = Platform.GwenPlatform.GetTimeInSeconds() + KeyRepeatDelay;
                     m_KeyData.Target = KeyboardFocus;
 
                     return KeyboardFocus.InputKeyPressed(key);

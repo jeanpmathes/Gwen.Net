@@ -106,7 +106,7 @@ namespace Gwen.Net.DragDrop
                 // Show the NO WAY cursor.
                 if (m_NewHoveredControl == null)
                 {
-                    Platform.Platform.SetCursor(Cursor.No);
+                    Platform.GwenPlatform.SetCursor(Cursor.No);
                 }
             }
 
@@ -200,7 +200,7 @@ namespace Gwen.Net.DragDrop
 
             // Override the cursor - since it might have been set my underlying controls
             // Ideally this would show the 'being dragged' control. TODO
-            Platform.Platform.SetCursor(Cursor.Normal);
+            Platform.GwenPlatform.SetCursor(Cursor.Normal);
 
             hoveredControl.Redraw();
         }

@@ -4,9 +4,9 @@ using System.IO;
 
 namespace Gwen.Net.Platform
 {
-    public class Platform
+    public class GwenPlatform
     {
-        private static IPlatform m_Platform = null;
+        private static IPlatform platform = null;
 
         /// <summary>
         /// Set the current platform.
@@ -14,7 +14,7 @@ namespace Gwen.Net.Platform
         /// <param name="platform">Platform.</param>
         public static void Init(IPlatform platform)
         {
-            m_Platform = platform;
+            GwenPlatform.platform = platform;
         }
 
         /// <summary>
@@ -23,9 +23,9 @@ namespace Gwen.Net.Platform
         /// <returns>Clipboard text.</returns>
         public static string GetClipboardText()
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetClipboardText();
+            return platform.GetClipboardText();
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace Gwen.Net.Platform
         /// <returns>True if succeeded.</returns>
         public static bool SetClipboardText(string text)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.SetClipboardText(text);
+            return platform.SetClipboardText(text);
         }
 
 
@@ -47,9 +47,9 @@ namespace Gwen.Net.Platform
         /// <returns>Time interval in seconds.</returns>
         public static float GetTimeInSeconds()
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetTimeInSeconds();
+            return (float)platform.GetTimeInSeconds();
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace Gwen.Net.Platform
         /// <param name="cursor">Cursor type.</param>
         public static void SetCursor(Cursor cursor)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            m_Platform.SetCursor(cursor);
+            platform.SetCursor(cursor);
         }
 
         /// <summary>
@@ -69,96 +69,96 @@ namespace Gwen.Net.Platform
         /// <returns>List of folders.</returns>
         public static IEnumerable<ISpecialFolder> GetSpecialFolders()
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetSpecialFolders();
+            return platform.GetSpecialFolders();
         }
 
         public static string GetFileName(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetFileName(path);
+            return platform.GetFileName(path);
         }
 
         public static string GetDirectoryName(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetDirectoryName(path);
+            return platform.GetDirectoryName(path);
         }
 
         public static bool FileExists(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.FileExists(path);
+            return platform.FileExists(path);
         }
 
         public static bool DirectoryExists(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.DirectoryExists(path);
+            return platform.DirectoryExists(path);
         }
 
         public static void CreateDirectory(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            m_Platform.CreateDirectory(path);
+            platform.CreateDirectory(path);
         }
 
         public static string Combine(string path1, string path2)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.Combine(path1, path2);
+            return platform.Combine(path1, path2);
         }
 
         public static string Combine(string path1, string path2, string path3)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.Combine(path1, path2, path3);
+            return platform.Combine(path1, path2, path3);
         }
 
         public static string Combine(string path1, string path2, string path3, string path4)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.Combine(path1, path2, path3, path4);
+            return platform.Combine(path1, path2, path3, path4);
         }
 
         public static string CurrentDirectory
         {
             get
             {
-                System.Diagnostics.Debug.Assert(m_Platform != null);
+                System.Diagnostics.Debug.Assert(platform != null);
 
-                return m_Platform.CurrentDirectory;
+                return platform.CurrentDirectory;
             }
         }
 
         public static IEnumerable<IFileSystemDirectoryInfo> GetDirectories(string path)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetDirectories(path);
+            return platform.GetDirectories(path);
         }
 
         public static IEnumerable<IFileSystemFileInfo> GetFiles(string path, string filter)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetFiles(path, filter);
+            return platform.GetFiles(path, filter);
         }
 
         public static Stream GetFileStream(string path, bool isWritable)
         {
-            System.Diagnostics.Debug.Assert(m_Platform != null);
+            System.Diagnostics.Debug.Assert(platform != null);
 
-            return m_Platform.GetFileStream(path, isWritable);
+            return platform.GetFileStream(path, isWritable);
         }
     }
 }

@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Gwen.Net.Platform;
+using OpenToolkit.Windowing.Common.Input;
+using OpenToolkit.Windowing.GraphicsLibraryFramework;
 using TextCopy;
 
 namespace Gwen.Net.OpenTk.Platform
 {
     public class NetCorePlatform : IPlatform
     {
-        private DateTime firstTime = DateTime.Now;
+        private Action<MouseCursor> setCursor;
+        private readonly Stopwatch watch;
+
+        public NetCorePlatform(Action<MouseCursor> setCursor)
+        {
+            this.setCursor = setCursor;
+            watch = new Stopwatch();
+        }
 
         /// <summary>
         /// Gets text from clipboard.
@@ -56,7 +67,7 @@ namespace Gwen.Net.OpenTk.Platform
                 {
                     try
                     {
-                        //Clipboard.SetText(text);
+                        ClipboardService.SetText(text);
                         ret = true;
                     }
                     catch (Exception)
@@ -75,18 +86,40 @@ namespace Gwen.Net.OpenTk.Platform
         /// Gets elapsed time since this class was initalized.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
-        public float GetTimeInSeconds()
+        public double GetTimeInSeconds()
         {
-            return (float)((DateTime.Now - firstTime).TotalSeconds);
+            return watch.Elapsed.TotalSeconds;
         }
 
         /// <summary>
         /// Changes the mouse cursor.
         /// </summary>
         /// <param name="cursor">Cursor type.</param>
-        public void SetCursor(Cursor cursor)
+        public unsafe void SetCursor(Cursor cursor)
         {
-
+            MouseCursor translatedCursor = null;
+            switch (cursor)
+            {
+                case Cursor.Beam:
+                    translatedCursor = MouseCursor.IBeam;
+                    break;
+                case Cursor.Finger:
+                    translatedCursor = MouseCursor.Hand;
+                    break;
+                case Cursor.Normal:
+                    translatedCursor = MouseCursor.Default;
+                    break;
+                case Cursor.SizeNS:
+                    translatedCursor = MouseCursor.VResize;
+                    break;
+                case Cursor.SizeWE:
+                    translatedCursor = MouseCursor.HResize;
+                    break;
+                default:
+                    translatedCursor = MouseCursor.Crosshair;
+                    break;
+            }
+            setCursor.Invoke(translatedCursor);
         }
 
         /// <summary>

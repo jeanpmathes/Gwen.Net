@@ -347,7 +347,7 @@ namespace Gwen.Net.Control
         protected override void OnPaste(ControlBase from, EventArgs args)
         {
             base.OnPaste(from, args);
-            InsertText(Platform.Platform.GetClipboardText());
+            InsertText(Platform.GwenPlatform.GetClipboardText());
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace Gwen.Net.Control
             if (!HasSelection) return;
             base.OnCopy(from, args);
 
-            Platform.Platform.SetClipboardText(GetSelection());
+            Platform.GwenPlatform.SetClipboardText(GetSelection());
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Gwen.Net.Control
             if (!HasSelection) return;
             base.OnCut(from, args);
 
-            Platform.Platform.SetClipboardText(GetSelection());
+            Platform.GwenPlatform.SetClipboardText(GetSelection());
             EraseSelection();
         }
 
@@ -672,7 +672,7 @@ namespace Gwen.Net.Control
 
         protected virtual void RefreshCursorBounds()
         {
-            m_LastInputTime = Platform.Platform.GetTimeInSeconds();
+            m_LastInputTime = Platform.GwenPlatform.GetTimeInSeconds();
 
             MakeCaretVisible();
 
@@ -728,7 +728,7 @@ namespace Gwen.Net.Control
             }
 
             // Draw caret
-            float time = Platform.Platform.GetTimeInSeconds() - m_LastInputTime;
+            float time = Platform.GwenPlatform.GetTimeInSeconds() - m_LastInputTime;
 
             if ((time % 1.0f) <= 0.5f)
             {

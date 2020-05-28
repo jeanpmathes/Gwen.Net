@@ -1944,7 +1944,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void UpdateCursor()
         {
-            Platform.Platform.SetCursor(m_Cursor);
+            Platform.GwenPlatform.SetCursor(m_Cursor);
         }
 
         // giver

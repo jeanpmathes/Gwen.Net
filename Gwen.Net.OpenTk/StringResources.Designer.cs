@@ -61,6 +61,15 @@ namespace Gwen.Net.OpenTk {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Render {0} not supported..
+        /// </summary>
+        internal static string RenderNotFoundFormat {
+            get {
+                return ResourceManager.GetString("RenderNotFoundFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The resource loader for &apos;{0}&apos; was not found..
         /// </summary>
         internal static string ResourceLoaderNotFoundFormat {

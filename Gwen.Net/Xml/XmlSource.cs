@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using static Gwen.Net.Platform.Platform;
+using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.Xml
 {

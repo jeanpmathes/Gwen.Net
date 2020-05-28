@@ -224,7 +224,7 @@ namespace Gwen.Net.Control
         /// <param name="from">Source control.</param>
         protected override void OnCopy(ControlBase from, EventArgs args)
         {
-            Platform.Platform.SetClipboardText(Text);
+            Platform.GwenPlatform.SetClipboardText(Text);
         }
     }
 }

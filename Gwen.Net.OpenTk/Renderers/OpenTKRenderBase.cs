@@ -9,7 +9,7 @@ using Bitmap = System.Drawing.Bitmap;
 using PixelFormat = OpenToolkit.Graphics.OpenGL.PixelFormat;
 using SizeF = System.Drawing.SizeF;
 
-namespace Gwen.Net.OpenTk
+namespace Gwen.Net.OpenTk.Renderers
 {
     public abstract class OpenTKRendererBase : RendererBase
     {

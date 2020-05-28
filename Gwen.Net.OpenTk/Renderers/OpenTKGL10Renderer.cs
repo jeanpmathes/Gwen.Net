@@ -1,79 +1,40 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Gwen.Net.OpenTk.Shaders;
 using OpenToolkit.Graphics.OpenGL;
 
-namespace Gwen.Net.OpenTk
+namespace Gwen.Net.OpenTk.Renderers
 {
-    public class OpenTKGL40Renderer : OpenTKRendererBase
+    public class OpenTKGL10Renderer : OpenTKRendererBase
     {
-        private const int MaxVerts = 4096;
+        private const int MaxVerts = 1024;
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Vertex
+        {
+            public short x, y;
+            public float u, v;
+            public byte r, g, b, a;
+        }
+
+        private int vertNum;
         private readonly Vertex[] vertices;
         private readonly int vertexSize;
-        private readonly IShader shader;
-        private readonly bool restoreRenderState;
 
-
-        private bool wasBlendEnabled;
-        private bool wasDepthTestEnabled;
-        private int prevBlendSrc;
-        private int prevBlendDst;
-        private int prevAlphaFunc;
+        private bool wasBlendEnabled, wasTexture2DEnabled, wasDepthTestEnabled;
+        private int prevBlendSrc, prevBlendDst, prevAlphaFunc;
         private float prevAlphaRef;
+        private bool restoreRenderState;
 
-        private int vbo;
-        private int vao;
-        private int vertNum;
-        private int totalVertNum;
-
-        public override int VertexCount => totalVertNum;
-
-        public OpenTKGL40Renderer(bool restoreRenderState = true)
+        public OpenTKGL10Renderer(bool restoreRenderState = true)
             : base()
         {
             vertices = new Vertex[MaxVerts];
             vertexSize = Marshal.SizeOf(vertices[0]);
             this.restoreRenderState = restoreRenderState;
-
-            CreateBuffers();
-
-            shader = new GL40ShaderLoader().Load("gui.gl40");
-        }
-
-        private void CreateBuffers()
-        {
-            GL.GenVertexArrays(1, out vao);
-            GL.BindVertexArray(vao);
-
-            GL.GenBuffers(1, out vbo);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw); // Allocate
-
-            // Vertex positions
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, vertexSize, 0);
-
-            // Tex coords
-            GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, vertexSize, 2 * sizeof(float));
-
-            // Colors
-            GL.EnableVertexAttribArray(2);
-            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, vertexSize, 2 * (sizeof(float) + sizeof(float)));
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
         }
 
         public override void Begin()
         {
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.UseProgram(shader.Program);
-
-            GL.BindVertexArray(vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-
             if (restoreRenderState)
             {
                 // Get previous parameter values before changing them.
@@ -83,27 +44,31 @@ namespace Gwen.Net.OpenTk
                 GL.GetFloat(GetPName.AlphaTestRef, out prevAlphaRef);
 
                 wasBlendEnabled = GL.IsEnabled(EnableCap.Blend);
+                wasTexture2DEnabled = GL.IsEnabled(EnableCap.Texture2D);
                 wasDepthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             }
 
             // Set default values and enable/disable caps.
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.AlphaFunc(AlphaFunction.Greater, 1.0f);
             GL.Enable(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Texture2D);
 
             vertNum = 0;
-            totalVertNum = 0;
             drawCallCount = 0;
             clipEnabled = false;
             textureEnabled = false;
             lastTextureID = -1;
+
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.ColorArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
         }
 
         public override void End()
         {
             Flush();
-            GL.BindVertexArray(0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             if (restoreRenderState)
             {
@@ -112,34 +77,41 @@ namespace Gwen.Net.OpenTk
 
                 // Restore the previous parameter values.
                 GL.BlendFunc((BlendingFactor)prevBlendSrc, (BlendingFactor)prevBlendDst);
+                GL.AlphaFunc((AlphaFunction)prevAlphaFunc, prevAlphaRef);
 
                 if (!wasBlendEnabled)
                     GL.Disable(EnableCap.Blend);
 
+                if (wasTexture2DEnabled && !textureEnabled)
+                    GL.Enable(EnableCap.Texture2D);
+
                 if (wasDepthTestEnabled)
                     GL.Enable(EnableCap.DepthTest);
             }
+
+            GL.DisableClientState(ArrayCap.VertexArray);
+            GL.DisableClientState(ArrayCap.ColorArray);
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
         }
 
-        protected override void Flush()
+        public override int VertexCount { get { return vertNum; } }
+
+        protected override unsafe void Flush()
         {
             if (vertNum == 0) return;
 
-            if (GLVersion >= 43)
-                GL.InvalidateBufferData(vbo);
-            //else
-            // This will slow down rendering. It seems to work without this but there could be synchronization problems with some drivers.
-            // If that's the case then enable this.
-            //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(m_VertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw);
+            fixed (short* ptr1 = &vertices[0].x)
+            fixed (byte* ptr2 = &vertices[0].r)
+            fixed (float* ptr3 = &vertices[0].u)
+            {
+                GL.VertexPointer(2, VertexPointerType.Short, vertexSize, (IntPtr)ptr1);
+                GL.ColorPointer(4, ColorPointerType.UnsignedByte, vertexSize, (IntPtr)ptr2);
+                GL.TexCoordPointer(2, TexCoordPointerType.Float, vertexSize, (IntPtr)ptr3);
 
-            GL.BufferSubData<Vertex>(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(vertNum * vertexSize), vertices);
-
-            GL.Uniform1(shader.Uniforms["uUseTexture"], textureEnabled ? 1.0f : 0.0f);
-
-            GL.DrawArrays(PrimitiveType.Triangles, 0, vertNum);
+                GL.DrawArrays(PrimitiveType.Quads, 0, vertNum);
+            }
 
             drawCallCount++;
-            totalVertNum += vertNum;
             vertNum = 0;
         }
 
@@ -223,87 +195,55 @@ namespace Gwen.Net.OpenTk
                 }
             }
 
-            float cR = color.R / 255f;
-            float cG = color.G / 255f;
-            float cB = color.B / 255f;
-            float cA = color.A / 255f;
-
             int vertexIndex = vertNum;
             vertices[vertexIndex].x = (short)rect.X;
             vertices[vertexIndex].y = (short)rect.Y;
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v1;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
+            vertices[vertexIndex].r = color.R;
+            vertices[vertexIndex].g = color.G;
+            vertices[vertexIndex].b = color.B;
+            vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             vertices[vertexIndex].x = (short)(rect.X + rect.Width);
             vertices[vertexIndex].y = (short)rect.Y;
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v1;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
+            vertices[vertexIndex].r = color.R;
+            vertices[vertexIndex].g = color.G;
+            vertices[vertexIndex].b = color.B;
+            vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             vertices[vertexIndex].x = (short)(rect.X + rect.Width);
             vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v2;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
-
-            vertexIndex++;
-            vertices[vertexIndex].x = (short)rect.X;
-            vertices[vertexIndex].y = (short)rect.Y;
-            vertices[vertexIndex].u = u1;
-            vertices[vertexIndex].v = v1;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
-
-            vertexIndex++;
-            vertices[vertexIndex].x = (short)(rect.X + rect.Width);
-            vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
-            vertices[vertexIndex].u = u2;
-            vertices[vertexIndex].v = v2;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
+            vertices[vertexIndex].r = color.R;
+            vertices[vertexIndex].g = color.G;
+            vertices[vertexIndex].b = color.B;
+            vertices[vertexIndex].a = color.A;
 
             vertexIndex++;
             vertices[vertexIndex].x = (short)rect.X;
             vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v2;
-            vertices[vertexIndex].r = cR;
-            vertices[vertexIndex].g = cG;
-            vertices[vertexIndex].b = cB;
-            vertices[vertexIndex].a = cA;
+            vertices[vertexIndex].r = color.R;
+            vertices[vertexIndex].g = color.G;
+            vertices[vertexIndex].b = color.B;
+            vertices[vertexIndex].a = color.A;
 
-            vertNum += 6;
+            vertNum += 4;
         }
 
         public override void Resize(int width, int height)
         {
             GL.Viewport(0, 0, width, height);
-            GL.UseProgram(shader.Program);
-            GL.Uniform2(shader.Uniforms["uScreenSize"], (float)width, (float)height);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Vertex
-        {
-            public float x, y;
-            public float u, v;
-            public float r, g, b, a;
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(0, width, height, 0, -1, 1);
         }
     }
 }
