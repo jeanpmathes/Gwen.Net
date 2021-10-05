@@ -26,8 +26,8 @@ namespace Gwen.Net.Tests
         private readonly CircularBuffer<double> renderFrameTimes;
         private readonly IGwenGui gui;
 
-        public UnitTestGameWindow()
-            : base(GameWindowSettings.Default, NativeWindowSettings.Default)
+        public UnitTestGameWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+            : base(gameWindowSettings, nativeWindowSettings)
         {
             UpdateFrequency = 30;
 
@@ -102,12 +102,18 @@ namespace Gwen.Net.Tests
         [STAThread]
         public static void Main()
         {
-            using (UnitTestGameWindow window = new UnitTestGameWindow())
+            GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
+            NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
+
+            nativeWindowSettings.Profile = ContextProfile.Core;
+
+            using UnitTestGameWindow window = new UnitTestGameWindow(gameWindowSettings, nativeWindowSettings)
             {
-                window.Title = "Gwen.net OpenTK Unit Test";
-                window.VSync = VSyncMode.Off; // to measure performance
-                window.Run();
-            }
+                Title = "Gwen.net OpenTK Unit Test",
+                VSync = VSyncMode.Off // to measure performance
+            };
+
+            window.Run();
         }
     }
 }
