@@ -1,5 +1,4 @@
 ﻿using Gwen.Net.Control;
-using Gwen.Net.OpenTk.Exceptions;
 using Gwen.Net.OpenTk.Input;
 using Gwen.Net.OpenTk.Platform;
 using Gwen.Net.OpenTk.Renderers;
@@ -14,16 +13,10 @@ namespace Gwen.Net.OpenTk
 {
     internal class GwenGui : IGwenGui
     {
-        private OpenTKRendererBase renderer;
-        private SkinBase skin;
         private Canvas canvas;
         private OpenTkInputTranslator input;
-
-        public GwenGuiSettings Settings { get; }
-
-        public GameWindow Parent { get; }
-
-        public ControlBase Root => canvas;
+        private OpenTKRendererBase renderer;
+        private SkinBase skin;
 
         internal GwenGui(GameWindow parent, GwenGuiSettings settings)
         {
@@ -31,15 +24,23 @@ namespace Gwen.Net.OpenTk
             Settings = settings;
         }
 
+        public GwenGuiSettings Settings { get; }
+
+        public GameWindow Parent { get; }
+
+        public ControlBase Root => canvas;
+
         public void Load()
         {
             GwenPlatform.Init(new NetCorePlatform(SetCursor));
             AttachToWindowEvents();
-            renderer = ResolveRenderer(Settings.Renderer);
+            renderer = ResolveRenderer();
+
             skin = new TexturedBase(renderer, "DefaultSkin2.png")
             {
-                DefaultFont = new Font(renderer, "Calibri", 11)
+                DefaultFont = new Font(renderer, "Calibri", size: 11)
             };
+
             canvas = new Canvas(skin);
             input = new OpenTkInputTranslator(canvas);
 
@@ -90,44 +91,48 @@ namespace Gwen.Net.OpenTk
         }
 
         private void Parent_KeyUp(KeyboardKeyEventArgs obj)
-            => input.ProcessKeyUp(obj);
+        {
+            input.ProcessKeyUp(obj);
+        }
 
         private void Parent_KeyDown(KeyboardKeyEventArgs obj)
-            => input.ProcessKeyDown(obj);
+        {
+            input.ProcessKeyDown(obj);
+        }
 
         private void Parent_TextInput(TextInputEventArgs obj)
-            => input.ProcessTextInput(obj);
+        {
+            input.ProcessTextInput(obj);
+        }
 
         private void Parent_MouseDown(MouseButtonEventArgs obj)
-            => input.ProcessMouseButton(obj);
+        {
+            input.ProcessMouseButton(obj);
+        }
 
         private void Parent_MouseUp(MouseButtonEventArgs obj)
-            => input.ProcessMouseButton(obj);
+        {
+            input.ProcessMouseButton(obj);
+        }
 
         private void Parent_MouseMove(MouseMoveEventArgs obj)
-            => input.ProcessMouseMove(obj);
+        {
+            input.ProcessMouseMove(obj);
+        }
 
         private void Parent_MouseWheel(MouseWheelEventArgs obj)
-            => input.ProcessMouseWheel(obj);
+        {
+            input.ProcessMouseWheel(obj);
+        }
 
         private void SetCursor(MouseCursor mouseCursor)
         {
             Parent.Cursor = mouseCursor;
         }
 
-        private static OpenTKRendererBase ResolveRenderer(GwenGuiRenderer gwenGuiRenderer)
+        private static OpenTKRendererBase ResolveRenderer()
         {
-            switch (gwenGuiRenderer)
-            {
-                case GwenGuiRenderer.GL10:
-                    return new OpenTKGL10Renderer();
-                case GwenGuiRenderer.GL20:
-                    return new OpenTKGL20Renderer();
-                case GwenGuiRenderer.GL40:
-                    return new OpenTKGL40Renderer();
-                default:
-                    throw new RendererNotFoundException(gwenGuiRenderer);
-            };
+            return new OpenTKGL40Renderer();
         }
     }
 }

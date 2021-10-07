@@ -1,41 +1,39 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Collections.Generic;
-using Gwen.Net.Control;
 using Gwen.Net.OpenTk;
-using Gwen.Net.OpenTk.Input;
-using Gwen.Net.OpenTk.Platform;
-using Gwen.Net.Skin;
 using Gwen.Net.Tests.Components;
 using OpenToolkit.Graphics.OpenGL;
 using OpenToolkit.Mathematics;
 using OpenToolkit.Windowing.Common;
-using OpenToolkit.Windowing.Common.Input;
 using OpenToolkit.Windowing.Desktop;
-using OpenToolkit.Windowing.GraphicsLibraryFramework;
 
 namespace Gwen.Net.Tests
 {
     public class UnitTestGameWindow : GameWindow
     {
         private const int MaxFrameSampleSize = 10000;
-
-        private UnitTestHarnessControls unitTestControls;
+        private readonly IGwenGui gui;
+        private readonly CircularBuffer<double> renderFrameTimes;
 
         private readonly CircularBuffer<double> updateFrameTimes;
-        private readonly CircularBuffer<double> renderFrameTimes;
-        private readonly IGwenGui gui;
+
+        private UnitTestHarnessControls unitTestControls;
 
         public UnitTestGameWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
             UpdateFrequency = 30;
 
-            gui = GwenGuiFactory.CreateFromGame(this, GwenGuiSettings.Default.From((settings) => 
-            {
-                //Have the skin come from somewhere else.
-                settings.SkinFile = new System.IO.FileInfo("DefaultSkin2.png");
-            }));
+            gui = GwenGuiFactory.CreateFromGame(
+                this,
+                GwenGuiSettings.Default.From(
+                    settings =>
+                    {
+                        //Have the skin come from somewhere else.
+                        settings.SkinFile = new FileInfo("DefaultSkin2.png");
+                    }));
 
             updateFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
             renderFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
@@ -64,6 +62,7 @@ namespace Gwen.Net.Tests
             if (UpdateFrequency == 0)
             {
                 updateFrameTimes.Put(e.Time);
+
                 if (updateFrameTimes.Sum(t => t) >= 1)
                 {
                     int frames = updateFrameTimes.Count();
@@ -86,6 +85,7 @@ namespace Gwen.Net.Tests
             if (RenderFrequency == 0)
             {
                 renderFrameTimes.Put(e.Time);
+
                 if (renderFrameTimes.Sum(t => t) >= 1)
                 {
                     int frames = renderFrameTimes.Count();
@@ -109,8 +109,7 @@ namespace Gwen.Net.Tests
 
             using UnitTestGameWindow window = new UnitTestGameWindow(gameWindowSettings, nativeWindowSettings)
             {
-                Title = "Gwen.net OpenTK Unit Test",
-                VSync = VSyncMode.Off // to measure performance
+                Title = "Gwen.net OpenTK Unit Test", VSync = VSyncMode.Off // to measure performance
             };
 
             window.Run();
