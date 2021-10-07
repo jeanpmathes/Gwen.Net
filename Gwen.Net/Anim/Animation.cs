@@ -7,26 +7,23 @@ namespace Gwen.Net.Anim
 {
     public class Animation
     {
+        //private static List<Animation> g_AnimationsListed = new List<Animation>(); // unused
+        private static readonly Dictionary<ControlBase, List<Animation>> m_Animations = new();
         protected ControlBase m_Control;
 
-        //private static List<Animation> g_AnimationsListed = new List<Animation>(); // unused
-        private static readonly Dictionary<ControlBase, List<Animation>> m_Animations = new Dictionary<ControlBase, List<Animation>>();
+        public virtual bool Finished => throw new InvalidOperationException("Pure virtual function call");
 
-        protected virtual void Think()
-        {
-
-        }
-
-        public virtual bool Finished
-        {
-            get { throw new InvalidOperationException("Pure virtual function call"); }
-        }
+        protected virtual void Think() {}
 
         public static void Add(ControlBase control, Animation animation)
         {
             animation.m_Control = control;
+
             if (!m_Animations.ContainsKey(control))
+            {
                 m_Animations[control] = new List<Animation>();
+            }
+
             m_Animations[control].Add(animation);
         }
 
@@ -43,10 +40,14 @@ namespace Gwen.Net.Anim
         {
             foreach (KeyValuePair<ControlBase, List<Animation>> pair in m_Animations)
             {
-                var valCopy = pair.Value.TakeWhile(x => true); // list copy so foreach won't break when we remove elements
+                IEnumerable<Animation>
+                    valCopy = pair.Value.TakeWhile(
+                        x => true); // list copy so foreach won't break when we remove elements
+
                 foreach (Animation animation in valCopy)
                 {
                     animation.Think();
+
                     if (animation.Finished)
                     {
                         pair.Value.Remove(animation);

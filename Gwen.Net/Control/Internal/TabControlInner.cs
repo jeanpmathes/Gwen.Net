@@ -1,26 +1,23 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Inner panel of tab control.
+    ///     Inner panel of tab control.
     /// </summary>
     public class TabControlInner : ControlBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TabControlInner"/> class.
+        ///     Initializes a new instance of the <see cref="TabControlInner" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        internal TabControlInner(ControlBase parent) : base(parent)
-        {
-        }
+        internal TabControlInner(ControlBase parent) : base(parent) {}
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawTabControl(this);
         }

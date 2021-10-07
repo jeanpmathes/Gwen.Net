@@ -1,17 +1,16 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Item in CollapsibleCategory.
+    ///     Item in CollapsibleCategory.
     /// </summary>
     public class CategoryButton : Button
     {
         internal bool m_Alt; // for alternate coloring
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CategoryButton"/> class.
+        ///     Initializes a new instance of the <see cref="CategoryButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public CategoryButton(ControlBase parent) : base(parent)
@@ -19,39 +18,51 @@ namespace Gwen.Net.Control.Internal
             Alignment = Alignment.Left | Alignment.CenterV;
             m_Alt = false;
             IsToggle = true;
-            TextPadding = new Padding(3, 0, 3, 0);
+            TextPadding = new Padding(left: 3, top: 0, right: 3, bottom: 0);
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             if (m_Alt)
             {
                 if (IsDepressed || ToggleState)
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button_Selected;
+                }
                 else if (IsHovered)
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button_Hover;
+                }
                 else
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button;
+                }
             }
             else
             {
                 if (IsDepressed || ToggleState)
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button_Selected;
+                }
                 else if (IsHovered)
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button_Hover;
+                }
                 else
+                {
                     Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button;
+                }
             }
 
             skin.Renderer.DrawFilledRect(RenderBounds);
         }
 
         /// <summary>
-        /// Updates control colors.
+        ///     Updates control colors.
         /// </summary>
         public override void UpdateColors()
         {
@@ -60,27 +71,36 @@ namespace Gwen.Net.Control.Internal
                 if (IsDepressed || ToggleState)
                 {
                     TextColor = Skin.Colors.Category.LineAlt.Text_Selected;
+
                     return;
                 }
+
                 if (IsHovered)
                 {
                     TextColor = Skin.Colors.Category.LineAlt.Text_Hover;
+
                     return;
                 }
+
                 TextColor = Skin.Colors.Category.LineAlt.Text;
+
                 return;
             }
 
             if (IsDepressed || ToggleState)
             {
                 TextColor = Skin.Colors.Category.Line.Text_Selected;
+
                 return;
             }
+
             if (IsHovered)
             {
                 TextColor = Skin.Colors.Category.Line.Text_Hover;
+
                 return;
             }
+
             TextColor = Skin.Colors.Category.Line.Text;
         }
     }

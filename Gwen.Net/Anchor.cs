@@ -9,10 +9,10 @@ namespace Gwen.Net
         public readonly byte Left;
         public readonly byte Right;
 
-        public static Anchor LeftTop = new Anchor(0, 0, 0, 0);
-        public static Anchor RightTop = new Anchor(100, 0, 100, 0);
-        public static Anchor LeftBottom = new Anchor(0, 100, 0, 100);
-        public static Anchor RightBottom = new Anchor(100, 100, 100, 100);
+        public static Anchor LeftTop = new(left: 0, top: 0, right: 0, bottom: 0);
+        public static Anchor RightTop = new(left: 100, top: 0, right: 100, bottom: 0);
+        public static Anchor LeftBottom = new(left: 0, top: 100, right: 0, bottom: 100);
+        public static Anchor RightBottom = new(left: 100, top: 100, right: 100, bottom: 100);
 
         public Anchor(byte left, byte top, byte right, byte bottom)
         {
@@ -39,21 +39,28 @@ namespace Gwen.Net
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (obj.GetType() != typeof(Anchor)) return false;
+            if (ReferenceEquals(objA: null, obj))
+            {
+                return false;
+            }
+
+            if (obj.GetType() != typeof(Anchor))
+            {
+                return false;
+            }
+
             return Equals((Anchor)obj);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int result = Top;
-                result |= Bottom << 8;
-                result |= Left << 16;
-                result |= Right << 24;
-                return result;
-            }
+            int result = Top;
+            result |= Bottom << 8;
+            result |= Left << 16;
+            result |= Right << 24;
+
+            return result;
+
         }
     }
 }

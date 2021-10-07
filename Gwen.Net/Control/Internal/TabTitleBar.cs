@@ -1,27 +1,27 @@
-﻿using System;
-using Gwen.Net.DragDrop;
+﻿using Gwen.Net.DragDrop;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Titlebar for DockedTabControl.
+    ///     Titlebar for DockedTabControl.
     /// </summary>
     public class TabTitleBar : Label
     {
         public TabTitleBar(ControlBase parent) : base(parent)
         {
             MouseInputEnabled = true;
-            TextPadding = new Padding(5, 2, 5, 2);
-            Padding = new Padding(1, 2, 1, 2);
+            TextPadding = new Padding(left: 5, top: 2, right: 5, bottom: 2);
+            Padding = new Padding(left: 1, top: 2, right: 1, bottom: 2);
 
-            DragAndDrop_SetPackage(true, "TabWindowMove");
+            DragAndDrop_SetPackage(draggable: true, "TabWindowMove");
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawTabTitleBar(this);
         }

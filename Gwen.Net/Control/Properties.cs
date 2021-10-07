@@ -1,30 +1,22 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Control.Layout;
+using Gwen.Net.Control.Property;
+using Text = Gwen.Net.Control.Property.Text;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Properties table.
+    ///     Properties table.
     /// </summary>
     public class Properties : ContentControl
     {
+        internal const int DefaultLabelWidth = 80;
         private readonly SplitterBar m_SplitterBar;
         private int m_LabelWidth;
 
-        internal const int DefaultLabelWidth = 80;
-
         /// <summary>
-        /// Width of the first column (property names).
-        /// </summary>
-        internal int LabelWidth { get { return m_LabelWidth; } set { if (value == m_LabelWidth) return; m_LabelWidth = value; Invalidate(); } }
-
-        /// <summary>
-        /// Invoked when a property value has been changed.
-        /// </summary>
-		public event GwenEventHandler<EventArgs> ValueChanged;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Properties"/> class.
+        ///     Initializes a new instance of the <see cref="Properties" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Properties(ControlBase parent)
@@ -38,8 +30,31 @@ namespace Gwen.Net.Control
 
             m_LabelWidth = DefaultLabelWidth;
 
-            m_InnerPanel = new Layout.VerticalLayout(this);
+            m_InnerPanel = new VerticalLayout(this);
         }
+
+        /// <summary>
+        ///     Width of the first column (property names).
+        /// </summary>
+        internal int LabelWidth
+        {
+            get => m_LabelWidth;
+            set
+            {
+                if (value == m_LabelWidth)
+                {
+                    return;
+                }
+
+                m_LabelWidth = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        ///     Invoked when a property value has been changed.
+        /// </summary>
+        public event GwenEventHandler<EventArgs> ValueChanged;
 
         protected override Size Measure(Size availableSize)
         {
@@ -58,13 +73,17 @@ namespace Gwen.Net.Control
 
             m_InnerPanel.DoArrange(Padding.Left, Padding.Top, finalSize.Width, finalSize.Height);
 
-            m_SplitterBar.DoArrange(Padding.Left + m_LabelWidth - 2, Padding.Top, m_SplitterBar.MeasuredSize.Width, m_InnerPanel.MeasuredSize.Height);
+            m_SplitterBar.DoArrange(
+                Padding.Left + m_LabelWidth - 2,
+                Padding.Top,
+                m_SplitterBar.MeasuredSize.Width,
+                m_InnerPanel.MeasuredSize.Height);
 
             return new Size(finalSize.Width, m_InnerPanel.MeasuredSize.Height) + Padding;
         }
 
         /// <summary>
-        /// Handles the splitter moved event.
+        ///     Handles the splitter moved event.
         /// </summary>
         /// <param name="control">Event source.</param>
         protected virtual void OnSplitterMoved(ControlBase control, EventArgs args)
@@ -72,6 +91,7 @@ namespace Gwen.Net.Control
             LabelWidth = m_SplitterBar.ActualLeft - Padding.Left;
 
             PropertyTreeNode node = Parent as PropertyTreeNode;
+
             if (node != null)
             {
                 node.PropertyTree.LabelWidth = LabelWidth;
@@ -79,43 +99,46 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Adds a new text property row.
+        ///     Adds a new text property row.
         /// </summary>
         /// <param name="label">Property name.</param>
         /// <param name="value">Initial value.</param>
         /// <returns>Newly created row.</returns>
         public PropertyRow Add(string label, string value = "")
         {
-            return Add(label, new Property.Text(this), value);
+            return Add(label, new Text(this), value);
         }
 
         /// <summary>
-        /// Adds a new property row.
+        ///     Adds a new property row.
         /// </summary>
         /// <param name="label">Property name.</param>
         /// <param name="prop">Property control.</param>
         /// <param name="value">Initial value.</param>
         /// <returns>Newly created row.</returns>
-        public PropertyRow Add(string label, Property.PropertyBase prop, string value = "")
+        public PropertyRow Add(string label, PropertyBase prop, string value = "")
         {
-            PropertyRow row = new PropertyRow(this, prop);
+            PropertyRow row = new(this, prop);
             row.Label = label;
             row.ValueChanged += OnRowValueChanged;
 
-            prop.SetValue(value, true);
+            prop.SetValue(value, fireEvents: true);
 
             m_SplitterBar.BringToFront();
+
             return row;
         }
 
         private void OnRowValueChanged(ControlBase control, EventArgs args)
         {
             if (ValueChanged != null)
+            {
                 ValueChanged.Invoke(control, EventArgs.Empty);
+            }
         }
 
         /// <summary>
-        /// Deletes all rows.
+        ///     Deletes all rows.
         /// </summary>
         public void DeleteAll()
         {

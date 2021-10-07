@@ -10,97 +10,100 @@ namespace Gwen.Net.Tests.Components
         public ButtonTest(ControlBase parent)
             : base(parent)
         {
-            HorizontalLayout hlayout = new HorizontalLayout(this);
+            HorizontalLayout hlayout = new(this);
+
             {
-                VerticalLayout vlayout = new VerticalLayout(hlayout);
+                VerticalLayout vlayout = new(hlayout);
                 vlayout.Width = 300;
+
                 {
                     Button button;
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
+                    button.Margin = Margin.Five;
                     button.Text = "Button";
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Image button (default)";
                     button.SetImage("test16.png");
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Image button (above)";
                     button.SetImage("test16.png", ImageAlign.Above);
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
-                    button.Alignment = Net.Alignment.Left | Net.Alignment.CenterV;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
+                    button.Alignment = Alignment.Left | Alignment.CenterV;
                     button.Text = "Image button (left)";
                     button.SetImage("test16.png");
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
-                    button.Alignment = Net.Alignment.Right | Net.Alignment.CenterV;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
+                    button.Alignment = Alignment.Right | Alignment.CenterV;
                     button.Text = "Image button (right)";
                     button.SetImage("test16.png");
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Image button (image left)";
                     button.SetImage("test16.png", ImageAlign.Left | ImageAlign.CenterV);
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Image button (image right)";
                     button.SetImage("test16.png", ImageAlign.Right | ImageAlign.CenterV);
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Image button (image fill)";
                     button.SetImage("test16.png", ImageAlign.Fill);
 
-                    HorizontalLayout hlayout2 = new HorizontalLayout(vlayout);
+                    HorizontalLayout hlayout2 = new(vlayout);
+
                     {
                         button = new Button(hlayout2);
-                        button.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                        button.Padding = Net.Padding.Three;
-                        button.Margin = Net.Margin.Five;
+                        button.HorizontalAlignment = HorizontalAlignment.Left;
+                        button.Padding = Padding.Three;
+                        button.Margin = Margin.Five;
                         button.SetImage("test16.png");
-                        button.ImageSize = new Net.Size(32, 32);
+                        button.ImageSize = new Size(width: 32, height: 32);
 
                         button = new Button(hlayout2);
-                        button.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                        button.VerticalAlignment = Net.VerticalAlignment.Center;
-                        button.Padding = Net.Padding.Three;
-                        button.Margin = Net.Margin.Five;
+                        button.HorizontalAlignment = HorizontalAlignment.Left;
+                        button.VerticalAlignment = VerticalAlignment.Center;
+                        button.Padding = Padding.Three;
+                        button.Margin = Margin.Five;
                         button.SetImage("test16.png");
 
                         button = new Button(hlayout2);
-                        button.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                        button.VerticalAlignment = Net.VerticalAlignment.Center;
-                        button.Padding = Net.Padding.Three;
-                        button.Margin = Net.Margin.Five;
+                        button.HorizontalAlignment = HorizontalAlignment.Left;
+                        button.VerticalAlignment = VerticalAlignment.Center;
+                        button.Padding = Padding.Three;
+                        button.Margin = Margin.Five;
                         button.SetImage("test16.png");
-                        button.ImageTextureRect = new Net.Rectangle(4, 4, 8, 8);
+                        button.ImageTextureRect = new Rectangle(x: 4, y: 4, width: 8, height: 8);
 
                         button = new Button(hlayout2);
-                        button.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                        button.VerticalAlignment = Net.VerticalAlignment.Center;
-                        button.Padding = Net.Padding.Three;
-                        button.Margin = Net.Margin.Five;
+                        button.HorizontalAlignment = HorizontalAlignment.Left;
+                        button.VerticalAlignment = VerticalAlignment.Center;
+                        button.Padding = Padding.Three;
+                        button.Margin = Margin.Five;
                         button.SetImage("test16.png");
-                        button.ImageColor = Net.Color.DarkGrey;
+                        button.ImageColor = Color.DarkGrey;
                     }
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = new Net.Padding(20, 20, 20, 20);
+                    button.Margin = Margin.Five;
+                    button.Padding = new Padding(left: 20, top: 20, right: 20, bottom: 20);
                     button.Text = "Toggle me";
                     button.IsToggle = true;
                     button.Toggled += onToggle;
@@ -108,30 +111,30 @@ namespace Gwen.Net.Tests.Components
                     button.ToggledOff += onToggleOff;
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Disabled";
                     button.IsDisabled = true;
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "With Tooltip";
                     button.SetToolTipText("This is tooltip");
 
                     button = new Button(vlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Autosized";
-                    button.HorizontalAlignment = Net.HorizontalAlignment.Left;
+                    button.HorizontalAlignment = HorizontalAlignment.Left;
                 }
 
                 {
-                    Button button = new Button(hlayout);
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Three;
+                    Button button = new(hlayout);
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Three;
                     button.Text = "Event tester";
-                    button.Size = new Net.Size(300, 200);
+                    button.Size = new Size(width: 300, height: 200);
                     button.Pressed += onButtonAp;
                     button.Clicked += onButtonAc;
                     button.Released += onButtonAr;

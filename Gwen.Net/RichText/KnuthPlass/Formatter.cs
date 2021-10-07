@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Gwen.Net.Renderer;
 
 namespace Gwen.Net.RichText.KnuthPlass
 {
     internal abstract class Formatter
     {
-        protected Renderer.RendererBase m_Renderer;
         protected Font m_DefaultFont;
+        protected RendererBase m_Renderer;
 
-        public Formatter(Renderer.RendererBase renderer, Font defaultFont)
+        public Formatter(RendererBase renderer, Font defaultFont)
         {
             m_Renderer = renderer;
             m_DefaultFont = defaultFont;

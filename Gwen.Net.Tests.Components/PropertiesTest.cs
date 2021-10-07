@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Property;
 
@@ -12,7 +11,7 @@ namespace Gwen.Net.Tests.Components
             : base(parent)
         {
             {
-                Properties props = new Properties(this);
+                Properties props = new(this);
                 props.Dock = Dock.Top;
                 props.Width = 300;
                 props.ValueChanged += OnChanged;
@@ -28,7 +27,7 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                PropertyTree ptree = new PropertyTree(this);
+                PropertyTree ptree = new(this);
                 ptree.Dock = Dock.Top;
                 ptree.Width = 300;
                 ptree.AutoSizeToContent = true;
@@ -57,7 +56,7 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-        void OnChanged(ControlBase control, EventArgs args)
+        private void OnChanged(ControlBase control, EventArgs args)
         {
             PropertyRow row = control as PropertyRow;
             UnitPrint(String.Format("Property changed: {0}", row.Value));

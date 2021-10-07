@@ -5,9 +5,9 @@ namespace Gwen.Net.OpenTk
 {
     public class UniformDictionary
     {
-        private readonly Func<int, string, int> uniformLocationResolver;
         private readonly Dictionary<string, int> data;
         private readonly int program;
+        private readonly Func<int, string, int> uniformLocationResolver;
 
         public UniformDictionary(int program, Func<int, string, int> uniformLocationResolver)
         {
@@ -24,12 +24,11 @@ namespace Gwen.Net.OpenTk
                 {
                     return loc;
                 }
-                else
-                {
-                    int uniformLocation = uniformLocationResolver.Invoke(program, key);
-                    data.Add(key, uniformLocation);
-                    return uniformLocation;
-                }
+
+                int uniformLocation = uniformLocationResolver.Invoke(program, key);
+                data.Add(key, uniformLocation);
+
+                return uniformLocation;
             }
         }
     }

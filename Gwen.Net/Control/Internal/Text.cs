@@ -1,77 +1,21 @@
 ﻿//#define DEBUG_TEXT_MEASURE
 
 using System;
-using Gwen.Net.Control;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Displays text. Always sized to contents.
+    ///     Displays text. Always sized to contents.
     /// </summary>
     public class Text : ControlBase
     {
-        private string m_String;
-        private Font m_Font;
-
         private string m_FitToText;
+        private Font m_Font;
+        private string m_String;
 
         /// <summary>
-        /// Font used to display the text.
-        /// </summary>
-        /// <remarks>
-        /// The font is not being disposed by this class.
-        /// </remarks>
-        public Font Font { get { return m_Font; } set { m_Font = value; Invalidate(); } }
-
-        /// <summary>
-        /// Text to display.
-        /// </summary>
-        public string String
-        {
-            get { return m_String; }
-            set
-            {
-                if (value == m_String)
-                    return;
-
-                m_String = value;
-                if (AutoSizeToContents)
-                    Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// Text color.
-        /// </summary>
-        public Color TextColor { get; set; }
-
-        /// <summary>
-        /// Determines whether the control should be automatically resized to fit the text.
-        /// </summary>
-        public bool AutoSizeToContents { get; set; }
-
-        /// <summary>
-        /// Text length in characters.
-        /// </summary>
-        public int Length { get { return String.Length; } }
-
-        /// <summary>
-        /// Text color override - used by tooltips.
-        /// </summary>
-        public Color TextColorOverride { get; set; }
-
-        /// <summary>
-        /// Text override - used to display different string.
-        /// </summary>
-        public string TextOverride { get; set; }
-
-        /// <summary>
-        /// Set the minimum size of the control to be able to show the text of this property.
-        /// </summary>
-        public string FitToText { get { return m_FitToText; } set { if (m_FitToText == value) return; m_FitToText = value; Invalidate(); } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Text"/> class.
+        ///     Initializes a new instance of the <see cref="Text" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Text(ControlBase parent)
@@ -83,21 +27,109 @@ namespace Gwen.Net.Control.Internal
             m_FitToText = null;
             TextColor = Skin.Colors.Label.Default;
             MouseInputEnabled = false;
-            TextColorOverride = new Color(0, 255, 255, 255); // A==0, override disabled
+            TextColorOverride = new Color(a: 0, r: 255, g: 255, b: 255); // A==0, override disabled
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Font used to display the text.
+        /// </summary>
+        /// <remarks>
+        ///     The font is not being disposed by this class.
+        /// </remarks>
+        public Font Font
+        {
+            get => m_Font;
+            set
+            {
+                m_Font = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        ///     Text to display.
+        /// </summary>
+        public string String
+        {
+            get => m_String;
+            set
+            {
+                if (value == m_String)
+                {
+                    return;
+                }
+
+                m_String = value;
+
+                if (AutoSizeToContents)
+                {
+                    Invalidate();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Text color.
+        /// </summary>
+        public Color TextColor { get; set; }
+
+        /// <summary>
+        ///     Determines whether the control should be automatically resized to fit the text.
+        /// </summary>
+        public bool AutoSizeToContents { get; set; }
+
+        /// <summary>
+        ///     Text length in characters.
+        /// </summary>
+        public int Length => String.Length;
+
+        /// <summary>
+        ///     Text color override - used by tooltips.
+        /// </summary>
+        public Color TextColorOverride { get; set; }
+
+        /// <summary>
+        ///     Text override - used to display different string.
+        /// </summary>
+        public string TextOverride { get; set; }
+
+        /// <summary>
+        ///     Set the minimum size of the control to be able to show the text of this property.
+        /// </summary>
+        public string FitToText
+        {
+            get => m_FitToText;
+            set
+            {
+                if (m_FitToText == value)
+                {
+                    return;
+                }
+
+                m_FitToText = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            if (Length == 0 || Font == null) return;
+            if (Length == 0 || Font == null)
+            {
+                return;
+            }
 
             if (TextColorOverride.A == 0)
+            {
                 skin.Renderer.DrawColor = TextColor;
+            }
             else
+            {
                 skin.Renderer.DrawColor = TextColorOverride;
+            }
 
             skin.Renderer.RenderText(Font, Point.Zero, TextOverride ?? String);
 
@@ -125,21 +157,31 @@ namespace Gwen.Net.Control.Internal
         protected override Size Measure(Size availableSize)
         {
             if (String == null)
+            {
                 return Size.Zero;
+            }
 
             if (Font == null)
+            {
                 throw new InvalidOperationException("Text control font not set.");
+            }
 
             Size size = Size.Zero;
 
             string text = TextOverride ?? String;
 
             if (AutoSizeToContents && text.Length == 0)
+            {
                 size = Skin.Renderer.MeasureText(Font, " ");
+            }
             else if (!AutoSizeToContents && !String.IsNullOrWhiteSpace(m_FitToText))
+            {
                 size = Skin.Renderer.MeasureText(Font, m_FitToText);
+            }
             else
+            {
                 size = Skin.Renderer.MeasureText(Font, text);
+            }
 
             return size;
         }
@@ -150,7 +192,7 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Gets the coordinates of specified character in the text.
+        ///     Gets the coordinates of specified character in the text.
         /// </summary>
         /// <param name="index">Character index.</param>
         /// <returns>Character position in local coordinates.</returns>
@@ -158,17 +200,17 @@ namespace Gwen.Net.Control.Internal
         {
             if (Length == 0 || index == 0)
             {
-                return new Point(0, 0);
+                return new Point(x: 0, y: 0);
             }
 
-            string sub = (TextOverride ?? String).Substring(0, index);
+            string sub = (TextOverride ?? String).Substring(startIndex: 0, index);
             Size s = Skin.Renderer.MeasureText(Font, sub);
 
-            return new Point(s.Width, 0);
+            return new Point(s.Width, y: 0);
         }
 
         /// <summary>
-        /// Searches for a character closest to given point.
+        ///     Searches for a character closest to given point.
         /// </summary>
         /// <param name="p">Point.</param>
         /// <returns>Character index.</returns>
@@ -180,6 +222,7 @@ namespace Gwen.Net.Control.Internal
 
             int center;
             int cx;
+
             while (true)
             {
                 center = (right + left) / 2;
@@ -197,6 +240,7 @@ namespace Gwen.Net.Control.Internal
                 {
                     left = center;
                     right = center;
+
                     break;
                 }
 
@@ -207,15 +251,24 @@ namespace Gwen.Net.Control.Internal
             }
 
             int lx = cx, rx = cx;
+
             if (left == center)
+            {
                 rx = GetCharacterPosition(right).X;
+            }
             else if (right == center)
+            {
                 lx = GetCharacterPosition(left).X;
+            }
 
             if (px - lx < rx - px)
+            {
                 center = left;
+            }
             else
+            {
                 center = right;
+            }
 
             return center;
         }

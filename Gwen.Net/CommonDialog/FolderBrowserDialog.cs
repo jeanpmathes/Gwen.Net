@@ -1,18 +1,15 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.CommonDialog
 {
     /// <summary>
-    /// Dialog for selecting an existing directory.
+    ///     Dialog for selecting an existing directory.
     /// </summary>
     public class FolderBrowserDialog : FileDialog
     {
         public FolderBrowserDialog(ControlBase parent)
-            : base(parent)
-        {
-        }
+            : base(parent) {}
 
         protected override void OnCreated()
         {
@@ -36,6 +33,7 @@ namespace Gwen.Net.CommonDialog
             if (DirectoryExists(path))
             {
                 SetPath(path);
+
                 return true;
             }
 

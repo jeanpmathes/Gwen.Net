@@ -1,22 +1,21 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Skin;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// ComboBox control.
+    ///     ComboBox control.
     /// </summary>
-    [Xml.XmlControl(CustomHandler = "XmlElementHandler")]
+    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ComboBox : ComboBoxBase
     {
         private readonly Button m_Button;
         private readonly DownArrow m_DownArrow;
 
-        internal bool IsDepressed { get { return m_Button.IsDepressed; } }
-        public override bool IsHovered { get { return m_Button.IsHovered; } }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ComboBox"/> class.
+        ///     Initializes a new instance of the <see cref="ComboBox" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ComboBox(ControlBase parent)
@@ -34,8 +33,11 @@ namespace Gwen.Net.Control
             KeyboardInputEnabled = true;
         }
 
+        internal bool IsDepressed => m_Button.IsDepressed;
+        public override bool IsHovered => m_Button.IsHovered;
+
         /// <summary>
-        /// Internal Pressed implementation.
+        ///     Internal Pressed implementation.
         /// </summary>
         private void OnClicked(ControlBase sender, ClickedEventArgs args)
         {
@@ -50,7 +52,7 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Removes all items.
+        ///     Removes all items.
         /// </summary>
         public override void RemoveAll()
         {
@@ -59,7 +61,7 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Internal handler for item selected event.
+        ///     Internal handler for item selected event.
         /// </summary>
         /// <param name="control">Event source.</param>
         protected override void OnItemSelected(ControlBase control, ItemSelectedEventArgs args)
@@ -67,7 +69,11 @@ namespace Gwen.Net.Control
             if (!IsDisabled)
             {
                 MenuItem item = control as MenuItem;
-                if (null == item) return;
+
+                if (null == item)
+                {
+                    return;
+                }
 
                 m_Button.Text = item.Text;
             }
@@ -84,33 +90,36 @@ namespace Gwen.Net.Control
         {
             m_Button.DoArrange(new Rectangle(Point.Zero, finalSize));
 
-            m_DownArrow.DoArrange(new Rectangle(finalSize.Width - m_Button.TextPadding.Right - m_DownArrow.MeasuredSize.Width, (finalSize.Height - m_DownArrow.MeasuredSize.Height) / 2, m_DownArrow.MeasuredSize.Width, m_DownArrow.MeasuredSize.Height));
+            m_DownArrow.DoArrange(
+                new Rectangle(
+                    finalSize.Width - m_Button.TextPadding.Right - m_DownArrow.MeasuredSize.Width,
+                    (finalSize.Height - m_DownArrow.MeasuredSize.Height) / 2,
+                    m_DownArrow.MeasuredSize.Width,
+                    m_DownArrow.MeasuredSize.Height));
 
             return finalSize;
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawComboBox(this, m_Button.IsDepressed, IsOpen);
         }
 
         /// <summary>
-        /// Renders the focus overlay.
+        ///     Renders the focus overlay.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(Skin.SkinBase skin)
-        {
+        protected override void RenderFocus(SkinBase skin) {}
 
-        }
-
-        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
         {
-            ComboBox element = new ComboBox(parent);
+            ComboBox element = new(parent);
             parser.ParseAttributes(element);
+
             if (parser.MoveToContent())
             {
                 foreach (string elementName in parser.NextElement())
@@ -121,6 +130,7 @@ namespace Gwen.Net.Control
                     }
                 }
             }
+
             return element;
         }
     }

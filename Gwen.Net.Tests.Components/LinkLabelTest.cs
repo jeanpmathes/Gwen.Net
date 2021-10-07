@@ -1,5 +1,4 @@
-﻿using Gwen.Net;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 
 namespace Gwen.Net.Tests.Components
 {
@@ -13,24 +12,25 @@ namespace Gwen.Net.Tests.Components
             : base(parent)
         {
             {
-                LinkLabel label = new LinkLabel(this);
+                LinkLabel label = new(this);
                 label.Dock = Dock.Top;
-                label.HoverColor = new Color(255, 255, 255, 255);
+                label.HoverColor = new Color(a: 255, r: 255, g: 255, b: 255);
                 label.Text = "Link Label (default font)";
                 label.Link = "Test Link";
                 label.LinkClicked += OnLinkClicked;
             }
+
             {
-                font1 = new Font(Skin.Renderer, "Comic Sans MS", 25);
-                fontHover1 = new Font(Skin.Renderer, "Comic Sans MS", 25);
+                font1 = new Font(Skin.Renderer, "Comic Sans MS", size: 25);
+                fontHover1 = new Font(Skin.Renderer, "Comic Sans MS", size: 25);
                 fontHover1.Underline = true;
 
-                LinkLabel label = new LinkLabel(this);
+                LinkLabel label = new(this);
                 label.Dock = Dock.Top;
                 label.Font = font1;
                 label.HoverFont = fontHover1;
-                label.TextColor = new Color(255, 0, 80, 205);
-                label.HoverColor = new Color(255, 0, 100, 255);
+                label.TextColor = new Color(a: 255, r: 0, g: 80, b: 205);
+                label.HoverColor = new Color(a: 255, r: 0, g: 100, b: 255);
                 label.Text = "Custom Font (Comic Sans 25)";
                 label.Link = "Custom Font Link";
                 label.LinkClicked += OnLinkClicked;

@@ -1,18 +1,15 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.CommonDialog
 {
     /// <summary>
-    /// Dialog for selecting an existing file.
+    ///     Dialog for selecting an existing file.
     /// </summary>
     public class OpenFileDialog : FileDialog
     {
         public OpenFileDialog(ControlBase parent)
-            : base(parent)
-        {
-        }
+            : base(parent) {}
 
         protected override void OnCreated()
         {

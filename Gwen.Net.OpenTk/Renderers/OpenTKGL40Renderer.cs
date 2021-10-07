@@ -8,29 +8,26 @@ namespace Gwen.Net.OpenTk.Renderers
     public class OpenTKGL40Renderer : OpenTKRendererBase
     {
         private const int MaxVerts = 4096;
+        private readonly bool restoreRenderState;
+        private readonly IShader shader;
+        private readonly int vertexSize;
 
         private readonly Vertex[] vertices;
-        private readonly int vertexSize;
-        private readonly IShader shader;
-        private readonly bool restoreRenderState;
+        private int prevAlphaFunc;
+        private float prevAlphaRef;
+        private int prevBlendDst;
+        private int prevBlendSrc;
+        private int totalVertNum;
+        private int vao;
+
+        private int vbo;
+        private int vertNum;
 
 
         private bool wasBlendEnabled;
         private bool wasDepthTestEnabled;
-        private int prevBlendSrc;
-        private int prevBlendDst;
-        private int prevAlphaFunc;
-        private float prevAlphaRef;
-
-        private int vbo;
-        private int vao;
-        private int vertNum;
-        private int totalVertNum;
-
-        public override int VertexCount => totalVertNum;
 
         public OpenTKGL40Renderer(bool restoreRenderState = true)
-            : base()
         {
             vertices = new Vertex[MaxVerts];
             vertexSize = Marshal.SizeOf(vertices[0]);
@@ -41,29 +38,57 @@ namespace Gwen.Net.OpenTk.Renderers
             shader = new GL40ShaderLoader().Load("gui.gl40");
         }
 
+        public override int VertexCount => totalVertNum;
+
         private void CreateBuffers()
         {
-            GL.GenVertexArrays(1, out vao);
+            GL.GenVertexArrays(n: 1, out vao);
             GL.BindVertexArray(vao);
 
-            GL.GenBuffers(1, out vbo);
+            GL.GenBuffers(n: 1, out vbo);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw); // Allocate
+
+            GL.BufferData(
+                BufferTarget.ArrayBuffer,
+                (IntPtr)(vertexSize * MaxVerts),
+                IntPtr.Zero,
+                BufferUsageHint.StreamDraw); // Allocate
 
             // Vertex positions
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, vertexSize, 0);
+            GL.EnableVertexAttribArray(index: 0);
+
+            GL.VertexAttribPointer(
+                index: 0,
+                size: 2,
+                VertexAttribPointerType.Float,
+                normalized: false,
+                vertexSize,
+                offset: 0);
 
             // Tex coords
-            GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, vertexSize, 2 * sizeof(float));
+            GL.EnableVertexAttribArray(index: 1);
+
+            GL.VertexAttribPointer(
+                index: 1,
+                size: 2,
+                VertexAttribPointerType.Float,
+                normalized: false,
+                vertexSize,
+                2 * sizeof(float));
 
             // Colors
-            GL.EnableVertexAttribArray(2);
-            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, vertexSize, 2 * (sizeof(float) + sizeof(float)));
+            GL.EnableVertexAttribArray(index: 2);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
+            GL.VertexAttribPointer(
+                index: 2,
+                size: 4,
+                VertexAttribPointerType.Float,
+                normalized: false,
+                vertexSize,
+                2 * (sizeof(float) + sizeof(float)));
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, buffer: 0);
+            GL.BindVertexArray(array: 0);
         }
 
         public override void Begin()
@@ -102,41 +127,50 @@ namespace Gwen.Net.OpenTk.Renderers
         public override void End()
         {
             Flush();
-            GL.BindVertexArray(0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(array: 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, buffer: 0);
 
             if (restoreRenderState)
             {
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+                GL.BindTexture(TextureTarget.Texture2D, texture: 0);
                 lastTextureID = 0;
 
                 // Restore the previous parameter values.
                 GL.BlendFunc((BlendingFactor)prevBlendSrc, (BlendingFactor)prevBlendDst);
 
                 if (!wasBlendEnabled)
+                {
                     GL.Disable(EnableCap.Blend);
+                }
 
                 if (wasDepthTestEnabled)
+                {
                     GL.Enable(EnableCap.DepthTest);
+                }
             }
         }
 
         protected override void Flush()
         {
-            if (vertNum == 0) return;
+            if (vertNum == 0)
+            {
+                return;
+            }
 
             if (GLVersion >= 43)
+            {
                 GL.InvalidateBufferData(vbo);
+            }
             //else
             // This will slow down rendering. It seems to work without this but there could be synchronization problems with some drivers.
             // If that's the case then enable this.
             //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(m_VertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw);
 
-            GL.BufferSubData<Vertex>(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(vertNum * vertexSize), vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(vertNum * vertexSize), vertices);
 
             GL.Uniform1(shader.Uniforms["uUseTexture"], textureEnabled ? 1.0f : 0.0f);
 
-            GL.DrawArrays(PrimitiveType.Triangles, 0, vertNum);
+            GL.DrawArrays(PrimitiveType.Triangles, first: 0, vertNum);
 
             drawCallCount++;
             totalVertNum += vertNum;
@@ -166,15 +200,15 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = (float)delta / (float)oldHeight;
+                    float dv = delta / (float)oldHeight;
 
                     v1 += dv * (v2 - v1);
                 }
 
-                if ((rect.Y + rect.Height) > (ClipRegion.Y + ClipRegion.Height))
+                if (rect.Y + rect.Height > ClipRegion.Y + ClipRegion.Height)
                 {
                     int oldHeight = rect.Height;
-                    int delta = (rect.Y + rect.Height) - (ClipRegion.Y + ClipRegion.Height);
+                    int delta = rect.Y + rect.Height - (ClipRegion.Y + ClipRegion.Height);
 
                     rect.Height -= delta;
 
@@ -183,7 +217,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = (float)delta / (float)oldHeight;
+                    float dv = delta / (float)oldHeight;
 
                     v2 -= dv * (v2 - v1);
                 }
@@ -200,15 +234,15 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = (float)delta / (float)oldWidth;
+                    float du = delta / (float)oldWidth;
 
                     u1 += du * (u2 - u1);
                 }
 
-                if ((rect.X + rect.Width) > (ClipRegion.X + ClipRegion.Width))
+                if (rect.X + rect.Width > ClipRegion.X + ClipRegion.Width)
                 {
                     int oldWidth = rect.Width;
-                    int delta = (rect.X + rect.Width) - (ClipRegion.X + ClipRegion.Width);
+                    int delta = rect.X + rect.Width - (ClipRegion.X + ClipRegion.Width);
 
                     rect.Width -= delta;
 
@@ -217,7 +251,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = (float)delta / (float)oldWidth;
+                    float du = delta / (float)oldWidth;
 
                     u2 -= du * (u2 - u1);
                 }
@@ -293,9 +327,9 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void Resize(int width, int height)
         {
-            GL.Viewport(0, 0, width, height);
+            GL.Viewport(x: 0, y: 0, width, height);
             GL.UseProgram(shader.Program);
-            GL.Uniform2(shader.Uniforms["uScreenSize"], (float)width, (float)height);
+            GL.Uniform2(shader.Uniforms["uScreenSize"], width, (float)height);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

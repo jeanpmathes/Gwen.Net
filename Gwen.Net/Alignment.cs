@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 
 namespace Gwen.Net
 {

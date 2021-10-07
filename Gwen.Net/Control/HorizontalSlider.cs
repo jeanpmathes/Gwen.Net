@@ -1,16 +1,18 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Skin;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Horizontal slider.
+    ///     Horizontal slider.
     /// </summary>
-    [Xml.XmlControl]
+    [XmlControl]
     public class HorizontalSlider : Slider
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HorizontalSlider"/> class.
+        ///     Initializes a new instance of the <see cref="HorizontalSlider" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public HorizontalSlider(ControlBase parent)
@@ -28,11 +30,13 @@ namespace Gwen.Net.Control
 
         protected override void UpdateBarFromValue()
         {
-            m_SliderBar.MoveTo((int)((ActualWidth - m_SliderBar.ActualWidth) * (m_Value)), (this.ActualHeight - m_SliderBar.ActualHeight) / 2);
+            m_SliderBar.MoveTo(
+                (int)((ActualWidth - m_SliderBar.ActualWidth) * m_Value),
+                (ActualHeight - m_SliderBar.ActualHeight) / 2);
         }
 
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -40,18 +44,22 @@ namespace Gwen.Net.Control
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
             base.OnMouseClickedLeft(x, y, down);
-            m_SliderBar.MoveTo((int)(CanvasPosToLocal(new Point(x, y)).X - m_SliderBar.ActualWidth / 2), (this.ActualHeight - m_SliderBar.ActualHeight) / 2);
+
+            m_SliderBar.MoveTo(
+                CanvasPosToLocal(new Point(x, y)).X - (m_SliderBar.ActualWidth / 2),
+                (ActualHeight - m_SliderBar.ActualHeight) / 2);
+
             m_SliderBar.InputMouseClickedLeft(x, y, down);
             OnMoved(m_SliderBar, EventArgs.Empty);
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            skin.DrawSlider(this, true, m_SnapToNotches ? m_NotchCount : 0, m_SliderBar.ActualWidth);
+            skin.DrawSlider(this, horizontal: true, m_SnapToNotches ? m_NotchCount : 0, m_SliderBar.ActualWidth);
         }
     }
 }

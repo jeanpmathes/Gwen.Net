@@ -1,97 +1,13 @@
 ﻿using System;
 using Gwen.Net.Input;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Internal
 {
     public abstract class ButtonBase : ControlBase
     {
         private bool m_Depressed;
-        private bool m_Toggle;
         private bool m_ToggleStatus;
-
-        /// <summary>
-        /// Invoked when the button is pressed.
-        /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> Pressed;
-
-        /// <summary>
-        /// Invoked when the button is released.
-        /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> Released;
-
-        /// <summary>
-        /// Invoked when the button's toggle state has changed.
-        /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> Toggled;
-
-        /// <summary>
-        /// Invoked when the button's toggle state has changed to On.
-        /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> ToggledOn;
-
-        /// <summary>
-        /// Invoked when the button's toggle state has changed to Off.
-        /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> ToggledOff;
-
-        /// <summary>
-        /// Indicates whether the button is depressed.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool IsDepressed
-        {
-            get { return m_Depressed; }
-            set
-            {
-                if (m_Depressed == value)
-                    return;
-                m_Depressed = value;
-                Redraw();
-            }
-        }
-
-        /// <summary>
-        /// Indicates whether the button is toggleable.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool IsToggle { get { return m_Toggle; } set { m_Toggle = value; } }
-
-        /// <summary>
-        /// Determines the button's toggle state.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool ToggleState
-        {
-            get { return m_ToggleStatus; }
-            set
-            {
-                if (!m_Toggle) return;
-                if (m_ToggleStatus == value) return;
-
-                m_ToggleStatus = value;
-
-                if (Toggled != null)
-                    Toggled.Invoke(this, EventArgs.Empty);
-
-                if (m_ToggleStatus)
-                {
-                    if (ToggledOn != null)
-                        ToggledOn.Invoke(this, EventArgs.Empty);
-                }
-                else
-                {
-                    if (ToggledOff != null)
-                        ToggledOff.Invoke(this, EventArgs.Empty);
-                }
-
-                Redraw();
-            }
-        }
 
         public ButtonBase(ControlBase parent)
             : base(parent)
@@ -100,7 +16,99 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Toggles the button.
+        ///     Indicates whether the button is depressed.
+        /// </summary>
+        [XmlProperty] public bool IsDepressed
+        {
+            get => m_Depressed;
+            set
+            {
+                if (m_Depressed == value)
+                {
+                    return;
+                }
+
+                m_Depressed = value;
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        ///     Indicates whether the button is toggleable.
+        /// </summary>
+        [XmlProperty] public bool IsToggle { get; set; }
+
+        /// <summary>
+        ///     Determines the button's toggle state.
+        /// </summary>
+        [XmlProperty] public bool ToggleState
+        {
+            get => m_ToggleStatus;
+            set
+            {
+                if (!IsToggle)
+                {
+                    return;
+                }
+
+                if (m_ToggleStatus == value)
+                {
+                    return;
+                }
+
+                m_ToggleStatus = value;
+
+                if (Toggled != null)
+                {
+                    Toggled.Invoke(this, EventArgs.Empty);
+                }
+
+                if (m_ToggleStatus)
+                {
+                    if (ToggledOn != null)
+                    {
+                        ToggledOn.Invoke(this, EventArgs.Empty);
+                    }
+                }
+                else
+                {
+                    if (ToggledOff != null)
+                    {
+                        ToggledOff.Invoke(this, EventArgs.Empty);
+                    }
+                }
+
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        ///     Invoked when the button is pressed.
+        /// </summary>
+        [XmlEvent] public event GwenEventHandler<EventArgs> Pressed;
+
+        /// <summary>
+        ///     Invoked when the button is released.
+        /// </summary>
+        [XmlEvent] public event GwenEventHandler<EventArgs> Released;
+
+        /// <summary>
+        ///     Invoked when the button's toggle state has changed.
+        /// </summary>
+        [XmlEvent] public event GwenEventHandler<EventArgs> Toggled;
+
+        /// <summary>
+        ///     Invoked when the button's toggle state has changed to On.
+        /// </summary>
+        [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOn;
+
+        /// <summary>
+        ///     Invoked when the button's toggle state has changed to Off.
+        /// </summary>
+        [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOff;
+
+        /// <summary>
+        ///     Toggles the button.
         /// </summary>
         public virtual void Toggle()
         {
@@ -108,15 +116,15 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// "Clicks" the button.
+        ///     "Clicks" the button.
         /// </summary>
         public virtual void Press(ControlBase control = null)
         {
-            OnClicked(0, 0);
+            OnClicked(x: 0, y: 0);
         }
 
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -128,8 +136,11 @@ namespace Gwen.Net.Control.Internal
             {
                 IsDepressed = true;
                 InputHandler.MouseFocus = this;
+
                 if (Pressed != null)
+                {
                     Pressed.Invoke(this, EventArgs.Empty);
+                }
             }
             else
             {
@@ -140,15 +151,18 @@ namespace Gwen.Net.Control.Internal
 
                 IsDepressed = false;
                 InputHandler.MouseFocus = null;
+
                 if (Released != null)
+                {
                     Released.Invoke(this, EventArgs.Empty);
+                }
             }
 
             Redraw();
         }
 
         /// <summary>
-        /// Internal OnPressed implementation.
+        ///     Internal OnPressed implementation.
         /// </summary>
         protected virtual void OnClicked(int x, int y)
         {
@@ -157,26 +171,26 @@ namespace Gwen.Net.Control.Internal
                 Toggle();
             }
 
-            base.OnMouseClickedLeft(x, y, true);
+            base.OnMouseClickedLeft(x, y, down: true);
         }
 
         /// <summary>
-        /// Default accelerator handler.
+        ///     Default accelerator handler.
         /// </summary>
         protected override void OnAccelerator()
         {
-            OnClicked(0, 0);
+            OnClicked(x: 0, y: 0);
         }
 
         /// <summary>
-        /// Handler invoked on mouse double click (left) event.
+        ///     Handler invoked on mouse double click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         protected override void OnMouseDoubleClickedLeft(int x, int y)
         {
             base.OnMouseDoubleClickedLeft(x, y);
-            OnMouseClickedLeft(x, y, true);
+            OnMouseClickedLeft(x, y, down: true);
         }
 
         protected override Size Measure(Size availableSize)

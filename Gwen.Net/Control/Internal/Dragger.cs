@@ -1,11 +1,11 @@
 ﻿using System;
-using Gwen.Net.Control;
 using Gwen.Net.Input;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Base for controls that can be dragged by mouse.
+    ///     Base for controls that can be dragged by mouse.
     /// </summary>
     public class Dragger : ControlBase
     {
@@ -13,20 +13,8 @@ namespace Gwen.Net.Control.Internal
         protected Point m_HoldPos;
         protected ControlBase m_Target;
 
-        internal ControlBase Target { get { return m_Target; } set { m_Target = value; } }
-
         /// <summary>
-        /// Indicates if the control is being dragged.
-        /// </summary>
-        public bool IsHeld { get { return m_Held; } }
-
-        /// <summary>
-        /// Event invoked when the control position has been changed.
-        /// </summary>
-		public event GwenEventHandler<EventArgs> Dragged;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Dragger"/> class.
+        ///     Initializes a new instance of the <see cref="Dragger" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Dragger(ControlBase parent) : base(parent)
@@ -35,15 +23,34 @@ namespace Gwen.Net.Control.Internal
             m_Held = false;
         }
 
+        internal ControlBase Target
+        {
+            get => m_Target;
+            set => m_Target = value;
+        }
+
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Indicates if the control is being dragged.
+        /// </summary>
+        public bool IsHeld => m_Held;
+
+        /// <summary>
+        ///     Event invoked when the control position has been changed.
+        /// </summary>
+        public event GwenEventHandler<EventArgs> Dragged;
+
+        /// <summary>
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-            if (null == m_Target) return;
+            if (null == m_Target)
+            {
+                return;
+            }
 
             if (down)
             {
@@ -60,7 +67,7 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Handler invoked on mouse moved event.
+        ///     Handler invoked on mouse moved event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -68,19 +75,31 @@ namespace Gwen.Net.Control.Internal
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (null == m_Target) return;
-            if (!m_Held) return;
+            if (null == m_Target)
+            {
+                return;
+            }
 
-            Point p = new Point(x - m_HoldPos.X, y - m_HoldPos.Y);
+            if (!m_Held)
+            {
+                return;
+            }
+
+            Point p = new(x - m_HoldPos.X, y - m_HoldPos.Y);
 
             // Translate to parent
             if (m_Target.Parent != null)
+            {
                 p = m_Target.Parent.CanvasPosToLocal(p);
+            }
 
             //m_Target->SetPosition( p.x, p.y );
             m_Target.MoveTo(p.X, p.Y);
+
             if (Dragged != null)
+            {
                 Dragged.Invoke(this, EventArgs.Empty);
+            }
         }
 
         protected override Size Measure(Size availableSize)
@@ -94,12 +113,9 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
-        {
-
-        }
+        protected override void Render(SkinBase skin) {}
     }
 }

@@ -1,22 +1,17 @@
-﻿using System;
-using Gwen.Net.Control.Internal;
+﻿using Gwen.Net.Control.Internal;
+using Gwen.Net.DragDrop;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Docked tab control.
+    ///     Docked tab control.
     /// </summary>
     public class DockedTabControl : TabControl
     {
         private readonly TabTitleBar m_TitleBar;
 
         /// <summary>
-        /// Determines whether the title bar is visible.
-        /// </summary>
-        public bool TitleBarVisible { get { return !m_TitleBar.IsCollapsed; } set { m_TitleBar.IsCollapsed = !value; } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DockedTabControl"/> class.
+        ///     Initializes a new instance of the <see cref="DockedTabControl" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public DockedTabControl(ControlBase parent)
@@ -31,9 +26,18 @@ namespace Gwen.Net.Control
             AllowReorder = true;
         }
 
+        /// <summary>
+        ///     Determines whether the title bar is visible.
+        /// </summary>
+        public bool TitleBarVisible
+        {
+            get => !m_TitleBar.IsCollapsed;
+            set => m_TitleBar.IsCollapsed = !value;
+        }
+
         protected override Size Measure(Size availableSize)
         {
-            TabStrip.Collapse(TabCount <= 1, false);
+            TabStrip.Collapse(TabCount <= 1, measure: false);
             UpdateTitleBar();
 
             return base.Measure(availableSize);
@@ -42,12 +46,14 @@ namespace Gwen.Net.Control
         private void UpdateTitleBar()
         {
             if (CurrentButton == null)
+            {
                 return;
+            }
 
             m_TitleBar.UpdateFromTab(CurrentButton);
         }
 
-        public override void DragAndDrop_StartDragging(DragDrop.Package package, int x, int y)
+        public override void DragAndDrop_StartDragging(Package package, int x, int y)
         {
             base.DragAndDrop_StartDragging(package, x, y);
 
@@ -59,6 +65,7 @@ namespace Gwen.Net.Control
         public override void DragAndDrop_EndDragging(bool success, int x, int y)
         {
             IsCollapsed = false;
+
             if (!success)
             {
                 Parent.IsCollapsed = false;
@@ -67,14 +74,20 @@ namespace Gwen.Net.Control
 
         public void MoveTabsTo(DockedTabControl target)
         {
-            var children = TabStrip.Children.ToArray(); // copy because collection will be modified
+            ControlBase[] children = TabStrip.Children.ToArray(); // copy because collection will be modified
+
             foreach (ControlBase child in children)
             {
                 TabButton button = child as TabButton;
+
                 if (button == null)
+                {
                     continue;
+                }
+
                 target.AddPage(button);
             }
+
             Invalidate();
         }
     }

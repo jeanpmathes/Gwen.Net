@@ -107,7 +107,7 @@ namespace Gwen.Net.Tests
 
             nativeWindowSettings.Profile = ContextProfile.Core;
 
-            using UnitTestGameWindow window = new UnitTestGameWindow(gameWindowSettings, nativeWindowSettings)
+            using UnitTestGameWindow window = new(gameWindowSettings, nativeWindowSettings)
             {
                 Title = "Gwen.net OpenTK Unit Test", VSync = VSyncMode.Off // to measure performance
             };

@@ -1,33 +1,37 @@
-﻿using System;
-
-namespace Gwen.Net.RichText
+﻿namespace Gwen.Net.RichText
 {
     public class ImageParagraph : Paragraph
     {
-        private string m_ImageName;
-        private Size? m_ImageSize;
-        private Rectangle? m_TextureRect;
-        private Color? m_ImageColor;
+        public ImageParagraph(Margin margin = new(), int indent = 0)
+            : base(margin, indent, indent) {}
 
-        public string ImageName { get { return m_ImageName; } }
-        public Size? ImageSize { get { return m_ImageSize; } }
-        public Rectangle? TextureRect { get { return m_TextureRect; } }
-        public Color? ImageColor { get { return m_ImageColor; } }
+        public string ImageName { get; private set; }
 
-        public ImageParagraph(Margin margin = new Margin(), int indent = 0)
-            : base(margin, indent, indent)
+        public Size? ImageSize { get; private set; }
+
+        public Rectangle? TextureRect { get; private set; }
+
+        public Color? ImageColor { get; private set; }
+
+        public ImageParagraph Image(string imageName, Size? imageSize = null, Rectangle? textureRect = null,
+            Color? imageColor = null)
         {
-        }
+            ImageName = imageName;
 
-        public ImageParagraph Image(string imageName, Size? imageSize = null, Rectangle? textureRect = null, Color? imageColor = null)
-        {
-            m_ImageName = imageName;
             if (imageSize != null)
-                m_ImageSize = imageSize;
+            {
+                ImageSize = imageSize;
+            }
+
             if (textureRect != null)
-                m_TextureRect = textureRect;
+            {
+                TextureRect = textureRect;
+            }
+
             if (imageColor != null)
-                m_ImageColor = imageColor;
+            {
+                ImageColor = imageColor;
+            }
 
             return this;
         }

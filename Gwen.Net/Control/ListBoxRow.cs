@@ -1,59 +1,64 @@
 ﻿using System;
-using Gwen.Net.Control.Layout;
+using Gwen.Net.Skin;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// List box row (selectable).
+    ///     List box row (selectable).
     /// </summary>
-	[Xml.XmlControl(CustomHandler = "XmlElementHandler")]
+    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ListBoxRow : TableRow
     {
         private bool m_Selected;
 
-        private ListBox m_ListBox;
-        public ListBox ListBox { get { return m_ListBox; } }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListBoxRow"/> class.
+        ///     Initializes a new instance of the <see cref="ListBoxRow" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ListBoxRow(ControlBase parent)
             : base(parent)
         {
-            m_ListBox = parent as ListBox;
+            ListBox = parent as ListBox;
 
             MouseInputEnabled = true;
             IsSelected = false;
         }
 
+        public ListBox ListBox { get; }
+
         /// <summary>
-        /// Indicates whether the control is selected.
+        ///     Indicates whether the control is selected.
         /// </summary>
         public bool IsSelected
         {
-            get { return m_Selected; }
+            get => m_Selected;
             set
             {
                 m_Selected = value;
+
                 if (value)
+                {
                     SetTextColor(Skin.Colors.ListBox.Text_Selected);
+                }
                 else
+                {
                     SetTextColor(Skin.Colors.ListBox.Text_Normal);
+                }
             }
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawListBoxLine(this, IsSelected, EvenRow);
         }
 
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -61,6 +66,7 @@ namespace Gwen.Net.Control
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
             base.OnMouseClickedLeft(x, y, down);
+
             if (down)
             {
                 //IsSelected = true; // [omeg] ListBox manages that
@@ -68,13 +74,15 @@ namespace Gwen.Net.Control
             }
         }
 
-        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
         {
-            ListBoxRow element = new ListBoxRow(parent);
+            ListBoxRow element = new(parent);
             parser.ParseAttributes(element);
+
             if (parser.MoveToContent())
             {
                 int colIndex = 1;
+
                 foreach (string elementName in parser.NextElement())
                 {
                     if (elementName == "Column")
@@ -82,7 +90,7 @@ namespace Gwen.Net.Control
                         if (parser.MoveToContent())
                         {
                             ControlBase column = parser.ParseElement(element);
-                            element.SetCellContents(colIndex++, column, true);
+                            element.SetCellContents(colIndex++, column, enableMouseInput: true);
                         }
                         else
                         {
@@ -92,6 +100,7 @@ namespace Gwen.Net.Control
                     }
                 }
             }
+
             return element;
         }
     }

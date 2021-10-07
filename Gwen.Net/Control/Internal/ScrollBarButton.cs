@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -9,14 +8,14 @@ namespace Gwen.Net.Control.Internal
     }
 
     /// <summary>
-    /// Scrollbar button.
+    ///     Scrollbar button.
     /// </summary>
     public class ScrollBarButton : ButtonBase
     {
         private ScrollBarButtonDirection m_Direction;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScrollBarButton"/> class.
+        ///     Initializes a new instance of the <see cref="ScrollBarButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ScrollBarButton(ControlBase parent)
@@ -46,10 +45,10 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawScrollButton(this, m_Direction, IsDepressed, IsHovered, IsDisabled);
         }

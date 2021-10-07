@@ -4,44 +4,102 @@ using System.IO;
 namespace Gwen.Net.Renderer
 {
     /// <summary>
-    /// Base renderer.
+    ///     Base renderer.
     /// </summary>
     public class RendererBase : IDisposable
     {
+        private Rectangle m_ClipRegion;
+
         //public Random rnd;
         private Point m_RenderOffset;
-        private Rectangle m_ClipRegion;
         private float m_Scale;
-        //protected ICacheToTexture m_RTT;
-
-        public float Scale { get { return m_Scale; } set { float oldScale = m_Scale; m_Scale = value; OnScaleChanged(oldScale); } }
-
-        protected virtual void OnScaleChanged(float oldScale)
-        {
-        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RendererBase"/> class.
+        ///     Initializes a new instance of the <see cref="RendererBase" /> class.
         /// </summary>
         protected RendererBase()
         {
             //rnd = new Random();
             m_RenderOffset = Point.Zero;
             m_Scale = 1.0f;
+
             if (CTT != null)
+            {
                 CTT.Initialize();
+            }
+        }
+        //protected ICacheToTexture m_RTT;
+
+        public float Scale
+        {
+            get => m_Scale;
+            set
+            {
+                float oldScale = m_Scale;
+                m_Scale = value;
+                OnScaleChanged(oldScale);
+            }
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Gets or sets the current drawing color.
+        /// </summary>
+        public virtual Color DrawColor { get; set; }
+
+        /// <summary>
+        ///     Rendering offset. No need to touch it usually.
+        /// </summary>
+        public Point RenderOffset
+        {
+            get => m_RenderOffset;
+            set => m_RenderOffset = value;
+        }
+
+        /// <summary>
+        ///     Clipping rectangle.
+        /// </summary>
+        public Rectangle ClipRegion
+        {
+            get => m_ClipRegion;
+            set => m_ClipRegion = value;
+        }
+
+        /// <summary>
+        ///     Indicates whether the clip region is visible.
+        /// </summary>
+        public bool ClipRegionVisible
+        {
+            get
+            {
+                if (m_ClipRegion.Width <= 0 || m_ClipRegion.Height <= 0)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///     Cache to texture provider.
+        /// </summary>
+        public virtual ICacheToTexture CTT => null;
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
         {
             if (CTT != null)
+            {
                 CTT.ShutDown();
+            }
+
             GC.SuppressFinalize(this);
         }
+
+        protected virtual void OnScaleChanged(float oldScale) {}
 
 #if DEBUG
         ~RendererBase()
@@ -52,107 +110,68 @@ namespace Gwen.Net.Renderer
 #endif
 
         /// <summary>
-        /// Starts rendering.
+        ///     Starts rendering.
         /// </summary>
-        public virtual void Begin()
-        { }
+        public virtual void Begin() {}
 
         /// <summary>
-        /// Stops rendering.
+        ///     Stops rendering.
         /// </summary>
-        public virtual void End()
-        { }
+        public virtual void End() {}
 
         /// <summary>
-        /// Gets or sets the current drawing color.
-        /// </summary>
-        public virtual Color DrawColor { get; set; }
-
-        /// <summary>
-        /// Rendering offset. No need to touch it usually.
-        /// </summary>
-        public Point RenderOffset { get { return m_RenderOffset; } set { m_RenderOffset = value; } }
-
-        /// <summary>
-        /// Clipping rectangle.
-        /// </summary>
-        public Rectangle ClipRegion { get { return m_ClipRegion; } set { m_ClipRegion = value; } }
-
-        /// <summary>
-        /// Indicates whether the clip region is visible.
-        /// </summary>
-        public bool ClipRegionVisible
-        {
-            get
-            {
-                if (m_ClipRegion.Width <= 0 || m_ClipRegion.Height <= 0)
-                    return false;
-
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Draws a line.
+        ///     Draws a line.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        public virtual void DrawLine(int x, int y, int a, int b)
-        { }
+        public virtual void DrawLine(int x, int y, int a, int b) {}
 
         /// <summary>
-        /// Draws a solid filled rectangle.
+        ///     Draws a solid filled rectangle.
         /// </summary>
         /// <param name="rect"></param>
-        public virtual void DrawFilledRect(Rectangle rect)
-        { }
+        public virtual void DrawFilledRect(Rectangle rect) {}
 
         /// <summary>
-        /// Starts clipping to the current clipping rectangle.
+        ///     Starts clipping to the current clipping rectangle.
         /// </summary>
-        public virtual void StartClip()
-        { }
+        public virtual void StartClip() {}
 
         /// <summary>
-        /// Stops clipping.
+        ///     Stops clipping.
         /// </summary>
-        public virtual void EndClip()
-        { }
+        public virtual void EndClip() {}
 
         /// <summary>
-        /// Loads the specified texture.
+        ///     Loads the specified texture.
         /// </summary>
         /// <param name="t"></param>
-        public virtual void LoadTexture(Texture t)
-        { }
+        public virtual void LoadTexture(Texture t) {}
 
         /// <summary>
-        /// Initializes texture from raw pixel data.
+        ///     Initializes texture from raw pixel data.
         /// </summary>
         /// <param name="t">Texture to initialize. Dimensions need to be set.</param>
         /// <param name="pixelData">Pixel data in RGBA format.</param>
-        public virtual void LoadTextureRaw(Texture t, byte[] pixelData)
-        { }
+        public virtual void LoadTextureRaw(Texture t, byte[] pixelData) {}
 
         /// <summary>
-        /// Initializes texture from image file data.
+        ///     Initializes texture from image file data.
         /// </summary>
         /// <param name="t">Texture to initialize.</param>
         /// <param name="data">Image file as stream.</param>
-        public virtual void LoadTextureStream(Texture t, Stream data)
-        { }
+        public virtual void LoadTextureStream(Texture t, Stream data) {}
 
         /// <summary>
-        /// Frees the specified texture.
+        ///     Frees the specified texture.
         /// </summary>
         /// <param name="t">Texture to free.</param>
-        public virtual void FreeTexture(Texture t)
-        { }
+        public virtual void FreeTexture(Texture t) {}
 
         /// <summary>
-        /// Draws textured rectangle.
+        ///     Draws textured rectangle.
         /// </summary>
         /// <param name="t">Texture to use.</param>
         /// <param name="targetRect">Rectangle bounds.</param>
@@ -160,11 +179,11 @@ namespace Gwen.Net.Renderer
         /// <param name="v1">Texture coordinate v1.</param>
         /// <param name="u2">Texture coordinate u2.</param>
         /// <param name="v2">Texture coordinate v2.</param>
-        public virtual void DrawTexturedRect(Texture t, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1, float v2 = 1)
-        { }
+        public virtual void DrawTexturedRect(Texture t, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1,
+            float v2 = 1) {}
 
         /// <summary>
-        /// Draws "missing image" default texture.
+        ///     Draws "missing image" default texture.
         /// </summary>
         /// <param name="rect">Target rectangle.</param>
         public virtual void DrawMissingImage(Rectangle rect)
@@ -175,12 +194,7 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Cache to texture provider.
-        /// </summary>
-        public virtual ICacheToTexture CTT { get { return null; } }
-
-        /// <summary>
-        /// Loads the specified font.
+        ///     Loads the specified font.
         /// </summary>
         /// <param name="font">Font to load.</param>
         /// <returns>True if succeeded.</returns>
@@ -190,37 +204,36 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Frees the specified font.
+        ///     Frees the specified font.
         /// </summary>
         /// <param name="font">Font to free.</param>
-        public virtual void FreeFont(Font font)
-        { }
+        public virtual void FreeFont(Font font) {}
 
         /// <summary>
-        /// Gets the font metrics.
+        ///     Gets the font metrics.
         /// </summary>
         /// <param name="font">Font.</param>
         /// <returns>The font metrics.</returns>
         public virtual FontMetrics GetFontMetrics(Font font)
         {
-            return new FontMetrics(font);
+            return new(font);
         }
 
         /// <summary>
-        /// Returns dimensions of the text using specified font.
+        ///     Returns dimensions of the text using specified font.
         /// </summary>
         /// <param name="font">Font to use.</param>
         /// <param name="text">Text to measure.</param>
         /// <returns>Width and height of the rendered text.</returns>
         public virtual Size MeasureText(Font font, string text)
         {
-            Size p = new Size((int)(font.Size * Scale * text.Length * 0.4f), (int)(font.Size * Scale));
+            Size p = new((int)(font.Size * Scale * text.Length * 0.4f), (int)(font.Size * Scale));
 
             return p;
         }
 
         /// <summary>
-        /// Renders text using specified font.
+        ///     Renders text using specified font.
         /// </summary>
         /// <param name="font">Font to use.</param>
         /// <param name="position">Top-left corner of the text.</param>
@@ -234,9 +247,11 @@ namespace Gwen.Net.Renderer
                 char chr = text[i];
 
                 if (chr == ' ')
+                {
                     continue;
+                }
 
-                Rectangle r = Util.FloatRect(position.X + i * size * 0.4f, position.Y, size * 0.4f - 1, size);
+                Rectangle r = Util.FloatRect(position.X + (i * size * 0.4f), position.Y, (size * 0.4f) - 1, size);
 
                 /*
                     This isn't important, it's just me messing around changing the
@@ -248,8 +263,8 @@ namespace Gwen.Net.Renderer
                 }
                 else if (chr >= 'a' && chr <= 'z')
                 {
-                    r.Y = (int)(r.Y + size * 0.5f);
-                    r.Height = (int)(r.Height - size * 0.4f);
+                    r.Y = (int)(r.Y + (size * 0.5f));
+                    r.Height = (int)(r.Height - (size * 0.4f));
                 }
                 else if (chr == '.' || chr == ',')
                 {
@@ -266,9 +281,13 @@ namespace Gwen.Net.Renderer
                 }
 
                 if (chr == 'o' || chr == 'O' || chr == '0')
+                {
                     DrawLinedRect(r);
+                }
                 else
+                {
                     DrawFilledRect(r);
+                }
             }
         }
 
@@ -278,31 +297,31 @@ namespace Gwen.Net.Renderer
         //
 
         /// <summary>
-        /// Draws a lined rectangle. Used for keyboard focus overlay.
+        ///     Draws a lined rectangle. Used for keyboard focus overlay.
         /// </summary>
         /// <param name="rect">Target rectangle.</param>
         public virtual void DrawLinedRect(Rectangle rect)
         {
-            DrawFilledRect(new Rectangle(rect.X, rect.Y, rect.Width, 1));
-            DrawFilledRect(new Rectangle(rect.X, rect.Y + rect.Height - 1, rect.Width, 1));
+            DrawFilledRect(new Rectangle(rect.X, rect.Y, rect.Width, height: 1));
+            DrawFilledRect(new Rectangle(rect.X, rect.Y + rect.Height - 1, rect.Width, height: 1));
 
-            DrawFilledRect(new Rectangle(rect.X, rect.Y, 1, rect.Height));
-            DrawFilledRect(new Rectangle(rect.X + rect.Width - 1, rect.Y, 1, rect.Height));
+            DrawFilledRect(new Rectangle(rect.X, rect.Y, width: 1, rect.Height));
+            DrawFilledRect(new Rectangle(rect.X + rect.Width - 1, rect.Y, width: 1, rect.Height));
         }
 
         /// <summary>
-        /// Draws a single pixel. Very slow, do not use. :P
+        ///     Draws a single pixel. Very slow, do not use. :P
         /// </summary>
         /// <param name="x">X.</param>
         /// <param name="y">Y.</param>
         public virtual void DrawPixel(int x, int y)
         {
             // [omeg] amazing ;)
-            DrawFilledRect(new Rectangle(x, y, 1, 1));
+            DrawFilledRect(new Rectangle(x, y, width: 1, height: 1));
         }
 
         /// <summary>
-        /// Gets pixel color of a specified texture. Slow.
+        ///     Gets pixel color of a specified texture. Slow.
         /// </summary>
         /// <param name="texture">Texture.</param>
         /// <param name="x">X.</param>
@@ -314,7 +333,7 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Gets pixel color of a specified texture, returning default if otherwise failed. Slow.
+        ///     Gets pixel color of a specified texture, returning default if otherwise failed. Slow.
         /// </summary>
         /// <param name="texture">Texture.</param>
         /// <param name="x">X.</param>
@@ -327,7 +346,7 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Draws a round-corner rectangle.
+        ///     Draws a round-corner rectangle.
         /// </summary>
         /// <param name="rect">Target rectangle.</param>
         /// <param name="slight"></param>
@@ -339,11 +358,12 @@ namespace Gwen.Net.Renderer
 
             if (slight)
             {
-                DrawFilledRect(new Rectangle(rect.X + 1, rect.Y, rect.Width - 1, 1));
-                DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + rect.Height, rect.Width - 1, 1));
+                DrawFilledRect(new Rectangle(rect.X + 1, rect.Y, rect.Width - 1, height: 1));
+                DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + rect.Height, rect.Width - 1, height: 1));
 
-                DrawFilledRect(new Rectangle(rect.X, rect.Y + 1, 1, rect.Height - 1));
-                DrawFilledRect(new Rectangle(rect.X + rect.Width, rect.Y + 1, 1, rect.Height - 1));
+                DrawFilledRect(new Rectangle(rect.X, rect.Y + 1, width: 1, rect.Height - 1));
+                DrawFilledRect(new Rectangle(rect.X + rect.Width, rect.Y + 1, width: 1, rect.Height - 1));
+
                 return;
             }
 
@@ -353,27 +373,29 @@ namespace Gwen.Net.Renderer
             DrawPixel(rect.X + 1, rect.Y + rect.Height - 1);
             DrawPixel(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
 
-            DrawFilledRect(new Rectangle(rect.X + 2, rect.Y, rect.Width - 3, 1));
-            DrawFilledRect(new Rectangle(rect.X + 2, rect.Y + rect.Height, rect.Width - 3, 1));
+            DrawFilledRect(new Rectangle(rect.X + 2, rect.Y, rect.Width - 3, height: 1));
+            DrawFilledRect(new Rectangle(rect.X + 2, rect.Y + rect.Height, rect.Width - 3, height: 1));
 
-            DrawFilledRect(new Rectangle(rect.X, rect.Y + 2, 1, rect.Height - 3));
-            DrawFilledRect(new Rectangle(rect.X + rect.Width, rect.Y + 2, 1, rect.Height - 3));
+            DrawFilledRect(new Rectangle(rect.X, rect.Y + 2, width: 1, rect.Height - 3));
+            DrawFilledRect(new Rectangle(rect.X + rect.Width, rect.Y + 2, width: 1, rect.Height - 3));
         }
 
         private int TranslateX(int x)
         {
             int x1 = x + m_RenderOffset.X;
+
             return x1;
         }
 
         private int TranslateY(int y)
         {
             int y1 = y + m_RenderOffset.Y;
+
             return y1;
         }
 
         /// <summary>
-        /// Translates a panel's local drawing coordinate into view space, taking offsets into account.
+        ///     Translates a panel's local drawing coordinate into view space, taking offsets into account.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -384,26 +406,27 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Translates a panel's local drawing coordinate into view space, taking offsets into account.
+        ///     Translates a panel's local drawing coordinate into view space, taking offsets into account.
         /// </summary>
         public Point Translate(Point p)
         {
             int x = p.X;
             int y = p.Y;
             Translate(ref x, ref y);
+
             return new Point(x, y);
         }
 
         /// <summary>
-        /// Translates a panel's local drawing coordinate into view space, taking offsets into account.
+        ///     Translates a panel's local drawing coordinate into view space, taking offsets into account.
         /// </summary>
         public Rectangle Translate(Rectangle rect)
         {
-            return new Rectangle(TranslateX(rect.X), TranslateY(rect.Y), rect.Width, rect.Height);
+            return new(TranslateX(rect.X), TranslateY(rect.Y), rect.Width, rect.Height);
         }
 
         /// <summary>
-        /// Adds a point to the render offset.
+        ///     Adds a point to the render offset.
         /// </summary>
         /// <param name="offset">Point to add.</param>
         public void AddRenderOffset(Rectangle offset)
@@ -412,7 +435,7 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Adds a rectangle to the clipping region.
+        ///     Adds a rectangle to the clipping region.
         /// </summary>
         /// <param name="rect">Rectangle to add.</param>
         public void AddClipRegion(Rectangle rect)
@@ -421,15 +444,16 @@ namespace Gwen.Net.Renderer
             rect.Y = m_RenderOffset.Y;
 
             Rectangle r = rect;
+
             if (rect.X < m_ClipRegion.X)
             {
-                r.Width -= (m_ClipRegion.X - r.X);
+                r.Width -= m_ClipRegion.X - r.X;
                 r.X = m_ClipRegion.X;
             }
 
             if (rect.Y < m_ClipRegion.Y)
             {
-                r.Height -= (m_ClipRegion.Y - r.Y);
+                r.Height -= m_ClipRegion.Y - r.Y;
                 r.Y = m_ClipRegion.Y;
             }
 
@@ -447,7 +471,7 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        /// Sets a rectangle to the clipping region.
+        ///     Sets a rectangle to the clipping region.
         /// </summary>
         /// <param name="rect">Rectangle to set.</param>
         public void SetClipRegion(Rectangle rect)
@@ -456,15 +480,16 @@ namespace Gwen.Net.Renderer
             rect.Y += m_RenderOffset.Y;
 
             Rectangle r = rect;
+
             if (rect.X < m_ClipRegion.X)
             {
-                r.Width -= (m_ClipRegion.X - r.X);
+                r.Width -= m_ClipRegion.X - r.X;
                 r.X = m_ClipRegion.X;
             }
 
             if (rect.Y < m_ClipRegion.Y)
             {
-                r.Height -= (m_ClipRegion.Y - r.Y);
+                r.Height -= m_ClipRegion.Y - r.Y;
                 r.Y = m_ClipRegion.Y;
             }
 

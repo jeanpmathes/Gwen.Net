@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Gwen.Net
+﻿namespace Gwen.Net
 {
     /// <summary>
-    /// Font metrics.
+    ///     Font metrics.
     /// </summary>
     public struct FontMetrics
     {
@@ -15,9 +13,9 @@ namespace Gwen.Net
         public float LineSpacingPixels { get; internal set; }
         public float ExternalLeadingPixels { get; internal set; }
 
-        public float Top { get { return InternalLeadingPixels; } }
-        public float Baseline { get { return AscentPixels; } }
-        public float Bottom { get { return CellHeightPixels; } }
+        public float Top => InternalLeadingPixels;
+        public float Baseline => AscentPixels;
+        public float Bottom => CellHeightPixels;
 
         public FontMetrics(Font font)
         {

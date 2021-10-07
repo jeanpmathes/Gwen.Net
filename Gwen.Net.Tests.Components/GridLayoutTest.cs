@@ -10,12 +10,12 @@ namespace Gwen.Net.Tests.Components
             : base(parent)
         {
             GridLayout grid = CreateGrid(this);
-            grid.Dock = Net.Dock.Fill;
+            grid.Dock = Dock.Fill;
         }
 
         private GridLayout CreateGrid(ControlBase parent)
         {
-            GridLayout grid = new GridLayout(parent);
+            GridLayout grid = new(parent);
 
             grid.SetColumnWidths(0.2f, GridLayout.AutoSize, 140.0f, 0.8f);
             grid.SetRowHeights(0.2f, GridLayout.AutoSize, 140.0f, 0.8f);
@@ -45,7 +45,7 @@ namespace Gwen.Net.Tests.Components
 
         private void CreateControl(ControlBase parent, string text)
         {
-            Button button = new Button(parent);
+            Button button = new(parent);
             button.Text = text;
         }
     }

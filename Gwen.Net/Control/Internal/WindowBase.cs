@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -15,46 +16,11 @@ namespace Gwen.Net.Control.Internal
 {
     public abstract class WindowBase : ResizableControl
     {
-        private bool m_DeleteOnClose;
-        private ControlBase m_RealParent;
-        private StartPosition m_StartPosition = StartPosition.Manual;
-
+        private readonly ControlBase m_RealParent;
         protected Dragger m_DragBar;
 
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> Closed;
-
         /// <summary>
-        /// Is window draggable.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool IsDraggingEnabled { get { return m_DragBar.Target != null; } set { m_DragBar.Target = value ? this : null; } }
-
-        /// <summary>
-        /// Determines whether the control should be disposed on close.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool DeleteOnClose { get { return m_DeleteOnClose; } set { m_DeleteOnClose = value; } }
-
-        [Xml.XmlProperty]
-        public override Padding Padding { get { return m_InnerPanel.Padding; } set { m_InnerPanel.Padding = value; } }
-
-        /// <summary>
-        /// Starting position of the window.
-        /// </summary>
-        [Xml.XmlProperty]
-        public StartPosition StartPosition { get { return m_StartPosition; } set { m_StartPosition = value; } }
-
-        /// <summary>
-        /// Indicates whether the control is on top of its parent's children.
-        /// </summary>
-        public override bool IsOnTop
-        {
-            get { return Parent.Children.Where(x => x is Window).Last() == this; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WindowBase"/> class.
+        ///     Initializes a new instance of the <see cref="WindowBase" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public WindowBase(ControlBase parent)
@@ -66,11 +32,43 @@ namespace Gwen.Net.Control.Internal
             BringToFront();
             IsTabable = false;
             Focus();
-            MinimumSize = new Size(100, 40);
+            MinimumSize = new Size(width: 100, height: 40);
             ClampMovement = true;
             KeyboardInputEnabled = false;
             MouseInputEnabled = true;
         }
+
+        /// <summary>
+        ///     Is window draggable.
+        /// </summary>
+        [XmlProperty] public bool IsDraggingEnabled
+        {
+            get => m_DragBar.Target != null;
+            set => m_DragBar.Target = value ? this : null;
+        }
+
+        /// <summary>
+        ///     Determines whether the control should be disposed on close.
+        /// </summary>
+        [XmlProperty] public bool DeleteOnClose { get; set; }
+
+        [XmlProperty] public override Padding Padding
+        {
+            get => m_InnerPanel.Padding;
+            set => m_InnerPanel.Padding = value;
+        }
+
+        /// <summary>
+        ///     Starting position of the window.
+        /// </summary>
+        [XmlProperty] public StartPosition StartPosition { get; set; } = StartPosition.Manual;
+
+        /// <summary>
+        ///     Indicates whether the control is on top of its parent's children.
+        /// </summary>
+        public override bool IsOnTop => Parent.Children.Where(x => x is Window).Last() == this;
+
+        [XmlEvent] public event GwenEventHandler<EventArgs> Closed;
 
         public override void Show()
         {
@@ -82,13 +80,15 @@ namespace Gwen.Net.Control.Internal
         {
             IsCollapsed = true;
 
-            if (m_DeleteOnClose)
+            if (DeleteOnClose)
             {
-                Parent.RemoveChild(this, true);
+                Parent.RemoveChild(this, dispose: true);
             }
 
             if (Closed != null)
+            {
                 Closed(this, EventArgs.Empty);
+            }
         }
 
         public override void Touch()
@@ -99,29 +99,31 @@ namespace Gwen.Net.Control.Internal
 
         protected virtual void OnDragged(ControlBase control, EventArgs args)
         {
-            m_StartPosition = StartPosition.Manual;
+            StartPosition = StartPosition.Manual;
         }
 
         protected override void OnResized(ControlBase control, EventArgs args)
         {
-            m_StartPosition = StartPosition.Manual;
+            StartPosition = StartPosition.Manual;
 
             base.OnResized(control, args);
         }
 
         public override bool SetBounds(int x, int y, int width, int height)
         {
-            if (m_StartPosition == StartPosition.CenterCanvas)
+            if (StartPosition == StartPosition.CenterCanvas)
             {
                 ControlBase canvas = GetCanvas();
                 x = (canvas.ActualWidth - width) / 2;
                 y = (canvas.ActualHeight - height) / 2;
             }
-            else if (m_StartPosition == StartPosition.CenterParent)
+            else if (StartPosition == StartPosition.CenterParent)
             {
-                Point pt = m_RealParent.LocalPosToCanvas(new Point(m_RealParent.ActualWidth / 2, m_RealParent.ActualHeight / 2));
-                x = pt.X - width / 2;
-                y = pt.Y - height / 2;
+                Point pt = m_RealParent.LocalPosToCanvas(
+                    new Point(m_RealParent.ActualWidth / 2, m_RealParent.ActualHeight / 2));
+
+                x = pt.X - (width / 2);
+                y = pt.Y - (height / 2);
             }
 
             return base.SetBounds(x, y, width, height);

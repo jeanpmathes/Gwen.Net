@@ -1,27 +1,18 @@
 ﻿using System;
 using Gwen.Net.Control.Layout;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// CollapsibleList control. Groups CollapsibleCategory controls.
+    ///     CollapsibleList control. Groups CollapsibleCategory controls.
     /// </summary>
     public class CollapsibleList : ScrollControl
     {
-        private VerticalLayout m_Items;
+        private readonly VerticalLayout m_Items;
 
         /// <summary>
-        /// Invoked when an entry has been selected.
-        /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs> ItemSelected;
-
-        /// <summary>
-        /// Invoked when a category collapsed state has been changed (header button has been pressed).
-        /// </summary>
-        public event GwenEventHandler<EventArgs> CategoryCollapsed;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CollapsibleList"/> class.
+        ///     Initializes a new instance of the <see cref="CollapsibleList" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public CollapsibleList(ControlBase parent)
@@ -30,42 +21,57 @@ namespace Gwen.Net.Control
             Padding = Padding.One;
 
             MouseInputEnabled = true;
-            EnableScroll(false, true);
+            EnableScroll(horizontal: false, vertical: true);
             AutoHideBars = true;
 
             m_Items = new VerticalLayout(this);
         }
 
+        /// <summary>
+        ///     Invoked when an entry has been selected.
+        /// </summary>
+        public event GwenEventHandler<ItemSelectedEventArgs> ItemSelected;
+
+        /// <summary>
+        ///     Invoked when a category collapsed state has been changed (header button has been pressed).
+        /// </summary>
+        public event GwenEventHandler<EventArgs> CategoryCollapsed;
+
         // todo: iterator, make this as function? check if works
 
         /// <summary>
-        /// Selected entry.
+        ///     Selected entry.
         /// </summary>
         public Button GetSelectedButton()
         {
             foreach (ControlBase child in Children)
             {
                 CollapsibleCategory cat = child as CollapsibleCategory;
+
                 if (cat == null)
+                {
                     continue;
+                }
 
                 Button button = cat.GetSelectedButton();
 
                 if (button != null)
+                {
                     return button;
+                }
             }
 
             return null;
         }
 
         /// <summary>
-        /// Adds a category to the list.
+        ///     Adds a category to the list.
         /// </summary>
         /// <param name="category">Category control to add.</param>
         protected virtual void Add(CollapsibleCategory category)
         {
             category.Parent = m_Items;
-            category.Margin = new Margin(1, 1, 1, 0);
+            category.Margin = new Margin(left: 1, top: 1, right: 1, bottom: 0);
             category.Selected += OnCategorySelected;
             category.Collapsed += OnCategoryCollapsed;
 
@@ -73,68 +79,84 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Adds a new category to the list.
+        ///     Adds a new category to the list.
         /// </summary>
         /// <param name="categoryName">Name of the category.</param>
         /// <returns>Newly created control.</returns>
         public virtual CollapsibleCategory Add(string categoryName, string name = null, object userData = null)
         {
-            CollapsibleCategory cat = new CollapsibleCategory(this);
+            CollapsibleCategory cat = new(this);
             cat.Text = categoryName;
             cat.Name = name;
             cat.UserData = userData;
             Add(cat);
+
             return cat;
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawCategoryHolder(this);
         }
 
         /// <summary>
-        /// Unselects all entries.
+        ///     Unselects all entries.
         /// </summary>
         public virtual void UnselectAll()
         {
             foreach (ControlBase child in m_Items.Children)
             {
                 CollapsibleCategory cat = child as CollapsibleCategory;
+
                 if (cat == null)
+                {
                     continue;
+                }
 
                 cat.UnselectAll();
             }
         }
 
         /// <summary>
-        /// Handler for ItemSelected event.
+        ///     Handler for ItemSelected event.
         /// </summary>
-        /// <param name="control">Event source: <see cref="CollapsibleList"/>.</param>
+        /// <param name="control">Event source: <see cref="CollapsibleList" />.</param>
         protected virtual void OnCategorySelected(ControlBase control, EventArgs args)
         {
             CollapsibleCategory cat = control as CollapsibleCategory;
-            if (cat == null) return;
+
+            if (cat == null)
+            {
+                return;
+            }
 
             if (ItemSelected != null)
+            {
                 ItemSelected.Invoke(this, new ItemSelectedEventArgs(cat));
+            }
         }
 
         /// <summary>
-        /// Handler for category collapsed event.
+        ///     Handler for category collapsed event.
         /// </summary>
-        /// <param name="control">Event source: <see cref="CollapsibleCategory"/>.</param>
+        /// <param name="control">Event source: <see cref="CollapsibleCategory" />.</param>
         protected virtual void OnCategoryCollapsed(ControlBase control, EventArgs args)
         {
             CollapsibleCategory cat = control as CollapsibleCategory;
-            if (cat == null) return;
+
+            if (cat == null)
+            {
+                return;
+            }
 
             if (CategoryCollapsed != null)
+            {
                 CategoryCollapsed.Invoke(control, EventArgs.Empty);
+            }
         }
     }
 }

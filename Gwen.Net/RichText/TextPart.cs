@@ -1,40 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Gwen.Net.RichText
 {
     public class TextPart : Part
     {
-        private string m_Text;
-        private Color? m_Color;
-        private Font m_Font;
-
-        public string Text { get { return m_Text; } }
-        public Color? Color { get { return m_Color; } }
-        public Font Font { get { return m_Font; } protected set { m_Font = value; } }
+        private static readonly char[] m_separator =
+        {
+            ' ',
+            '\n',
+            '\r'
+        };
 
         public TextPart(string text)
         {
-            m_Text = text;
-            m_Color = null;
+            Text = text;
+            Color = null;
         }
 
         public TextPart(string text, Color color)
         {
-            m_Text = text;
-            m_Color = color;
+            Text = text;
+            Color = color;
         }
+
+        public string Text { get; }
+
+        public Color? Color { get; }
+
+        public Font Font { get; protected set; }
 
         public override string[] Split(ref Font font)
         {
-            m_Font = font;
+            Font = font;
 
-            return StringSplit(m_Text);
+            return StringSplit(Text);
         }
 
         protected string[] StringSplit(string str)
         {
-            List<string> strs = new List<string>();
+            List<string> strs = new();
             int len = str.Length;
             int index = 0;
             int i;
@@ -42,20 +46,27 @@ namespace Gwen.Net.RichText
             while (index < len)
             {
                 i = str.IndexOfAny(m_separator, index);
+
                 if (i == index)
                 {
                     if (str[i] == ' ')
                     {
                         strs.Add(" ");
+
                         while (index < len && str[index] == ' ')
+                        {
                             index++;
+                        }
                     }
                     else
                     {
                         strs.Add("\n");
                         index++;
+
                         if (index < len && str[index - 1] == '\r' && str[index] == '\n')
+                        {
                             index++;
+                        }
                     }
                 }
                 else if (i != -1)
@@ -74,13 +85,12 @@ namespace Gwen.Net.RichText
                 else
                 {
                     strs.Add(str.Substring(index));
+
                     break;
                 }
             }
 
             return strs.ToArray();
         }
-
-        private static readonly char[] m_separator = new char[] { ' ', '\n', '\r' };
     }
 }

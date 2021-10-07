@@ -1,27 +1,23 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Drag and drop highlight.
+    ///     Drag and drop highlight.
     /// </summary>
     public class Highlight : ControlBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Highlight"/> class.
+        ///     Initializes a new instance of the <see cref="Highlight" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        public Highlight(ControlBase parent) : base(parent)
-        {
-
-        }
+        public Highlight(ControlBase parent) : base(parent) {}
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawHighlight(this);
         }

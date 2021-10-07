@@ -1,36 +1,24 @@
 ﻿using System;
-using Gwen.Net.Control.Internal;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     public class LinkClickedEventArgs : EventArgs
     {
-        public string Link { get; private set; }
-
         internal LinkClickedEventArgs(string link)
         {
-            this.Link = link;
+            Link = link;
         }
+
+        public string Link { get; }
     }
 
-    [Xml.XmlControl]
+    [XmlControl]
     public class LinkLabel : Label
     {
+        private Color? m_hoverColor;
         private Color m_normalColor;
         private Font m_normalFont;
-        private Color? m_hoverColor;
-
-        [Xml.XmlProperty]
-        public string Link { get; set; }
-
-        [Xml.XmlProperty]
-        public Color HoverColor { get { return m_hoverColor != null ? (Color)m_hoverColor : this.TextColor; } set { m_hoverColor = value; } }
-
-        [Xml.XmlProperty]
-        public Font HoverFont { get; set; }
-
-        [Xml.XmlEvent]
-        public event ControlBase.GwenEventHandler<LinkClickedEventArgs> LinkClicked;
 
         public LinkLabel(ControlBase parent)
             : base(parent)
@@ -38,22 +26,34 @@ namespace Gwen.Net.Control
             m_hoverColor = null;
             HoverFont = null;
 
-            base.HoverEnter += OnHoverEnter;
-            base.HoverLeave += OnHoverLeave;
+            HoverEnter += OnHoverEnter;
+            HoverLeave += OnHoverLeave;
             base.Clicked += OnClicked;
         }
+
+        [XmlProperty] public string Link { get; set; }
+
+        [XmlProperty] public Color HoverColor
+        {
+            get => m_hoverColor != null ? (Color)m_hoverColor : TextColor;
+            set => m_hoverColor = value;
+        }
+
+        [XmlProperty] public Font HoverFont { get; set; }
+
+        [XmlEvent] public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
 
         private void OnHoverEnter(ControlBase control, EventArgs args)
         {
             Cursor = Cursor.Finger;
 
             m_normalColor = m_Text.TextColor;
-            m_Text.TextColor = this.HoverColor;
+            m_Text.TextColor = HoverColor;
 
-            if (this.HoverFont != null)
+            if (HoverFont != null)
             {
                 m_normalFont = m_Text.Font;
-                m_Text.Font = this.HoverFont;
+                m_Text.Font = HoverFont;
             }
         }
 
@@ -61,7 +61,7 @@ namespace Gwen.Net.Control
         {
             m_Text.TextColor = m_normalColor;
 
-            if (this.HoverFont != null)
+            if (HoverFont != null)
             {
                 m_Text.Font = m_normalFont;
             }
@@ -70,7 +70,9 @@ namespace Gwen.Net.Control
         private void OnClicked(ControlBase control, ClickedEventArgs args)
         {
             if (LinkClicked != null)
-                LinkClicked(this, new LinkClickedEventArgs(this.Link));
+            {
+                LinkClicked(this, new LinkClickedEventArgs(Link));
+            }
         }
     }
 }

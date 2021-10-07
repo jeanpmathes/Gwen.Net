@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using OpenToolkit.Windowing.Desktop;
+﻿using OpenToolkit.Windowing.Desktop;
 
 namespace Gwen.Net.OpenTk
 {

@@ -1,15 +1,12 @@
-﻿using System;
-using Gwen.Net.Control;
-
-namespace Gwen.Net.Control.Internal
+﻿namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Header of CollapsibleCategory.
+    ///     Header of CollapsibleCategory.
     /// </summary>
     public class CategoryHeaderButton : Button
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CategoryHeaderButton"/> class.
+        ///     Initializes a new instance of the <see cref="CategoryHeaderButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public CategoryHeaderButton(ControlBase parent)
@@ -18,18 +15,22 @@ namespace Gwen.Net.Control.Internal
             ShouldDrawBackground = false;
             IsToggle = true;
             Alignment = Alignment.Center;
-            TextPadding = new Padding(3, 0, 3, 0);
+            TextPadding = new Padding(left: 3, top: 0, right: 3, bottom: 0);
         }
 
         /// <summary>
-        /// Updates control colors.
+        ///     Updates control colors.
         /// </summary>
         public override void UpdateColors()
         {
             if (IsDepressed || ToggleState)
+            {
                 TextColor = Skin.Colors.Category.Header_Closed;
+            }
             else
+            {
                 TextColor = Skin.Colors.Category.Header;
+            }
         }
     }
 }

@@ -1,68 +1,98 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Skin;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Menu item.
+    ///     Menu item.
     /// </summary>
-    [Xml.XmlControl(CustomHandler = "XmlElementHandler")]
+    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class MenuItem : Button
     {
-        private bool m_Checkable;
+        private Label m_Accelerator;
         private bool m_Checked;
         private Menu m_Menu;
         private ControlBase m_SubmenuArrow;
-        private Label m_Accelerator;
 
         /// <summary>
-        /// Indicates whether the item is on a menu strip.
+        ///     Initializes a new instance of the <see cref="MenuItem" /> class.
         /// </summary>
-        public bool IsOnStrip { get { return Parent is MenuStrip; } }
-
-        /// <summary>
-        /// Determines if the menu item is checkable.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool IsCheckable { get { return m_Checkable; } set { m_Checkable = value; } }
-
-        /// <summary>
-        /// Indicates if the parent menu is open.
-        /// </summary>
-        public bool IsMenuOpen { get { if (m_Menu == null) return false; return !m_Menu.IsCollapsed; } }
-
-        /// <summary>
-        /// Gets or sets the check value.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool IsChecked
+        /// <param name="parent">Parent control.</param>
+        public MenuItem(ControlBase parent)
+            : base(parent)
         {
-            get { return m_Checked; }
+            IsTabable = false;
+            IsCheckable = false;
+            IsChecked = false;
+        }
+
+        /// <summary>
+        ///     Indicates whether the item is on a menu strip.
+        /// </summary>
+        public bool IsOnStrip => Parent is MenuStrip;
+
+        /// <summary>
+        ///     Determines if the menu item is checkable.
+        /// </summary>
+        [XmlProperty] public bool IsCheckable { get; set; }
+
+        /// <summary>
+        ///     Indicates if the parent menu is open.
+        /// </summary>
+        public bool IsMenuOpen
+        {
+            get
+            {
+                if (m_Menu == null)
+                {
+                    return false;
+                }
+
+                return !m_Menu.IsCollapsed;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the check value.
+        /// </summary>
+        [XmlProperty] public bool IsChecked
+        {
+            get => m_Checked;
             set
             {
                 if (value == m_Checked)
+                {
                     return;
+                }
 
                 m_Checked = value;
 
                 if (CheckChanged != null)
+                {
                     CheckChanged.Invoke(this, EventArgs.Empty);
+                }
 
                 if (value)
                 {
                     if (Checked != null)
+                    {
                         Checked.Invoke(this, EventArgs.Empty);
+                    }
                 }
                 else
                 {
                     if (UnChecked != null)
+                    {
                         UnChecked.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Gets the parent menu.
+        ///     Gets the parent menu.
         /// </summary>
         public Menu Menu
         {
@@ -76,7 +106,10 @@ namespace Gwen.Net.Control
                     if (!IsOnStrip)
                     {
                         if (m_SubmenuArrow != null)
+                        {
                             m_SubmenuArrow.Dispose();
+                        }
+
                         m_SubmenuArrow = new RightArrow(this);
                     }
                 }
@@ -86,58 +119,44 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Invoked when the item is selected.
+        ///     Invoked when the item is selected.
         /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<ItemSelectedEventArgs> Selected;
+        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> Selected;
 
         /// <summary>
-        /// Invoked when the item is checked.
+        ///     Invoked when the item is checked.
         /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> Checked;
+        [XmlEvent] public event GwenEventHandler<EventArgs> Checked;
 
         /// <summary>
-        /// Invoked when the item is unchecked.
+        ///     Invoked when the item is unchecked.
         /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> UnChecked;
+        [XmlEvent] public event GwenEventHandler<EventArgs> UnChecked;
 
         /// <summary>
-        /// Invoked when the item's check value is changed.
+        ///     Invoked when the item's check value is changed.
         /// </summary>
-        [Xml.XmlEvent]
-        public event GwenEventHandler<EventArgs> CheckChanged;
+        [XmlEvent] public event GwenEventHandler<EventArgs> CheckChanged;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MenuItem"/> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public MenuItem(ControlBase parent)
-            : base(parent)
-        {
-            IsTabable = false;
-            IsCheckable = false;
-            IsChecked = false;
-        }
-
-        /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            skin.DrawMenuItem(this, IsMenuOpen, m_Checkable ? m_Checked : false);
+            skin.DrawMenuItem(this, IsMenuOpen, IsCheckable ? m_Checked : false);
         }
 
         protected override Size Measure(Size availableSize)
         {
             Size size = base.Measure(availableSize);
+
             if (m_Accelerator != null)
             {
                 Size accSize = m_Accelerator.DoMeasure(availableSize);
                 size.Width += accSize.Width;
             }
+
             if (m_SubmenuArrow != null)
             {
                 m_SubmenuArrow.DoMeasure(availableSize);
@@ -149,51 +168,79 @@ namespace Gwen.Net.Control
         protected override Size Arrange(Size finalSize)
         {
             if (m_SubmenuArrow != null)
-                m_SubmenuArrow.DoArrange(new Rectangle(finalSize.Width - Padding.Right - m_SubmenuArrow.MeasuredSize.Width, (finalSize.Height - m_SubmenuArrow.MeasuredSize.Height) / 2, m_SubmenuArrow.MeasuredSize.Width, m_SubmenuArrow.MeasuredSize.Height));
+            {
+                m_SubmenuArrow.DoArrange(
+                    new Rectangle(
+                        finalSize.Width - Padding.Right - m_SubmenuArrow.MeasuredSize.Width,
+                        (finalSize.Height - m_SubmenuArrow.MeasuredSize.Height) / 2,
+                        m_SubmenuArrow.MeasuredSize.Width,
+                        m_SubmenuArrow.MeasuredSize.Height));
+            }
 
             if (m_Accelerator != null)
-                m_Accelerator.DoArrange(new Rectangle(finalSize.Width - Padding.Right - m_Accelerator.MeasuredSize.Width, (finalSize.Height - m_Accelerator.MeasuredSize.Height) / 2, m_Accelerator.MeasuredSize.Width, m_Accelerator.MeasuredSize.Height));
+            {
+                m_Accelerator.DoArrange(
+                    new Rectangle(
+                        finalSize.Width - Padding.Right - m_Accelerator.MeasuredSize.Width,
+                        (finalSize.Height - m_Accelerator.MeasuredSize.Height) / 2,
+                        m_Accelerator.MeasuredSize.Width,
+                        m_Accelerator.MeasuredSize.Height));
+            }
 
             return base.Arrange(finalSize);
         }
 
         /// <summary>
-        /// Internal OnPressed implementation.
+        ///     Internal OnPressed implementation.
         /// </summary>
         protected override void OnClicked(int x, int y)
         {
             if (m_Menu != null)
             {
                 if (!IsMenuOpen)
+                {
                     OpenMenu();
+                }
             }
             else if (!IsOnStrip)
             {
                 IsChecked = !IsChecked;
+
                 if (Selected != null)
+                {
                     Selected.Invoke(this, new ItemSelectedEventArgs(this));
+                }
+
                 GetCanvas().CloseMenus();
             }
+
             base.OnClicked(x, y);
         }
 
         /// <summary>
-        /// Toggles the menu open state.
+        ///     Toggles the menu open state.
         /// </summary>
         public void ToggleMenu()
         {
             if (IsMenuOpen)
+            {
                 CloseMenu();
+            }
             else
+            {
                 OpenMenu();
+            }
         }
 
         /// <summary>
-        /// Opens the menu.
+        ///     Opens the menu.
         /// </summary>
         public void OpenMenu()
         {
-            if (null == m_Menu) return;
+            if (null == m_Menu)
+            {
+                return;
+            }
 
             m_Menu.Show();
             m_Menu.BringToFront();
@@ -217,11 +264,15 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Closes the menu.
+        ///     Closes the menu.
         /// </summary>
         public void CloseMenu()
         {
-            if (null == m_Menu) return;
+            if (null == m_Menu)
+            {
+                return;
+            }
+
             m_Menu.Close();
             m_Menu.CloseAll();
         }
@@ -234,6 +285,7 @@ namespace Gwen.Net.Control
             }
 
             Selected += handler;
+
             return this;
         }
 
@@ -245,16 +297,19 @@ namespace Gwen.Net.Control
             }
 
             if (acc == String.Empty)
+            {
                 return;
+            }
 
             m_Accelerator = new Label(this);
             m_Accelerator.Text = acc;
-            m_Accelerator.Margin = new Margin(0, 0, 16, 0);
+            m_Accelerator.Margin = new Margin(left: 0, top: 0, right: 16, bottom: 0);
         }
 
         public override ControlBase FindChildByName(string name, bool recursive = false)
         {
             ControlBase item = base.FindChildByName(name, recursive);
+
             if (item == null && m_Menu != null)
             {
                 item = m_Menu.FindChildByName(name, recursive);
@@ -263,26 +318,35 @@ namespace Gwen.Net.Control
             return item;
         }
 
-        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
         {
-            MenuItem element = new MenuItem(parent);
+            MenuItem element = new(parent);
             parser.ParseAttributes(element);
+
             if (parser.MoveToContent())
             {
                 ControlBase e = parent;
+
                 while (e != null && e.Component == null)
+                {
                     e = e.Parent;
+                }
 
                 foreach (string elementName in parser.NextElement())
                 {
                     if (elementName == "MenuItem")
+                    {
                         element.Menu.AddItem(parser.ParseElement<MenuItem>(element));
+                    }
                     else if (elementName == "MenuDivider")
+                    {
                         element.Menu.AddDivider();
+                    }
 
                     element.Menu.Component = e != null ? e.Component : null;
                 }
             }
+
             return element;
         }
     }

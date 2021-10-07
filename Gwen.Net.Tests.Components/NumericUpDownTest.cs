@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
@@ -11,9 +10,9 @@ namespace Gwen.Net.Tests.Components
         public NumericUpDownTest(ControlBase parent)
             : base(parent)
         {
-            VerticalLayout layout = new VerticalLayout(this);
+            VerticalLayout layout = new(this);
 
-            NumericUpDown ctrl = new NumericUpDown(layout);
+            NumericUpDown ctrl = new(layout);
             ctrl.Margin = Margin.Five;
             ctrl.Width = 70;
             ctrl.Value = 50;
@@ -48,7 +47,7 @@ namespace Gwen.Net.Tests.Components
             ctrl.ValueChanged += OnValueChanged;
         }
 
-        void OnValueChanged(ControlBase control, EventArgs args)
+        private void OnValueChanged(ControlBase control, EventArgs args)
         {
             UnitPrint(String.Format("NumericUpDown: ValueChanged: {0}", ((NumericUpDown)control).Value));
         }

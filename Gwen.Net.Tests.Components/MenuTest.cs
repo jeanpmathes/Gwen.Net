@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 
 namespace Gwen.Net.Tests.Components
@@ -7,14 +6,14 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Standard", Order = 208)]
     public class MenuTest : GUnit
     {
-        private Menu m_ContextMenu;
+        private readonly Menu m_ContextMenu;
 
         public MenuTest(ControlBase parent)
             : base(parent)
         {
             /* Menu Strip */
             {
-                MenuStrip menu = new MenuStrip(this);
+                MenuStrip menu = new(this);
                 menu.Dock = Dock.Top;
 
                 /* File */
@@ -30,11 +29,15 @@ namespace Gwen.Net.Tests.Components
                 {
                     MenuItem pRoot = menu.AddItem("\u043F\u0438\u0440\u0430\u0442\u0441\u0442\u0432\u043E");
                     pRoot.Menu.AddItem("\u5355\u5143\u6D4B\u8BD5").SetAction(MenuItemSelect);
-                    pRoot.Menu.AddItem("\u0111\u01A1n v\u1ECB th\u1EED nghi\u1EC7m", "test16.png").SetAction(MenuItemSelect);
+
+                    pRoot.Menu.AddItem("\u0111\u01A1n v\u1ECB th\u1EED nghi\u1EC7m", "test16.png")
+                        .SetAction(MenuItemSelect);
                 }
+
                 {
                     MenuItem sRoot = menu.AddItemPath("File/s/d/s/s/d/f");
                 }
+
                 /* Embdedded Menu Items */
                 {
                     MenuItem pRoot = menu.AddItem("Submenu");
@@ -72,24 +75,30 @@ namespace Gwen.Net.Tests.Components
                             MenuItem pRootC = pRootB.Menu.AddItem("Six.Six");
                             pRootC.Menu.AddItem("Sheep");
                             pRootC.Menu.AddItem("Goose");
+
                             {
                                 MenuItem pRootD = pRootC.Menu.AddItem("Camel");
                                 pRootD.Menu.AddItem("Eyes");
                                 pRootD.Menu.AddItem("Nose");
+
                                 {
                                     MenuItem pRootE = pRootD.Menu.AddItem("Hair");
                                     pRootE.Menu.AddItem("Blonde");
                                     pRootE.Menu.AddItem("Black");
+
                                     {
                                         MenuItem pRootF = pRootE.Menu.AddItem("Red");
                                         pRootF.Menu.AddItem("Light");
                                         pRootF.Menu.AddItem("Medium");
                                         pRootF.Menu.AddItem("Dark");
                                     }
+
                                     pRootE.Menu.AddItem("Brown");
                                 }
+
                                 pRootD.Menu.AddItem("Ears");
                             }
+
                             pRootC.Menu.AddItem("Duck");
                         }
 
@@ -104,13 +113,14 @@ namespace Gwen.Net.Tests.Components
 
             /* Context Menu Strip */
             {
-                Label lblClickMe = new Label(this);
+                Label lblClickMe = new(this);
                 lblClickMe.Dock = Dock.Fill;
                 lblClickMe.VerticalAlignment = VerticalAlignment.Center;
                 lblClickMe.Text = "Right Click Me";
 
                 m_ContextMenu = new Menu(this);
                 m_ContextMenu.AddItem("Test");
+
                 m_ContextMenu.AddItem("Clickable").Clicked += (sender2, args2) =>
                 {
                     UnitPrint("Clickable item was clicked");
@@ -118,13 +128,13 @@ namespace Gwen.Net.Tests.Components
 
                 lblClickMe.RightClicked += (sender, args) =>
                 {
-                    m_ContextMenu.Position = this.CanvasPosToLocal(new Point(args.X, args.Y));
+                    m_ContextMenu.Position = CanvasPosToLocal(new Point(args.X, args.Y));
                     m_ContextMenu.Show();
                 };
             }
         }
 
-        void MenuItemSelect(ControlBase control, EventArgs args)
+        private void MenuItemSelect(ControlBase control, EventArgs args)
         {
             MenuItem item = control as MenuItem;
             UnitPrint(String.Format("Menu item selected: {0}", item.Text));

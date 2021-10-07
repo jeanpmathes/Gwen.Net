@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
@@ -11,7 +10,7 @@ namespace Gwen.Net.Tests.Components
         public ToolWindowTest(ControlBase parent)
             : base(parent)
         {
-            VerticalLayout layout = new VerticalLayout(this);
+            VerticalLayout layout = new(this);
             layout.HorizontalAlignment = HorizontalAlignment.Left;
 
             Button button;
@@ -27,63 +26,63 @@ namespace Gwen.Net.Tests.Components
             button.Clicked += OpenToolWindow;
         }
 
-        void OpenToolBar(ControlBase control, EventArgs args)
+        private void OpenToolBar(ControlBase control, EventArgs args)
         {
-            ToolWindow window = new ToolWindow(this);
+            ToolWindow window = new(this);
             window.Padding = Padding.Five;
             window.HorizontalAlignment = HorizontalAlignment.Left;
             window.VerticalAlignment = VerticalAlignment.Top;
             window.StartPosition = StartPosition.CenterCanvas;
 
-            HorizontalLayout layout = new HorizontalLayout(window);
+            HorizontalLayout layout = new(window);
 
             for (int i = 0; i < 5; i++)
             {
-                Button button = new Button(layout);
-                button.Size = new Size(36, 36);
+                Button button = new(layout);
+                button.Size = new Size(width: 36, height: 36);
                 button.UserData = window;
                 button.Clicked += Close;
             }
         }
 
-        void OpenToolWindow(ControlBase control, EventArgs args)
+        private void OpenToolWindow(ControlBase control, EventArgs args)
         {
-            ToolWindow window = new ToolWindow(this);
+            ToolWindow window = new(this);
             window.Padding = Padding.Five;
             window.HorizontalAlignment = HorizontalAlignment.Left;
             window.VerticalAlignment = VerticalAlignment.Top;
             window.StartPosition = StartPosition.CenterParent;
             window.Vertical = true;
 
-            GridLayout layout = new GridLayout(window);
+            GridLayout layout = new(window);
             layout.ColumnCount = 2;
 
-            Button button = new Button(layout);
-            button.Size = new Size(100, 40);
+            Button button = new(layout);
+            button.Size = new Size(width: 100, height: 40);
             button.UserData = window;
             button.Clicked += Close;
 
             button = new Button(layout);
-            button.Size = new Size(100, 40);
+            button.Size = new Size(width: 100, height: 40);
             button.UserData = window;
             button.Clicked += Close;
 
             button = new Button(layout);
-            button.Size = new Size(100, 40);
+            button.Size = new Size(width: 100, height: 40);
             button.UserData = window;
             button.Clicked += Close;
 
             button = new Button(layout);
-            button.Size = new Size(100, 40);
+            button.Size = new Size(width: 100, height: 40);
             button.UserData = window;
             button.Clicked += Close;
         }
 
-        void Close(ControlBase control, EventArgs args)
+        private void Close(ControlBase control, EventArgs args)
         {
             ToolWindow window = control.UserData as ToolWindow;
             window.Close();
-            window.Parent.RemoveChild(window, true);
+            window.Parent.RemoveChild(window, dispose: true);
         }
     }
 }

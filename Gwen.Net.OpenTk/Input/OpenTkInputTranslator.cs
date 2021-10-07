@@ -5,16 +5,14 @@ using OpenToolkit.Mathematics;
 using OpenToolkit.Windowing.Common;
 using OpenToolkit.Windowing.Common.Input;
 
-using Key = OpenToolkit.Windowing.Common.Input.Key;
-
 namespace Gwen.Net.OpenTk.Input
 {
     public class OpenTkInputTranslator
     {
         private readonly Canvas canvas;
-        private Vector2 lastMousePosition;
 
-        bool controlPressed = false;
+        private bool controlPressed;
+        private Vector2 lastMousePosition;
 
         public OpenTkInputTranslator(Canvas canvas)
         {
@@ -40,6 +38,7 @@ namespace Gwen.Net.OpenTk.Input
                 case Key.Delete: return GwenMappedKey.Delete;
                 case Key.LControl:
                     controlPressed = true;
+
                     return GwenMappedKey.Control;
                 case Key.LAlt: return GwenMappedKey.Alt;
                 case Key.LShift: return GwenMappedKey.Shift;
@@ -47,48 +46,67 @@ namespace Gwen.Net.OpenTk.Input
                 case Key.RAlt:
                     if (controlPressed)
                     {
-                        canvas.Input_Key(GwenMappedKey.Control, false);
+                        canvas.Input_Key(GwenMappedKey.Control, down: false);
                     }
+
                     return GwenMappedKey.Alt;
                 case Key.RShift: return GwenMappedKey.Shift;
 
             }
+
             return GwenMappedKey.Invalid;
         }
 
         private static char TranslateChar(Key key)
         {
             if (key >= Key.A && key <= Key.Z)
+            {
                 return (char)('a' + ((int)key - (int)Key.A));
+            }
+
             return ' ';
         }
 
         public void ProcessMouseButton(MouseButtonEventArgs args)
         {
             if (canvas is null)
+            {
                 return;
+            }
 
             if (args.Button == MouseButton.Left)
-                canvas.Input_MouseButton(0, args.IsPressed);
+            {
+                canvas.Input_MouseButton(button: 0, args.IsPressed);
+            }
             else if (args.Button == MouseButton.Right)
-                canvas.Input_MouseButton(1, args.IsPressed);
+            {
+                canvas.Input_MouseButton(button: 1, args.IsPressed);
+            }
         }
 
         public void ProcessMouseMove(MouseMoveEventArgs args)
         {
             if (null == canvas)
+            {
                 return;
+            }
 
-            var deltaPosition = args.Position - lastMousePosition;
+            Vector2 deltaPosition = args.Position - lastMousePosition;
             lastMousePosition = args.Position;
 
-            canvas.Input_MouseMoved((int)lastMousePosition.X, (int)lastMousePosition.Y, (int)deltaPosition.X, (int)deltaPosition.Y);
+            canvas.Input_MouseMoved(
+                (int)lastMousePosition.X,
+                (int)lastMousePosition.Y,
+                (int)deltaPosition.X,
+                (int)deltaPosition.Y);
         }
 
         public void ProcessMouseWheel(MouseWheelEventArgs args)
         {
             if (null == canvas)
+            {
                 return;
+            }
 
             canvas.Input_MouseWheel((int)(args.OffsetY * 60));
         }
@@ -98,15 +116,18 @@ namespace Gwen.Net.OpenTk.Input
             char ch = TranslateChar(eventArgs.Key);
 
             if (InputHandler.DoSpecialKeys(canvas, ch))
+            {
                 return false;
+            }
 
             GwenMappedKey iKey = TranslateKeyCode(eventArgs.Key);
+
             if (iKey == GwenMappedKey.Invalid)
             {
                 return false;
             }
 
-            return canvas.Input_Key(iKey, true);
+            return canvas.Input_Key(iKey, down: true);
         }
 
         public void ProcessTextInput(TextInputEventArgs obj)
@@ -121,7 +142,7 @@ namespace Gwen.Net.OpenTk.Input
         {
             GwenMappedKey key = TranslateKeyCode(eventArgs.Key);
 
-            return canvas.Input_Key(key, false);
+            return canvas.Input_Key(key, down: false);
         }
     }
 }

@@ -9,13 +9,30 @@ namespace Gwen.Net
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public int Left { get { return X; } }
-        public int Top { get { return Y; } }
-        public int Right { get { return X + Width - 1; } }
-        public int Bottom { get { return Y + Height - 1; } }
+        public int Left => X;
+        public int Top => Y;
+        public int Right => X + Width - 1;
+        public int Bottom => Y + Height - 1;
 
-        public Point Location { get { return new Point(X, Y); } set { X = value.X; Y = value.Y; } }
-        public Size Size { get { return new Size(Width, Height); } set { Width = value.Width; Height = value.Height; } }
+        public Point Location
+        {
+            get => new(X, Y);
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
+
+        public Size Size
+        {
+            get => new(Width, Height);
+            set
+            {
+                Width = value.Width;
+                Height = value.Height;
+            }
+        }
 
         public Rectangle(int x, int y, int width, int height)
         {
@@ -95,12 +112,14 @@ namespace Gwen.Net
 
         public static bool operator ==(Rectangle rect1, Rectangle rect2)
         {
-            return rect1.X == rect2.X && rect1.Y == rect2.Y && rect1.Width == rect2.Width && rect1.Height == rect2.Height;
+            return rect1.X == rect2.X && rect1.Y == rect2.Y && rect1.Width == rect2.Width &&
+                   rect1.Height == rect2.Height;
         }
 
         public static bool operator !=(Rectangle rect1, Rectangle rect2)
         {
-            return rect1.X != rect2.X || rect1.Y != rect2.Y || rect1.Width != rect2.Width || rect1.Height != rect2.Height;
+            return rect1.X != rect2.X || rect1.Y != rect2.Y || rect1.Width != rect2.Width ||
+                   rect1.Height != rect2.Height;
         }
 
         public override bool Equals(object obj)
@@ -123,6 +142,6 @@ namespace Gwen.Net
             return String.Format("X = {0} Y = {1} Width = {2} Height = {3}", X, Y, Width, Height);
         }
 
-        public static readonly Rectangle Empty = new Rectangle(0, 0, 0, 0);
+        public static readonly Rectangle Empty = new(x: 0, y: 0, width: 0, height: 0);
     }
 }

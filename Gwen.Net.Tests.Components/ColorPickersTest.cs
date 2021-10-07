@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
@@ -13,50 +12,59 @@ namespace Gwen.Net.Tests.Components
         {
             /* RGB Picker */
             {
-                ColorPicker rgbPicker = new ColorPicker(this);
-                rgbPicker.Dock = Net.Dock.Top;
+                ColorPicker rgbPicker = new(this);
+                rgbPicker.Dock = Dock.Top;
                 rgbPicker.ColorChanged += ColorChanged;
             }
 
             /* HSVColorPicker */
             {
-                HSVColorPicker hsvPicker = new HSVColorPicker(this);
-                hsvPicker.Dock = Net.Dock.Fill;
-                hsvPicker.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                hsvPicker.VerticalAlignment = Net.VerticalAlignment.Top;
+                HSVColorPicker hsvPicker = new(this);
+                hsvPicker.Dock = Dock.Fill;
+                hsvPicker.HorizontalAlignment = HorizontalAlignment.Left;
+                hsvPicker.VerticalAlignment = VerticalAlignment.Top;
                 hsvPicker.ColorChanged += ColorChanged;
             }
 
             /* HSVColorPicker in Window */
             {
-                WindowTest window = new WindowTest(base.GetCanvas());
-                window.Size = new Net.Size(300, 200);
+                WindowTest window = new(base.GetCanvas());
+                window.Size = new Size(width: 300, height: 200);
                 window.Collapse();
-                DockLayout layout = new DockLayout(window);
+                DockLayout layout = new(window);
 
-                HSVColorPicker hsvPicker = new HSVColorPicker(layout);
-                hsvPicker.Margin = Net.Margin.Two;
-                hsvPicker.Dock = Net.Dock.Fill;
+                HSVColorPicker hsvPicker = new(layout);
+                hsvPicker.Margin = Margin.Two;
+                hsvPicker.Dock = Dock.Fill;
                 hsvPicker.ColorChanged += ColorChanged;
 
-                Button OpenWindow = new Button(this);
-                OpenWindow.Dock = Net.Dock.Bottom;
-                OpenWindow.HorizontalAlignment = Net.HorizontalAlignment.Left;
+                Button OpenWindow = new(this);
+                OpenWindow.Dock = Dock.Bottom;
+                OpenWindow.HorizontalAlignment = HorizontalAlignment.Left;
                 OpenWindow.Text = "Open Window";
-                OpenWindow.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
+
+                OpenWindow.Clicked += delegate
                 {
                     window.Show();
                 };
             }
         }
 
-        void ColorChanged(ControlBase control, EventArgs args)
+        private void ColorChanged(ControlBase control, EventArgs args)
         {
             IColorPicker picker = control as IColorPicker;
-            Net.Color c = picker.SelectedColor;
-            Net.HSV hsv = c.ToHSV();
-            String text = String.Format("Color changed: RGB: {0:X2}{1:X2}{2:X2} HSV: {3:F1} {4:F2} {5:F2}",
-                                        c.R, c.G, c.B, hsv.H, hsv.S, hsv.V);
+            Color c = picker.SelectedColor;
+            HSV hsv = c.ToHSV();
+
+            String text = String.Format(
+                "Color changed: RGB: {0:X2}{1:X2}{2:X2} HSV: {3:F1} {4:F2} {5:F2}",
+                c.R,
+                c.G,
+                c.B,
+                hsv.H,
+                hsv.S,
+                hsv.V);
+
             UnitPrint(text);
         }
     }

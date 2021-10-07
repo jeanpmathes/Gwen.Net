@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Gwen.Net.RichText
+﻿namespace Gwen.Net.RichText
 {
     internal class TextBlock
     {
-        public string Text;
+        public Part Part;
         public Point Position;
         public Size Size;
-        public Part Part;
+        public string Text;
     }
 }

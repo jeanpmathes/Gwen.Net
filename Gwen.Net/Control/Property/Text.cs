@@ -1,19 +1,17 @@
-﻿using System;
-
-namespace Gwen.Net.Control.Property
+﻿namespace Gwen.Net.Control.Property
 {
     /// <summary>
-    /// Text property.
+    ///     Text property.
     /// </summary>
     public class Text : PropertyBase
     {
         protected readonly TextBox m_TextBox;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Text"/> class.
+        ///     Initializes a new instance of the <see cref="Text" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        public Text(Control.ControlBase parent)
+        public Text(ControlBase parent)
             : base(parent)
         {
             m_TextBox = new TextBox(this);
@@ -24,38 +22,32 @@ namespace Gwen.Net.Control.Property
         }
 
         /// <summary>
-        /// Property value.
+        ///     Property value.
         /// </summary>
         public override string Value
         {
-            get { return m_TextBox.Text; }
-            set { base.Value = value; }
+            get => m_TextBox.Text;
+            set => base.Value = value;
         }
 
         /// <summary>
-        /// Sets the property value.
+        ///     Indicates whether the property value is being edited.
+        /// </summary>
+        public override bool IsEditing => m_TextBox.HasFocus;
+
+        /// <summary>
+        ///     Indicates whether the control is hovered by mouse pointer.
+        /// </summary>
+        public override bool IsHovered => base.IsHovered | m_TextBox.IsHovered;
+
+        /// <summary>
+        ///     Sets the property value.
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
         public override void SetValue(string value, bool fireEvents = false)
         {
             m_TextBox.SetText(value, fireEvents);
-        }
-
-        /// <summary>
-        /// Indicates whether the property value is being edited.
-        /// </summary>
-        public override bool IsEditing
-        {
-            get { return m_TextBox.HasFocus; }
-        }
-
-        /// <summary>
-        /// Indicates whether the control is hovered by mouse pointer.
-        /// </summary>
-        public override bool IsHovered
-        {
-            get { return base.IsHovered | m_TextBox.IsHovered; }
         }
 
         /*

@@ -1,15 +1,32 @@
-﻿using System;
-using Gwen.Net.Control.Internal;
+﻿using Gwen.Net.Control.Internal;
+using Gwen.Net.Control.Layout;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Property table/tree.
+    ///     Property table/tree.
     /// </summary>
     public class PropertyTree : ScrollControl
     {
         /// <summary>
-        /// Width of the first column (property names).
+        ///     Initializes a new instance of the <see cref="PropertyTree" /> class.
+        /// </summary>
+        /// <param name="parent">Parent control.</param>
+        public PropertyTree(ControlBase parent)
+            : base(parent)
+        {
+            Padding = Padding.One;
+
+            MouseInputEnabled = true;
+            EnableScroll(horizontal: false, vertical: true);
+            AutoHideBars = true;
+
+            new VerticalLayout(this);
+        }
+
+        /// <summary>
+        ///     Width of the first column (property names).
         /// </summary>
         public int LabelWidth
         {
@@ -18,9 +35,13 @@ namespace Gwen.Net.Control
                 foreach (ControlBase child in Children)
                 {
                     PropertyTreeNode node = child as PropertyTreeNode;
+
                     if (node != null)
+                    {
                         return node.Properties.LabelWidth;
+                    }
                 }
+
                 return Properties.DefaultLabelWidth;
             }
             set
@@ -28,6 +49,7 @@ namespace Gwen.Net.Control
                 foreach (ControlBase child in Children)
                 {
                     PropertyTreeNode node = child as PropertyTreeNode;
+
                     if (node != null)
                     {
                         node.Properties.LabelWidth = value;
@@ -37,53 +59,41 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyTree"/> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public PropertyTree(ControlBase parent)
-            : base(parent)
-        {
-            Padding = Padding.One;
-
-            MouseInputEnabled = true;
-            EnableScroll(false, true);
-            AutoHideBars = true;
-
-            new Layout.VerticalLayout(this);
-        }
-
-        /// <summary>
-        /// Adds a new properties node.
+        ///     Adds a new properties node.
         /// </summary>
         /// <param name="label">Node label.</param>
         /// <returns>Newly created control</returns>
         public Properties Add(string label)
         {
-            PropertyTreeNode node = new PropertyTreeNode(this);
+            PropertyTreeNode node = new(this);
             node.Text = label;
 
             return node.Properties;
         }
 
         /// <summary>
-        /// Opens the node and all child nodes.
+        ///     Opens the node and all child nodes.
         /// </summary>
         public void ExpandAll()
         {
             foreach (ControlBase child in Children)
             {
                 PropertyTreeNode node = child as PropertyTreeNode;
+
                 if (node == null)
+                {
                     continue;
+                }
+
                 node.Open();
             }
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawCategoryHolder(this);
         }

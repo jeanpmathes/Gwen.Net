@@ -5,14 +5,12 @@ using static Gwen.Net.Platform.GwenPlatform;
 namespace Gwen.Net.CommonDialog
 {
     /// <summary>
-    /// Dialog for selecting a file name for saving or creating.
+    ///     Dialog for selecting a file name for saving or creating.
     /// </summary>
     public class SaveFileDialog : FileDialog
     {
         public SaveFileDialog(ControlBase parent)
-            : base(parent)
-        {
-        }
+            : base(parent) {}
 
         protected override void OnCreated()
         {
@@ -47,13 +45,21 @@ namespace Gwen.Net.CommonDialog
         protected override bool ValidateFileName(string path)
         {
             if (DirectoryExists(path))
+            {
                 return false;
+            }
 
             if (FileExists(path))
             {
-                MessageBox win = MessageBox.Show(View, String.Format("File '{0}' already exists. Do you want to replace it?", GetFileName(path)), Title, MessageBoxButtons.YesNo);
+                MessageBox win = MessageBox.Show(
+                    View,
+                    String.Format("File '{0}' already exists. Do you want to replace it?", GetFileName(path)),
+                    Title,
+                    MessageBoxButtons.YesNo);
+
                 win.Dismissed += OnMessageBoxDismissed;
                 win.UserData = path;
+
                 return false;
             }
 
@@ -63,7 +69,9 @@ namespace Gwen.Net.CommonDialog
         private void OnMessageBoxDismissed(ControlBase sender, MessageBoxResultEventArgs args)
         {
             if (args.Result == MessageBoxResult.Yes)
+            {
                 Close(sender.UserData as string);
+            }
         }
     }
 }

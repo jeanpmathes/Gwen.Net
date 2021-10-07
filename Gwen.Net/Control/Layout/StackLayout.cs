@@ -1,24 +1,34 @@
-﻿using System;
+﻿using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Layout
 {
     /// <summary>
-    /// Arrange child controls into a row or a column.
+    ///     Arrange child controls into a row or a column.
     /// </summary>
-    [Xml.XmlControl]
+    [XmlControl]
     public class StackLayout : ControlBase
     {
         private bool m_Horizontal;
 
-        /// <summary>
-        /// If set, arrange child controls into a row instead of a column.
-        /// </summary>
-        [Xml.XmlProperty]
-        public bool Horizontal { get { return m_Horizontal; } set { if (m_Horizontal == value) return; m_Horizontal = value; Invalidate(); } }
-
         public StackLayout(ControlBase parent)
-            : base(parent)
+            : base(parent) {}
+
+        /// <summary>
+        ///     If set, arrange child controls into a row instead of a column.
+        /// </summary>
+        [XmlProperty] public bool Horizontal
         {
+            get => m_Horizontal;
+            set
+            {
+                if (m_Horizontal == value)
+                {
+                    return;
+                }
+
+                m_Horizontal = value;
+                Invalidate();
+            }
         }
 
         protected override Size Measure(Size availableSize)
@@ -30,29 +40,41 @@ namespace Gwen.Net.Control.Layout
 
             if (m_Horizontal)
             {
-                foreach (ControlBase child in this.Children)
+                foreach (ControlBase child in Children)
                 {
                     if (child.IsCollapsed)
+                    {
                         continue;
+                    }
 
                     Size size = child.DoMeasure(availableSize);
                     availableSize.Width -= size.Width;
+
                     if (size.Height > height)
+                    {
                         height = size.Height;
+                    }
+
                     width += size.Width;
                 }
             }
             else
             {
-                foreach (ControlBase child in this.Children)
+                foreach (ControlBase child in Children)
                 {
                     if (child.IsCollapsed)
+                    {
                         continue;
+                    }
 
                     Size size = child.DoMeasure(availableSize);
                     availableSize.Height -= size.Height;
+
                     if (size.Width > width)
+                    {
                         width = size.Width;
+                    }
+
                     height += size.Height;
                 }
             }
@@ -69,10 +91,12 @@ namespace Gwen.Net.Control.Layout
                 int height = finalSize.Height;
                 int x = Padding.Left;
 
-                foreach (ControlBase child in this.Children)
+                foreach (ControlBase child in Children)
                 {
                     if (child.IsCollapsed)
+                    {
                         continue;
+                    }
 
                     child.DoArrange(new Rectangle(x, Padding.Top, child.MeasuredSize.Width, height));
                     x += child.MeasuredSize.Width;
@@ -82,24 +106,24 @@ namespace Gwen.Net.Control.Layout
 
                 return new Size(x, finalSize.Height + Padding.Top + Padding.Bottom);
             }
-            else
+
+            int width = finalSize.Width;
+            int y = Padding.Top;
+
+            foreach (ControlBase child in Children)
             {
-                int width = finalSize.Width;
-                int y = Padding.Top;
-
-                foreach (ControlBase child in this.Children)
+                if (child.IsCollapsed)
                 {
-                    if (child.IsCollapsed)
-                        continue;
-
-                    child.DoArrange(new Rectangle(Padding.Left, y, width, child.MeasuredSize.Height));
-                    y += child.MeasuredSize.Height;
+                    continue;
                 }
 
-                y += Padding.Bottom;
-
-                return new Size(finalSize.Width + Padding.Left + Padding.Right, y);
+                child.DoArrange(new Rectangle(Padding.Left, y, width, child.MeasuredSize.Height));
+                y += child.MeasuredSize.Height;
             }
+
+            y += Padding.Bottom;
+
+            return new Size(finalSize.Width + Padding.Left + Padding.Right, y);
         }
     }
 }

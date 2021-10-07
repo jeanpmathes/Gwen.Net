@@ -1,22 +1,22 @@
-﻿using System;
+﻿using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Layout
 {
     /// <summary>
-    /// Arrange child controls into a column.
+    ///     Arrange child controls into a column.
     /// </summary>
-    [Xml.XmlControl]
+    [XmlControl]
     public class VerticalLayout : StackLayout
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="VerticalLayout"/> class.
+        ///     Initializes a new instance of the <see cref="VerticalLayout" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public VerticalLayout(ControlBase parent)
             : base(parent)
         {
-            this.HorizontalAlignment = HorizontalAlignment.Stretch;
-            this.VerticalAlignment = VerticalAlignment.Top;
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Top;
         }
     }
 }

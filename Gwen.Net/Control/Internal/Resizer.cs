@@ -1,22 +1,16 @@
 ﻿using System;
-using Gwen.Net.Control;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Grab point for resizing.
+    ///     Grab point for resizing.
     /// </summary>
     public class Resizer : Dragger
     {
         private Dock m_ResizeDir;
 
         /// <summary>
-        /// Invoked when the control has been resized.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Resized;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Resizer"/> class.
+        ///     Initializes a new instance of the <see cref="Resizer" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Resizer(ControlBase parent)
@@ -28,7 +22,51 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Handler invoked on mouse moved event.
+        ///     Gets or sets the sizing direction.
+        /// </summary>
+        public Dock ResizeDir
+        {
+            set
+            {
+                m_ResizeDir = value;
+
+                if ((0 != (value & Dock.Left) && 0 != (value & Dock.Top)) ||
+                    (0 != (value & Dock.Right) && 0 != (value & Dock.Bottom)))
+                {
+                    Cursor = Cursor.SizeNWSE;
+
+                    return;
+                }
+
+                if ((0 != (value & Dock.Right) && 0 != (value & Dock.Top)) ||
+                    (0 != (value & Dock.Left) && 0 != (value & Dock.Bottom)))
+                {
+                    Cursor = Cursor.SizeNESW;
+
+                    return;
+                }
+
+                if (0 != (value & Dock.Right) || 0 != (value & Dock.Left))
+                {
+                    Cursor = Cursor.SizeWE;
+
+                    return;
+                }
+
+                if (0 != (value & Dock.Top) || 0 != (value & Dock.Bottom))
+                {
+                    Cursor = Cursor.SizeNS;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Invoked when the control has been resized.
+        /// </summary>
+        public event GwenEventHandler<EventArgs> Resized;
+
+        /// <summary>
+        ///     Handler invoked on mouse moved event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -36,8 +74,15 @@ namespace Gwen.Net.Control.Internal
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (null == m_Target) return;
-            if (!m_Held) return;
+            if (null == m_Target)
+            {
+                return;
+            }
+
+            if (!m_Held)
+            {
+                return;
+            }
 
             Rectangle oldBounds = m_Target.Bounds;
             Rectangle bounds = m_Target.Bounds;
@@ -102,7 +147,10 @@ namespace Gwen.Net.Control.Internal
             {
                 bounds.Width -= delta.X;
 
-                if (bounds.Width < min.Width) bounds.Width = min.Width;
+                if (bounds.Width < min.Width)
+                {
+                    bounds.Width = min.Width;
+                }
 
                 m_HoldPos.X += bounds.Width - oldBounds.Width;
 
@@ -114,7 +162,10 @@ namespace Gwen.Net.Control.Internal
             {
                 bounds.Height -= delta.Y;
 
-                if (bounds.Height < min.Height) bounds.Height = min.Height;
+                if (bounds.Height < min.Height)
+                {
+                    bounds.Height = min.Height;
+                }
 
                 m_HoldPos.Y += bounds.Height - oldBounds.Height;
 
@@ -124,45 +175,23 @@ namespace Gwen.Net.Control.Internal
 
             // Lets set quickly new bounds and let the layout measure and arrange child controls later
             m_Target.SetBounds(bounds);
+
             // Set bounds that are checked by SetBounds() implementations
-            if (!Util.IsIgnore(m_Target.Width)) m_Target.Width = m_Target.Bounds.Width;
-            if (!Util.IsIgnore(m_Target.Height)) m_Target.Height = m_Target.Bounds.Height;
+            if (!Util.IsIgnore(m_Target.Width))
+            {
+                m_Target.Width = m_Target.Bounds.Width;
+            }
+
+            if (!Util.IsIgnore(m_Target.Height))
+            {
+                m_Target.Height = m_Target.Bounds.Height;
+            }
 
             m_Target.Invalidate();
 
             if (Resized != null)
-                Resized.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Gets or sets the sizing direction.
-        /// </summary>
-        public Dock ResizeDir
-        {
-            set
             {
-                m_ResizeDir = value;
-
-                if ((0 != (value & Dock.Left) && 0 != (value & Dock.Top)) || (0 != (value & Dock.Right) && 0 != (value & Dock.Bottom)))
-                {
-                    Cursor = Cursor.SizeNWSE;
-                    return;
-                }
-                if ((0 != (value & Dock.Right) && 0 != (value & Dock.Top)) || (0 != (value & Dock.Left) && 0 != (value & Dock.Bottom)))
-                {
-                    Cursor = Cursor.SizeNESW;
-                    return;
-                }
-                if (0 != (value & Dock.Right) || 0 != (value & Dock.Left))
-                {
-                    Cursor = Cursor.SizeWE;
-                    return;
-                }
-                if (0 != (value & Dock.Top) || 0 != (value & Dock.Bottom))
-                {
-                    Cursor = Cursor.SizeNS;
-                    return;
-                }
+                Resized.Invoke(this, EventArgs.Empty);
             }
         }
     }

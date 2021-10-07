@@ -2,30 +2,26 @@
 
 using System;
 using System.Collections.Generic;
-using Gwen.Net.RichText;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.RichText;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Multiline label with text chunks having different color/font.
+    ///     Multiline label with text chunks having different color/font.
     /// </summary>
-    [Xml.XmlControl]
+    [XmlControl]
     public class RichLabel : ControlBase
     {
+        private int m_BuildWidth;
         private Document m_Document;
         private bool m_NeedsRebuild;
-        private int m_BuildWidth;
         private Size m_TextSize;
         private bool m_Updating;
 
-        public Document Document { get { return m_Document; } set { m_Document = value; m_NeedsRebuild = true; Invalidate(); } }
-
-        [Xml.XmlEvent]
-        public event ControlBase.GwenEventHandler<LinkClickedEventArgs> LinkClicked;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="RichLabel"/> class.
+        ///     Initializes a new instance of the <see cref="RichLabel" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public RichLabel(ControlBase parent)
@@ -35,6 +31,19 @@ namespace Gwen.Net.Control
             m_TextSize = Size.Zero;
             m_Updating = false;
         }
+
+        public Document Document
+        {
+            get => m_Document;
+            set
+            {
+                m_Document = value;
+                m_NeedsRebuild = true;
+                Invalidate();
+            }
+        }
+
+        [XmlEvent] public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
 
         protected void Rebuild()
         {
@@ -63,19 +72,35 @@ namespace Gwen.Net.Control
                     {
                         ImageParagraph imageParagraph = paragraph as ImageParagraph;
 
-                        ImagePanel image = new ImagePanel(this);
+                        ImagePanel image = new(this);
                         image.ImageName = imageParagraph.ImageName;
+
                         if (imageParagraph.ImageSize != null)
+                        {
                             image.Size = (Size)imageParagraph.ImageSize;
+                        }
+
                         if (imageParagraph.TextureRect != null)
+                        {
                             image.TextureRect = (Rectangle)imageParagraph.TextureRect;
+                        }
+
                         if (imageParagraph.ImageColor != null)
+                        {
                             image.ImageColor = (Color)imageParagraph.ImageColor;
+                        }
 
                         image.DoMeasure(Size.Infinity);
-                        image.DoArrange(paragraph.Margin.Left, y + paragraph.Margin.Top, image.MeasuredSize.Width, image.MeasuredSize.Height);
 
-                        size.Width = Math.Max(size.Width, image.MeasuredSize.Width + paragraph.Margin.Left + paragraph.Margin.Right);
+                        image.DoArrange(
+                            paragraph.Margin.Left,
+                            y + paragraph.Margin.Top,
+                            image.MeasuredSize.Width,
+                            image.MeasuredSize.Height);
+
+                        size.Width = Math.Max(
+                            size.Width,
+                            image.MeasuredSize.Width + paragraph.Margin.Left + paragraph.Margin.Right);
 
                         y += image.MeasuredSize.Height + paragraph.Margin.Top + paragraph.Margin.Bottom;
                     }
@@ -96,20 +121,35 @@ namespace Gwen.Net.Control
                                 {
                                     LinkPart linkPart = textBlock.Part as LinkPart;
 
-                                    LinkLabel link = new LinkLabel(this);
+                                    LinkLabel link = new(this);
                                     link.Text = textBlock.Text;
                                     link.Link = linkPart.Link;
                                     link.Font = linkPart.Font;
                                     link.LinkClicked += OnLinkClicked;
+
                                     if (linkPart.Color != null)
+                                    {
                                         link.TextColor = (Color)linkPart.Color;
+                                    }
+
                                     if (linkPart.HoverColor != null)
+                                    {
                                         link.HoverColor = (Color)linkPart.HoverColor;
+                                    }
+
                                     if (linkPart.HoverFont != null)
+                                    {
                                         link.HoverFont = linkPart.HoverFont;
+                                    }
 
                                     link.DoMeasure(Size.Infinity);
-                                    link.DoArrange(new Rectangle(x + textBlock.Position.X, y + textBlock.Position.Y, textBlock.Size.Width, textBlock.Size.Height));
+
+                                    link.DoArrange(
+                                        new Rectangle(
+                                            x + textBlock.Position.X,
+                                            y + textBlock.Position.Y,
+                                            textBlock.Size.Width,
+                                            textBlock.Size.Height));
 
                                     width = Math.Max(width, link.ActualRight);
                                     height = Math.Max(height, link.ActualBottom);
@@ -118,14 +158,23 @@ namespace Gwen.Net.Control
                                 {
                                     TextPart textPart = textBlock.Part as TextPart;
 
-                                    Text text = new Text(this);
+                                    Text text = new(this);
                                     text.String = textBlock.Text;
                                     text.Font = textPart.Font;
+
                                     if (textPart.Color != null)
+                                    {
                                         text.TextColor = (Color)textPart.Color;
+                                    }
 
                                     text.DoMeasure(Size.Infinity);
-                                    text.DoArrange(new Rectangle(x + textBlock.Position.X, y + textBlock.Position.Y, textBlock.Size.Width, textBlock.Size.Height));
+
+                                    text.DoArrange(
+                                        new Rectangle(
+                                            x + textBlock.Position.X,
+                                            y + textBlock.Position.Y,
+                                            textBlock.Size.Width,
+                                            textBlock.Size.Height));
 
                                     width = Math.Max(width, text.ActualRight + 1);
                                     height = Math.Max(height, text.ActualBottom + 1);
@@ -174,14 +223,18 @@ namespace Gwen.Net.Control
         private void OnLinkClicked(ControlBase control, LinkClickedEventArgs args)
         {
             if (LinkClicked != null)
+            {
                 LinkClicked(this, args);
+            }
         }
 
         public override void Invalidate()
         {
             // We don't want to cause the re-layout when creating text objects in the layout
             if (m_Updating)
+            {
                 return;
+            }
 
             base.Invalidate();
         }

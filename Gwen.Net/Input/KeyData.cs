@@ -1,18 +1,17 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 
 namespace Gwen.Net.Input
 {
     /// <summary>
-    /// Keyboard state.
+    ///     Keyboard state.
     /// </summary>
     public class KeyData
     {
         public readonly bool[] KeyState;
         public readonly float[] NextRepeat;
-        public ControlBase Target;
         public bool LeftMouseDown;
         public bool RightMouseDown;
+        public ControlBase Target;
 
         public KeyData()
         {

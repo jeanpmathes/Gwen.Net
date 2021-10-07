@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Gwen.Net
+﻿namespace Gwen.Net
 {
     /// <summary>
-    /// Key constants.
+    ///     Key constants.
     /// </summary>
     public enum GwenMappedKey
     {

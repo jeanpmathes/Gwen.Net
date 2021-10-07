@@ -1,6 +1,4 @@
-﻿using System;
-using Gwen.Net;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -10,34 +8,36 @@ namespace Gwen.Net.Tests.Components
     {
         public ProgressBarTest(ControlBase parent) : base(parent)
         {
-            HorizontalLayout hlayout = new HorizontalLayout(this);
+            HorizontalLayout hlayout = new(this);
             hlayout.VerticalAlignment = VerticalAlignment.Top;
+
             {
-                VerticalLayout vlayout = new VerticalLayout(hlayout);
+                VerticalLayout vlayout = new(hlayout);
                 vlayout.Width = 200;
+
                 {
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.Value = 0.03f;
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.Value = 0.66f;
                         pb.Alignment = Alignment.Right | Alignment.CenterV;
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.Value = 0.88f;
                         pb.Alignment = Alignment.Left | Alignment.CenterV;
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.AutoLabel = false;
                         pb.Value = 0.20f;
@@ -46,21 +46,21 @@ namespace Gwen.Net.Tests.Components
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.AutoLabel = false;
                         pb.Value = 1.00f;
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.AutoLabel = false;
                         pb.Value = 0.00f;
                     }
 
                     {
-                        ProgressBar pb = new ProgressBar(vlayout);
+                        ProgressBar pb = new(vlayout);
                         pb.Margin = Margin.Five;
                         pb.AutoLabel = false;
                         pb.Value = 0.50f;
@@ -69,7 +69,7 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                ProgressBar pb = new ProgressBar(hlayout);
+                ProgressBar pb = new(hlayout);
                 pb.Margin = Margin.Five;
                 pb.IsHorizontal = false;
                 pb.Value = 0.25f;
@@ -77,14 +77,14 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                ProgressBar pb = new ProgressBar(hlayout);
+                ProgressBar pb = new(hlayout);
                 pb.Margin = Margin.Five;
                 pb.IsHorizontal = false;
                 pb.Value = 0.40f;
             }
 
             {
-                ProgressBar pb = new ProgressBar(hlayout);
+                ProgressBar pb = new(hlayout);
                 pb.Margin = Margin.Five;
                 pb.IsHorizontal = false;
                 pb.Alignment = Alignment.Bottom | Alignment.CenterH;

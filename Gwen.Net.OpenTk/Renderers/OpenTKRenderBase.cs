@@ -211,7 +211,7 @@ namespace Gwen.Net.OpenTk.Renderers
             float lineSpacingPixels = designToPixels * sysFont.FontFamily.GetLineSpacing(sysFont.Style);
             float externalLeadingPixels = lineSpacingPixels - cellHeightPixels;
 
-            FontMetrics fm = new FontMetrics(
+            FontMetrics fm = new(
                 emHeightPixels,
                 ascentPixels,
                 descentPixels,
@@ -262,7 +262,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 sysFont = font.RendererData as System.Drawing.Font;
             }
 
-            Tuple<string, Font> key = new Tuple<String, Font>(text, font);
+            Tuple<string, Font> key = new(text, font);
 
             if (stringCache.ContainsKey(key))
             {
@@ -300,13 +300,13 @@ namespace Gwen.Net.OpenTk.Renderers
                 sysFont = font.RendererData as System.Drawing.Font;
             }
 
-            Tuple<string, Font> key = new Tuple<String, Font>(text, font);
+            Tuple<string, Font> key = new(text, font);
 
             if (!stringCache.ContainsKey(key))
             {
                 // not cached - create text renderer
                 Size size = MeasureText(font, text);
-                TextRenderer tr = new TextRenderer(size.Width, size.Height, this);
+                TextRenderer tr = new(size.Width, size.Height, this);
                 tr.DrawString(text, sysFont, Brushes.White, Point.Zero, stringFormat); // renders string on the texture
 
                 DrawTexturedRect(

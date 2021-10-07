@@ -1,10 +1,9 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Color square.
+    ///     Color square.
     /// </summary>
     public class ColorDisplay : ControlBase
     {
@@ -12,33 +11,57 @@ namespace Gwen.Net.Control.Internal
         //private bool m_DrawCheckers;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorDisplay"/> class.
+        ///     Initializes a new instance of the <see cref="ColorDisplay" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ColorDisplay(ControlBase parent) : base(parent)
         {
             Size = new Size(BaseUnit * 2);
-            m_Color = new Color(255, 255, 0, 0);
+            m_Color = new Color(a: 255, r: 255, g: 0, b: 0);
             //m_DrawCheckers = true;
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Current color.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        public Color Color
         {
-            skin.DrawColorDisplay(this, m_Color);
+            get => m_Color;
+            set => m_Color = value;
+        }
+
+        //public bool DrawCheckers { get { return m_DrawCheckers; } set { m_DrawCheckers = value; } }
+        public int R
+        {
+            get => m_Color.R;
+            set => m_Color = new Color(m_Color.A, value, m_Color.G, m_Color.B);
+        }
+
+        public int G
+        {
+            get => m_Color.G;
+            set => m_Color = new Color(m_Color.A, m_Color.R, value, m_Color.B);
+        }
+
+        public int B
+        {
+            get => m_Color.B;
+            set => m_Color = new Color(m_Color.A, m_Color.R, m_Color.G, value);
+        }
+
+        public int A
+        {
+            get => m_Color.A;
+            set => m_Color = new Color(value, m_Color.R, m_Color.G, m_Color.B);
         }
 
         /// <summary>
-        /// Current color.
+        ///     Renders the control using specified skin.
         /// </summary>
-        public Color Color { get { return m_Color; } set { m_Color = value; } }
-        //public bool DrawCheckers { get { return m_DrawCheckers; } set { m_DrawCheckers = value; } }
-        public int R { get { return m_Color.R; } set { m_Color = new Color(m_Color.A, value, m_Color.G, m_Color.B); } }
-        public int G { get { return m_Color.G; } set { m_Color = new Color(m_Color.A, m_Color.R, value, m_Color.B); } }
-        public int B { get { return m_Color.B; } set { m_Color = new Color(m_Color.A, m_Color.R, m_Color.G, value); } }
-        public int A { get { return m_Color.A; } set { m_Color = new Color(value, m_Color.R, m_Color.G, m_Color.B); } }
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(SkinBase skin)
+        {
+            skin.DrawColorDisplay(this, m_Color);
+        }
     }
 }

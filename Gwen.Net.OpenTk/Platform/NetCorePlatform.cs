@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Gwen.Net.Platform;
 using OpenToolkit.Windowing.Common.Input;
-using OpenToolkit.Windowing.GraphicsLibraryFramework;
 using TextCopy;
 
 namespace Gwen.Net.OpenTk.Platform
 {
     public class NetCorePlatform : IPlatform
     {
-        private Action<MouseCursor> setCursor;
+        private readonly Action<MouseCursor> setCursor;
         private readonly Stopwatch watch;
 
         public NetCorePlatform(Action<MouseCursor> setCursor)
@@ -24,7 +22,7 @@ namespace Gwen.Net.OpenTk.Platform
         }
 
         /// <summary>
-        /// Gets text from clipboard.
+        ///     Gets text from clipboard.
         /// </summary>
         /// <returns>Clipboard text.</returns>
         public string GetClipboardText()
@@ -32,37 +30,42 @@ namespace Gwen.Net.OpenTk.Platform
 
             // code from http://forums.getpaint.net/index.php?/topic/13712-trouble-accessing-the-clipboard/page__view__findpost__p__226140
             string ret = String.Empty;
-            Thread staThread = new Thread(
+
+            Thread staThread = new(
                 () =>
                 {
                     try
                     {
-                        var text = ClipboardService.GetText();
+                        string? text = ClipboardService.GetText();
+
                         if (string.IsNullOrEmpty(text))
+                        {
                             return;
+                        }
+
                         ret = text;
                     }
-                    catch (Exception)
-                    {
-                        return;
-                    }
+                    catch (Exception) {}
                 });
+
             staThread.SetApartmentState(ApartmentState.STA);
             staThread.Start();
             staThread.Join();
+
             // at this point either you have clipboard data or an exception*/
             return ret;
         }
 
         /// <summary>
-        /// Sets the clipboard text.
+        ///     Sets the clipboard text.
         /// </summary>
         /// <param name="text">Text to set.</param>
         /// <returns>True if succeeded.</returns>
         public bool SetClipboardText(string text)
         {
             bool ret = false;
-            Thread staThread = new Thread(
+
+            Thread staThread = new(
                 () =>
                 {
                     try
@@ -70,20 +73,19 @@ namespace Gwen.Net.OpenTk.Platform
                         ClipboardService.SetText(text);
                         ret = true;
                     }
-                    catch (Exception)
-                    {
-                        return;
-                    }
+                    catch (Exception) {}
                 });
+
             staThread.SetApartmentState(ApartmentState.STA);
             staThread.Start();
             staThread.Join();
+
             // at this point either you have clipboard data or an exception
             return ret;
         }
 
         /// <summary>
-        /// Gets elapsed time since this class was initalized.
+        ///     Gets elapsed time since this class was initalized.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
         public double GetTimeInSeconds()
@@ -92,62 +94,87 @@ namespace Gwen.Net.OpenTk.Platform
         }
 
         /// <summary>
-        /// Changes the mouse cursor.
+        ///     Changes the mouse cursor.
         /// </summary>
         /// <param name="cursor">Cursor type.</param>
-        public unsafe void SetCursor(Cursor cursor)
+        public void SetCursor(Cursor cursor)
         {
             MouseCursor translatedCursor = null;
+
             switch (cursor)
             {
                 case Cursor.Beam:
                     translatedCursor = MouseCursor.IBeam;
+
                     break;
                 case Cursor.Finger:
                     translatedCursor = MouseCursor.Hand;
+
                     break;
                 case Cursor.Normal:
                     translatedCursor = MouseCursor.Default;
+
                     break;
                 case Cursor.SizeNS:
                     translatedCursor = MouseCursor.VResize;
+
                     break;
                 case Cursor.SizeWE:
                     translatedCursor = MouseCursor.HResize;
+
                     break;
                 default:
                     translatedCursor = MouseCursor.Crosshair;
+
                     break;
             }
+
             setCursor.Invoke(translatedCursor);
         }
 
         /// <summary>
-        /// Get special folders of the system.
+        ///     Get special folders of the system.
         /// </summary>
         /// <returns>List of folders.</returns>
         public IEnumerable<ISpecialFolder> GetSpecialFolders()
         {
-            List<SpecialFolder> folders = new List<SpecialFolder>();
+            List<SpecialFolder> folders = new();
 
             try
             {
-                folders.Add(new SpecialFolder("Documents", "Libraries", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
-                folders.Add(new SpecialFolder("Music", "Libraries", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)));
-                folders.Add(new SpecialFolder("Pictures", "Libraries", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)));
-                folders.Add(new SpecialFolder("Videos", "Libraries", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)));
-            }
-            catch (Exception)
-            {
+                folders.Add(
+                    new SpecialFolder(
+                        "Documents",
+                        "Libraries",
+                        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
 
+                folders.Add(
+                    new SpecialFolder(
+                        "Music",
+                        "Libraries",
+                        Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)));
+
+                folders.Add(
+                    new SpecialFolder(
+                        "Pictures",
+                        "Libraries",
+                        Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)));
+
+                folders.Add(
+                    new SpecialFolder(
+                        "Videos",
+                        "Libraries",
+                        Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)));
             }
+            catch (Exception) {}
 
             DriveInfo[] drives = null;
+
             try
             {
                 drives = DriveInfo.GetDrives();
             }
-            catch (Exception) { }
+            catch (Exception) {}
 
             if (drives != null)
             {
@@ -158,12 +185,20 @@ namespace Gwen.Net.OpenTk.Platform
                         if (driveInfo.IsReady)
                         {
                             if (String.IsNullOrWhiteSpace(driveInfo.VolumeLabel))
+                            {
                                 folders.Add(new SpecialFolder(driveInfo.Name, "Computer", driveInfo.Name));
+                            }
                             else
-                                folders.Add(new SpecialFolder(String.Format("{0} ({1})", driveInfo.VolumeLabel, driveInfo.Name), "Computer", driveInfo.Name));
+                            {
+                                folders.Add(
+                                    new SpecialFolder(
+                                        String.Format("{0} ({1})", driveInfo.VolumeLabel, driveInfo.Name),
+                                        "Computer",
+                                        driveInfo.Name));
+                            }
                         }
                     }
-                    catch (Exception) { }
+                    catch (Exception) {}
                 }
             }
 
@@ -210,23 +245,30 @@ namespace Gwen.Net.OpenTk.Platform
             return Path.Combine(path1, path2, path3, path4);
         }
 
-        public string CurrentDirectory { get { return Environment.CurrentDirectory; } }
+        public string CurrentDirectory => Environment.CurrentDirectory;
 
         public IEnumerable<IFileSystemDirectoryInfo> GetDirectories(string path)
         {
-            DirectoryInfo di = new DirectoryInfo(path);
-            return di.GetDirectories().Select(d => new FileSystemDirectoryInfo(d.FullName, d.LastWriteTime) as IFileSystemDirectoryInfo);
+            DirectoryInfo di = new(path);
+
+            return di.GetDirectories().Select(
+                d => new FileSystemDirectoryInfo(d.FullName, d.LastWriteTime) as IFileSystemDirectoryInfo);
         }
 
         public IEnumerable<IFileSystemFileInfo> GetFiles(string path, string filter)
         {
-            DirectoryInfo di = new DirectoryInfo(path);
-            return di.GetFiles(filter).Select(f => new FileSystemFileInfo(f.FullName, f.LastWriteTime, f.Length) as IFileSystemFileInfo);
+            DirectoryInfo di = new(path);
+
+            return di.GetFiles(filter).Select(
+                f => new FileSystemFileInfo(f.FullName, f.LastWriteTime, f.Length) as IFileSystemFileInfo);
         }
 
         public Stream GetFileStream(string path, bool isWritable)
         {
-            return new FileStream(path, isWritable ? FileMode.Create : FileMode.Open, isWritable ? FileAccess.Write : FileAccess.Read);
+            return new FileStream(
+                path,
+                isWritable ? FileMode.Create : FileMode.Open,
+                isWritable ? FileAccess.Write : FileAccess.Read);
         }
         /*
         private static readonly Dictionary<Cursor, System.Windows.Forms.Cursor> m_CursorMap = new Dictionary<Cursor, System.Windows.Forms.Cursor>
@@ -247,23 +289,27 @@ namespace Gwen.Net.OpenTk.Platform
         {
             public SpecialFolder(string name, string category, string path)
             {
-                this.Name = name;
-                this.Category = category;
-                this.Path = path;
+                Name = name;
+                Category = category;
+                Path = path;
             }
 
-            public string Name { get; internal set; }
-            public string Category { get; internal set; }
-            public string Path { get; internal set; }
+            public string Name { get; }
+            public string Category { get; }
+            public string Path { get; }
         }
 
         public class FileSystemItemInfo : IFileSystemItemInfo
         {
             public FileSystemItemInfo(string path, DateTime lastWriteTime)
             {
-                this.Name = Path.GetFileName(path);
-                this.FullName = path;
-                this.FormattedLastWriteTime = String.Format("{0} {1}", lastWriteTime.ToShortDateString(), lastWriteTime.ToLongTimeString());
+                Name = Path.GetFileName(path);
+                FullName = path;
+
+                FormattedLastWriteTime = String.Format(
+                    "{0} {1}",
+                    lastWriteTime.ToShortDateString(),
+                    lastWriteTime.ToLongTimeString());
             }
 
             public string Name { get; internal set; }
@@ -274,10 +320,7 @@ namespace Gwen.Net.OpenTk.Platform
         public class FileSystemDirectoryInfo : FileSystemItemInfo, IFileSystemDirectoryInfo
         {
             public FileSystemDirectoryInfo(string path, DateTime lastWriteTime)
-                : base(path, lastWriteTime)
-            {
-
-            }
+                : base(path, lastWriteTime) {}
         }
 
         public class FileSystemFileInfo : FileSystemItemInfo, IFileSystemFileInfo
@@ -285,22 +328,30 @@ namespace Gwen.Net.OpenTk.Platform
             public FileSystemFileInfo(string path, DateTime lastWriteTime, long length)
                 : base(path, lastWriteTime)
             {
-                this.FormattedFileLength = FormatFileLength(length);
+                FormattedFileLength = FormatFileLength(length);
             }
+
+            public string FormattedFileLength { get; internal set; }
 
             private string FormatFileLength(long length)
             {
                 if (length > 1024 * 1024 * 1024)
+                {
                     return String.Format("{0:0.0} GB", (double)length / (1024 * 1024 * 1024));
-                else if (length > 1024 * 1024)
-                    return String.Format("{0:0.0} MB", (double)length / (1024 * 1024));
-                else if (length > 1024)
-                    return String.Format("{0:0.0} kB", (double)length / 1024);
-                else
-                    return String.Format("{0} B", length);
-            }
+                }
 
-            public string FormattedFileLength { get; internal set; }
+                if (length > 1024 * 1024)
+                {
+                    return String.Format("{0:0.0} MB", (double)length / (1024 * 1024));
+                }
+
+                if (length > 1024)
+                {
+                    return String.Format("{0:0.0} kB", (double)length / 1024);
+                }
+
+                return String.Format("{0} B", length);
+            }
         }
     }
 }

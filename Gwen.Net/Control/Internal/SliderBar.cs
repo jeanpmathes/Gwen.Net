@@ -1,22 +1,14 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Slider bar.
+    ///     Slider bar.
     /// </summary>
     public class SliderBar : Dragger
     {
-        private bool m_bHorizontal;
-
         /// <summary>
-        /// Indicates whether the bar is horizontal.
-        /// </summary>
-        public bool IsHorizontal { get { return m_bHorizontal; } set { m_bHorizontal = value; } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SliderBar"/> class.
+        ///     Initializes a new instance of the <see cref="SliderBar" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public SliderBar(ControlBase parent)
@@ -29,10 +21,15 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Indicates whether the bar is horizontal.
+        /// </summary>
+        public bool IsHorizontal { get; set; }
+
+        /// <summary>
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawSliderButton(this, IsHeld, IsHorizontal);
         }

@@ -17,6 +17,17 @@ namespace Gwen.Net.Tests.Components
 
         private class Container : Component
         {
+            private static readonly string m_Xml = @"<?xml version='1.0' encoding='UTF-8'?>
+			<GridLayout Width='400' ColumnWidths='Auto, 100%'>
+				<Label AutoSizeToContents='False' Alignment='CenterV' Text='Value 1:' />
+				<ValueControl Name='Value1' Step='2.0' ValueChanged='OnValueChanged' />
+				<Label AutoSizeToContents='False' Alignment='CenterV' Text='Value 2:' />
+				<ValueControl Name='Value2' Step='5.0' ValueChanged='OnValueChanged' />
+			</GridLayout>
+			";
+
+            private readonly GUnit m_unit;
+
             public Container(GUnit unit)
                 : base(unit, new XmlStringSource(m_Xml))
             {
@@ -27,17 +38,6 @@ namespace Gwen.Net.Tests.Components
             {
                 m_unit.UnitPrint(sender.Name + ": ValueChanged " + args.Value);
             }
-
-            private GUnit m_unit;
-
-            private static readonly string m_Xml = @"<?xml version='1.0' encoding='UTF-8'?>
-			<GridLayout Width='400' ColumnWidths='Auto, 100%'>
-				<Label AutoSizeToContents='False' Alignment='CenterV' Text='Value 1:' />
-				<ValueControl Name='Value1' Step='2.0' ValueChanged='OnValueChanged' />
-				<Label AutoSizeToContents='False' Alignment='CenterV' Text='Value 2:' />
-				<ValueControl Name='Value2' Step='5.0' ValueChanged='OnValueChanged' />
-			</GridLayout>
-			";
         }
 
         public class ValueChangedEventArgs : EventArgs
@@ -47,48 +47,6 @@ namespace Gwen.Net.Tests.Components
 
         private class ValueControl : Component
         {
-            static ValueControl()
-            {
-                Parser.RegisterEventHandlerConverter(typeof(ValueChangedEventArgs), (attribute, value) =>
-                {
-                    return new GwenEventHandler<ValueChangedEventArgs>(new XmlEventHandler<ValueChangedEventArgs>(value, attribute).OnEvent);
-                });
-            }
-
-            [XmlEvent]
-            public event GwenEventHandler<ValueChangedEventArgs> ValueChanged;
-
-            public ValueControl(ControlBase parent)
-                : base(parent, new XmlStringSource(m_Xml))
-            {
-
-            }
-
-            public void OnButtonClicked(ControlBase sender, ClickedEventArgs args)
-            {
-                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
-
-                int buttonId = (int)sender.UserData;
-                if (buttonId == 1)
-                    value.Value -= Step;
-                else if (buttonId == 2)
-                    value.Value += Step;
-
-                if (ValueChanged != null)
-                    ValueChanged(this.View, new ValueChangedEventArgs() { Value = (int)value.Value });
-            }
-
-            public void OnSubmitPressed(ControlBase sender, EventArgs args)
-            {
-                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
-
-                if (ValueChanged != null)
-                    ValueChanged(this.View, new ValueChangedEventArgs() { Value = (int)value.Value });
-            }
-
-            [XmlProperty]
-            public float Step { get; set; }
-
             private static readonly string m_Xml = @"<?xml version='1.0' encoding='UTF-8'?>
 				<GridLayout ColumnWidths='25%, 50%, 25%'>
 					<Button Name='DecButton' Text='Dec' UserData='1' Clicked='OnButtonClicked' />
@@ -96,6 +54,55 @@ namespace Gwen.Net.Tests.Components
 					<Button Name='IndButton' Text='Inc' UserData='2' Clicked='OnButtonClicked' />
 				</GridLayout>
 				";
+
+            static ValueControl()
+            {
+                Parser.RegisterEventHandlerConverter(
+                    typeof(ValueChangedEventArgs),
+                    (attribute, value) =>
+                    {
+                        return new GwenEventHandler<ValueChangedEventArgs>(
+                            new XmlEventHandler<ValueChangedEventArgs>(value, attribute).OnEvent);
+                    });
+            }
+
+            public ValueControl(ControlBase parent)
+                : base(parent, new XmlStringSource(m_Xml)) {}
+
+            [XmlProperty] public float Step { get; set; }
+
+            [XmlEvent] public event GwenEventHandler<ValueChangedEventArgs> ValueChanged;
+
+            public void OnButtonClicked(ControlBase sender, ClickedEventArgs args)
+            {
+                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
+
+                int buttonId = (int)sender.UserData;
+
+                if (buttonId == 1)
+                {
+                    value.Value -= Step;
+                }
+                else if (buttonId == 2)
+                {
+                    value.Value += Step;
+                }
+
+                if (ValueChanged != null)
+                {
+                    ValueChanged(View, new ValueChangedEventArgs {Value = (int)value.Value});
+                }
+            }
+
+            public void OnSubmitPressed(ControlBase sender, EventArgs args)
+            {
+                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
+
+                if (ValueChanged != null)
+                {
+                    ValueChanged(View, new ValueChangedEventArgs {Value = (int)value.Value});
+                }
+            }
         }
     }
 }

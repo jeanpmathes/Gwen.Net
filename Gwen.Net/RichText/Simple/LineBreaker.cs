@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Gwen.Net.Renderer;
 
 namespace Gwen.Net.RichText.Simple
 {
     internal class LineBreaker : RichText.LineBreaker
     {
-        public LineBreaker(Renderer.RendererBase renderer, Font defaultFont)
-            : base(renderer, defaultFont)
-        {
-
-        }
+        public LineBreaker(RendererBase renderer, Font defaultFont)
+            : base(renderer, defaultFont) {}
 
         public override List<TextBlock> LineBreak(Paragraph paragraph, int totalWidth)
         {
@@ -18,7 +16,7 @@ namespace Gwen.Net.RichText.Simple
 
             int lineWidth = totalWidth - paragraph.Margin.Left - paragraph.Margin.Right - paragraph.FirstIndent;
 
-            List<TextBlock> textBlocks = new List<TextBlock>();
+            List<TextBlock> textBlocks = new();
 
             int lineStart = 0;
             int lineStop;
@@ -30,16 +28,21 @@ namespace Gwen.Net.RichText.Simple
             while (index < nodes.Count)
             {
                 w += nodes[index].Size.Width;
-                if (w > lineWidth || index == (nodes.Count - 1) || nodes[index].IsLineBreak)
+
+                if (w > lineWidth || index == nodes.Count - 1 || nodes[index].IsLineBreak)
                 {
                     lineStop = index;
 
                     if (w > lineWidth)
                     {
                         if (lineStart == index)
+                        {
                             index++; // Too long word to fit on the line
+                        }
                         else
+                        {
                             lineStop--;
+                        }
                     }
                     else if (nodes[index].IsLineBreak)
                     {
@@ -52,17 +55,20 @@ namespace Gwen.Net.RichText.Simple
                     }
 
                     while (lineStop > lineStart && nodes[lineStop].IsSpace)
+                    {
                         lineStop--;
+                    }
 
                     int height = 0;
                     int baseline = 0;
+
                     for (int i = lineStart; i <= lineStop; i++)
                     {
                         height = Math.Max(height, nodes[i].Size.Height);
                         baseline = Math.Max(baseline, (int)((TextPart)nodes[i].Part).Font.FontMetrics.Baseline);
                     }
 
-                    StringBuilder str = new StringBuilder(1000);
+                    StringBuilder str = new(capacity: 1000);
                     Part part = nodes[lineStart].Part;
                     int blockStart = lineStart;
 
@@ -70,16 +76,17 @@ namespace Gwen.Net.RichText.Simple
                     {
                         if (i == lineStop || nodes[i + 1].Part != part)
                         {
-                            TextBlock textBlock = new TextBlock();
+                            TextBlock textBlock = new();
                             textBlock.Part = part;
                             str.Clear();
 
                             int h = 0;
+
                             for (int k = blockStart; k <= i; k++)
                             {
                                 if (nodes[k].IsSpace)
                                 {
-                                    str.Append(' ');
+                                    str.Append(value: ' ');
                                 }
                                 else
                                 {
@@ -88,22 +95,33 @@ namespace Gwen.Net.RichText.Simple
                                 }
                             }
 
-                            textBlock.Position = new Point(x, y + baseline - (int)((TextPart)part).Font.FontMetrics.Baseline);
+                            textBlock.Position = new Point(
+                                x,
+                                y + baseline - (int)((TextPart)part).Font.FontMetrics.Baseline);
+
                             textBlock.Text = str.ToString();
-                            textBlock.Size = new Size(Renderer.MeasureText(((TextPart)part).Font, textBlock.Text).Width, h);
+
+                            textBlock.Size = new Size(
+                                Renderer.MeasureText(((TextPart)part).Font, textBlock.Text).Width,
+                                h);
 
                             x += textBlock.Size.Width;
 
                             textBlocks.Add(textBlock);
 
                             blockStart = i + 1;
+
                             if (blockStart <= lineStop)
+                            {
                                 part = nodes[blockStart].Part;
+                            }
                         }
                     }
 
                     while (index < nodes.Count && nodes[index].IsSpace)
+                    {
                         index++;
+                    }
 
                     lineStart = index;
                     y += height;
@@ -123,7 +141,7 @@ namespace Gwen.Net.RichText.Simple
 
         private List<Node> Split(Paragraph paragraph)
         {
-            List<Node> nodes = new List<Node>();
+            List<Node> nodes = new();
 
             Font font = DefaultFont;
 
@@ -132,23 +150,29 @@ namespace Gwen.Net.RichText.Simple
                 Part part = paragraph.Parts[partIndex];
 
                 string[] words = part.Split(ref font);
+
                 if (font == null)
+                {
                     font = DefaultFont;
+                }
 
                 for (int wordIndex = 0; wordIndex < words.Length; wordIndex++)
                 {
                     string word = words[wordIndex];
 
-                    if (word[0] == ' ')
+                    if (word[index: 0] == ' ')
                     {
                         nodes.Add(new Node(Renderer.MeasureText(font, word), part));
                     }
-                    else if (word[0] == '\n')
+                    else if (word[index: 0] == '\n')
                     {
                         if (nodes.Count > 0)
                         {
                             if (nodes[nodes.Count - 1].IsLineBreak)
+                            {
                                 nodes.Add(new Node(" ", Renderer.MeasureText(font, " "), nodes[nodes.Count - 2].Part));
+                            }
+
                             nodes.Add(new Node());
                         }
                     }
@@ -164,9 +188,9 @@ namespace Gwen.Net.RichText.Simple
 
         private class Node
         {
-            public string Text;
-            public Size Size;
-            public Part Part;
+            public readonly Part Part;
+            public readonly Size Size;
+            public readonly string Text;
 
             public Node(string text, Size size, Part part)
             {
@@ -189,19 +213,24 @@ namespace Gwen.Net.RichText.Simple
                 Part = null;
             }
 
-            public bool IsSpace { get { return Text == null && Part != null; } }
+            public bool IsSpace => Text == null && Part != null;
 
-            public bool IsLineBreak { get { return Part == null; } }
+            public bool IsLineBreak => Part == null;
 
 #if DEBUG
             public override string ToString()
             {
                 if (Part == null)
-                    return String.Format("Node: LineBreak");
-                else if (Text == null)
+                {
+                    return "Node: LineBreak";
+                }
+
+                if (Text == null)
+                {
                     return String.Format("Node: Width = {0} Value = Space", Size.Width);
-                else
-                    return String.Format("Node: Width = {0} Value = \"{1}\"", Size.Width, Text);
+                }
+
+                return String.Format("Node: Width = {0} Value = \"{1}\"", Size.Width, Text);
             }
 #endif
         }

@@ -1,22 +1,21 @@
 ﻿using System;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Layout
 {
     /// <summary>
-    /// FlowLayout is a layout like <see cref="GridLayout"/> with auto sized columns
-    /// but you don't need to know exact number of columns.
+    ///     FlowLayout is a layout like <see cref="GridLayout" /> with auto sized columns
+    ///     but you don't need to know exact number of columns.
     /// </summary>
-    [Xml.XmlControl]
+    [XmlControl]
     public class FlowLayout : ControlBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FlowLayout"/> class.
+        ///     Initializes a new instance of the <see cref="FlowLayout" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public FlowLayout(ControlBase parent)
-            : base(parent)
-        {
-        }
+            : base(parent) {}
 
         protected override Size Measure(Size availableSize)
         {
@@ -32,7 +31,7 @@ namespace Gwen.Net.Control.Layout
             {
                 Size size = child.DoMeasure(availableSize);
 
-                if ((lineWidth + size.Width) > availableSize.Width)
+                if (lineWidth + size.Width > availableSize.Width)
                 {
                     y += lineHeight;
 
@@ -67,7 +66,7 @@ namespace Gwen.Net.Control.Layout
 
             foreach (ControlBase child in Children)
             {
-                if ((x + child.MeasuredSize.Width) > finalSize.Width)
+                if (x + child.MeasuredSize.Width > finalSize.Width)
                 {
                     y += lineHeight;
                     x = 0;
@@ -75,7 +74,13 @@ namespace Gwen.Net.Control.Layout
                     lineHeight = 0;
                 }
 
-                child.DoArrange(new Rectangle(x + Padding.Left, y + Padding.Top, child.MeasuredSize.Width, child.MeasuredSize.Height));
+                child.DoArrange(
+                    new Rectangle(
+                        x + Padding.Left,
+                        y + Padding.Top,
+                        child.MeasuredSize.Width,
+                        child.MeasuredSize.Height));
+
                 width = Math.Max(width, x + child.MeasuredSize.Width);
                 height = Math.Max(height, y + child.MeasuredSize.Height);
 

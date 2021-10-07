@@ -1,5 +1,6 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -8,83 +9,27 @@ namespace Gwen.Net.Control
         None,
         Width,
         Height,
-        Both,
+        Both
     }
 
     /// <summary>
-    /// Base resizable control.
+    ///     Base resizable control.
     /// </summary>
     public class ResizableControl : ContentControl
     {
-        private bool m_ClampMovement;
+        private const int ResizerThickness = 6;
         private readonly Resizer[] m_Resizer;
 
-        private const int ResizerThickness = 6;
-
         /// <summary>
-        /// Enable or disable resizing.
-        /// </summary>
-        [Xml.XmlProperty]
-        public Resizing Resizing
-        {
-            get
-            {
-                if (GetResizer(ResizerPos.Right).IsCollapsed)
-                {
-                    if (GetResizer(ResizerPos.Bottom).IsCollapsed)
-                        return Resizing.None;
-                    else
-                        return Resizing.Height;
-                }
-                else if (GetResizer(ResizerPos.Bottom).IsCollapsed)
-                {
-                    return Resizing.Width;
-                }
-                else
-                {
-                    return Resizing.Both;
-                }
-            }
-            set
-            {
-                switch (value)
-                {
-                    case Resizing.None:
-                        EnableResizing(false, false, false, false);
-                        break;
-                    case Resizing.Width:
-                        EnableResizing(true, false, true, false);
-                        break;
-                    case Resizing.Height:
-                        EnableResizing(false, true, false, true);
-                        break;
-                    case Resizing.Both:
-                        EnableResizing();
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Determines whether control's position should be restricted to its parent bounds.
-        /// </summary>
-        public bool ClampMovement { get { return m_ClampMovement; } set { m_ClampMovement = value; } }
-
-        /// <summary>
-        /// Invoked when the control has been resized.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Resized;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResizableControl"/> class.
+        ///     Initializes a new instance of the <see cref="ResizableControl" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ResizableControl(ControlBase parent)
             : base(parent)
         {
             m_Resizer = new Resizer[8];
-            MinimumSize = new Size(5, 5);
-            m_ClampMovement = false;
+            MinimumSize = new Size(width: 5, height: 5);
+            ClampMovement = false;
 
             Resizer resizer;
 
@@ -130,13 +75,73 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Handler for the resized event.
+        ///     Enable or disable resizing.
+        /// </summary>
+        [XmlProperty] public Resizing Resizing
+        {
+            get
+            {
+                if (GetResizer(ResizerPos.Right).IsCollapsed)
+                {
+                    if (GetResizer(ResizerPos.Bottom).IsCollapsed)
+                    {
+                        return Resizing.None;
+                    }
+
+                    return Resizing.Height;
+                }
+
+                if (GetResizer(ResizerPos.Bottom).IsCollapsed)
+                {
+                    return Resizing.Width;
+                }
+
+                return Resizing.Both;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case Resizing.None:
+                        EnableResizing(left: false, top: false, right: false, bottom: false);
+
+                        break;
+                    case Resizing.Width:
+                        EnableResizing(left: true, top: false, right: true, bottom: false);
+
+                        break;
+                    case Resizing.Height:
+                        EnableResizing(left: false, top: true, right: false);
+
+                        break;
+                    case Resizing.Both:
+                        EnableResizing();
+
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Determines whether control's position should be restricted to its parent bounds.
+        /// </summary>
+        public bool ClampMovement { get; set; }
+
+        /// <summary>
+        ///     Invoked when the control has been resized.
+        /// </summary>
+        public event GwenEventHandler<EventArgs> Resized;
+
+        /// <summary>
+        ///     Handler for the resized event.
         /// </summary>
         /// <param name="control">Event source.</param>
         protected virtual void OnResized(ControlBase control, EventArgs args)
         {
             if (Resized != null)
+            {
                 Resized.Invoke(this, EventArgs.Empty);
+            }
         }
 
         protected Resizer GetResizer(ResizerPos resizerPos)
@@ -145,7 +150,7 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Enable or disable resizing.
+        ///     Enable or disable resizing.
         /// </summary>
         /// <param name="left">Is resizing left edge enabled.</param>
         /// <param name="top">Is resizing top edge enabled.</param>
@@ -156,21 +161,30 @@ namespace Gwen.Net.Control
             bool[] d = new bool[8];
 
             if (!left) { d[(int)ResizerPos.Left] = d[(int)ResizerPos.LeftTop] = d[(int)ResizerPos.LeftBottom] = true; }
+
             if (!top) { d[(int)ResizerPos.Top] = d[(int)ResizerPos.LeftTop] = d[(int)ResizerPos.RightTop] = true; }
-            if (!right) { d[(int)ResizerPos.Right] = d[(int)ResizerPos.RightTop] = d[(int)ResizerPos.RightBottom] = true; }
-            if (!bottom) { d[(int)ResizerPos.Bottom] = d[(int)ResizerPos.LeftBottom] = d[(int)ResizerPos.RightBottom] = true; }
+
+            if (!right)
+            {
+                d[(int)ResizerPos.Right] = d[(int)ResizerPos.RightTop] = d[(int)ResizerPos.RightBottom] = true;
+            }
+
+            if (!bottom)
+            {
+                d[(int)ResizerPos.Bottom] = d[(int)ResizerPos.LeftBottom] = d[(int)ResizerPos.RightBottom] = true;
+            }
 
             for (int i = 0; i < 8; i++)
             {
                 if (d[i])
                 {
                     m_Resizer[i].MouseInputEnabled = false;
-                    m_Resizer[i].Collapse(true, false);
+                    m_Resizer[i].Collapse(collapsed: true, measure: false);
                 }
                 else
                 {
                     m_Resizer[i].MouseInputEnabled = true;
-                    m_Resizer[i].Collapse(false, false);
+                    m_Resizer[i].Collapse(collapsed: false, measure: false);
                 }
             }
 
@@ -178,14 +192,14 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Sets the control bounds.
+        ///     Sets the control bounds.
         /// </summary>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
         /// <returns>
-        /// True if bounds changed.
+        ///     True if bounds changed.
         /// </returns>
         public override bool SetBounds(int x, int y, int width, int height)
         {
@@ -194,19 +208,35 @@ namespace Gwen.Net.Control
 
             // Clamp to parent's window
             ControlBase parent = Parent;
-            if (parent != null && m_ClampMovement)
+
+            if (parent != null && ClampMovement)
             {
-                if (x + width > parent.ActualWidth) x = parent.ActualWidth - width;
-                if (x < 0) x = 0;
-                if (y + height > parent.ActualHeight) y = parent.ActualHeight - height;
-                if (y < 0) y = 0;
+                if (x + width > parent.ActualWidth)
+                {
+                    x = parent.ActualWidth - width;
+                }
+
+                if (x < 0)
+                {
+                    x = 0;
+                }
+
+                if (y + height > parent.ActualHeight)
+                {
+                    y = parent.ActualHeight - height;
+                }
+
+                if (y < 0)
+                {
+                    y = 0;
+                }
             }
 
             return base.SetBounds(x, y, width, height);
         }
 
         /// <summary>
-        /// Sets the control size.
+        ///     Sets the control size.
         /// </summary>
         /// <param name="width">New width.</param>
         /// <param name="height">New height.</param>
@@ -214,22 +244,35 @@ namespace Gwen.Net.Control
         public override bool SetSize(int width, int height)
         {
             bool Changed = base.SetSize(width, height);
+
             if (Changed)
             {
                 OnResized(this, EventArgs.Empty);
             }
+
             return Changed;
         }
 
         protected override Size Measure(Size availableSize)
         {
-            m_Resizer[(int)ResizerPos.Left].DoMeasure(new Size(ResizerThickness, availableSize.Height - 2 * ResizerThickness));
+            m_Resizer[(int)ResizerPos.Left]
+                .DoMeasure(new Size(ResizerThickness, availableSize.Height - (2 * ResizerThickness)));
+
             m_Resizer[(int)ResizerPos.LeftTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Top].DoMeasure(new Size(availableSize.Width - 2 * ResizerThickness, ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Top]
+                .DoMeasure(new Size(availableSize.Width - (2 * ResizerThickness), ResizerThickness));
+
             m_Resizer[(int)ResizerPos.RightTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Right].DoMeasure(new Size(ResizerThickness, availableSize.Height - 2 * ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Right]
+                .DoMeasure(new Size(ResizerThickness, availableSize.Height - (2 * ResizerThickness)));
+
             m_Resizer[(int)ResizerPos.RightBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Bottom].DoMeasure(new Size(availableSize.Width - 2 * ResizerThickness, ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Bottom]
+                .DoMeasure(new Size(availableSize.Width - (2 * ResizerThickness), ResizerThickness));
+
             m_Resizer[(int)ResizerPos.LeftBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
 
             return availableSize;
@@ -237,14 +280,40 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            m_Resizer[(int)ResizerPos.Left].DoArrange(new Rectangle(0, ResizerThickness, ResizerThickness, finalSize.Height - 2 * ResizerThickness));
-            m_Resizer[(int)ResizerPos.LeftTop].DoArrange(new Rectangle(0, 0, ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Top].DoArrange(new Rectangle(ResizerThickness, 0, finalSize.Width - 2 * ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.RightTop].DoArrange(new Rectangle(finalSize.Width - ResizerThickness, 0, ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Right].DoArrange(new Rectangle(finalSize.Width - ResizerThickness, ResizerThickness, ResizerThickness, finalSize.Height - 2 * ResizerThickness));
-            m_Resizer[(int)ResizerPos.RightBottom].DoArrange(new Rectangle(finalSize.Width - ResizerThickness, finalSize.Height - ResizerThickness, ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.Bottom].DoArrange(new Rectangle(ResizerThickness, finalSize.Height - ResizerThickness, finalSize.Width - 2 * ResizerThickness, ResizerThickness));
-            m_Resizer[(int)ResizerPos.LeftBottom].DoArrange(new Rectangle(0, finalSize.Height - ResizerThickness, ResizerThickness, ResizerThickness));
+            m_Resizer[(int)ResizerPos.Left].DoArrange(
+                new Rectangle(x: 0, ResizerThickness, ResizerThickness, finalSize.Height - (2 * ResizerThickness)));
+
+            m_Resizer[(int)ResizerPos.LeftTop].DoArrange(new Rectangle(x: 0, y: 0, ResizerThickness, ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Top].DoArrange(
+                new Rectangle(ResizerThickness, y: 0, finalSize.Width - (2 * ResizerThickness), ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.RightTop].DoArrange(
+                new Rectangle(finalSize.Width - ResizerThickness, y: 0, ResizerThickness, ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Right].DoArrange(
+                new Rectangle(
+                    finalSize.Width - ResizerThickness,
+                    ResizerThickness,
+                    ResizerThickness,
+                    finalSize.Height - (2 * ResizerThickness)));
+
+            m_Resizer[(int)ResizerPos.RightBottom].DoArrange(
+                new Rectangle(
+                    finalSize.Width - ResizerThickness,
+                    finalSize.Height - ResizerThickness,
+                    ResizerThickness,
+                    ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.Bottom].DoArrange(
+                new Rectangle(
+                    ResizerThickness,
+                    finalSize.Height - ResizerThickness,
+                    finalSize.Width - (2 * ResizerThickness),
+                    ResizerThickness));
+
+            m_Resizer[(int)ResizerPos.LeftBottom].DoArrange(
+                new Rectangle(x: 0, finalSize.Height - ResizerThickness, ResizerThickness, ResizerThickness));
 
             return finalSize;
         }

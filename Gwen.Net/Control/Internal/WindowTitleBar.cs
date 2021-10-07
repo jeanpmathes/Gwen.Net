@@ -1,47 +1,46 @@
-﻿using System;
-using Gwen.Net.Control;
-
-namespace Gwen.Net.Control.Internal
+﻿namespace Gwen.Net.Control.Internal
 {
     public class WindowTitleBar : Dragger
     {
-        private readonly Label m_Title;
-        private readonly CloseButton m_CloseButton;
-
-        public Label Title { get { return m_Title; } }
-        public CloseButton CloseButton { get { return m_CloseButton; } }
-
         public WindowTitleBar(ControlBase parent)
             : base(parent)
         {
-            m_Title = new Label(this);
-            m_Title.Alignment = Alignment.Left | Alignment.CenterV;
+            Title = new Label(this);
+            Title.Alignment = Alignment.Left | Alignment.CenterV;
 
-            m_CloseButton = new CloseButton(this, parent as Window);
-            m_CloseButton.IsTabable = false;
-            m_CloseButton.Name = "closeButton";
+            CloseButton = new CloseButton(this, parent as Window);
+            CloseButton.IsTabable = false;
+            CloseButton.Name = "closeButton";
 
             Target = parent;
         }
 
+        public Label Title { get; }
+
+        public CloseButton CloseButton { get; }
+
         protected override Size Measure(Size availableSize)
         {
-            m_Title.DoMeasure(availableSize);
+            Title.DoMeasure(availableSize);
 
-            if (!m_CloseButton.IsCollapsed)
-                m_CloseButton.DoMeasure(availableSize);
+            if (!CloseButton.IsCollapsed)
+            {
+                CloseButton.DoMeasure(availableSize);
+            }
 
             return availableSize;
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_Title.DoArrange(new Rectangle(8, 0, m_Title.MeasuredSize.Width, finalSize.Height));
+            Title.DoArrange(new Rectangle(x: 8, y: 0, Title.MeasuredSize.Width, finalSize.Height));
 
-            if (!m_CloseButton.IsCollapsed)
+            if (!CloseButton.IsCollapsed)
             {
                 int closeButtonSize = finalSize.Height;
-                m_CloseButton.DoArrange(new Rectangle(finalSize.Width - 6 - closeButtonSize, 0, closeButtonSize, closeButtonSize));
+
+                CloseButton.DoArrange(
+                    new Rectangle(finalSize.Width - 6 - closeButtonSize, y: 0, closeButtonSize, closeButtonSize));
             }
 
             return finalSize;

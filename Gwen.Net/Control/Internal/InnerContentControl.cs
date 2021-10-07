@@ -1,7 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
-
-namespace Gwen.Net.Control.Internal
+﻿namespace Gwen.Net.Control.Internal
 {
     public class InnerContentControl : ContentControl
     {
@@ -15,7 +12,9 @@ namespace Gwen.Net.Control.Internal
         protected override void OnChildAdded(ControlBase child)
         {
             if (m_InnerPanel == null)
-                m_InnerPanel = Children[0];
+            {
+                m_InnerPanel = Children[index: 0];
+            }
 
             base.OnChildAdded(child);
         }
@@ -33,7 +32,9 @@ namespace Gwen.Net.Control.Internal
         protected override Size Arrange(Size finalSize)
         {
             if (m_InnerPanel != null)
+            {
                 m_InnerPanel.DoArrange(new Rectangle(Padding.Left, Padding.Top, finalSize - Padding));
+            }
 
             return finalSize;
         }
@@ -41,7 +42,9 @@ namespace Gwen.Net.Control.Internal
         public override ControlBase FindChildByName(string name, bool recursive = false)
         {
             if (m_InnerPanel != null && m_InnerPanel.Name == name)
+            {
                 return m_InnerPanel;
+            }
 
             return base.FindChildByName(name, recursive);
         }

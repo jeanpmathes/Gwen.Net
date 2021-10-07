@@ -7,6 +7,7 @@ namespace Gwen.Net.OpenTk
         public static GwenGuiSettings From(this GwenGuiSettings settings, Action<GwenGuiSettings> settingsModifier)
         {
             settingsModifier?.Invoke(settings);
+
             return settings;
         }
     }

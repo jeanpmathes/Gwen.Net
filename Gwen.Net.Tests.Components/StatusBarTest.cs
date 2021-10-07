@@ -8,22 +8,22 @@ namespace Gwen.Net.Tests.Components
         public StatusBarTest(ControlBase parent)
             : base(parent)
         {
-            StatusBar sb = new StatusBar(this);
-            Label left = new Label(sb);
+            StatusBar sb = new(this);
+            Label left = new(sb);
             left.Text = "Label added to left";
-            sb.AddControl(left, false);
+            sb.AddControl(left, right: false);
 
-            Label right = new Label(sb);
+            Label right = new(sb);
             right.Text = "Label added to right";
-            sb.AddControl(right, true);
+            sb.AddControl(right, right: true);
 
-            Button bl = new Button(sb);
+            Button bl = new(sb);
             bl.Text = "Left button";
-            sb.AddControl(bl, false);
+            sb.AddControl(bl, right: false);
 
-            Button br = new Button(sb);
+            Button br = new(sb);
             br.Text = "Right button";
-            sb.AddControl(br, true);
+            sb.AddControl(br, right: true);
         }
     }
 }

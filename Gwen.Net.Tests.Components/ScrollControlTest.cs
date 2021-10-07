@@ -1,5 +1,4 @@
-﻿using Gwen.Net;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -10,141 +9,141 @@ namespace Gwen.Net.Tests.Components
         public ScrollControlTest(ControlBase parent)
             : base(parent)
         {
-            GridLayout layout = new GridLayout(this);
+            GridLayout layout = new(this);
             layout.ColumnCount = 6;
 
             Button pTestButton;
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Twice As Big";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Same Size";
-                pTestButton.Size = new Size(100, 100);
+                pTestButton.Size = new Size(width: 100, height: 100);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Wide";
-                pTestButton.Size = new Size(200, 50);
+                pTestButton.Size = new Size(width: 200, height: 50);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Tall";
-                pTestButton.Size = new Size(50, 200);
+                pTestButton.Size = new Size(width: 50, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
-                ctrl.EnableScroll(false, true);
+                ctrl.Size = new Size(width: 100, height: 100);
+                ctrl.EnableScroll(horizontal: false, vertical: true);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Vertical";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
-                ctrl.EnableScroll(true, false);
+                ctrl.Size = new Size(width: 100, height: 100);
+                ctrl.EnableScroll(horizontal: true, vertical: false);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Horizontal";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
 
             // Bottom Row
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Twice As Big";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Same Size";
-                pTestButton.Size = new Size(100, 100);
+                pTestButton.Size = new Size(width: 100, height: 100);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Wide";
-                pTestButton.Size = new Size(200, 50);
+                pTestButton.Size = new Size(width: 200, height: 50);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Tall";
-                pTestButton.Size = new Size(50, 200);
+                pTestButton.Size = new Size(width: 50, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
-                ctrl.EnableScroll(false, true);
+                ctrl.EnableScroll(horizontal: false, vertical: true);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Vertical";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
 
             {
-                ScrollControl ctrl = new ScrollControl(layout);
+                ScrollControl ctrl = new(layout);
                 ctrl.Margin = Margin.Three;
-                ctrl.Size = new Size(100, 100);
+                ctrl.Size = new Size(width: 100, height: 100);
                 ctrl.AutoHideBars = true;
-                ctrl.EnableScroll(true, false);
+                ctrl.EnableScroll(horizontal: true, vertical: false);
 
                 pTestButton = new Button(ctrl);
                 pTestButton.Text = "Horinzontal";
-                pTestButton.Size = new Size(200, 200);
+                pTestButton.Size = new Size(width: 200, height: 200);
             }
         }
     }

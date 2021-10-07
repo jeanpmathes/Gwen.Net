@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 
 namespace Gwen.Net.Tests.Components
@@ -12,11 +11,11 @@ namespace Gwen.Net.Tests.Components
         {
             /* Normal */
             {
-                ImagePanel img = new ImagePanel(this)
+                ImagePanel img = new(this)
                 {
                     Margin = Margin.Five,
                     Dock = Dock.Top,
-                    Size = new Size(100, 100),
+                    Size = new Size(width: 100, height: 100),
                     ImageName = "gwen.png"
                 };
             }
@@ -24,29 +23,30 @@ namespace Gwen.Net.Tests.Components
 
             /* Missing */
             {
-                ImagePanel img = new ImagePanel(this)
+                ImagePanel img = new(this)
                 {
                     Margin = Margin.Five,
                     Dock = Dock.Top,
-                    Size = new Size(100, 100),
+                    Size = new Size(width: 100, height: 100),
                     ImageName = "missingimage.png"
                 };
             }
 
             /* Clicked */
             {
-                ImagePanel img = new ImagePanel(this)
+                ImagePanel img = new(this)
                 {
                     Margin = Margin.Five,
                     Dock = Dock.Top,
-                    Size = new Size(100, 100),
+                    Size = new Size(width: 100, height: 100),
                     ImageName = "test16.png"
                 };
+
                 img.Clicked += Image_Clicked;
             }
         }
 
-        void Image_Clicked(ControlBase control, EventArgs args)
+        private void Image_Clicked(ControlBase control, EventArgs args)
         {
             UnitPrint("Image: Clicked");
         }

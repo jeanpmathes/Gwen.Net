@@ -4,15 +4,15 @@ namespace Gwen.Net.Control
 {
     public class ClickedEventArgs : EventArgs
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
-        public bool MouseDown { get; private set; }
-
         internal ClickedEventArgs(int x, int y, bool down)
         {
-            this.X = x;
-            this.Y = y;
-            this.MouseDown = down;
+            X = x;
+            Y = y;
+            MouseDown = down;
         }
+
+        public int X { get; }
+        public int Y { get; }
+        public bool MouseDown { get; }
     }
 }

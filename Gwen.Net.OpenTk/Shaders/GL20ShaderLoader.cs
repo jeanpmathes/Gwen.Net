@@ -31,9 +31,9 @@ namespace Gwen.Net.OpenTk.Shaders
             GL.AttachShader(program, vShader);
             GL.AttachShader(program, fShader);
 
-            GL.BindAttribLocation(program, 0, "in_screen_coords");
-            GL.BindAttribLocation(program, 1, "in_uv");
-            GL.BindAttribLocation(program, 2, "in_color");
+            GL.BindAttribLocation(program, index: 0, "in_screen_coords");
+            GL.BindAttribLocation(program, index: 1, "in_uv");
+            GL.BindAttribLocation(program, index: 2, "in_color");
 
             GL.LinkProgram(program);
             Debug.WriteLine(GL.GetProgramInfoLog(program));

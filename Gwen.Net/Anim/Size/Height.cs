@@ -1,14 +1,13 @@
-﻿using System;
-
-namespace Gwen.Net.Anim.Size
+﻿namespace Gwen.Net.Anim.Size
 {
-    class Height : TimedAnimation
+    internal class Height : TimedAnimation
     {
-        private int m_StartSize;
+        private readonly bool m_Hide;
+        private readonly int m_StartSize;
         private int m_Delta;
-        private bool m_Hide;
 
-        public Height(int startSize, int endSize, float length, bool hide = false, float delay = 0.0f, float ease = 1.0f)
+        public Height(int startSize, int endSize, float length, bool hide = false, float delay = 0.0f,
+            float ease = 1.0f)
             : base(length, delay, ease)
         {
             m_StartSize = startSize;

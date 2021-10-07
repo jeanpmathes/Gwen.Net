@@ -1,36 +1,33 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Property button.
+    ///     Property button.
     /// </summary>
     public class ColorButton : ButtonBase
     {
-        private Color m_Color;
-
         /// <summary>
-        /// Current color value.
-        /// </summary>
-        public Color Color { get { return m_Color; } set { m_Color = value; } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ColorButton"/> class.
+        ///     Initializes a new instance of the <see cref="ColorButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ColorButton(ControlBase parent) : base(parent)
         {
-            m_Color = Color.Black;
+            Color = Color.Black;
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Current color value.
+        /// </summary>
+        public Color Color { get; set; }
+
+        /// <summary>
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            skin.Renderer.DrawColor = m_Color;
+            skin.Renderer.DrawColor = Color;
             skin.Renderer.DrawFilledRect(RenderBounds);
         }
     }

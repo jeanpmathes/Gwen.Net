@@ -1,22 +1,20 @@
-﻿using System;
-
-namespace Gwen.Net.Control.Property
+﻿namespace Gwen.Net.Control.Property
 {
     /// <summary>
-    /// Checkable property.
+    ///     Checkable property.
     /// </summary>
     public class CheckProperty : PropertyBase
     {
-        protected readonly Control.CheckBox m_CheckBox;
+        protected readonly CheckBox m_CheckBox;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CheckProperty"/> class.
+        ///     Initializes a new instance of the <see cref="CheckProperty" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        public CheckProperty(Control.ControlBase parent)
+        public CheckProperty(ControlBase parent)
             : base(parent)
         {
-            m_CheckBox = new Control.CheckBox(this);
+            m_CheckBox = new CheckBox(this);
             m_CheckBox.Dock = Dock.Left;
             m_CheckBox.ShouldDrawBackground = false;
             m_CheckBox.CheckChanged += OnValueChanged;
@@ -25,16 +23,26 @@ namespace Gwen.Net.Control.Property
         }
 
         /// <summary>
-        /// Property value.
+        ///     Property value.
         /// </summary>
         public override string Value
         {
-            get { return m_CheckBox.IsChecked ? "1" : "0"; }
-            set { base.Value = value; }
+            get => m_CheckBox.IsChecked ? "1" : "0";
+            set => base.Value = value;
         }
 
         /// <summary>
-        /// Sets the property value.
+        ///     Indicates whether the property value is being edited.
+        /// </summary>
+        public override bool IsEditing => m_CheckBox.HasFocus;
+
+        /// <summary>
+        ///     Indicates whether the control is hovered by mouse pointer.
+        /// </summary>
+        public override bool IsHovered => base.IsHovered || m_CheckBox.IsHovered;
+
+        /// <summary>
+        ///     Sets the property value.
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
@@ -48,22 +56,6 @@ namespace Gwen.Net.Control.Property
             {
                 m_CheckBox.IsChecked = false;
             }
-        }
-
-        /// <summary>
-        /// Indicates whether the property value is being edited.
-        /// </summary>
-        public override bool IsEditing
-        {
-            get { return m_CheckBox.HasFocus; }
-        }
-
-        /// <summary>
-        /// Indicates whether the control is hovered by mouse pointer.
-        /// </summary>
-        public override bool IsHovered
-        {
-            get { return base.IsHovered || m_CheckBox.IsHovered; }
         }
     }
 }

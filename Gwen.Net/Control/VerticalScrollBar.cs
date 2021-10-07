@@ -1,56 +1,16 @@
 ﻿using System;
-using Gwen.Net.Input;
 using Gwen.Net.Control.Internal;
+using Gwen.Net.Input;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Vertical scrollbar.
+    ///     Vertical scrollbar.
     /// </summary>
     public class VerticalScrollBar : ScrollBar
     {
         /// <summary>
-        /// Bar size (in pixels).
-        /// </summary>
-        public override int BarSize
-        {
-            get { return m_Bar.ActualHeight; }
-        }
-
-        /// <summary>
-        /// Bar position (in pixels).
-        /// </summary>
-        public override int BarPos
-        {
-            get { return m_Bar.ActualTop - ActualWidth; }
-        }
-
-        /// <summary>
-        /// Button size (in pixels).
-        /// </summary>
-        public override int ButtonSize
-        {
-            get { return ActualWidth; }
-        }
-
-        public override int Width
-        {
-            get
-            {
-                return base.Width;
-            }
-
-            set
-            {
-                base.Width = value;
-
-                m_ScrollButton[0].Height = this.Width;
-                m_ScrollButton[1].Height = this.Width;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VerticalScrollBar"/> class.
+        ///     Initializes a new instance of the <see cref="VerticalScrollBar" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public VerticalScrollBar(ControlBase parent)
@@ -72,53 +32,32 @@ namespace Gwen.Net.Control
             m_Bar.Dragged += OnBarMoved;
         }
 
-        protected override Size Arrange(Size finalSize)
+        /// <summary>
+        ///     Bar size (in pixels).
+        /// </summary>
+        public override int BarSize => m_Bar.ActualHeight;
+
+        /// <summary>
+        ///     Bar position (in pixels).
+        /// </summary>
+        public override int BarPos => m_Bar.ActualTop - ActualWidth;
+
+        /// <summary>
+        ///     Button size (in pixels).
+        /// </summary>
+        public override int ButtonSize => ActualWidth;
+
+        public override int Width
         {
-            Size size = base.Arrange(finalSize);
+            get => base.Width;
 
-            SetScrollAmount(ScrollAmount, true);
-
-            return size;
-        }
-
-        protected override void UpdateBarSize()
-        {
-            float barHeight = 0.0f;
-            if (m_ContentSize > 0.0f) barHeight = (m_ViewableContentSize / m_ContentSize) * (ActualHeight - (ButtonSize * 2));
-
-            if (barHeight < ButtonSize * 0.5f)
-                barHeight = (int)(ButtonSize * 0.5f);
-
-            m_Bar.SetSize(m_Bar.ActualWidth, (int)barHeight);
-            m_Bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
-
-            //Based on our last scroll amount, produce a position for the bar
-            if (!m_Bar.IsHeld)
+            set
             {
-                SetScrollAmount(ScrollAmount, true);
+                base.Width = value;
+
+                m_ScrollButton[0].Height = Width;
+                m_ScrollButton[1].Height = Width;
             }
-        }
-
-        public virtual void NudgeUp(ControlBase control, EventArgs args)
-        {
-            if (!IsDisabled)
-                SetScrollAmount(ScrollAmount - NudgeAmount, true);
-        }
-
-        public virtual void NudgeDown(ControlBase control, EventArgs args)
-        {
-            if (!IsDisabled)
-                SetScrollAmount(ScrollAmount + NudgeAmount, true);
-        }
-
-        public override void ScrollToTop()
-        {
-            SetScrollAmount(0, true);
-        }
-
-        public override void ScrollToBottom()
-        {
-            SetScrollAmount(1, true);
         }
 
         public override float NudgeAmount
@@ -126,18 +65,76 @@ namespace Gwen.Net.Control
             get
             {
                 if (m_Depressed)
+                {
                     return m_ViewableContentSize / m_ContentSize;
-                else
-                    return base.NudgeAmount;
+                }
+
+                return base.NudgeAmount;
             }
-            set
+            set => base.NudgeAmount = value;
+        }
+
+        protected override Size Arrange(Size finalSize)
+        {
+            Size size = base.Arrange(finalSize);
+
+            SetScrollAmount(ScrollAmount, forceUpdate: true);
+
+            return size;
+        }
+
+        protected override void UpdateBarSize()
+        {
+            float barHeight = 0.0f;
+
+            if (m_ContentSize > 0.0f)
             {
-                base.NudgeAmount = value;
+                barHeight = m_ViewableContentSize / m_ContentSize * (ActualHeight - (ButtonSize * 2));
+            }
+
+            if (barHeight < ButtonSize * 0.5f)
+            {
+                barHeight = (int)(ButtonSize * 0.5f);
+            }
+
+            m_Bar.SetSize(m_Bar.ActualWidth, (int)barHeight);
+            m_Bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
+
+            //Based on our last scroll amount, produce a position for the bar
+            if (!m_Bar.IsHeld)
+            {
+                SetScrollAmount(ScrollAmount, forceUpdate: true);
             }
         }
 
+        public virtual void NudgeUp(ControlBase control, EventArgs args)
+        {
+            if (!IsDisabled)
+            {
+                SetScrollAmount(ScrollAmount - NudgeAmount, forceUpdate: true);
+            }
+        }
+
+        public virtual void NudgeDown(ControlBase control, EventArgs args)
+        {
+            if (!IsDisabled)
+            {
+                SetScrollAmount(ScrollAmount + NudgeAmount, forceUpdate: true);
+            }
+        }
+
+        public override void ScrollToTop()
+        {
+            SetScrollAmount(value: 0, forceUpdate: true);
+        }
+
+        public override void ScrollToBottom()
+        {
+            SetScrollAmount(value: 1, forceUpdate: true);
+        }
+
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -145,6 +142,7 @@ namespace Gwen.Net.Control
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
             base.OnMouseClickedLeft(x, y, down);
+
             if (down)
             {
                 m_Depressed = true;
@@ -153,10 +151,15 @@ namespace Gwen.Net.Control
             else
             {
                 Point clickPos = CanvasPosToLocal(new Point(x, y));
+
                 if (clickPos.Y < m_Bar.ActualTop)
+                {
                     NudgeUp(this, EventArgs.Empty);
+                }
                 else if (clickPos.Y > m_Bar.ActualTop + m_Bar.ActualHeight)
+                {
                     NudgeDown(this, EventArgs.Empty);
+                }
 
                 m_Depressed = false;
                 InputHandler.MouseFocus = null;
@@ -165,28 +168,35 @@ namespace Gwen.Net.Control
 
         protected override float CalculateScrolledAmount()
         {
-            float value = (float)(m_Bar.ActualTop - ButtonSize) / (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2));
+            float value = (float)(m_Bar.ActualTop - ButtonSize) /
+                          (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2));
+
             if (Single.IsNaN(value))
+            {
                 value = 0.0f;
+            }
+
             return value;
         }
 
         /// <summary>
-        /// Sets the scroll amount (0-1).
+        ///     Sets the scroll amount (0-1).
         /// </summary>
         /// <param name="value">Scroll amount.</param>
         /// <param name="forceUpdate">Determines whether the control should be updated.</param>
         /// <returns>True if control state changed.</returns>
         public override bool SetScrollAmount(float value, bool forceUpdate = false)
         {
-            value = Util.Clamp(value, 0, 1);
+            value = Util.Clamp(value, min: 0, max: 1);
 
             if (!base.SetScrollAmount(value, forceUpdate))
+            {
                 return false;
+            }
 
             if (forceUpdate)
             {
-                int newY = (int)(ButtonSize + (value * ((ActualHeight - m_Bar.ActualHeight) - (ButtonSize * 2))));
+                int newY = (int)(ButtonSize + (value * (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2))));
                 m_Bar.MoveTo(m_Bar.ActualLeft, newY);
             }
 
@@ -194,14 +204,14 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Handler for the BarMoved event.
+        ///     Handler for the BarMoved event.
         /// </summary>
         /// <param name="control">The control.</param>
-		protected override void OnBarMoved(ControlBase control, EventArgs args)
+        protected override void OnBarMoved(ControlBase control, EventArgs args)
         {
             if (m_Bar.IsHeld)
             {
-                SetScrollAmount(CalculateScrolledAmount(), false);
+                SetScrollAmount(CalculateScrolledAmount());
             }
 
             base.OnBarMoved(control, EventArgs.Empty);

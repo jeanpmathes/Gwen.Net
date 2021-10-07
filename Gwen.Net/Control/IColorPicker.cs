@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Gwen.Net.Control
+﻿namespace Gwen.Net.Control
 {
     public interface IColorPicker
     {

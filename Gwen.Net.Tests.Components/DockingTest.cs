@@ -1,6 +1,6 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -9,7 +9,7 @@ namespace Gwen.Net.Tests.Components
     public class DockingTest : GUnit
     {
         private readonly Font font;
-        private ControlBase outer;
+        private readonly ControlBase outer;
 
         public DockingTest(ControlBase parent)
             : base(parent)
@@ -19,39 +19,42 @@ namespace Gwen.Net.Tests.Components
 
             Label inner1, inner2, inner3, inner4, inner5;
 
-            HorizontalLayout hlayout = new HorizontalLayout(this);
+            HorizontalLayout hlayout = new(this);
+
             {
-                VerticalLayout vlayout = new VerticalLayout(hlayout);
+                VerticalLayout vlayout = new(hlayout);
+
                 {
                     outer = new DockLayout(vlayout);
-                    outer.Size = new Size(400, 400);
+                    outer.Size = new Size(width: 400, height: 400);
+
                     {
                         inner1 = new Label(outer);
                         inner1.Alignment = Alignment.Center;
                         inner1.Text = "1";
                         inner1.Font = font;
-                        inner1.Size = new Size(100, Util.Ignore);
+                        inner1.Size = new Size(width: 100, Util.Ignore);
                         inner1.Dock = Dock.Left;
 
                         inner2 = new Label(outer);
                         inner2.Alignment = Alignment.Center;
                         inner2.Text = "2";
                         inner2.Font = font;
-                        inner2.Size = new Size(Util.Ignore, 100);
+                        inner2.Size = new Size(Util.Ignore, height: 100);
                         inner2.Dock = Dock.Top;
 
                         inner3 = new Label(outer);
                         inner3.Alignment = Alignment.Center;
                         inner3.Text = "3";
                         inner3.Font = font;
-                        inner3.Size = new Size(100, Util.Ignore);
+                        inner3.Size = new Size(width: 100, Util.Ignore);
                         inner3.Dock = Dock.Right;
 
                         inner4 = new Label(outer);
                         inner4.Alignment = Alignment.Center;
                         inner4.Text = "4";
                         inner4.Font = font;
-                        inner4.Size = new Size(Util.Ignore, 100);
+                        inner4.Size = new Size(Util.Ignore, height: 100);
                         inner4.Dock = Dock.Bottom;
 
                         inner5 = new Label(outer);
@@ -64,12 +67,13 @@ namespace Gwen.Net.Tests.Components
 
                     outer.DrawDebugOutlines = true;
 
-                    HorizontalLayout hlayout2 = new HorizontalLayout(vlayout);
+                    HorizontalLayout hlayout2 = new(vlayout);
+
                     {
-                        Label l_padding = new Label(hlayout2);
+                        Label l_padding = new(hlayout2);
                         l_padding.Text = "Padding:";
 
-                        HorizontalSlider padding = new HorizontalSlider(hlayout2);
+                        HorizontalSlider padding = new(hlayout2);
                         padding.Min = 0;
                         padding.Max = 200;
                         padding.Value = 10;
@@ -78,8 +82,9 @@ namespace Gwen.Net.Tests.Components
                     }
                 }
 
-                GridLayout controlsLayout = new GridLayout(hlayout);
+                GridLayout controlsLayout = new(hlayout);
                 controlsLayout.ColumnCount = 2;
+
                 {
                     inner1.UserData = CreateControls(inner1, Dock.Left, "Control 1", controlsLayout);
                     inner2.UserData = CreateControls(inner2, Dock.Top, "Control 2", controlsLayout);
@@ -91,65 +96,73 @@ namespace Gwen.Net.Tests.Components
             //DrawDebugOutlines = true;
         }
 
-        ControlBase CreateControls(ControlBase subject, Dock docking, string name, ControlBase container)
+        private ControlBase CreateControls(ControlBase subject, Dock docking, string name, ControlBase container)
         {
-            GroupBox gb = new GroupBox(container);
+            GroupBox gb = new(container);
             gb.Text = name;
+
             {
-                HorizontalLayout hlayout = new HorizontalLayout(gb);
+                HorizontalLayout hlayout = new(gb);
+
                 {
-                    GroupBox dgb = new GroupBox(hlayout);
+                    GroupBox dgb = new(hlayout);
                     dgb.Text = "Dock";
+
                     {
-                        RadioButtonGroup dock = new RadioButtonGroup(dgb);
+                        RadioButtonGroup dock = new(dgb);
                         dock.UserData = subject;
-                        dock.AddOption("Left", null, Dock.Left);
-                        dock.AddOption("Top", null, Dock.Top);
-                        dock.AddOption("Right", null, Dock.Right);
-                        dock.AddOption("Bottom", null, Dock.Bottom);
-                        dock.AddOption("Fill", null, Dock.Fill);
+                        dock.AddOption("Left", optionName: null, Dock.Left);
+                        dock.AddOption("Top", optionName: null, Dock.Top);
+                        dock.AddOption("Right", optionName: null, Dock.Right);
+                        dock.AddOption("Bottom", optionName: null, Dock.Bottom);
+                        dock.AddOption("Fill", optionName: null, Dock.Fill);
                         dock.SelectByUserData(docking);
                         dock.SelectionChanged += DockChanged;
                     }
 
-                    VerticalLayout vlayout = new VerticalLayout(hlayout);
+                    VerticalLayout vlayout = new(hlayout);
+
                     {
-                        HorizontalLayout hlayout2 = new HorizontalLayout(vlayout);
+                        HorizontalLayout hlayout2 = new(vlayout);
+
                         {
-                            GroupBox hgb = new GroupBox(hlayout2);
+                            GroupBox hgb = new(hlayout2);
                             hgb.Text = "H. Align";
+
                             {
-                                RadioButtonGroup halign = new RadioButtonGroup(hgb);
+                                RadioButtonGroup halign = new(hgb);
                                 halign.UserData = subject;
-                                halign.AddOption("Left", null, HorizontalAlignment.Left);
-                                halign.AddOption("Center", null, HorizontalAlignment.Center);
-                                halign.AddOption("Right", null, HorizontalAlignment.Right);
-                                halign.AddOption("Stretch", null, HorizontalAlignment.Stretch);
+                                halign.AddOption("Left", optionName: null, HorizontalAlignment.Left);
+                                halign.AddOption("Center", optionName: null, HorizontalAlignment.Center);
+                                halign.AddOption("Right", optionName: null, HorizontalAlignment.Right);
+                                halign.AddOption("Stretch", optionName: null, HorizontalAlignment.Stretch);
                                 halign.SelectByUserData(subject.HorizontalAlignment);
                                 halign.SelectionChanged += HAlignChanged;
                             }
 
-                            GroupBox vgb = new GroupBox(hlayout2);
+                            GroupBox vgb = new(hlayout2);
                             vgb.Text = "V. Align";
+
                             {
-                                RadioButtonGroup valign = new RadioButtonGroup(vgb);
+                                RadioButtonGroup valign = new(vgb);
                                 valign.UserData = subject;
-                                valign.AddOption("Top", null, VerticalAlignment.Top);
-                                valign.AddOption("Center", null, VerticalAlignment.Center);
-                                valign.AddOption("Bottom", null, VerticalAlignment.Bottom);
-                                valign.AddOption("Stretch", null, VerticalAlignment.Stretch);
+                                valign.AddOption("Top", optionName: null, VerticalAlignment.Top);
+                                valign.AddOption("Center", optionName: null, VerticalAlignment.Center);
+                                valign.AddOption("Bottom", optionName: null, VerticalAlignment.Bottom);
+                                valign.AddOption("Stretch", optionName: null, VerticalAlignment.Stretch);
                                 valign.SelectByUserData(subject.VerticalAlignment);
                                 valign.SelectionChanged += VAlignChanged;
                             }
                         }
 
-                        GridLayout glayout = new GridLayout(vlayout);
+                        GridLayout glayout = new(vlayout);
                         glayout.SetColumnWidths(GridLayout.AutoSize, GridLayout.Fill);
+
                         {
-                            Label l_width = new Label(glayout);
+                            Label l_width = new(glayout);
                             l_width.Text = "Width:";
 
-                            HorizontalSlider width = new HorizontalSlider(glayout);
+                            HorizontalSlider width = new(glayout);
                             width.Name = "Width";
                             width.UserData = subject;
                             width.Min = 50;
@@ -157,10 +170,10 @@ namespace Gwen.Net.Tests.Components
                             width.Value = 100;
                             width.ValueChanged += WidthChanged;
 
-                            Label l_height = new Label(glayout);
+                            Label l_height = new(glayout);
                             l_height.Text = "Height:";
 
-                            HorizontalSlider height = new HorizontalSlider(glayout);
+                            HorizontalSlider height = new(glayout);
                             height.Name = "Height";
                             height.UserData = subject;
                             height.Min = 50;
@@ -168,10 +181,10 @@ namespace Gwen.Net.Tests.Components
                             height.Value = 100;
                             height.ValueChanged += HeightChanged;
 
-                            Label l_margin = new Label(glayout);
+                            Label l_margin = new(glayout);
                             l_margin.Text = "Margin:";
 
-                            HorizontalSlider margin = new HorizontalSlider(glayout);
+                            HorizontalSlider margin = new(glayout);
                             margin.Name = "Margin";
                             margin.UserData = subject;
                             margin.Min = 0;
@@ -186,80 +199,97 @@ namespace Gwen.Net.Tests.Components
             return gb;
         }
 
-        void PaddingChanged(ControlBase control, EventArgs args)
+        private void PaddingChanged(ControlBase control, EventArgs args)
         {
-            Net.Control.Internal.Slider val = control as Net.Control.Internal.Slider;
+            Slider val = control as Slider;
             int i = (int)val.Value;
             outer.Padding = new Padding(i, i, i, i);
         }
 
-        void MarginChanged(ControlBase control, EventArgs args)
+        private void MarginChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = control.UserData as ControlBase;
-            Net.Control.Internal.Slider val = control as Net.Control.Internal.Slider;
+            Slider val = control as Slider;
             int i = (int)val.Value;
             inner.Margin = new Margin(i, i, i, i);
         }
 
-        void WidthChanged(ControlBase control, EventArgs args)
+        private void WidthChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = control.UserData as ControlBase;
-            Net.Control.Internal.Slider val = control as Net.Control.Internal.Slider;
+            Slider val = control as Slider;
+
             if (inner.HorizontalAlignment != HorizontalAlignment.Stretch)
+            {
                 inner.Width = (int)val.Value;
+            }
         }
 
-        void HeightChanged(ControlBase control, EventArgs args)
+        private void HeightChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = control.UserData as ControlBase;
-            Net.Control.Internal.Slider val = control as Net.Control.Internal.Slider;
+            Slider val = control as Slider;
+
             if (inner.VerticalAlignment != VerticalAlignment.Stretch)
+            {
                 inner.Height = (int)val.Value;
+            }
         }
 
-        void HAlignChanged(ControlBase control, EventArgs args)
+        private void HAlignChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = control.UserData as ControlBase;
             RadioButtonGroup rbg = (RadioButtonGroup)control;
             inner.HorizontalAlignment = (HorizontalAlignment)rbg.Selected.UserData;
+
             if (inner.HorizontalAlignment == HorizontalAlignment.Stretch)
+            {
                 inner.Width = Util.Ignore;
+            }
         }
 
-        void VAlignChanged(ControlBase control, EventArgs args)
+        private void VAlignChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = control.UserData as ControlBase;
             RadioButtonGroup rbg = (RadioButtonGroup)control;
             inner.VerticalAlignment = (VerticalAlignment)rbg.Selected.UserData;
+
             if (inner.VerticalAlignment == VerticalAlignment.Stretch)
+            {
                 inner.Height = Util.Ignore;
+            }
         }
 
-        void DockChanged(ControlBase control, EventArgs args)
+        private void DockChanged(ControlBase control, EventArgs args)
         {
             ControlBase inner = (ControlBase)control.UserData;
             RadioButtonGroup rbg = (RadioButtonGroup)control;
             ControlBase gb = inner.UserData as ControlBase;
-            int w = (int)(gb.FindChildByName("Width", true) as Net.Control.Internal.Slider).Value;
-            int h = (int)(gb.FindChildByName("Height", true) as Net.Control.Internal.Slider).Value;
+            int w = (int)(gb.FindChildByName("Width", recursive: true) as Slider).Value;
+            int h = (int)(gb.FindChildByName("Height", recursive: true) as Slider).Value;
             inner.Dock = (Dock)rbg.Selected.UserData;
 
             switch (inner.Dock)
             {
                 case Dock.Left:
                     inner.Size = new Size(w, Util.Ignore);
+
                     break;
                 case Dock.Top:
                     inner.Size = new Size(Util.Ignore, h);
+
                     break;
                 case Dock.Right:
                     inner.Size = new Size(w, Util.Ignore);
+
                     break;
                 case Dock.Bottom:
                     inner.Size = new Size(Util.Ignore, h);
+
                     break;
                 case Dock.Fill:
                     inner.Size = new Size(Util.Ignore, Util.Ignore);
+
                     break;
             }
         }

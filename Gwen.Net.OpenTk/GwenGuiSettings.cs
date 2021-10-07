@@ -4,10 +4,7 @@ namespace Gwen.Net.OpenTk
 {
     public class GwenGuiSettings
     {
-        public static readonly GwenGuiSettings Default = new GwenGuiSettings
-        {
-            DefaultFont = "Calibri", DrawBackground = true
-        };
+        public static readonly GwenGuiSettings Default = new() {DefaultFont = "Calibri", DrawBackground = true};
 
         private GwenGuiSettings() {}
 

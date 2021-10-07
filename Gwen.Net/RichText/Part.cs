@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Gwen.Net.RichText
+﻿namespace Gwen.Net.RichText
 {
     public abstract class Part
     {

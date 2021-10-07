@@ -1,62 +1,67 @@
 ﻿using System;
+using Gwen.Net.DragDrop;
 using Gwen.Net.Input;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Tab header.
+    ///     Tab header.
     /// </summary>
     public class TabButton : Button
     {
-        private ControlBase m_Page;
         private TabControl m_Control;
 
         /// <summary>
-        /// Indicates whether the tab is active.
-        /// </summary>
-        public bool IsActive { get { return m_Page != null && m_Page.IsVisible; } }
-
-        // todo: remove public access
-        public TabControl TabControl
-        {
-            get { return m_Control; }
-            set
-            {
-                if (value == m_Control) return;
-                if (m_Control != null)
-                    m_Control.OnLoseTab(this);
-                m_Control = value;
-            }
-        }
-
-        /// <summary>
-        /// Interior of the tab.
-        /// </summary>
-        public ControlBase Page { get { return m_Page; } set { m_Page = value; } }
-
-        /// <summary>
-        /// Determines whether the control should be clipped to its bounds while rendering.
-        /// </summary>
-        protected override bool ShouldClip
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TabButton"/> class.
+        ///     Initializes a new instance of the <see cref="TabButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public TabButton(ControlBase parent)
             : base(parent)
         {
-            DragAndDrop_SetPackage(true, "TabButtonMove");
+            DragAndDrop_SetPackage(draggable: true, "TabButtonMove");
             Alignment = Alignment.Top | Alignment.Left;
-            TextPadding = new Padding(5, 3, 3, 3);
+            TextPadding = new Padding(left: 5, top: 3, right: 3, bottom: 3);
             Padding = Padding.Two;
             KeyboardInputEnabled = true;
         }
 
-        public override void DragAndDrop_StartDragging(DragDrop.Package package, int x, int y)
+        /// <summary>
+        ///     Indicates whether the tab is active.
+        /// </summary>
+        public bool IsActive => Page != null && Page.IsVisible;
+
+        // todo: remove public access
+        public TabControl TabControl
+        {
+            get => m_Control;
+            set
+            {
+                if (value == m_Control)
+                {
+                    return;
+                }
+
+                if (m_Control != null)
+                {
+                    m_Control.OnLoseTab(this);
+                }
+
+                m_Control = value;
+            }
+        }
+
+        /// <summary>
+        ///     Interior of the tab.
+        /// </summary>
+        public ControlBase Page { get; set; }
+
+        /// <summary>
+        ///     Determines whether the control should be clipped to its bounds while rendering.
+        /// </summary>
+        protected override bool ShouldClip => false;
+
+        public override void DragAndDrop_StartDragging(Package package, int x, int y)
         {
             IsCollapsed = true;
         }
@@ -73,56 +78,59 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawTabButton(this, IsActive, m_Control.TabStrip.Dock);
         }
 
         /// <summary>
-        /// Handler for Down Arrow keyboard event.
+        ///     Handler for Down Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>
-        /// True if handled.
+        ///     True if handled.
         /// </returns>
         protected override bool OnKeyDown(bool down)
         {
             OnKeyRight(down);
+
             return true;
         }
 
         /// <summary>
-        /// Handler for Up Arrow keyboard event.
+        ///     Handler for Up Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>
-        /// True if handled.
+        ///     True if handled.
         /// </returns>
         protected override bool OnKeyUp(bool down)
         {
             OnKeyLeft(down);
+
             return true;
         }
 
         /// <summary>
-        /// Handler for Right Arrow keyboard event.
+        ///     Handler for Right Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>
-        /// True if handled.
+        ///     True if handled.
         /// </returns>
         protected override bool OnKeyRight(bool down)
         {
             if (down)
             {
-                var count = Parent.Children.Count;
+                int count = Parent.Children.Count;
                 int me = Parent.Children.IndexOf(this);
+
                 if (me + 1 < count)
                 {
-                    var nextTab = Parent.Children[me + 1];
+                    ControlBase nextTab = Parent.Children[me + 1];
                     TabControl.OnTabPressed(nextTab, EventArgs.Empty);
                     InputHandler.KeyboardFocus = nextTab;
                 }
@@ -132,21 +140,22 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Handler for Left Arrow keyboard event.
+        ///     Handler for Left Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>
-        /// True if handled.
+        ///     True if handled.
         /// </returns>
         protected override bool OnKeyLeft(bool down)
         {
             if (down)
             {
-                var count = Parent.Children.Count;
+                int count = Parent.Children.Count;
                 int me = Parent.Children.IndexOf(this);
+
                 if (me - 1 >= 0)
                 {
-                    var prevTab = Parent.Children[me - 1];
+                    ControlBase prevTab = Parent.Children[me - 1];
                     TabControl.OnTabPressed(prevTab, EventArgs.Empty);
                     InputHandler.KeyboardFocus = prevTab;
                 }
@@ -156,7 +165,7 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Updates control colors.
+        ///     Updates control colors.
         /// </summary>
         public override void UpdateColors()
         {
@@ -165,16 +174,21 @@ namespace Gwen.Net.Control.Internal
                 if (IsDisabled)
                 {
                     TextColor = Skin.Colors.Tab.Active.Disabled;
+
                     return;
                 }
+
                 if (IsDepressed)
                 {
                     TextColor = Skin.Colors.Tab.Active.Down;
+
                     return;
                 }
+
                 if (IsHovered)
                 {
                     TextColor = Skin.Colors.Tab.Active.Hover;
+
                     return;
                 }
 
@@ -184,16 +198,21 @@ namespace Gwen.Net.Control.Internal
             if (IsDisabled)
             {
                 TextColor = Skin.Colors.Tab.Inactive.Disabled;
+
                 return;
             }
+
             if (IsDepressed)
             {
                 TextColor = Skin.Colors.Tab.Inactive.Down;
+
                 return;
             }
+
             if (IsHovered)
             {
                 TextColor = Skin.Colors.Tab.Inactive.Hover;
+
                 return;
             }
 

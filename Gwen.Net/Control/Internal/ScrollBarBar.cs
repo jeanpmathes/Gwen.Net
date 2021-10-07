@@ -1,27 +1,14 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Scrollbar bar.
+    ///     Scrollbar bar.
     /// </summary>
     public class ScrollBarBar : Dragger
     {
-        private bool m_Horizontal;
-
         /// <summary>
-        /// Indicates whether the bar is horizontal.
-        /// </summary>
-        public bool IsHorizontal { get { return m_Horizontal; } set { m_Horizontal = value; } }
-
-        /// <summary>
-        /// Indicates whether the bar is vertical.
-        /// </summary>
-        public bool IsVertical { get { return !m_Horizontal; } set { m_Horizontal = !value; } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScrollBarBar"/> class.
+        ///     Initializes a new instance of the <see cref="ScrollBarBar" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public ScrollBarBar(ControlBase parent)
@@ -32,17 +19,31 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Indicates whether the bar is horizontal.
+        /// </summary>
+        public bool IsHorizontal { get; set; }
+
+        /// <summary>
+        ///     Indicates whether the bar is vertical.
+        /// </summary>
+        public bool IsVertical
+        {
+            get => !IsHorizontal;
+            set => IsHorizontal = !value;
+        }
+
+        /// <summary>
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            skin.DrawScrollBarBar(this, m_Held, IsHovered, m_Horizontal);
+            skin.DrawScrollBarBar(this, m_Held, IsHovered, IsHorizontal);
             base.Render(skin);
         }
 
         /// <summary>
-        /// Handler invoked on mouse moved event.
+        ///     Handler invoked on mouse moved event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
@@ -53,24 +54,33 @@ namespace Gwen.Net.Control.Internal
             base.OnMouseMoved(x, y, dx, dy);
 
             int buttonSize = (Parent as ScrollBar).ButtonSize;
-            if (m_Horizontal)
+
+            if (IsHorizontal)
             {
                 if (ActualLeft < buttonSize)
+                {
                     MoveTo(buttonSize, ActualTop);
+                }
                 else if (ActualLeft > Parent.ActualWidth - ActualWidth - buttonSize)
+                {
                     MoveTo(Parent.ActualWidth - ActualWidth - buttonSize, ActualTop);
+                }
             }
             else
             {
                 if (ActualTop < buttonSize)
+                {
                     MoveTo(ActualLeft, buttonSize);
+                }
                 else if (ActualTop > Parent.ActualHeight - ActualHeight - buttonSize)
+                {
                     MoveTo(ActualLeft, Parent.ActualHeight - ActualHeight - buttonSize);
+                }
             }
         }
 
         /// <summary>
-        /// Handler invoked on mouse click (left) event.
+        ///     Handler invoked on mouse click (left) event.
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>

@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 
 namespace Gwen.Net
 {
@@ -10,6 +9,6 @@ namespace Gwen.Net
         Top = ControlBase.InternalFlags.DockTop,
         Right = ControlBase.InternalFlags.DockRight,
         Bottom = ControlBase.InternalFlags.DockBottom,
-        Fill = ControlBase.InternalFlags.DockFill,
+        Fill = ControlBase.InternalFlags.DockFill
     }
 }

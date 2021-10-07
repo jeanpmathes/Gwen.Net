@@ -1,37 +1,34 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    /// Divider menu item.
+    ///     Divider menu item.
     /// </summary>
     public class MenuDivider : ControlBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MenuDivider"/> class.
+        ///     Initializes a new instance of the <see cref="MenuDivider" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public MenuDivider(ControlBase parent)
-            : base(parent)
-        {
-        }
+            : base(parent) {}
 
         protected override Size Measure(Size availableSize)
         {
-            return new Size(10, 1);
+            return new(width: 10, height: 1);
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            return new Size(finalSize.Width, 1);
+            return new(finalSize.Width, height: 1);
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawMenuDivider(this);
         }

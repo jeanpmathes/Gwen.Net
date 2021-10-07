@@ -10,11 +10,11 @@ namespace Gwen.Net.Tests.Components
         public ComboBoxTest(ControlBase parent)
             : base(parent)
         {
-            VerticalLayout layout = new VerticalLayout(this);
+            VerticalLayout layout = new(this);
 
             {
-                ComboBox combo = new ComboBox(layout);
-                combo.Margin = Net.Margin.Five;
+                ComboBox combo = new(layout);
+                combo.Margin = Margin.Five;
                 combo.Width = 200;
 
                 combo.AddItem("Option One", "one");
@@ -28,27 +28,29 @@ namespace Gwen.Net.Tests.Components
 
             {
                 // Empty
-                ComboBox combo = new ComboBox(layout);
-                combo.Margin = Net.Margin.Five;
+                ComboBox combo = new(layout);
+                combo.Margin = Margin.Five;
                 combo.Width = 200;
             }
 
             {
                 // Lots of things
-                ComboBox combo = new ComboBox(layout);
-                combo.Margin = Net.Margin.Five;
+                ComboBox combo = new(layout);
+                combo.Margin = Margin.Five;
                 combo.Width = 200;
 
                 for (int i = 0; i < 500; i++)
+                {
                     combo.AddItem(String.Format("Option {0}", i));
+                }
 
                 combo.ItemSelected += OnComboSelect;
             }
 
             {
                 // Editable
-                EditableComboBox combo = new EditableComboBox(layout);
-                combo.Margin = Net.Margin.Five;
+                EditableComboBox combo = new(layout);
+                combo.Margin = Margin.Five;
                 combo.Width = 200;
 
                 combo.AddItem("Option One", "one");
@@ -57,33 +59,38 @@ namespace Gwen.Net.Tests.Components
                 combo.AddItem("Four Legs", "four");
                 combo.AddItem("Five Birds", "five");
 
-                combo.ItemSelected += (s, a) => UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text)); ;
+                combo.ItemSelected += (s, a) =>
+                    UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text));
+
+                ;
 
                 combo.TextChanged += (s, a) => UnitPrint(String.Format("ComboBox: OnTextChanged: {0}", combo.Text));
                 combo.SubmitPressed += (s, a) => UnitPrint(String.Format("ComboBox: OnSubmitPressed: {0}", combo.Text));
             }
 
             {
-                HorizontalLayout hlayout = new HorizontalLayout(layout);
+                HorizontalLayout hlayout = new(layout);
+
                 {
                     // In-Code Item Change
-                    ComboBox combo = new ComboBox(hlayout);
-                    combo.Margin = Net.Margin.Five;
+                    ComboBox combo = new(hlayout);
+                    combo.Margin = Margin.Five;
                     combo.Width = 200;
 
                     MenuItem Triangle = combo.AddItem("Triangle");
                     combo.AddItem("Red", "color");
                     combo.AddItem("Apple", "fruit");
                     combo.AddItem("Blue", "color");
-                    combo.AddItem("Green", "color", 12);
+                    combo.AddItem("Green", "color", UserData: 12);
                     combo.ItemSelected += OnComboSelect;
 
                     //Select by Menu Item
                     {
-                        Button TriangleButton = new Button(hlayout);
+                        Button TriangleButton = new(hlayout);
                         TriangleButton.Text = "Triangle";
                         TriangleButton.Width = 100;
-                        TriangleButton.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
+
+                        TriangleButton.Clicked += delegate
                         {
                             combo.SelectedItem = Triangle;
                         };
@@ -91,10 +98,11 @@ namespace Gwen.Net.Tests.Components
 
                     //Select by Text
                     {
-                        Button TestBtn = new Button(hlayout);
+                        Button TestBtn = new(hlayout);
                         TestBtn.Text = "Red";
                         TestBtn.Width = 100;
-                        TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
+
+                        TestBtn.Clicked += delegate
                         {
                             combo.SelectByText("Red");
                         };
@@ -102,10 +110,11 @@ namespace Gwen.Net.Tests.Components
 
                     //Select by Name
                     {
-                        Button TestBtn = new Button(hlayout);
+                        Button TestBtn = new(hlayout);
                         TestBtn.Text = "Apple";
                         TestBtn.Width = 100;
-                        TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
+
+                        TestBtn.Clicked += delegate
                         {
                             combo.SelectByName("fruit");
                         };
@@ -113,19 +122,20 @@ namespace Gwen.Net.Tests.Components
 
                     //Select by UserData
                     {
-                        Button TestBtn = new Button(hlayout);
+                        Button TestBtn = new(hlayout);
                         TestBtn.Text = "Green";
                         TestBtn.Width = 100;
-                        TestBtn.Clicked += delegate (ControlBase sender, ClickedEventArgs args)
+
+                        TestBtn.Clicked += delegate
                         {
-                            combo.SelectByUserData(12);
+                            combo.SelectByUserData(userdata: 12);
                         };
                     }
                 }
             }
         }
 
-        void OnComboSelect(ControlBase control, EventArgs args)
+        private void OnComboSelect(ControlBase control, EventArgs args)
         {
             ComboBox combo = control as ComboBox;
             UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text));

@@ -12,11 +12,12 @@ namespace Gwen.Net.Tests.Components
         {
             ControlBase layout = new DockLayout(this);
 
-            FlowLayout flowLayout = new FlowLayout(layout);
+            FlowLayout flowLayout = new(layout);
             flowLayout.Width = 200;
-            flowLayout.Padding = Net.Padding.Five;
-            flowLayout.Dock = Net.Dock.Fill;
+            flowLayout.Padding = Padding.Five;
+            flowLayout.Dock = Dock.Fill;
             flowLayout.DrawDebugOutlines = true;
+
             {
                 Button button;
                 int buttonNum = 1;
@@ -25,20 +26,20 @@ namespace Gwen.Net.Tests.Components
                 for (int n = 0; n < buttonCount; n++)
                 {
                     button = new Button(flowLayout);
-                    button.VerticalAlignment = Net.VerticalAlignment.Top;
-                    button.HorizontalAlignment = Net.HorizontalAlignment.Left;
-                    button.Margin = Net.Margin.Five;
-                    button.Padding = Net.Padding.Five;
+                    button.VerticalAlignment = VerticalAlignment.Top;
+                    button.HorizontalAlignment = HorizontalAlignment.Left;
+                    button.Margin = Margin.Five;
+                    button.Padding = Padding.Five;
                     button.ShouldDrawBackground = false;
                     button.Text = String.Format("Button {0}", buttonNum++);
                     button.SetImage("test16.png", ImageAlign.Above);
                 }
             }
 
-            HorizontalSlider flowLayoutWidth = new HorizontalSlider(layout);
-            flowLayoutWidth.Margin = Net.Margin.Five;
+            HorizontalSlider flowLayoutWidth = new(layout);
+            flowLayoutWidth.Margin = Margin.Five;
             flowLayoutWidth.Width = 500;
-            flowLayoutWidth.Dock = Net.Dock.Top;
+            flowLayoutWidth.Dock = Dock.Top;
             flowLayoutWidth.Min = 50;
             flowLayoutWidth.Max = 500;
             flowLayoutWidth.Value = flowLayout.Width;

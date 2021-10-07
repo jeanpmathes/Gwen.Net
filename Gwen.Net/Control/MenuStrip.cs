@@ -1,29 +1,30 @@
 ﻿using System;
-using Gwen.Net.Control.Layout;
+using Gwen.Net.Skin;
+using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Menu strip.
+    ///     Menu strip.
     /// </summary>
-	[Xml.XmlControl(CustomHandler = "XmlElementHandler")]
+    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class MenuStrip : Menu
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MenuStrip"/> class.
+        ///     Initializes a new instance of the <see cref="MenuStrip" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public MenuStrip(ControlBase parent)
             : base(parent)
         {
-            Collapse(false, false);
+            Collapse(collapsed: false, measure: false);
 
-            Padding = new Padding(5, 0, 0, 0);
+            Padding = new Padding(left: 5, top: 0, right: 0, bottom: 0);
             IconMarginDisabled = true;
-            EnableScroll(true, false);
+            EnableScroll(horizontal: true, vertical: false);
 
-            this.HorizontalAlignment = HorizontalAlignment.Stretch;
-            this.VerticalAlignment = VerticalAlignment.Top;
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Top;
 
             m_Layout.Horizontal = true;
             m_Layout.HorizontalAlignment = HorizontalAlignment.Left;
@@ -31,53 +32,46 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Closes the current menu.
+        ///     Determines whether the menu should open on mouse hover.
         /// </summary>
-        public override void Close()
-        {
-
-        }
+        protected override bool ShouldHoverOpenMenu => IsMenuOpen();
 
         /// <summary>
-        /// Renders under the actual control (shadows etc).
+        ///     Closes the current menu.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(Skin.SkinBase skin)
-        {
-        }
+        public override void Close() {}
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders under the actual control (shadows etc).
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void RenderUnder(SkinBase skin) {}
+
+        /// <summary>
+        ///     Renders the control using specified skin.
+        /// </summary>
+        /// <param name="skin">Skin to use.</param>
+        protected override void Render(SkinBase skin)
         {
             skin.DrawMenuStrip(this);
         }
 
         /// <summary>
-        /// Determines whether the menu should open on mouse hover.
-        /// </summary>
-        protected override bool ShouldHoverOpenMenu
-        {
-            get { return IsMenuOpen(); }
-        }
-
-        /// <summary>
-        /// Add item handler.
+        ///     Add item handler.
         /// </summary>
         /// <param name="item">Item added.</param>
         protected override void OnAddItem(MenuItem item)
         {
-            item.TextPadding = new Padding(5, 0, 5, 0);
-            item.Padding = new Padding(4, 4, 4, 4);
+            item.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
+            item.Padding = new Padding(left: 4, top: 4, right: 4, bottom: 4);
             item.HoverEnter += OnHoverItem;
         }
 
-        internal static ControlBase XmlElementHandler(Xml.Parser parser, Type type, ControlBase parent)
+        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
         {
-            MenuStrip element = new MenuStrip(parent);
+            MenuStrip element = new(parent);
             parser.ParseAttributes(element);
+
             if (parser.MoveToContent())
             {
                 foreach (string elementName in parser.NextElement())
@@ -88,6 +82,7 @@ namespace Gwen.Net.Control
                     }
                 }
             }
+
             return element;
         }
     }

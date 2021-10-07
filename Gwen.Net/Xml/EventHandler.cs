@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
+using Gwen.Net.Control;
 
 namespace Gwen.Net.Xml
 {
     /// <summary>
-    /// XML based event handler.
+    ///     XML based event handler.
     /// </summary>
     /// <typeparam name="T">Type of event arguments.</typeparam>
-    public class XmlEventHandler<T> where T : System.EventArgs
+    public class XmlEventHandler<T> where T : EventArgs
     {
-        private string m_eventName;
-        private string m_handlerName;
-        private Type[] m_paramsType = new Type[] { typeof(Gwen.Net.Control.ControlBase), typeof(T) };
+        private readonly string m_eventName;
+        private readonly string m_handlerName;
+
+        private Type[] m_paramsType =
+        {
+            typeof(ControlBase),
+            typeof(T)
+        };
 
         public XmlEventHandler(string handlerName, string eventName)
         {
@@ -21,14 +25,18 @@ namespace Gwen.Net.Xml
             m_handlerName = handlerName;
         }
 
-        public void OnEvent(Gwen.Net.Control.ControlBase sender, T args)
+        public void OnEvent(ControlBase sender, T args)
         {
-            Gwen.Net.Control.ControlBase handlerElement = sender.Parent;
+            ControlBase handlerElement = sender.Parent;
 
-            if (sender is Gwen.Net.Control.Window)
+            if (sender is Window)
+            {
                 handlerElement = sender;
-            else if (sender is Gwen.Net.Control.TreeNode)
-                handlerElement = ((Gwen.Net.Control.TreeNode)sender).TreeControl.Parent;
+            }
+            else if (sender is TreeNode)
+            {
+                handlerElement = ((TreeNode)sender).TreeControl.Parent;
+            }
 
             while (handlerElement != null)
             {
@@ -38,47 +46,76 @@ namespace Gwen.Net.Xml
                     {
                         break;
                     }
-                    else
-                    {
-                        Type type = handlerElement.Component.GetType();
 
-                        MethodInfo methodInfo = null;
-                        do
+                    Type type = handlerElement.Component.GetType();
+
+                    MethodInfo methodInfo = null;
+
+                    do
+                    {
+                        MethodInfo[] methods = type.GetMethods(
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                        foreach (MethodInfo mi in methods)
                         {
-                            MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            foreach (MethodInfo mi in methods)
+                            if (mi.Name != m_handlerName)
                             {
-                                if (mi.Name != m_handlerName)
-                                    continue;
-                                ParameterInfo[] parameters = mi.GetParameters();
-                                if (parameters.Length != 2)
-                                    continue;
-                                if (parameters[0].ParameterType != typeof(Gwen.Net.Control.ControlBase) || (parameters[1].ParameterType != typeof(T) && parameters[1].ParameterType != typeof(T).BaseType))
-                                    continue;
-                                methodInfo = mi;
-                                break;
+                                continue;
                             }
-                            if (methodInfo != null)
-                                break;
-                            type = type.BaseType;
+
+                            ParameterInfo[] parameters = mi.GetParameters();
+
+                            if (parameters.Length != 2)
+                            {
+                                continue;
+                            }
+
+                            if (parameters[0].ParameterType != typeof(ControlBase) ||
+                                (parameters[1].ParameterType != typeof(T) &&
+                                 parameters[1].ParameterType != typeof(T).BaseType))
+                            {
+                                continue;
+                            }
+
+                            methodInfo = mi;
+
+                            break;
                         }
-                        while (type != null);
 
                         if (methodInfo != null)
                         {
-                            methodInfo.Invoke(handlerElement.Component, new object[] { sender, args });
                             break;
                         }
+
+                        type = type.BaseType;
+                    } while (type != null);
+
+                    if (methodInfo != null)
+                    {
+                        methodInfo.Invoke(
+                            handlerElement.Component,
+                            new object[]
+                            {
+                                sender,
+                                args
+                            });
+
+                        break;
                     }
                 }
 
-                if (handlerElement is Gwen.Net.Control.Menu)
+                if (handlerElement is Menu)
                 {
-                    Gwen.Net.Control.Menu menu = handlerElement as Gwen.Net.Control.Menu;
+                    Menu menu = handlerElement as Menu;
+
                     if (menu.ParentMenuItem != null)
+                    {
                         handlerElement = menu.ParentMenuItem;
+                    }
                     else
+                    {
                         handlerElement = handlerElement.Parent;
+                    }
                 }
                 else
                 {

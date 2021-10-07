@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net.Control;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -17,40 +16,24 @@ namespace Gwen.Net.Control.Internal
 
         public Size ViewableContentSize { get; private set; }
 
-        public Size ContentSize { get { return new Size(m_InnerPanel.ActualWidth, m_InnerPanel.ActualHeight); } }
+        public Size ContentSize => new(m_InnerPanel.ActualWidth, m_InnerPanel.ActualHeight);
 
         public Point ScrollPosition
         {
-            get { return m_InnerPanel.ActualPosition; }
-            set
-            {
-                SetScrollPosition(value.X, value.Y);
-            }
+            get => m_InnerPanel.ActualPosition;
+            set => SetScrollPosition(value.X, value.Y);
         }
 
         public int VerticalScroll
         {
-            get
-            {
-                return m_InnerPanel.ActualTop;
-            }
-            set
-            {
-
-                m_InnerPanel.SetPosition(Content.ActualLeft, value);
-            }
+            get => m_InnerPanel.ActualTop;
+            set => m_InnerPanel.SetPosition(Content.ActualLeft, value);
         }
 
         public int HorizontalScroll
         {
-            get
-            {
-                return m_InnerPanel.ActualLeft;
-            }
-            set
-            {
-                m_InnerPanel.SetPosition(value, m_InnerPanel.ActualTop);
-            }
+            get => m_InnerPanel.ActualLeft;
+            set => m_InnerPanel.SetPosition(value, m_InnerPanel.ActualTop);
         }
 
         public virtual void EnableScroll(bool horizontal, bool vertical)
@@ -67,9 +50,14 @@ namespace Gwen.Net.Control.Internal
         protected override Size Measure(Size availableSize)
         {
             if (m_InnerPanel == null)
+            {
                 return Size.Zero;
+            }
 
-            Size size = m_InnerPanel.DoMeasure(new Size(m_CanScrollH ? Util.Infinity : availableSize.Width, m_CanScrollV ? Util.Infinity : availableSize.Height));
+            Size size = m_InnerPanel.DoMeasure(
+                new Size(
+                    m_CanScrollH ? Util.Infinity : availableSize.Width,
+                    m_CanScrollV ? Util.Infinity : availableSize.Height));
 
             // Let the parent determine the size if scrolling is enabled
             size.Width = m_CanScrollH ? 0 : Math.Min(size.Width, availableSize.Width);
@@ -81,14 +69,16 @@ namespace Gwen.Net.Control.Internal
         protected override Size Arrange(Size finalSize)
         {
             if (m_InnerPanel == null)
+            {
                 return finalSize;
+            }
 
             int scrollAreaWidth = Math.Max(finalSize.Width, m_InnerPanel.MeasuredSize.Width);
             int scrollAreaHeight = Math.Max(finalSize.Height, m_InnerPanel.MeasuredSize.Height);
 
-            m_InnerPanel.DoArrange(new Rectangle(0, 0, scrollAreaWidth, scrollAreaHeight));
+            m_InnerPanel.DoArrange(new Rectangle(x: 0, y: 0, scrollAreaWidth, scrollAreaHeight));
 
-            this.ViewableContentSize = new Size(finalSize.Width, finalSize.Height);
+            ViewableContentSize = new Size(finalSize.Width, finalSize.Height);
 
             return finalSize;
         }

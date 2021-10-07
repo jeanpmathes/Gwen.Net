@@ -1,22 +1,14 @@
-﻿using System;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
-    /// Radio button.
+    ///     Radio button.
     /// </summary>
     public class RadioButton : CheckBox
     {
         /// <summary>
-        /// Determines whether unchecking is allowed.
-        /// </summary>
-        protected override bool AllowUncheck
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RadioButton"/> class.
+        ///     Initializes a new instance of the <see cref="RadioButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public RadioButton(ControlBase parent)
@@ -27,9 +19,14 @@ namespace Gwen.Net.Control
             IsToggle = true; //[halfofastaple] technically true. "Toggle" isn't the best word, "Sticky" is a better one.
         }
 
+        /// <summary>
+        ///     Determines whether unchecking is allowed.
+        /// </summary>
+        protected override bool AllowUncheck => false;
+
         protected override Size Measure(Size availableSize)
         {
-            return new Size(15, 15);
+            return new(width: 15, height: 15);
         }
 
         protected override Size Arrange(Size finalSize)
@@ -38,10 +35,10 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
             skin.DrawRadioButton(this, IsChecked, IsDepressed);
         }

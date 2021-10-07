@@ -1,20 +1,11 @@
-﻿using System;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
     public class Popup : ScrollControl
     {
-        private bool m_DeleteOnClose;
-
-        internal override bool IsMenuComponent { get { return true; } }
-
         /// <summary>
-        /// Determines whether the popup should be disposed on close.
-        /// </summary>
-        public bool DeleteOnClose { get { return m_DeleteOnClose; } set { m_DeleteOnClose = value; } }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Popup"/> class.
+        ///     Initializes a new instance of the <see cref="Popup" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Popup(ControlBase parent)
@@ -26,31 +17,38 @@ namespace Gwen.Net.Control
             VerticalAlignment = VerticalAlignment.Top;
 
             AutoHideBars = true;
-            EnableScroll(false, false);
+            EnableScroll(horizontal: false, vertical: false);
             DeleteOnClose = false;
         }
 
+        internal override bool IsMenuComponent => true;
+
         /// <summary>
-        /// Renders the control using specified skin.
+        ///     Determines whether the popup should be disposed on close.
+        /// </summary>
+        public bool DeleteOnClose { get; set; }
+
+        /// <summary>
+        ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(Skin.SkinBase skin)
+        protected override void Render(SkinBase skin)
         {
-            skin.DrawMenu(this, true);
+            skin.DrawMenu(this, paddingDisabled: true);
         }
 
         /// <summary>
-        /// Renders under the actual control (shadows etc).
+        ///     Renders under the actual control (shadows etc).
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(Skin.SkinBase skin)
+        protected override void RenderUnder(SkinBase skin)
         {
             base.RenderUnder(skin);
             skin.DrawShadow(this);
         }
 
         /// <summary>
-        ///  Opens the popup.
+        ///     Opens the popup.
         /// </summary>
         /// <param name="pos">Position where to open.</param>
         public void Open(Point pos)
@@ -63,11 +61,12 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Closes the current popup.
+        ///     Closes the current popup.
         /// </summary>
         public virtual void Close()
         {
             IsCollapsed = true;
+
             if (DeleteOnClose)
             {
                 DelayedDelete();
@@ -75,7 +74,7 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Closes all menus and popups.
+        ///     Closes all menus and popups.
         /// </summary>
         public override void CloseMenus()
         {

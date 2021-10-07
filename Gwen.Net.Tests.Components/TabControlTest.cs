@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Internal;
 
@@ -25,9 +24,9 @@ namespace Gwen.Net.Tests.Components
                     ControlBase page = button.Page;
 
                     {
-                        GroupBox group = new GroupBox(page);
+                        GroupBox group = new(page);
                         group.Text = "Tab position";
-                        RadioButtonGroup radio = new RadioButtonGroup(group);
+                        RadioButtonGroup radio = new(group);
 
                         radio.AddOption("Top").Select();
                         radio.AddOption("Bottom");
@@ -46,7 +45,7 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                TabControl dragMe = new TabControl(this);
+                TabControl dragMe = new(this);
                 dragMe.Margin = Margin.Five;
                 dragMe.Width = 200;
                 dragMe.Dock = Dock.Top;
@@ -61,14 +60,29 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-        void OnDockChange(ControlBase control, EventArgs args)
+        private void OnDockChange(ControlBase control, EventArgs args)
         {
             RadioButtonGroup rc = (RadioButtonGroup)control;
 
-            if (rc.SelectedLabel == "Top") m_DockControl.TabStripPosition = Dock.Top;
-            if (rc.SelectedLabel == "Bottom") m_DockControl.TabStripPosition = Dock.Bottom;
-            if (rc.SelectedLabel == "Left") m_DockControl.TabStripPosition = Dock.Left;
-            if (rc.SelectedLabel == "Right") m_DockControl.TabStripPosition = Dock.Right;
+            if (rc.SelectedLabel == "Top")
+            {
+                m_DockControl.TabStripPosition = Dock.Top;
+            }
+
+            if (rc.SelectedLabel == "Bottom")
+            {
+                m_DockControl.TabStripPosition = Dock.Bottom;
+            }
+
+            if (rc.SelectedLabel == "Left")
+            {
+                m_DockControl.TabStripPosition = Dock.Left;
+            }
+
+            if (rc.SelectedLabel == "Right")
+            {
+                m_DockControl.TabStripPosition = Dock.Right;
+            }
         }
     }
 }

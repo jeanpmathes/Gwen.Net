@@ -3,7 +3,7 @@
 namespace Gwen.Net.Control.Layout
 {
     /// <summary>
-    /// Base splitter class.
+    ///     Base splitter class.
     /// </summary>
     public class Splitter : ControlBase
     {
@@ -11,7 +11,7 @@ namespace Gwen.Net.Control.Layout
         private readonly bool[] m_Scale;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Splitter"/> class.
+        ///     Initializes a new instance of the <see cref="Splitter" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
         public Splitter(ControlBase parent) : base(parent)
@@ -23,7 +23,7 @@ namespace Gwen.Net.Control.Layout
         }
 
         /// <summary>
-        /// Sets the contents of a splitter panel.
+        ///     Sets the contents of a splitter panel.
         /// </summary>
         /// <param name="panelIndex">Panel index (0-1).</param>
         /// <param name="panel">Panel contents.</param>
@@ -31,7 +31,9 @@ namespace Gwen.Net.Control.Layout
         public void SetPanel(int panelIndex, ControlBase panel, bool noScale = false)
         {
             if (panelIndex < 0 || panelIndex > 1)
+            {
                 throw new ArgumentException("Invalid panel index", "panelIndex");
+            }
 
             m_Panel[panelIndex] = panel;
             m_Scale[panelIndex] = !noScale;
@@ -43,14 +45,17 @@ namespace Gwen.Net.Control.Layout
         }
 
         /// <summary>
-        /// Gets the contents of a secific panel.
+        ///     Gets the contents of a secific panel.
         /// </summary>
         /// <param name="panelIndex">Panel index (0-1).</param>
         /// <returns></returns>
-        ControlBase GetPanel(int panelIndex)
+        private ControlBase GetPanel(int panelIndex)
         {
             if (panelIndex < 0 || panelIndex > 1)
+            {
                 throw new ArgumentException("Invalid panel index", "panelIndex");
+            }
+
             return m_Panel[panelIndex];
         }
 
@@ -80,13 +85,13 @@ namespace Gwen.Net.Control.Layout
 
             if (m_Panel[0] != null)
             {
-                m_Panel[0].DoArrange(new Rectangle(0, 0, finalSize.Width, finalSize.Height / 2));
+                m_Panel[0].DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, finalSize.Height / 2));
                 y = m_Panel[0].ActualHeight;
             }
 
             if (m_Panel[1] != null)
             {
-                m_Panel[1].DoArrange(new Rectangle(0, y, finalSize.Width, finalSize.Height / 2));
+                m_Panel[1].DoArrange(new Rectangle(x: 0, y, finalSize.Width, finalSize.Height / 2));
                 y += m_Panel[1].ActualHeight;
             }
 

@@ -3,7 +3,7 @@
 namespace Gwen.Net
 {
     /// <summary>
-    /// Represents inner spacing.
+    ///     Represents inner spacing.
     /// </summary>
     public struct Padding : IEquatable<Padding>
     {
@@ -13,12 +13,12 @@ namespace Gwen.Net
         public readonly int Right;
 
         // common values
-        public static Padding Zero = new Padding(0);
-        public static Padding One = new Padding(1);
-        public static Padding Two = new Padding(2);
-        public static Padding Three = new Padding(3);
-        public static Padding Four = new Padding(4);
-        public static Padding Five = new Padding(5);
+        public static Padding Zero = new(padding: 0);
+        public static Padding One = new(padding: 1);
+        public static Padding Two = new(padding: 2);
+        public static Padding Three = new(padding: 3);
+        public static Padding Four = new(padding: 4);
+        public static Padding Five = new(padding: 5);
 
         public Padding(int left, int top, int right, int bottom)
         {
@@ -61,18 +61,26 @@ namespace Gwen.Net
 
         public static Padding operator +(Padding lhs, Padding rhs)
         {
-            return new Padding(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
+            return new(lhs.Left + rhs.Left, lhs.Top + rhs.Top, lhs.Right + rhs.Right, lhs.Bottom + rhs.Bottom);
         }
 
         public static Padding operator -(Padding lhs, Padding rhs)
         {
-            return new Padding(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
+            return new(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (obj.GetType() != typeof(Padding)) return false;
+            if (ReferenceEquals(objA: null, obj))
+            {
+                return false;
+            }
+
+            if (obj.GetType() != typeof(Padding))
+            {
+                return false;
+            }
+
             return Equals((Padding)obj);
         }
 
@@ -84,13 +92,14 @@ namespace Gwen.Net
                 result = (result * 397) ^ Bottom;
                 result = (result * 397) ^ Left;
                 result = (result * 397) ^ Right;
+
                 return result;
             }
         }
 
         public static explicit operator Padding(Margin margin)
         {
-            return new Padding(margin.Left, margin.Top, margin.Right, margin.Bottom);
+            return new(margin.Left, margin.Top, margin.Right, margin.Bottom);
         }
 
         public override string ToString()
