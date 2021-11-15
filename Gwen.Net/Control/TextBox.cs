@@ -81,6 +81,8 @@ namespace Gwen.Net.Control
             }
         }
 
+        [XmlProperty] public bool LooseFocusOnSubmit { get; set; } = true;
+
         /// <summary>
         ///     Indicates whether the text has active selection.
         /// </summary>
@@ -481,13 +483,13 @@ namespace Gwen.Net.Control
 
             OnReturn();
 
-            // Try to move to the next control, as if tab had been pressed
-            OnKeyTab(down: true);
-
-            // If we still have focus, blur it.
-            if (HasFocus)
+            if (LooseFocusOnSubmit)
             {
-                Blur();
+                // Try to move to the next control, as if tab had been pressed
+                OnKeyTab(down: true);
+
+                // If we still have focus, blur it.
+                if (HasFocus) Blur();
             }
 
             return true;
@@ -787,7 +789,7 @@ namespace Gwen.Net.Control
             }
 
             // The ideal position is for the caret to be right in the middle
-            int idealx = (int)(-caretPos + (m_ScrollArea.ActualWidth * 0.5f));
+            int idealx = (int) (-caretPos + (m_ScrollArea.ActualWidth * 0.5f));
 
             // Don't show too much whitespace to the right
             if (idealx + m_Text.MeasuredSize.Width < viewSize.Width)
