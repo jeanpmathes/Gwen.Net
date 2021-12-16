@@ -23,15 +23,20 @@ namespace Gwen.Net.Control
             m_SliderBar.IsHorizontal = true;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Height = BaseUnit;
+        }
+
         protected override float CalculateValue()
         {
-            return (float)m_SliderBar.ActualLeft / (ActualWidth - m_SliderBar.ActualWidth);
+            return (float) m_SliderBar.ActualLeft / (ActualWidth - m_SliderBar.ActualWidth);
         }
 
         protected override void UpdateBarFromValue()
         {
             m_SliderBar.MoveTo(
-                (int)((ActualWidth - m_SliderBar.ActualWidth) * m_Value),
+                (int) ((ActualWidth - m_SliderBar.ActualWidth) * m_Value),
                 (ActualHeight - m_SliderBar.ActualHeight) / 2);
         }
 

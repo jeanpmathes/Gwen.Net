@@ -17,6 +17,11 @@ namespace Gwen.Net.Control.Internal
             Width = BaseUnit / 2;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Width = BaseUnit / 2;
+        }
+
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>

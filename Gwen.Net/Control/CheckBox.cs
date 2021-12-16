@@ -47,6 +47,11 @@ namespace Gwen.Net.Control
         /// </summary>
         protected virtual bool AllowUncheck => true;
 
+        protected override void AdaptToScaleChange()
+        {
+            Size = new Size(BaseUnit);
+        }
+
         /// <summary>
         ///     Toggles the checkbox.
         /// </summary>

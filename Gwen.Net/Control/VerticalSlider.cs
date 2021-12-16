@@ -23,16 +23,22 @@ namespace Gwen.Net.Control
             m_SliderBar.IsHorizontal = false;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Width = BaseUnit;
+        }
+
+
         protected override float CalculateValue()
         {
-            return 1 - (m_SliderBar.ActualTop / (float)(ActualHeight - m_SliderBar.ActualHeight));
+            return 1 - (m_SliderBar.ActualTop / (float) (ActualHeight - m_SliderBar.ActualHeight));
         }
 
         protected override void UpdateBarFromValue()
         {
             m_SliderBar.MoveTo(
                 (ActualWidth - m_SliderBar.ActualWidth) / 2,
-                (int)((ActualHeight - m_SliderBar.ActualHeight) * (1 - m_Value)));
+                (int) ((ActualHeight - m_SliderBar.ActualHeight) * (1 - m_Value)));
         }
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace Gwen.Net.Control
 
             m_SliderBar.MoveTo(
                 (ActualWidth - m_SliderBar.ActualWidth) / 2,
-                (int)(CanvasPosToLocal(new Point(x, y)).Y - (m_SliderBar.ActualHeight * 0.5)));
+                (int) (CanvasPosToLocal(new Point(x, y)).Y - (m_SliderBar.ActualHeight * 0.5)));
 
             m_SliderBar.InputMouseClickedLeft(x, y, down);
             OnMoved(m_SliderBar, EventArgs.Empty);

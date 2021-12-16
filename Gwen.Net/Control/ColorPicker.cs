@@ -102,10 +102,10 @@ namespace Gwen.Net.Control
             VerticalLayout colorControlLayout = new(this);
             colorControlLayout.Dock = Dock.Fill;
 
-            CreateColorControl(colorControlLayout, "Red");
-            CreateColorControl(colorControlLayout, "Green");
-            CreateColorControl(colorControlLayout, "Blue");
-            CreateColorControl(colorControlLayout, "Alpha");
+            CreateColorControl(colorControlLayout, "Red", index: 0);
+            CreateColorControl(colorControlLayout, "Green", index: 1);
+            CreateColorControl(colorControlLayout, "Blue", index: 2);
+            CreateColorControl(colorControlLayout, "Alpha", index: 3);
 
             GroupBox finalGroup = new(this);
             finalGroup.Dock = Dock.Right;
@@ -121,7 +121,7 @@ namespace Gwen.Net.Control
             disp.Height = Util.Ignore;
         }
 
-        private void CreateColorControl(ControlBase parent, string name)
+        private void CreateColorControl(ControlBase parent, string name, int index)
         {
             GroupBox colorGroup = new(parent);
             colorGroup.Text = name;
@@ -163,7 +163,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            int textValue = (int)box.Value;
+            int textValue = (int) box.Value;
 
             if (textValue < 0)
             {
@@ -229,47 +229,14 @@ namespace Gwen.Net.Control
 
         private void SlidersMoved(ControlBase control, EventArgs args)
         {
-            /*
-            HorizontalSlider* redSlider		= gwen_cast<HorizontalSlider>(	FindChildByName( "RedSlider",   true ) );
-            HorizontalSlider* greenSlider	= gwen_cast<HorizontalSlider>(	FindChildByName( "GreenSlider", true ) );
-            HorizontalSlider* blueSlider	= gwen_cast<HorizontalSlider>(	FindChildByName( "BlueSlider",  true ) );
-            HorizontalSlider* alphaSlider	= gwen_cast<HorizontalSlider>(	FindChildByName( "AlphaSlider", true ) );
-            */
-
             HorizontalSlider slider = control as HorizontalSlider;
 
             if (slider != null)
             {
-                SetColorByName(GetColorFromName(slider.Name), (int)slider.Value);
+                SetColorByName(GetColorFromName(slider.Name), (int) slider.Value);
             }
 
             UpdateControls();
-            //SetColor( Gwen::Color( redSlider->GetValue(), greenSlider->GetValue(), blueSlider->GetValue(), alphaSlider->GetValue() ) );
-        }
-
-        private int GetColorByName(string colorName)
-        {
-            if (colorName == "Red")
-            {
-                return SelectedColor.R;
-            }
-
-            if (colorName == "Green")
-            {
-                return SelectedColor.G;
-            }
-
-            if (colorName == "Blue")
-            {
-                return SelectedColor.B;
-            }
-
-            if (colorName == "Alpha")
-            {
-                return SelectedColor.A;
-            }
-
-            return 0;
         }
 
         private static string GetColorFromName(string name)

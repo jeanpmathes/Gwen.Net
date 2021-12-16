@@ -128,6 +128,14 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color SelectedColor => m_LerpBox.SelectedColor;
 
+        protected override void AdaptToScaleChange()
+        {
+            int baseSize = BaseUnit;
+
+            m_After.Size = new Size(baseSize * 5, baseSize * 2);
+            m_Before.Size = new Size(baseSize * 5, baseSize * 2);
+        }
+
         /// <summary>
         ///     Invoked when the selected color has changed.
         /// </summary>
@@ -142,7 +150,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            int value = (int)box.Value;
+            int value = (int) box.Value;
 
             if (value < 0)
             {

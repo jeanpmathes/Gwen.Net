@@ -23,6 +23,11 @@ namespace Gwen.Net.Control.Internal
             m_ComboBox = parent;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Size = new Size(BaseUnit);
+        }
+
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>

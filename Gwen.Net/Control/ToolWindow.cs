@@ -49,6 +49,12 @@ namespace Gwen.Net.Control
             }
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            if (m_vertical) m_DragBar.Height = BaseUnit + 2;
+            else m_DragBar.Width = BaseUnit + 2;
+        }
+
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>

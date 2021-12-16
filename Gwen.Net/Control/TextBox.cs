@@ -184,6 +184,11 @@ namespace Gwen.Net.Control
             }
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            DoFitToText();
+        }
+
         /// <summary>
         ///     Invoked when the text has changed.
         /// </summary>

@@ -25,6 +25,11 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public bool IsHorizontal { get; set; }
 
+        protected override void AdaptToScaleChange()
+        {
+            Size = new Size(BaseUnit);
+        }
+
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>

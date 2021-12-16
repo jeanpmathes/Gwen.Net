@@ -92,9 +92,15 @@ namespace Gwen.Net.Control
 
                 foreach (ControlBase tab in TabStrip.Children)
                 {
-                    tab.Margin = (Margin)value;
+                    tab.Margin = (Margin) value;
                 }
             }
+        }
+
+        protected override void AdaptToScaleChange()
+        {
+            m_Scroll[0].Size = new Size(BaseUnit);
+            m_Scroll[1].Size = new Size(BaseUnit);
         }
 
         /// <summary>
@@ -144,7 +150,7 @@ namespace Gwen.Net.Control
             page.Parent = this;
             page.IsHidden = true;
             page.Dock = Dock.Fill;
-            page.Margin = (Margin)Padding;
+            page.Margin = (Margin) Padding;
 
             button.Parent = TabStrip;
 

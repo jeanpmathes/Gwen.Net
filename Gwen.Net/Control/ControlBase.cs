@@ -148,10 +148,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Dock Dock
         {
-            get => (Dock)GetInternalFlag(InternalFlags.Dock_Mask);
+            get => (Dock) GetInternalFlag(InternalFlags.Dock_Mask);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.Dock_Mask, (InternalFlags)value))
+                if (CheckAndChangeInternalFlag(InternalFlags.Dock_Mask, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -223,7 +223,7 @@ namespace Gwen.Net.Control
             {
                 if (m_ToolTip != null && m_ToolTip is Label)
                 {
-                    return ((Label)m_ToolTip).Text;
+                    return ((Label) m_ToolTip).Text;
                 }
 
                 return String.Empty;
@@ -314,10 +314,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public VerticalAlignment VerticalAlignment
         {
-            get => (VerticalAlignment)GetInternalFlag(InternalFlags.AlignV_Mask);
+            get => (VerticalAlignment) GetInternalFlag(InternalFlags.AlignV_Mask);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.AlignV_Mask, (InternalFlags)value))
+                if (CheckAndChangeInternalFlag(InternalFlags.AlignV_Mask, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -329,10 +329,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public HorizontalAlignment HorizontalAlignment
         {
-            get => (HorizontalAlignment)GetInternalFlag(InternalFlags.AlignH_Mask);
+            get => (HorizontalAlignment) GetInternalFlag(InternalFlags.AlignH_Mask);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.AlignH_Mask, (InternalFlags)value))
+                if (CheckAndChangeInternalFlag(InternalFlags.AlignH_Mask, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -1275,7 +1275,7 @@ namespace Gwen.Net.Control
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
         public virtual void SetPosition(float x, float y)
         {
-            SetPosition((int)x, (int)y);
+            SetPosition((int) x, (int) y);
         }
 
         /// <summary>
@@ -1369,7 +1369,11 @@ namespace Gwen.Net.Control
             {
                 child.OnScaleChanged();
             }
+
+            AdaptToScaleChange();
         }
+
+        protected virtual void AdaptToScaleChange() {}
 
         /// <summary>
         ///     Renders the control using specified skin.
@@ -1461,7 +1465,7 @@ namespace Gwen.Net.Control
         /// <param name="skin">Skin to use.</param>
         internal virtual void DoRender(SkinBase skin)
         {
-            // If this control has a different skin, 
+            // If this control has a different skin,
             // then so does its children.
             if (m_Skin != null)
             {
@@ -1837,7 +1841,7 @@ namespace Gwen.Net.Control
 
             // todo: convert to linq FindLast
             IEnumerable<ControlBase>
-                rev = ((IList<ControlBase>)m_Children)
+                rev = ((IList<ControlBase>) m_Children)
                     .Reverse(); // IList.Reverse creates new list, List.Reverse works in place.. go figure
 
             foreach (ControlBase child in rev)
@@ -1887,9 +1891,11 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                Size childSize = new(Math.Max(val1: 0, availableSize.Width - childrenWidth), Math.Max(
-                    val1: 0,
-                    availableSize.Height - childrenHeight));
+                Size childSize = new(
+                    Math.Max(val1: 0, availableSize.Width - childrenWidth),
+                    Math.Max(
+                        val1: 0,
+                        availableSize.Height - childrenHeight));
 
                 childSize = child.DoMeasure(childSize);
 
@@ -1924,9 +1930,11 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                Size childSize = new(Math.Max(val1: 0, availableSize.Width - childrenWidth), Math.Max(
-                    val1: 0,
-                    availableSize.Height - childrenHeight));
+                Size childSize = new(
+                    Math.Max(val1: 0, availableSize.Width - childrenWidth),
+                    Math.Max(
+                        val1: 0,
+                        availableSize.Height - childrenHeight));
 
                 childSize = child.DoMeasure(childSize);
 
@@ -2060,7 +2068,10 @@ namespace Gwen.Net.Control
                 Size childSize = child.MeasuredSize;
 
                 Rectangle bounds =
-                    new(childrenLeft, childrenTop, Math.Max(val1: 0, finalSize.Width - (childrenLeft + childrenRight)),
+                    new(
+                        childrenLeft,
+                        childrenTop,
+                        Math.Max(val1: 0, finalSize.Width - (childrenLeft + childrenRight)),
                         Math.Max(val1: 0, finalSize.Height - (childrenTop + childrenBottom)));
 
                 switch (dock)
@@ -2107,7 +2118,10 @@ namespace Gwen.Net.Control
                 }
 
                 Rectangle bounds =
-                    new(childrenLeft, childrenTop, Math.Max(val1: 0, finalSize.Width - (childrenLeft + childrenRight)),
+                    new(
+                        childrenLeft,
+                        childrenTop,
+                        Math.Max(val1: 0, finalSize.Width - (childrenLeft + childrenRight)),
                         Math.Max(val1: 0, finalSize.Height - (childrenTop + childrenBottom)));
 
                 InnerBounds = bounds;
@@ -2399,7 +2413,7 @@ namespace Gwen.Net.Control
         {
             if (m_DragAndDrop_Package == null)
             {
-                m_DragAndDrop_Package = new Package {IsDraggable = draggable, Name = name, UserData = userData};
+                m_DragAndDrop_Package = new Package { IsDraggable = draggable, Name = name, UserData = userData };
             }
         }
 
@@ -2618,77 +2632,110 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeySpace(bool down) { return false; }
+        protected virtual bool OnKeySpace(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Return keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyReturn(bool down) { return false; }
+        protected virtual bool OnKeyReturn(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Backspace keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyBackspace(bool down) { return false; }
+        protected virtual bool OnKeyBackspace(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Delete keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyDelete(bool down) { return false; }
+        protected virtual bool OnKeyDelete(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Right Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyRight(bool down) { return false; }
+        protected virtual bool OnKeyRight(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Left Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyLeft(bool down) { return false; }
+        protected virtual bool OnKeyLeft(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Home keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyHome(bool down) { return false; }
+        protected virtual bool OnKeyHome(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for End keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyEnd(bool down) { return false; }
+        protected virtual bool OnKeyEnd(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Up Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyUp(bool down) { return false; }
+        protected virtual bool OnKeyUp(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Down Arrow keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyDown(bool down) { return false; }
+        protected virtual bool OnKeyDown(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Escape keyboard event.
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyEscape(bool down) { return false; }
+        protected virtual bool OnKeyEscape(bool down)
+        {
+            return false;
+        }
 
         /// <summary>
         ///     Handler for Paste event.

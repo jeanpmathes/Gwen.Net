@@ -35,6 +35,11 @@ namespace Gwen.Net.Control
             set => SetColor(value);
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Width = BaseUnit * 2;
+        }
+
         /// <summary>
         ///     Invoked when the selected color has been changed.
         /// </summary>
@@ -158,7 +163,7 @@ namespace Gwen.Net.Control
 
         private Color GetColorAtHeight(int y)
         {
-            float yPercent = y / (float)ActualHeight;
+            float yPercent = y / (float) ActualHeight;
 
             return Util.HSVToColor(yPercent * 360, s: 1, v: 1);
         }
@@ -167,7 +172,7 @@ namespace Gwen.Net.Control
         {
             HSV hsv = color.ToHSV();
 
-            m_SelectedDist = (int)(hsv.H / 360 * ActualHeight);
+            m_SelectedDist = (int) (hsv.H / 360 * ActualHeight);
 
             if (doEvents && ColorChanged != null)
             {

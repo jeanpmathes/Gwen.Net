@@ -74,6 +74,11 @@ namespace Gwen.Net.Control
             set => base.NudgeAmount = value;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Width = BaseUnit;
+        }
+
         protected override Size Arrange(Size finalSize)
         {
             Size size = base.Arrange(finalSize);
@@ -94,10 +99,10 @@ namespace Gwen.Net.Control
 
             if (barHeight < ButtonSize * 0.5f)
             {
-                barHeight = (int)(ButtonSize * 0.5f);
+                barHeight = (int) (ButtonSize * 0.5f);
             }
 
-            m_Bar.SetSize(m_Bar.ActualWidth, (int)barHeight);
+            m_Bar.SetSize(m_Bar.ActualWidth, (int) barHeight);
             m_Bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
 
             //Based on our last scroll amount, produce a position for the bar
@@ -168,7 +173,7 @@ namespace Gwen.Net.Control
 
         protected override float CalculateScrolledAmount()
         {
-            float value = (float)(m_Bar.ActualTop - ButtonSize) /
+            float value = (float) (m_Bar.ActualTop - ButtonSize) /
                           (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2));
 
             if (Single.IsNaN(value))
@@ -196,7 +201,7 @@ namespace Gwen.Net.Control
 
             if (forceUpdate)
             {
-                int newY = (int)(ButtonSize + (value * (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2))));
+                int newY = (int) (ButtonSize + (value * (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2))));
                 m_Bar.MoveTo(m_Bar.ActualLeft, newY);
             }
 

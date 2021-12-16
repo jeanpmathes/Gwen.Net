@@ -42,6 +42,11 @@ namespace Gwen.Net.Control
             set => m_Label.TextColor = value;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Height = BaseUnit + 11;
+        }
+
         /// <summary>
         ///     Adds a control to the bar.
         /// </summary>

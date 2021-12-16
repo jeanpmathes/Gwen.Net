@@ -79,6 +79,11 @@ namespace Gwen.Net.Control
             set => MakeModal();
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            m_TitleBar.Height = BaseUnit + 9;
+        }
+
         public override void Close()
         {
             if (m_Modal != null)

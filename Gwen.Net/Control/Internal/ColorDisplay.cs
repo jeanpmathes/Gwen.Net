@@ -55,6 +55,16 @@ namespace Gwen.Net.Control.Internal
             set => m_Color = new Color(value, m_Color.R, m_Color.G, m_Color.B);
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            int baseSize = BaseUnit * 2;
+
+            int width = Util.IsIgnore(Size.Width) ? Util.Ignore : baseSize;
+            int height = Util.IsIgnore(Size.Height) ? Util.Ignore : baseSize;
+
+            Size = new Size(width, height);
+        }
+
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>

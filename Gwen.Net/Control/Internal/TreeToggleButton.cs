@@ -20,6 +20,11 @@ namespace Gwen.Net.Control.Internal
             IsTabable = false;
         }
 
+        protected override void AdaptToScaleChange()
+        {
+            Size = new Size(BaseUnit);
+        }
+
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
