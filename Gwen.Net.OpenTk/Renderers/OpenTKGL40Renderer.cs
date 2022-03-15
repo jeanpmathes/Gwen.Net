@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Gwen.Net.OpenTk.Shaders;
-using OpenToolkit.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 
 namespace Gwen.Net.OpenTk.Renderers
 {
@@ -50,7 +50,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
             GL.BufferData(
                 BufferTarget.ArrayBuffer,
-                (IntPtr)(vertexSize * MaxVerts),
+                (IntPtr) (vertexSize * MaxVerts),
                 IntPtr.Zero,
                 BufferUsageHint.StreamDraw); // Allocate
 
@@ -136,7 +136,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 lastTextureID = 0;
 
                 // Restore the previous parameter values.
-                GL.BlendFunc((BlendingFactor)prevBlendSrc, (BlendingFactor)prevBlendDst);
+                GL.BlendFunc((BlendingFactor) prevBlendSrc, (BlendingFactor) prevBlendDst);
 
                 if (!wasBlendEnabled)
                 {
@@ -166,7 +166,7 @@ namespace Gwen.Net.OpenTk.Renderers
             // If that's the case then enable this.
             //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(m_VertexSize * MaxVerts), IntPtr.Zero, BufferUsageHint.StreamDraw);
 
-            GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr)(vertNum * vertexSize), vertices);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr) (vertNum * vertexSize), vertices);
 
             GL.Uniform1(shader.Uniforms["uUseTexture"], textureEnabled ? 1.0f : 0.0f);
 
@@ -200,7 +200,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = delta / (float)oldHeight;
+                    float dv = delta / (float) oldHeight;
 
                     v1 += dv * (v2 - v1);
                 }
@@ -217,7 +217,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = delta / (float)oldHeight;
+                    float dv = delta / (float) oldHeight;
 
                     v2 -= dv * (v2 - v1);
                 }
@@ -234,7 +234,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = delta / (float)oldWidth;
+                    float du = delta / (float) oldWidth;
 
                     u1 += du * (u2 - u1);
                 }
@@ -251,7 +251,7 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = delta / (float)oldWidth;
+                    float du = delta / (float) oldWidth;
 
                     u2 -= du * (u2 - u1);
                 }
@@ -263,8 +263,8 @@ namespace Gwen.Net.OpenTk.Renderers
             float cA = color.A / 255f;
 
             int vertexIndex = vertNum;
-            vertices[vertexIndex].x = (short)rect.X;
-            vertices[vertexIndex].y = (short)rect.Y;
+            vertices[vertexIndex].x = (short) rect.X;
+            vertices[vertexIndex].y = (short) rect.Y;
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -273,8 +273,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short)(rect.X + rect.Width);
-            vertices[vertexIndex].y = (short)rect.Y;
+            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (short) rect.Y;
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -283,8 +283,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short)(rect.X + rect.Width);
-            vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
+            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -293,8 +293,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short)rect.X;
-            vertices[vertexIndex].y = (short)rect.Y;
+            vertices[vertexIndex].x = (short) rect.X;
+            vertices[vertexIndex].y = (short) rect.Y;
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -303,8 +303,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short)(rect.X + rect.Width);
-            vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
+            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -313,8 +313,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short)rect.X;
-            vertices[vertexIndex].y = (short)(rect.Y + rect.Height);
+            vertices[vertexIndex].x = (short) rect.X;
+            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -329,7 +329,7 @@ namespace Gwen.Net.OpenTk.Renderers
         {
             GL.Viewport(x: 0, y: 0, width, height);
             GL.UseProgram(shader.Program);
-            GL.Uniform2(shader.Uniforms["uScreenSize"], width, (float)height);
+            GL.Uniform2(shader.Uniforms["uScreenSize"], width, (float) height);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

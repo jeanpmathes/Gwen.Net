@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Gwen.Net.Platform;
-using OpenToolkit.Windowing.Common.Input;
+using OpenTK.Windowing.Common.Input;
 using TextCopy;
 
 namespace Gwen.Net.OpenTk.Platform
@@ -337,17 +337,17 @@ namespace Gwen.Net.OpenTk.Platform
             {
                 if (length > 1024 * 1024 * 1024)
                 {
-                    return String.Format("{0:0.0} GB", (double)length / (1024 * 1024 * 1024));
+                    return String.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
                 }
 
                 if (length > 1024 * 1024)
                 {
-                    return String.Format("{0:0.0} MB", (double)length / (1024 * 1024));
+                    return String.Format("{0:0.0} MB", (double) length / (1024 * 1024));
                 }
 
                 if (length > 1024)
                 {
-                    return String.Format("{0:0.0} kB", (double)length / 1024);
+                    return String.Format("{0:0.0} kB", (double) length / 1024);
                 }
 
                 return String.Format("{0} B", length);

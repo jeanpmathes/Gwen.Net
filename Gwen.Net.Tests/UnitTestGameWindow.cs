@@ -4,10 +4,10 @@ using System.Linq;
 using Collections.Generic;
 using Gwen.Net.OpenTk;
 using Gwen.Net.Tests.Components;
-using OpenToolkit.Graphics.OpenGL;
-using OpenToolkit.Mathematics;
-using OpenToolkit.Windowing.Common;
-using OpenToolkit.Windowing.Desktop;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
 
 namespace Gwen.Net.Tests
 {

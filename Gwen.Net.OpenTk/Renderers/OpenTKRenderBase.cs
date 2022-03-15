@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Gwen.Net.Renderer;
-using OpenToolkit.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Gwen.Net.OpenTk.Renderers
@@ -104,7 +104,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            int tex = (int)t.RendererData;
+            int tex = (int) t.RendererData;
             rect = Translate(rect);
 
             bool differentTexture = tex != lastTextureID;
@@ -132,7 +132,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override bool LoadFont(Font font)
         {
-            font.RealSize = (float)Math.Ceiling(font.Size * Scale);
+            font.RealSize = (float) Math.Ceiling(font.Size * Scale);
             System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont != null)
@@ -358,12 +358,12 @@ namespace Gwen.Net.OpenTk.Renderers
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMinFilter,
-                (int)TextureMinFilter.Linear);
+                (int) TextureMinFilter.Linear);
 
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Linear);
+                (int) TextureMagFilter.Linear);
 
             // Sort out our GWEN texture
             t.RendererData = glTex;
@@ -382,7 +382,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 t.Width,
                 t.Height,
                 border: 0,
-                OpenToolkit.Graphics.OpenGL.PixelFormat.Bgra,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
                 PixelType.UnsignedByte,
                 data.Scan0);
 
@@ -439,7 +439,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 {
                     fixed (byte* ptr = &pixelData[0])
                     {
-                        bmp = new Bitmap(t.Width, t.Height, 4 * t.Width, PixelFormat.Format32bppArgb, (IntPtr)ptr);
+                        bmp = new Bitmap(t.Width, t.Height, 4 * t.Width, PixelFormat.Format32bppArgb, (IntPtr) ptr);
                     }
                 }
             }
@@ -460,12 +460,12 @@ namespace Gwen.Net.OpenTk.Renderers
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMinFilter,
-                (int)TextureMagFilter.Linear);
+                (int) TextureMagFilter.Linear);
 
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMagFilter,
-                (int)TextureMagFilter.Linear);
+                (int) TextureMagFilter.Linear);
 
             // Sort out our GWEN texture
             t.RendererData = glTex;
@@ -482,7 +482,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 t.Width,
                 t.Height,
                 border: 0,
-                OpenToolkit.Graphics.OpenGL.PixelFormat.Rgba,
+                OpenTK.Graphics.OpenGL.PixelFormat.Rgba,
                 PixelType.UnsignedByte,
                 data.Scan0);
 
@@ -505,7 +505,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            int tex = (int)t.RendererData;
+            int tex = (int) t.RendererData;
 
             if (tex == 0)
             {
@@ -523,7 +523,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return defaultColor;
             }
 
-            int tex = (int)texture.RendererData;
+            int tex = (int) texture.RendererData;
 
             if (tex == 0)
             {
@@ -543,9 +543,9 @@ namespace Gwen.Net.OpenTk.Renderers
                 GL.GetTexImage(
                     TextureTarget.Texture2D,
                     level: 0,
-                    OpenToolkit.Graphics.OpenGL.PixelFormat.Rgba,
+                    OpenTK.Graphics.OpenGL.PixelFormat.Rgba,
                     PixelType.UnsignedByte,
-                    (IntPtr)ptr);
+                    (IntPtr) ptr);
 
                 pixel = new Color(data[offset + 3], data[offset + 0], data[offset + 1], data[offset + 2]);
             }
