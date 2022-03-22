@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <LangVersion>9</LangVersion>
+      <TargetFramework>net6.0</TargetFramework>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <LangVersion>10</LangVersion>
+      <PackageVersion>0.2.0</PackageVersion>
+      <Title>Gwen.Net.OpenTk</Title>
+      <Description>Support for OpenTK.</Description>
+      <RepositoryUrl>https://github.com/pershingthesecond/Gwen.Net</RepositoryUrl>
+      <PackageLicenseUrl>https://raw.githubusercontent.com/pershingthesecond/Gwen.Net/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="4.7.1"/>
+      <PackageReference Include="OpenTK" Version="4.7.1"/>
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="TextCopy" Version="4.2.0" />
   </ItemGroup>
