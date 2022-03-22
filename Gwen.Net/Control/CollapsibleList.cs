@@ -46,7 +46,7 @@ namespace Gwen.Net.Control
         {
             foreach (ControlBase child in Children)
             {
-                CollapsibleCategory cat = child as CollapsibleCategory;
+                var cat = child as CollapsibleCategory;
 
                 if (cat == null)
                 {
@@ -110,7 +110,7 @@ namespace Gwen.Net.Control
         {
             foreach (ControlBase child in m_Items.Children)
             {
-                CollapsibleCategory cat = child as CollapsibleCategory;
+                var cat = child as CollapsibleCategory;
 
                 if (cat == null)
                 {
@@ -127,7 +127,7 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source: <see cref="CollapsibleList" />.</param>
         protected virtual void OnCategorySelected(ControlBase control, EventArgs args)
         {
-            CollapsibleCategory cat = control as CollapsibleCategory;
+            var cat = control as CollapsibleCategory;
 
             if (cat == null)
             {
@@ -146,7 +146,7 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source: <see cref="CollapsibleCategory" />.</param>
         protected virtual void OnCategoryCollapsed(ControlBase control, EventArgs args)
         {
-            CollapsibleCategory cat = control as CollapsibleCategory;
+            var cat = control as CollapsibleCategory;
 
             if (cat == null)
             {

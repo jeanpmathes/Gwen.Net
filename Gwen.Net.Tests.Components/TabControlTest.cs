@@ -62,7 +62,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OnDockChange(ControlBase control, EventArgs args)
         {
-            RadioButtonGroup rc = (RadioButtonGroup)control;
+            var rc = (RadioButtonGroup) control;
 
             if (rc.SelectedLabel == "Top")
             {

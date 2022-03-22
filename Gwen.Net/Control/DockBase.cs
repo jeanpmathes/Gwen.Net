@@ -252,10 +252,10 @@ namespace Gwen.Net.Control
         {
             int w = ActualWidth;
             int h = ActualHeight;
-            float top = y / (float)h;
-            float left = x / (float)w;
-            float right = (w - x) / (float)w;
-            float bottom = (h - y) / (float)h;
+            float top = y / (float) h;
+            float left = x / (float) w;
+            float right = (w - x) / (float) w;
+            float bottom = (h - y) / (float) h;
             float minimum = Math.Min(Math.Min(Math.Min(top, left), right), bottom);
 
             m_DropFar = minimum < 0.2f;
@@ -336,7 +336,7 @@ namespace Gwen.Net.Control
 
             if (p.Name == "TabButtonMove")
             {
-                TabButton tabButton = DragAndDrop.SourceControl as TabButton;
+                var tabButton = DragAndDrop.SourceControl as TabButton;
 
                 if (null == tabButton)
                 {
@@ -348,7 +348,7 @@ namespace Gwen.Net.Control
 
             if (p.Name == "TabWindowMove")
             {
-                DockedTabControl tabControl = DragAndDrop.SourceControl as DockedTabControl;
+                var tabControl = DragAndDrop.SourceControl as DockedTabControl;
 
                 if (null == tabControl)
                 {
@@ -379,7 +379,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            DockBase pDockParent = Parent as DockBase;
+            var pDockParent = Parent as DockBase;
 
             if (null == pDockParent)
             {
@@ -475,26 +475,26 @@ namespace Gwen.Net.Control
 
             if (dir == Dock.Left)
             {
-                helpBarWidth = (int)(m_HoverRect.Width * 0.25f);
+                helpBarWidth = (int) (m_HoverRect.Width * 0.25f);
                 m_HoverRect.Width = helpBarWidth;
             }
 
             if (dir == Dock.Right)
             {
-                helpBarWidth = (int)(m_HoverRect.Width * 0.25f);
+                helpBarWidth = (int) (m_HoverRect.Width * 0.25f);
                 m_HoverRect.X = m_HoverRect.Width - helpBarWidth;
                 m_HoverRect.Width = helpBarWidth;
             }
 
             if (dir == Dock.Top)
             {
-                helpBarWidth = (int)(m_HoverRect.Height * 0.25f);
+                helpBarWidth = (int) (m_HoverRect.Height * 0.25f);
                 m_HoverRect.Height = helpBarWidth;
             }
 
             if (dir == Dock.Bottom)
             {
-                helpBarWidth = (int)(m_HoverRect.Height * 0.25f);
+                helpBarWidth = (int) (m_HoverRect.Height * 0.25f);
                 m_HoverRect.Y = m_HoverRect.Height - helpBarWidth;
                 m_HoverRect.Height = helpBarWidth;
             }

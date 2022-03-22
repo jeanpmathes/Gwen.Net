@@ -55,7 +55,7 @@ namespace Gwen.Net.Control
         {
             get => -m_ScrollArea.VerticalScroll;
             set => m_VerticalScrollBar.SetScrollAmount(
-                value / (float)(ContentSize.Height - ViewableContentSize.Height),
+                value / (float) (ContentSize.Height - ViewableContentSize.Height),
                 forceUpdate: true);
         }
 
@@ -63,7 +63,7 @@ namespace Gwen.Net.Control
         {
             get => -m_ScrollArea.HorizontalScroll;
             set => m_HorizontalScrollBar.SetScrollAmount(
-                value / (float)(ContentSize.Width - ViewableContentSize.Width),
+                value / (float) (ContentSize.Width - ViewableContentSize.Width),
                 forceUpdate: true);
         }
 
@@ -354,8 +354,8 @@ namespace Gwen.Net.Control
             if (CanScrollV && m_VerticalScrollBar.IsVisible)
             {
                 if (m_VerticalScrollBar.SetScrollAmount(
-                    m_VerticalScrollBar.ScrollAmount - (m_VerticalScrollBar.NudgeAmount * (delta / 60.0f)),
-                    forceUpdate: true))
+                        m_VerticalScrollBar.ScrollAmount - (m_VerticalScrollBar.NudgeAmount * (delta / 60.0f)),
+                        forceUpdate: true))
                 {
                     return true;
                 }
@@ -364,8 +364,8 @@ namespace Gwen.Net.Control
             if (CanScrollH && m_HorizontalScrollBar.IsVisible)
             {
                 if (m_HorizontalScrollBar.SetScrollAmount(
-                    m_HorizontalScrollBar.ScrollAmount - (m_HorizontalScrollBar.NudgeAmount * (delta / 60.0f)),
-                    forceUpdate: true))
+                        m_HorizontalScrollBar.ScrollAmount - (m_HorizontalScrollBar.NudgeAmount * (delta / 60.0f)),
+                        forceUpdate: true))
                 {
                     return true;
                 }
@@ -400,19 +400,19 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            int newInnerPanelPosX = 0;
-            int newInnerPanelPosY = 0;
+            var newInnerPanelPosX = 0;
+            var newInnerPanelPosY = 0;
 
             if (CanScrollV && !m_VerticalScrollBar.IsCollapsed)
             {
-                newInnerPanelPosY = (int)(-(ContentSize.Height - ViewableContentSize.Height) *
-                                          m_VerticalScrollBar.ScrollAmount);
+                newInnerPanelPosY = (int) (-(ContentSize.Height - ViewableContentSize.Height) *
+                                           m_VerticalScrollBar.ScrollAmount);
             }
 
             if (CanScrollH && !m_HorizontalScrollBar.IsCollapsed)
             {
-                newInnerPanelPosX = (int)(-(ContentSize.Width - ViewableContentSize.Width) *
-                                          m_HorizontalScrollBar.ScrollAmount);
+                newInnerPanelPosX = (int) (-(ContentSize.Width - ViewableContentSize.Width) *
+                                           m_HorizontalScrollBar.ScrollAmount);
             }
 
             m_ScrollArea.SetScrollPosition(newInnerPanelPosX, newInnerPanelPosY);

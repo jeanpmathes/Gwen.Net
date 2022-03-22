@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Gwen.Net.Platform;
 using OpenTK.Windowing.Common.Input;
@@ -27,16 +28,17 @@ namespace Gwen.Net.OpenTk.Platform
         /// <returns>Clipboard text.</returns>
         public string GetClipboardText()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return "";
 
             // code from http://forums.getpaint.net/index.php?/topic/13712-trouble-accessing-the-clipboard/page__view__findpost__p__226140
-            string ret = String.Empty;
+            var ret = string.Empty;
 
             Thread staThread = new(
                 () =>
                 {
                     try
                     {
-                        string? text = ClipboardService.GetText();
+                        string text = ClipboardService.GetText();
 
                         if (string.IsNullOrEmpty(text))
                         {
@@ -45,7 +47,10 @@ namespace Gwen.Net.OpenTk.Platform
 
                         ret = text;
                     }
-                    catch (Exception) {}
+                    catch (Exception)
+                    {
+                        // Method should be safe to call.
+                    }
                 });
 
             staThread.SetApartmentState(ApartmentState.STA);
@@ -63,7 +68,9 @@ namespace Gwen.Net.OpenTk.Platform
         /// <returns>True if succeeded.</returns>
         public bool SetClipboardText(string text)
         {
-            bool ret = false;
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return false;
+
+            var ret = false;
 
             Thread staThread = new(
                 () =>
@@ -73,7 +80,10 @@ namespace Gwen.Net.OpenTk.Platform
                         ClipboardService.SetText(text);
                         ret = true;
                     }
-                    catch (Exception) {}
+                    catch (Exception)
+                    {
+                        // Method should be safe to call.
+                    }
                 });
 
             staThread.SetApartmentState(ApartmentState.STA);
@@ -85,7 +95,7 @@ namespace Gwen.Net.OpenTk.Platform
         }
 
         /// <summary>
-        ///     Gets elapsed time since this class was initalized.
+        ///     Gets elapsed time since this class was initialized.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
         public double GetTimeInSeconds()
@@ -99,7 +109,7 @@ namespace Gwen.Net.OpenTk.Platform
         /// <param name="cursor">Cursor type.</param>
         public void SetCursor(Cursor cursor)
         {
-            MouseCursor translatedCursor = null;
+            MouseCursor translatedCursor;
 
             switch (cursor)
             {
@@ -166,7 +176,10 @@ namespace Gwen.Net.OpenTk.Platform
                         "Libraries",
                         Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)));
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+                // Method should be safe to call.
+            }
 
             DriveInfo[] drives = null;
 
@@ -174,7 +187,10 @@ namespace Gwen.Net.OpenTk.Platform
             {
                 drives = DriveInfo.GetDrives();
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+                // Method should be safe to call.
+            }
 
             if (drives != null)
             {
@@ -184,7 +200,7 @@ namespace Gwen.Net.OpenTk.Platform
                     {
                         if (driveInfo.IsReady)
                         {
-                            if (String.IsNullOrWhiteSpace(driveInfo.VolumeLabel))
+                            if (string.IsNullOrWhiteSpace(driveInfo.VolumeLabel))
                             {
                                 folders.Add(new SpecialFolder(driveInfo.Name, "Computer", driveInfo.Name));
                             }
@@ -192,13 +208,16 @@ namespace Gwen.Net.OpenTk.Platform
                             {
                                 folders.Add(
                                     new SpecialFolder(
-                                        String.Format("{0} ({1})", driveInfo.VolumeLabel, driveInfo.Name),
+                                        $"{driveInfo.VolumeLabel} ({driveInfo.Name})",
                                         "Computer",
                                         driveInfo.Name));
                             }
                         }
                     }
-                    catch (Exception) {}
+                    catch (Exception)
+                    {
+                        // Method should be safe to call.
+                    }
                 }
             }
 
@@ -270,20 +289,6 @@ namespace Gwen.Net.OpenTk.Platform
                 isWritable ? FileMode.Create : FileMode.Open,
                 isWritable ? FileAccess.Write : FileAccess.Read);
         }
-        /*
-        private static readonly Dictionary<Cursor, System.Windows.Forms.Cursor> m_CursorMap = new Dictionary<Cursor, System.Windows.Forms.Cursor>
-        {
-            { Cursor.Normal, System.Windows.Forms.Cursors.Arrow },
-            { Cursor.Beam, System.Windows.Forms.Cursors.IBeam },
-            { Cursor.SizeNS, System.Windows.Forms.Cursors.SizeNS },
-            { Cursor.SizeWE, System.Windows.Forms.Cursors.SizeWE },
-            { Cursor.SizeNWSE, System.Windows.Forms.Cursors.SizeNWSE },
-            { Cursor.SizeNESW, System.Windows.Forms.Cursors.SizeNESW },
-            { Cursor.SizeAll, System.Windows.Forms.Cursors.SizeAll },
-            { Cursor.No, System.Windows.Forms.Cursors.No },
-            { Cursor.Wait, System.Windows.Forms.Cursors.WaitCursor },
-            { Cursor.Finger, System.Windows.Forms.Cursors.Hand }
-        };*/
 
         private class SpecialFolder : ISpecialFolder
         {
@@ -301,15 +306,12 @@ namespace Gwen.Net.OpenTk.Platform
 
         public class FileSystemItemInfo : IFileSystemItemInfo
         {
-            public FileSystemItemInfo(string path, DateTime lastWriteTime)
+            protected FileSystemItemInfo(string path, DateTime lastWriteTime)
             {
                 Name = Path.GetFileName(path);
                 FullName = path;
 
-                FormattedLastWriteTime = String.Format(
-                    "{0} {1}",
-                    lastWriteTime.ToShortDateString(),
-                    lastWriteTime.ToLongTimeString());
+                FormattedLastWriteTime = $"{lastWriteTime.ToShortDateString()} {lastWriteTime.ToLongTimeString()}";
             }
 
             public string Name { get; internal set; }
@@ -333,24 +335,24 @@ namespace Gwen.Net.OpenTk.Platform
 
             public string FormattedFileLength { get; internal set; }
 
-            private string FormatFileLength(long length)
+            private static string FormatFileLength(long length)
             {
                 if (length > 1024 * 1024 * 1024)
                 {
-                    return String.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
+                    return string.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
                 }
 
                 if (length > 1024 * 1024)
                 {
-                    return String.Format("{0:0.0} MB", (double) length / (1024 * 1024));
+                    return string.Format("{0:0.0} MB", (double) length / (1024 * 1024));
                 }
 
                 if (length > 1024)
                 {
-                    return String.Format("{0:0.0} kB", (double) length / 1024);
+                    return string.Format("{0:0.0} kB", (double) length / 1024);
                 }
 
-                return String.Format("{0} B", length);
+                return string.Format("{0} B", length);
             }
         }
     }

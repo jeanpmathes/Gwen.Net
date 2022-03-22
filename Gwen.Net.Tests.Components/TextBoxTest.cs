@@ -160,14 +160,14 @@ namespace Gwen.Net.Tests.Components
 
         private void OnEdit(ControlBase control, EventArgs args)
         {
-            TextBox box = control as TextBox;
-            UnitPrint(String.Format("TextBox: OnEdit: {0}", box.Text));
+            var box = control as TextBox;
+            UnitPrint(string.Format("TextBox: OnEdit: {0}", box.Text));
         }
 
         private void OnSubmit(ControlBase control, EventArgs args)
         {
-            TextBox box = control as TextBox;
-            UnitPrint(String.Format("TextBox: OnSubmit: {0}", box.Text));
+            var box = control as TextBox;
+            UnitPrint(string.Format("TextBox: OnSubmit: {0}", box.Text));
         }
 
         private class TextPad : Window
@@ -191,10 +191,10 @@ namespace Gwen.Net.Tests.Components
                 MenuStrip menuStrip = new(layout);
                 menuStrip.Dock = Dock.Top;
                 MenuItem fileMenu = menuStrip.AddItem("File");
-                fileMenu.Menu.AddItem("Open...", String.Empty, "Ctrl+O").SetAction((s, a) => OnOpen(s, a));
-                fileMenu.Menu.AddItem("Save", String.Empty, "Ctrl+S").SetAction((s, a) => OnSave(s, a));
+                fileMenu.Menu.AddItem("Open...", string.Empty, "Ctrl+O").SetAction((s, a) => OnOpen(s, a));
+                fileMenu.Menu.AddItem("Save", string.Empty, "Ctrl+S").SetAction((s, a) => OnSave(s, a));
                 fileMenu.Menu.AddItem("Save As...").SetAction((s, a) => OnSaveAs(s, a));
-                fileMenu.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction((s, a) => Close());
+                fileMenu.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((s, a) => Close());
 
                 m_Font = Skin.DefaultFont.Copy();
                 m_Font.FaceName = "Courier New";
@@ -240,7 +240,7 @@ namespace Gwen.Net.Tests.Components
 
             private void OnOpen(ControlBase sender, EventArgs args)
             {
-                OpenFileDialog dialog = Component.Create<OpenFileDialog>(this);
+                var dialog = Component.Create<OpenFileDialog>(this);
                 dialog.Title = "Open Text File";
                 dialog.OkButtonText = "Open";
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -250,7 +250,7 @@ namespace Gwen.Net.Tests.Components
 
                 dialog.Callback = path =>
                 {
-                    if (!String.IsNullOrWhiteSpace(path))
+                    if (!string.IsNullOrWhiteSpace(path))
                     {
                         try
                         {
@@ -285,7 +285,7 @@ namespace Gwen.Net.Tests.Components
 
             private void OnSaveAs(ControlBase sender, EventArgs args)
             {
-                SaveFileDialog dialog = Component.Create<SaveFileDialog>(this);
+                var dialog = Component.Create<SaveFileDialog>(this);
                 dialog.Title = "Save Text File As";
                 dialog.OkButtonText = "Save";
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -301,7 +301,7 @@ namespace Gwen.Net.Tests.Components
 
                 dialog.Callback = path =>
                 {
-                    if (!String.IsNullOrWhiteSpace(path))
+                    if (!string.IsNullOrWhiteSpace(path))
                     {
                         try
                         {

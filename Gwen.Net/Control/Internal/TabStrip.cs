@@ -79,7 +79,7 @@ namespace Gwen.Net.Control.Internal
 
         private void SetScrollOffset(int value)
         {
-            for (int i = 0; i < Children.Count; i++)
+            for (var i = 0; i < Children.Count; i++)
             {
                 if (i < value && i < Children.Count - 1)
                 {
@@ -100,11 +100,11 @@ namespace Gwen.Net.Control.Internal
 
         protected override Size Measure(Size availableSize)
         {
-            int num = 0;
+            var num = 0;
 
             foreach (ControlBase child in Children)
             {
-                TabButton button = child as TabButton;
+                var button = child as TabButton;
 
                 if (null == button)
                 {
@@ -194,8 +194,8 @@ namespace Gwen.Net.Control.Internal
         {
             Point LocalPos = CanvasPosToLocal(new Point(x, y));
 
-            TabButton button = DragAndDrop.SourceControl as TabButton;
-            TabControl tabControl = Parent as TabControl;
+            var button = DragAndDrop.SourceControl as TabButton;
+            var tabControl = Parent as TabControl;
 
             if (tabControl != null && button != null)
             {

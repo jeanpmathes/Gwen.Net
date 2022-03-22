@@ -101,20 +101,20 @@ namespace Gwen.Net.Tests.Components
 
                     if (a1s.Length > 0 && a2s.Length > 0)
                     {
-                        UnitTestAttribute a1 = a1s[0] as UnitTestAttribute;
-                        UnitTestAttribute a2 = a2s[0] as UnitTestAttribute;
+                        var a1 = a1s[0] as UnitTestAttribute;
+                        var a2 = a2s[0] as UnitTestAttribute;
 
                         if (a1.Order == a2.Order)
                         {
                             if (a1.Category == a2.Category)
                             {
-                                return String.Compare(
+                                return string.Compare(
                                     a1.Name != null ? a1.Name : t1.Name,
                                     a2.Name != null ? a2.Name : t2.Name,
                                     StringComparison.OrdinalIgnoreCase);
                             }
 
-                            return String.Compare(a1.Category, a2.Category, StringComparison.OrdinalIgnoreCase);
+                            return string.Compare(a1.Category, a2.Category, StringComparison.OrdinalIgnoreCase);
                         }
 
                         return a1.Order - a2.Order;
@@ -129,18 +129,18 @@ namespace Gwen.Net.Tests.Components
 
                 if (attribs.Length > 0)
                 {
-                    UnitTestAttribute attrib = attribs[0] as UnitTestAttribute;
+                    var attrib = attribs[0] as UnitTestAttribute;
 
                     if (attrib != null)
                     {
-                        CollapsibleCategory cat = m_List.FindChildByName(attrib.Category) as CollapsibleCategory;
+                        var cat = m_List.FindChildByName(attrib.Category) as CollapsibleCategory;
 
                         if (cat == null)
                         {
                             cat = m_List.Add(attrib.Category, attrib.Category);
                         }
 
-                        GUnit test = Activator.CreateInstance(type, m_Center) as GUnit;
+                        var test = Activator.CreateInstance(type, m_Center) as GUnit;
                         RegisterUnitTest(attrib.Name != null ? attrib.Name : type.Name, cat, test);
                     }
                 }
@@ -166,7 +166,7 @@ namespace Gwen.Net.Tests.Components
 
             foreach (ControlBase c in GetCanvas().Children.Where(x => x is WindowBase))
             {
-                WindowBase win = c as WindowBase;
+                var win = c as WindowBase;
 
                 if (win != null)
                 {
@@ -182,7 +182,7 @@ namespace Gwen.Net.Tests.Components
                 m_LastControl.Collapse();
             }
 
-            ControlBase test = control.UserData as ControlBase;
+            var test = control.UserData as ControlBase;
             test.Show();
             m_LastControl = test;
         }
@@ -195,7 +195,7 @@ namespace Gwen.Net.Tests.Components
 
         protected override void Render(SkinBase skin)
         {
-            m_StatusBar.Text = String.Format(
+            m_StatusBar.Text = string.Format(
                 "GWEN.Net Unit Test - {0} Render Frames, {1} Update Frames. {2}",
                 RenderFps,
                 UpdateFps,

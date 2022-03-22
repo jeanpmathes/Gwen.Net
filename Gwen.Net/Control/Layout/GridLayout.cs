@@ -32,7 +32,7 @@ namespace Gwen.Net.Control.Layout
     [XmlControl]
     public class GridLayout : ControlBase
     {
-        public const float AutoSize = Single.NaN;
+        public const float AutoSize = float.NaN;
         public const float Fill = 1.0f;
         private int m_ColumnCount;
 
@@ -71,12 +71,18 @@ namespace Gwen.Net.Control.Layout
         /// <summary>
         ///     Column widths. <see cref="GridCellSizes" />
         /// </summary>
-        [XmlProperty] public GridCellSizes ColumnWidths { set => SetColumnWidths(value.ToArray()); }
+        [XmlProperty] public GridCellSizes ColumnWidths
+        {
+            set => SetColumnWidths(value.ToArray());
+        }
 
         /// <summary>
         ///     Row heights. <see cref="GridCellSizes" />
         /// </summary>
-        [XmlProperty] public GridCellSizes RowHeights { set => SetRowHeights(value.ToArray()); }
+        [XmlProperty] public GridCellSizes RowHeights
+        {
+            set => SetRowHeights(value.ToArray());
+        }
 
         /// <summary>
         ///     Set column widths. <see cref="GridCellSizes" />
@@ -85,7 +91,7 @@ namespace Gwen.Net.Control.Layout
         public void SetColumnWidths(params float[] widths)
         {
             m_TotalFixedSize.Width = 0;
-            float relTotalWidth = 0.0f;
+            var relTotalWidth = 0.0f;
 
             foreach (float w in widths)
             {
@@ -95,7 +101,7 @@ namespace Gwen.Net.Control.Layout
                 }
                 else if (w > 1.0f)
                 {
-                    m_TotalFixedSize.Width += (int)w;
+                    m_TotalFixedSize.Width += (int) w;
                 }
             }
 
@@ -116,7 +122,7 @@ namespace Gwen.Net.Control.Layout
         public void SetRowHeights(params float[] heights)
         {
             m_TotalFixedSize.Height = 0;
-            float relTotalHeight = 0.0f;
+            var relTotalHeight = 0.0f;
 
             foreach (float h in heights)
             {
@@ -126,7 +132,7 @@ namespace Gwen.Net.Control.Layout
                 }
                 else if (h > 1.0f)
                 {
-                    m_TotalFixedSize.Height += (int)h;
+                    m_TotalFixedSize.Height += (int) h;
                 }
             }
 
@@ -191,11 +197,11 @@ namespace Gwen.Net.Control.Layout
 
                         if (w >= 0.0f && w <= 1.0f)
                         {
-                            size.Width = (int)(w * (availableSize.Width - m_TotalFixedSize.Width));
+                            size.Width = (int) (w * (availableSize.Width - m_TotalFixedSize.Width));
                         }
                         else if (w > 1.0f)
                         {
-                            size.Width = (int)w;
+                            size.Width = (int) w;
                         }
                     }
 
@@ -205,11 +211,11 @@ namespace Gwen.Net.Control.Layout
 
                         if (h >= 0.0f && h <= 1.0f)
                         {
-                            size.Height = (int)(h * (availableSize.Height - m_TotalFixedSize.Height));
+                            size.Height = (int) (h * (availableSize.Height - m_TotalFixedSize.Height));
                         }
                         else if (h > 1.0f)
                         {
-                            size.Height = (int)h;
+                            size.Height = (int) h;
                         }
                     }
 
@@ -241,7 +247,7 @@ namespace Gwen.Net.Control.Layout
 
             m_TotalAutoFixedSize = Size.Zero;
 
-            int width = 0;
+            var width = 0;
 
             for (columnIndex = 0; columnIndex < m_ColumnCount; columnIndex++)
             {
@@ -253,12 +259,12 @@ namespace Gwen.Net.Control.Layout
                     {
                         if (m_ColumnWidths[columnIndex] < w)
                         {
-                            m_ColumnWidths[columnIndex] = (int)w;
+                            m_ColumnWidths[columnIndex] = (int) w;
                         }
 
                         m_TotalAutoFixedSize.Width += m_ColumnWidths[columnIndex];
                     }
-                    else if (Single.IsNaN(w))
+                    else if (float.IsNaN(w))
                     {
                         m_TotalAutoFixedSize.Width += m_ColumnWidths[columnIndex];
                     }
@@ -271,7 +277,7 @@ namespace Gwen.Net.Control.Layout
                 width += m_ColumnWidths[columnIndex];
             }
 
-            int height = 0;
+            var height = 0;
 
             for (rowIndex = 0; rowIndex < rowCount; rowIndex++)
             {
@@ -283,12 +289,12 @@ namespace Gwen.Net.Control.Layout
                     {
                         if (m_RowHeights[rowIndex] < h)
                         {
-                            m_RowHeights[rowIndex] = (int)h;
+                            m_RowHeights[rowIndex] = (int) h;
                         }
 
                         m_TotalAutoFixedSize.Height += m_RowHeights[rowIndex];
                     }
-                    else if (Single.IsNaN(h))
+                    else if (float.IsNaN(h))
                     {
                         m_TotalAutoFixedSize.Height += m_RowHeights[rowIndex];
                     }
@@ -308,8 +314,8 @@ namespace Gwen.Net.Control.Layout
         {
             int y = Padding.Top;
             int x = Padding.Left;
-            int columnIndex = 0;
-            int rowIndex = 0;
+            var columnIndex = 0;
+            var rowIndex = 0;
 
             foreach (ControlBase child in Children)
             {
@@ -324,11 +330,11 @@ namespace Gwen.Net.Control.Layout
 
                         if (w >= 0.0f && w <= 1.0f)
                         {
-                            width = Math.Max(val1: 0, (int)(w * (finalSize.Width - m_TotalAutoFixedSize.Width)));
+                            width = Math.Max(val1: 0, (int) (w * (finalSize.Width - m_TotalAutoFixedSize.Width)));
                         }
                         else if (w > 1.0f)
                         {
-                            width = (int)w;
+                            width = (int) w;
                         }
                     }
 
@@ -338,11 +344,11 @@ namespace Gwen.Net.Control.Layout
 
                         if (h >= 0.0f && h <= 1.0f)
                         {
-                            height = Math.Max(val1: 0, (int)(h * (finalSize.Height - m_TotalAutoFixedSize.Height)));
+                            height = Math.Max(val1: 0, (int) (h * (finalSize.Height - m_TotalAutoFixedSize.Height)));
                         }
                         else if (h > 1.0f)
                         {
-                            height = (int)h;
+                            height = (int) h;
                         }
                     }
 

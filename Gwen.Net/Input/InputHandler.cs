@@ -96,7 +96,7 @@ namespace Gwen.Net.Input
         /// <returns>True if the key is down.</returns>
         public static bool IsKeyDown(GwenMappedKey key)
         {
-            return m_KeyData.KeyState[(int)key];
+            return m_KeyData.KeyState[(int) key];
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace Gwen.Net.Input
             // [omeg] todo: alt?
 
             accelString.Append(chr);
-            string acc = accelString.ToString();
+            var acc = accelString.ToString();
 
             //Debug::Msg("Accelerator string :%S\n", accelString.c_str());)
 
@@ -234,7 +234,7 @@ namespace Gwen.Net.Input
             //
             // Simulate Key-Repeats
             //
-            for (int i = 0; i < (int)GwenMappedKey.Count; i++)
+            for (var i = 0; i < (int) GwenMappedKey.Count; i++)
             {
                 if (m_KeyData.KeyState[i] && m_KeyData.Target != KeyboardFocus)
                 {
@@ -249,7 +249,7 @@ namespace Gwen.Net.Input
 
                     if (KeyboardFocus != null)
                     {
-                        KeyboardFocus.InputKeyPressed((GwenMappedKey)i);
+                        KeyboardFocus.InputKeyPressed((GwenMappedKey) i);
                     }
                 }
             }
@@ -347,7 +347,7 @@ namespace Gwen.Net.Input
 
             // Double click.
             // Todo: Shouldn't double click if mouse has moved significantly
-            bool isDoubleClick = false;
+            var isDoubleClick = false;
 
             if (down &&
                 m_LastClickPos.X == MousePosition.X &&
@@ -391,37 +391,37 @@ namespace Gwen.Net.Input
             switch (mouseButton)
             {
                 case 0:
+                {
+                    if (DragAndDrop.OnMouseButton(HoveredControl, MousePosition.X, MousePosition.Y, down))
                     {
-                        if (DragAndDrop.OnMouseButton(HoveredControl, MousePosition.X, MousePosition.Y, down))
-                        {
-                            return true;
-                        }
-
-                        if (isDoubleClick)
-                        {
-                            HoveredControl.InputMouseDoubleClickedLeft(MousePosition.X, MousePosition.Y);
-                        }
-                        else
-                        {
-                            HoveredControl.InputMouseClickedLeft(MousePosition.X, MousePosition.Y, down);
-                        }
-
                         return true;
                     }
+
+                    if (isDoubleClick)
+                    {
+                        HoveredControl.InputMouseDoubleClickedLeft(MousePosition.X, MousePosition.Y);
+                    }
+                    else
+                    {
+                        HoveredControl.InputMouseClickedLeft(MousePosition.X, MousePosition.Y, down);
+                    }
+
+                    return true;
+                }
 
                 case 1:
+                {
+                    if (isDoubleClick)
                     {
-                        if (isDoubleClick)
-                        {
-                            HoveredControl.InputMouseDoubleClickedRight(MousePosition.X, MousePosition.Y);
-                        }
-                        else
-                        {
-                            HoveredControl.InputMouseClickedRight(MousePosition.X, MousePosition.Y, down);
-                        }
-
-                        return true;
+                        HoveredControl.InputMouseDoubleClickedRight(MousePosition.X, MousePosition.Y);
                     }
+                    else
+                    {
+                        HoveredControl.InputMouseClickedRight(MousePosition.X, MousePosition.Y, down);
+                    }
+
+                    return true;
+                }
             }
 
             return false;
@@ -451,7 +451,7 @@ namespace Gwen.Net.Input
                 return false;
             }
 
-            int iKey = (int)key;
+            var iKey = (int) key;
 
             if (down)
             {

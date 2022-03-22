@@ -101,7 +101,7 @@ namespace Gwen.Net.Control
         {
             if (!IsDisabled)
             {
-                MenuItem item = control as MenuItem;
+                var item = control as MenuItem;
 
                 if (null == item)
                 {

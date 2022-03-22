@@ -15,7 +15,7 @@ namespace Gwen.Net.RichText.KnuthPlass
             Font font = m_DefaultFont;
             int width, height;
 
-            for (int partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
+            for (var partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
             {
                 Part part = paragraph.Parts[partIndex];
 
@@ -26,7 +26,7 @@ namespace Gwen.Net.RichText.KnuthPlass
                     font = m_DefaultFont;
                 }
 
-                for (int wordIndex = 0; wordIndex < words.Length; wordIndex++)
+                for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)
                 {
                     string word = words[wordIndex];
 

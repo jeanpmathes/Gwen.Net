@@ -90,7 +90,7 @@ namespace Gwen.Net.Control
         {
             LabelWidth = m_SplitterBar.ActualLeft - Padding.Left;
 
-            PropertyTreeNode node = Parent as PropertyTreeNode;
+            var node = Parent as PropertyTreeNode;
 
             if (node != null)
             {

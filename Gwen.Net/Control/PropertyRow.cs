@@ -91,7 +91,7 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            Properties parent = Parent as Properties;
+            var parent = Parent as Properties;
 
             if (parent != null)
             {
@@ -110,7 +110,7 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            Properties parent = Parent as Properties;
+            var parent = Parent as Properties;
 
             if (parent != null)
             {

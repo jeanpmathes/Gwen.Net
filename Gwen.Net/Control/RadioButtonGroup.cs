@@ -85,7 +85,7 @@ namespace Gwen.Net.Control
         /// <param name="fromPanel">Event source.</param>
         protected virtual void OnRadioClicked(ControlBase fromPanel, EventArgs args)
         {
-            RadioButton @checked = fromPanel as RadioButton;
+            var @checked = fromPanel as RadioButton;
 
             foreach (LabeledRadioButton rb in Children.OfType<LabeledRadioButton>()) // todo: optimize
             {

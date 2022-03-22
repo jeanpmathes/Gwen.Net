@@ -104,7 +104,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            int tex = (int) t.RendererData;
+            var tex = (int) t.RendererData;
             rect = Translate(rect);
 
             bool differentTexture = tex != lastTextureID;
@@ -133,14 +133,14 @@ namespace Gwen.Net.OpenTk.Renderers
         public override bool LoadFont(Font font)
         {
             font.RealSize = (float) Math.Ceiling(font.Size * Scale);
-            System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
+            var sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont != null)
             {
                 sysFont.Dispose();
             }
 
-            System.Drawing.FontStyle fontStyle = System.Drawing.FontStyle.Regular;
+            var fontStyle = System.Drawing.FontStyle.Regular;
 
             if (font.Bold)
             {
@@ -177,7 +177,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
+            var sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont == null)
             {
@@ -190,7 +190,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override FontMetrics GetFontMetrics(Font font)
         {
-            System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
+            var sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont == null || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
             {
@@ -253,7 +253,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override Size MeasureText(Font font, string text)
         {
-            System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
+            var sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont == null || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
             {
@@ -291,7 +291,7 @@ namespace Gwen.Net.OpenTk.Renderers
         {
             Flush();
 
-            System.Drawing.Font sysFont = font.RendererData as System.Drawing.Font;
+            var sysFont = font.RendererData as System.Drawing.Font;
 
             if (sysFont == null || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
             {
@@ -505,7 +505,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            int tex = (int) t.RendererData;
+            var tex = (int) t.RendererData;
 
             if (tex == 0)
             {
@@ -523,7 +523,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return defaultColor;
             }
 
-            int tex = (int) texture.RendererData;
+            var tex = (int) texture.RendererData;
 
             if (tex == 0)
             {
@@ -536,7 +536,7 @@ namespace Gwen.Net.OpenTk.Renderers
             lastTextureID = tex;
 
             long offset = 4 * (x + (y * texture.Width));
-            byte[] data = new byte[4 * texture.Width * texture.Height];
+            var data = new byte[4 * texture.Width * texture.Height];
 
             fixed (byte* ptr = &data[0])
             {

@@ -90,7 +90,7 @@ namespace Gwen.Net.Control
 
         protected override void UpdateBarSize()
         {
-            float barHeight = 0.0f;
+            var barHeight = 0.0f;
 
             if (m_ContentSize > 0.0f)
             {
@@ -176,7 +176,7 @@ namespace Gwen.Net.Control
             float value = (float) (m_Bar.ActualTop - ButtonSize) /
                           (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2));
 
-            if (Single.IsNaN(value))
+            if (float.IsNaN(value))
             {
                 value = 0.0f;
             }
@@ -201,7 +201,7 @@ namespace Gwen.Net.Control
 
             if (forceUpdate)
             {
-                int newY = (int) (ButtonSize + (value * (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2))));
+                var newY = (int) (ButtonSize + value * (ActualHeight - m_Bar.ActualHeight - ButtonSize * 2));
                 m_Bar.MoveTo(m_Bar.ActualLeft, newY);
             }
 

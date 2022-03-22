@@ -604,7 +604,7 @@ namespace Gwen.Net.Skin
             Textures.Input.Button.Disabled = new Bordered(m_Texture, x: 480, y: 64, w: 31, h: 31, Margin.Eight);
             Textures.Input.Button.Pressed = new Bordered(m_Texture, x: 480, y: 96, w: 31, h: 31, Margin.Eight);
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 Textures.Scroller.Button.Normal[i] = new Bordered(
                     m_Texture,
@@ -873,8 +873,8 @@ namespace Gwen.Net.Skin
         {
             Rectangle rect = control.RenderBounds;
 
-            rect.Y += (int)(textHeight * 0.5f);
-            rect.Height -= (int)(textHeight * 0.5f);
+            rect.Y += (int) (textHeight * 0.5f);
+            rect.Height -= (int) (textHeight * 0.5f);
 
             Color m_colDarker = new(a: 50, r: 0, g: 50, b: 60);
             Color m_colLighter = new(a: 150, r: 255, g: 255, b: 255);
@@ -1148,7 +1148,7 @@ namespace Gwen.Net.Skin
 
                 if (progress > 0)
                 {
-                    rect.Width = (int)(rect.Width * progress);
+                    rect.Width = (int) (rect.Width * progress);
 
                     if (rect.Width >= 5.0f)
                     {
@@ -1162,8 +1162,8 @@ namespace Gwen.Net.Skin
 
                 if (progress > 0)
                 {
-                    rect.Y = (int)(rect.Y + (rect.Height * (1 - progress)));
-                    rect.Height = (int)(rect.Height * progress);
+                    rect.Y = (int) (rect.Y + (rect.Height * (1 - progress)));
+                    rect.Height = (int) (rect.Height * progress);
 
                     if (rect.Height >= 5.0f)
                     {
@@ -1218,9 +1218,9 @@ namespace Gwen.Net.Skin
                 return;
             }
 
-            float iSpacing = rect.Width / (float)numNotches;
+            float iSpacing = rect.Width / (float) numNotches;
 
-            for (int i = 0; i < numNotches + 1; i++)
+            for (var i = 0; i < numNotches + 1; i++)
             {
                 Renderer.DrawFilledRect(Util.FloatRect(rect.X + (iSpacing * i), rect.Y + dist - 2, w: 1, h: 5));
             }
@@ -1233,9 +1233,9 @@ namespace Gwen.Net.Skin
                 return;
             }
 
-            float iSpacing = rect.Height / (float)numNotches;
+            float iSpacing = rect.Height / (float) numNotches;
 
-            for (int i = 0; i < numNotches + 1; i++)
+            for (var i = 0; i < numNotches + 1; i++)
             {
                 Renderer.DrawFilledRect(Util.FloatRect(rect.X + dist - 2, rect.Y + (iSpacing * i), w: 5, h: 1));
             }
@@ -1248,9 +1248,9 @@ namespace Gwen.Net.Skin
 
             if (horizontal)
             {
-                rect.X += (int)(barSize * 0.5);
+                rect.X += (int) (barSize * 0.5);
                 rect.Width -= barSize;
-                rect.Y += (int)((rect.Height * 0.5) - 1);
+                rect.Y += (int) ((rect.Height * 0.5) - 1);
                 rect.Height = 1;
                 DrawSliderNotchesH(rect, numNotches, barSize * 0.5f);
                 Renderer.DrawFilledRect(rect);
@@ -1258,9 +1258,9 @@ namespace Gwen.Net.Skin
                 return;
             }
 
-            rect.Y += (int)(barSize * 0.5);
+            rect.Y += (int) (barSize * 0.5);
             rect.Height -= barSize;
-            rect.X += (int)((rect.Width * 0.5) - 1);
+            rect.X += (int) ((rect.Width * 0.5) - 1);
             rect.Width = 1;
             DrawSliderNotchesV(rect, numNotches, barSize * 0.4f);
             Renderer.DrawFilledRect(rect);
@@ -1302,9 +1302,9 @@ namespace Gwen.Net.Skin
             rect.Height -= offset * 2;
 
             //draw the top and bottom
-            bool skip = true;
+            var skip = true;
 
-            for (int i = 0; i < rect.Width * 0.5; i++)
+            for (var i = 0; i < rect.Width * 0.5; i++)
             {
                 m_Renderer.DrawColor = Color.Black;
 
@@ -1319,7 +1319,7 @@ namespace Gwen.Net.Skin
                 }
             }
 
-            for (int i = 0; i < rect.Height * 0.5; i++)
+            for (var i = 0; i < rect.Height * 0.5; i++)
             {
                 Renderer.DrawColor = Color.Black;
                 Renderer.DrawPixel(rect.X, rect.Y + (i * 2));
@@ -1335,7 +1335,7 @@ namespace Gwen.Net.Skin
         public override void DrawScrollButton(ControlBase control, ScrollBarButtonDirection direction, bool depressed,
             bool hovered, bool disabled)
         {
-            int i = 0;
+            var i = 0;
 
             if (direction == ScrollBarButtonDirection.Top)
             {
@@ -1530,7 +1530,7 @@ namespace Gwen.Net.Skin
             }
             else
             {
-                Renderer.DrawColor = (Color)backgroundColor;
+                Renderer.DrawColor = (Color) backgroundColor;
             }
 
             Renderer.DrawFilledRect(rect);

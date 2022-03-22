@@ -35,7 +35,7 @@ namespace Gwen.Net.Xml
             }
             else if (sender is TreeNode)
             {
-                handlerElement = ((TreeNode)sender).TreeControl.Parent;
+                handlerElement = ((TreeNode) sender).TreeControl.Parent;
             }
 
             while (handlerElement != null)
@@ -106,7 +106,7 @@ namespace Gwen.Net.Xml
 
                 if (handlerElement is Menu)
                 {
-                    Menu menu = handlerElement as Menu;
+                    var menu = handlerElement as Menu;
 
                     if (menu.ParentMenuItem != null)
                     {

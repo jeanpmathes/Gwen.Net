@@ -186,7 +186,7 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source (TabButton).</param>
         internal virtual void OnTabPressed(ControlBase control, EventArgs args)
         {
-            TabButton button = control as TabButton;
+            var button = control as TabButton;
 
             if (null == button)
             {
@@ -303,7 +303,7 @@ namespace Gwen.Net.Control
 
         protected override void OnBoundsChanged(Rectangle oldBounds)
         {
-            bool needed = false;
+            var needed = false;
 
             switch (TabStripPosition)
             {

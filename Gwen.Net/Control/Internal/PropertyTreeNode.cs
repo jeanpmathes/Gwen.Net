@@ -143,7 +143,7 @@ namespace Gwen.Net.Control.Internal
 
             foreach (ControlBase child in Children)
             {
-                TreeNode node = child as TreeNode;
+                var node = child as TreeNode;
 
                 if (node == null)
                 {

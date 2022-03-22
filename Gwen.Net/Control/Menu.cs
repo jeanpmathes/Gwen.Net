@@ -109,7 +109,7 @@ namespace Gwen.Net.Control
         /// <returns>Newly created control.</returns>
         public virtual MenuItem AddItem(string text)
         {
-            return AddItem(text, String.Empty);
+            return AddItem(text, string.Empty);
         }
 
         /// <summary>
@@ -125,12 +125,12 @@ namespace Gwen.Net.Control
             item.Padding = Padding.Three;
             item.Text = text;
 
-            if (!String.IsNullOrWhiteSpace(iconName))
+            if (!string.IsNullOrWhiteSpace(iconName))
             {
                 item.SetImage(iconName, ImageAlign.Left | ImageAlign.CenterV);
             }
 
-            if (!String.IsNullOrWhiteSpace(accelerator))
+            if (!string.IsNullOrWhiteSpace(accelerator))
             {
                 item.SetAccelerator(accelerator);
             }
@@ -155,7 +155,7 @@ namespace Gwen.Net.Control
 
         public MenuItem AddItemPath(string text)
         {
-            return AddItemPath(text, String.Empty);
+            return AddItemPath(text, string.Empty);
         }
 
         public MenuItem AddItemPath(string text, string iconName, string accelerator = null)
@@ -164,12 +164,12 @@ namespace Gwen.Net.Control
             item.Text = text;
             item.Padding = Padding.Three;
 
-            if (!String.IsNullOrWhiteSpace(iconName))
+            if (!string.IsNullOrWhiteSpace(iconName))
             {
                 item.SetImage(iconName, ImageAlign.Left | ImageAlign.CenterV);
             }
 
-            if (!String.IsNullOrWhiteSpace(accelerator))
+            if (!string.IsNullOrWhiteSpace(accelerator))
             {
                 item.SetAccelerator(accelerator);
             }
@@ -185,7 +185,7 @@ namespace Gwen.Net.Control
             string[] path = item.Text.Split('\\', '/');
             Menu m = this;
 
-            for (int i = 0; i < path.Length - 1; i++)
+            for (var i = 0; i < path.Length - 1; i++)
             {
                 MenuItem[] items = m.FindItems(path[i]);
 
@@ -199,7 +199,7 @@ namespace Gwen.Net.Control
                 }
                 else
                 {
-                    for (int j = 0; j < items.Length; j++)
+                    for (var j = 0; j < items.Length; j++)
                     {
                         if (items[j].Parent == m)
                         {
@@ -267,7 +267,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            MenuItem item = control as MenuItem;
+            var item = control as MenuItem;
 
             if (null == item)
             {
@@ -303,11 +303,11 @@ namespace Gwen.Net.Control
         {
             List<MenuItem> mi = new();
 
-            for (int i = 0; i < Children.Count; i++)
+            for (var i = 0; i < Children.Count; i++)
             {
                 if (Children[i] as MenuItem != null)
                 {
-                    if (((MenuItem)Children[i]).Text == name)
+                    if (((MenuItem) Children[i]).Text == name)
                     {
                         mi.Add(Children[i] as MenuItem);
                     }

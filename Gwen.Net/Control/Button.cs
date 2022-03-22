@@ -290,7 +290,7 @@ namespace Gwen.Net.Control
         /// <param name="imageAlign">Determines how the image should be aligned.</param>
         public virtual void SetImage(string textureName, ImageAlign imageAlign = ImageAlign.LeftSide)
         {
-            if (String.IsNullOrEmpty(textureName))
+            if (string.IsNullOrEmpty(textureName))
             {
                 if (m_Image != null)
                 {

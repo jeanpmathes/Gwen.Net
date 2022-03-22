@@ -312,7 +312,7 @@ namespace Gwen.Net.Control
 
         private void DoFitToText()
         {
-            if (!String.IsNullOrWhiteSpace(FitToText))
+            if (!string.IsNullOrWhiteSpace(FitToText))
             {
                 Size size = Skin.Renderer.MeasureText(Font, FitToText);
                 m_ScrollArea.MinimumSize = size;
@@ -722,7 +722,7 @@ namespace Gwen.Net.Control
         {
             if (!HasSelection)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
             int start = Math.Min(m_CursorPos, m_CursorEnd);
@@ -794,7 +794,7 @@ namespace Gwen.Net.Control
             }
 
             // The ideal position is for the caret to be right in the middle
-            int idealx = (int) (-caretPos + (m_ScrollArea.ActualWidth * 0.5f));
+            var idealx = (int) (-caretPos + m_ScrollArea.ActualWidth * 0.5f);
 
             // Don't show too much whitespace to the right
             if (idealx + m_Text.MeasuredSize.Width < viewSize.Width)

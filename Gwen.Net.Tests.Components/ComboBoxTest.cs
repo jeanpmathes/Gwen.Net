@@ -39,7 +39,7 @@ namespace Gwen.Net.Tests.Components
                 combo.Margin = Margin.Five;
                 combo.Width = 200;
 
-                for (int i = 0; i < 500; i++)
+                for (var i = 0; i < 500; i++)
                 {
                     combo.AddItem(String.Format("Option {0}", i));
                 }
@@ -90,10 +90,7 @@ namespace Gwen.Net.Tests.Components
                         TriangleButton.Text = "Triangle";
                         TriangleButton.Width = 100;
 
-                        TriangleButton.Clicked += delegate
-                        {
-                            combo.SelectedItem = Triangle;
-                        };
+                        TriangleButton.Clicked += delegate { combo.SelectedItem = Triangle; };
                     }
 
                     //Select by Text
@@ -102,10 +99,7 @@ namespace Gwen.Net.Tests.Components
                         TestBtn.Text = "Red";
                         TestBtn.Width = 100;
 
-                        TestBtn.Clicked += delegate
-                        {
-                            combo.SelectByText("Red");
-                        };
+                        TestBtn.Clicked += delegate { combo.SelectByText("Red"); };
                     }
 
                     //Select by Name
@@ -114,10 +108,7 @@ namespace Gwen.Net.Tests.Components
                         TestBtn.Text = "Apple";
                         TestBtn.Width = 100;
 
-                        TestBtn.Clicked += delegate
-                        {
-                            combo.SelectByName("fruit");
-                        };
+                        TestBtn.Clicked += delegate { combo.SelectByName("fruit"); };
                     }
 
                     //Select by UserData
@@ -126,10 +117,7 @@ namespace Gwen.Net.Tests.Components
                         TestBtn.Text = "Green";
                         TestBtn.Width = 100;
 
-                        TestBtn.Clicked += delegate
-                        {
-                            combo.SelectByUserData(userdata: 12);
-                        };
+                        TestBtn.Clicked += delegate { combo.SelectByUserData(userdata: 12); };
                     }
                 }
             }
@@ -137,7 +125,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OnComboSelect(ControlBase control, EventArgs args)
         {
-            ComboBox combo = control as ComboBox;
+            var combo = control as ComboBox;
             UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text));
         }
     }

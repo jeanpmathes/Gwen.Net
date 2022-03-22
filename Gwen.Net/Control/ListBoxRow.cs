@@ -81,7 +81,7 @@ namespace Gwen.Net.Control
 
             if (parser.MoveToContent())
             {
-                int colIndex = 1;
+                var colIndex = 1;
 
                 foreach (string elementName in parser.NextElement())
                 {
@@ -95,7 +95,7 @@ namespace Gwen.Net.Control
                         else
                         {
                             string colText = parser.GetAttribute("Text");
-                            element.SetCellText(colIndex++, colText != null ? colText : String.Empty);
+                            element.SetCellText(colIndex++, colText != null ? colText : string.Empty);
                         }
                     }
                 }

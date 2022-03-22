@@ -62,7 +62,7 @@ namespace Gwen.Net.Control
         {
             foreach (ControlBase child in Children)
             {
-                CategoryButton button = child as CategoryButton;
+                var button = child as CategoryButton;
 
                 if (button == null)
                 {
@@ -98,7 +98,7 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source.</param>
         protected virtual void OnSelected(ControlBase control, EventArgs args)
         {
-            CategoryButton child = control as CategoryButton;
+            var child = control as CategoryButton;
 
             if (child == null)
             {
@@ -156,7 +156,7 @@ namespace Gwen.Net.Control
         {
             foreach (ControlBase child in Children)
             {
-                CategoryButton button = child as CategoryButton;
+                var button = child as CategoryButton;
 
                 if (button == null)
                 {
@@ -181,7 +181,7 @@ namespace Gwen.Net.Control
 
             foreach (ControlBase child in Children)
             {
-                CategoryButton button = child as CategoryButton;
+                var button = child as CategoryButton;
 
                 if (button == null)
                 {
@@ -214,11 +214,11 @@ namespace Gwen.Net.Control
 
             int y = m_HeaderButton.MeasuredSize.Height + Padding.Top;
             int width = finalSize.Width - Padding.Left - Padding.Right;
-            bool b = true;
+            var b = true;
 
             foreach (ControlBase child in Children)
             {
-                CategoryButton button = child as CategoryButton;
+                var button = child as CategoryButton;
 
                 if (button == null)
                 {

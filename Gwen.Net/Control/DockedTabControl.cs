@@ -78,7 +78,7 @@ namespace Gwen.Net.Control
 
             foreach (ControlBase child in children)
             {
-                TabButton button = child as TabButton;
+                var button = child as TabButton;
 
                 if (button == null)
                 {

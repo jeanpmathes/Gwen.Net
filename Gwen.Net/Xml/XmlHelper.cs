@@ -62,7 +62,7 @@ namespace Gwen.Net.Xml
                 {
                     int result;
 
-                    if (Int32.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out result))
+                    if (int.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out result))
                     {
                         return result;
                     }
@@ -75,7 +75,7 @@ namespace Gwen.Net.Xml
                 {
                     float result;
 
-                    if (Single.TryParse(value, NumberStyles.Float, Parser.NumberFormatInfo, out result))
+                    if (float.TryParse(value, NumberStyles.Float, Parser.NumberFormatInfo, out result))
                     {
                         return result;
                     }
@@ -84,10 +84,7 @@ namespace Gwen.Net.Xml
                 }
             },
             {
-                typeof(string), (element, value) =>
-                {
-                    return value;
-                }
+                typeof(string), (element, value) => { return value; }
             },
             {
                 typeof(char), (element, value) =>
@@ -107,7 +104,7 @@ namespace Gwen.Net.Xml
                     {
                         float valueFloat;
 
-                        if (Single.TryParse(value, NumberStyles.Float, Parser.NumberFormatInfo, out valueFloat))
+                        if (float.TryParse(value, NumberStyles.Float, Parser.NumberFormatInfo, out valueFloat))
                         {
                             return valueFloat;
                         }
@@ -115,7 +112,7 @@ namespace Gwen.Net.Xml
 
                     int valueInt32;
 
-                    if (Int32.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out valueInt32))
+                    if (int.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out valueInt32))
                     {
                         return valueInt32;
                     }
@@ -216,12 +213,12 @@ namespace Gwen.Net.Xml
                     {
                         if (values.Length == 2)
                         {
-                            return new Anchor((byte)values[0], (byte)values[1], (byte)values[0], (byte)values[1]);
+                            return new Anchor((byte) values[0], (byte) values[1], (byte) values[0], (byte) values[1]);
                         }
 
                         if (values.Length == 4)
                         {
-                            return new Anchor((byte)values[0], (byte)values[1], (byte)values[2], (byte)values[3]);
+                            return new Anchor((byte) values[0], (byte) values[1], (byte) values[2], (byte) values[3]);
                         }
                     }
 
@@ -281,7 +278,7 @@ namespace Gwen.Net.Xml
                     {
                         uint color;
 
-                        if (UInt32.TryParse(hex, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out color))
+                        if (uint.TryParse(hex, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out color))
                         {
                             return new Color(color);
                         }
@@ -400,8 +397,8 @@ namespace Gwen.Net.Xml
                 typeof(Font), (element, value) =>
                 {
                     string name;
-                    int size = 10;
-                    FontStyle style = FontStyle.Normal;
+                    var size = 10;
+                    var style = FontStyle.Normal;
 
                     string[] fontValues = value.Split(m_fontValueSeparator);
 
@@ -414,12 +411,12 @@ namespace Gwen.Net.Xml
 
                     if (fontValues.Length >= 2)
                     {
-                        if (!Int32.TryParse(fontValues[1], out size))
+                        if (!int.TryParse(fontValues[1], out size))
                         {
                             throw new XmlException("Attribute value error. Font size parsing failed.");
                         }
 
-                        for (int i = 2; i < fontValues.Length; i++)
+                        for (var i = 2; i < fontValues.Length; i++)
                         {
                             switch (fontValues[i].Trim().ToLower())
                             {
@@ -447,12 +444,12 @@ namespace Gwen.Net.Xml
 
                     if (element is ControlBase)
                     {
-                        return Font.Create(((ControlBase)element).Skin.Renderer, name, size, style);
+                        return Font.Create(((ControlBase) element).Skin.Renderer, name, size, style);
                     }
 
                     if (element is Component)
                     {
-                        return Font.Create(((Component)element).View.Skin.Renderer, name, size, style);
+                        return Font.Create(((Component) element).View.Skin.Renderer, name, size, style);
                     }
 
                     throw new Exception("Can't create a font. The renderer is unknown.");
@@ -462,8 +459,8 @@ namespace Gwen.Net.Xml
                 typeof(GridCellSizes), (element, value) =>
                 {
                     string[] values = value.Split(Parser.ArraySeparator);
-                    float[] sizes = new float[values.Length];
-                    int index = 0;
+                    var sizes = new float[values.Length];
+                    var index = 0;
 
                     foreach (string val in values)
                     {
@@ -477,7 +474,7 @@ namespace Gwen.Net.Xml
                         {
                             float v;
 
-                            if (Single.TryParse(cellSize.Substring(startIndex: 0, cellSize.IndexOf(value: '%')), out v))
+                            if (float.TryParse(cellSize.Substring(startIndex: 0, cellSize.IndexOf(value: '%')), out v))
                             {
                                 sizes[index++] = v / 100.0f;
                             }
@@ -490,7 +487,7 @@ namespace Gwen.Net.Xml
                         {
                             float v;
 
-                            if (Single.TryParse(cellSize, out v))
+                            if (float.TryParse(cellSize, out v))
                             {
                                 sizes[index++] = v;
                             }
@@ -529,15 +526,15 @@ namespace Gwen.Net.Xml
             Component.Register<FolderBrowserDialog>();
         }
 
-        public static Int32[] ParseArrayInt32(string valueStr)
+        public static int[] ParseArrayInt32(string valueStr)
         {
             string[] values = valueStr.Split(Parser.ArraySeparator);
-            Int32[] newValues = new Int32[values.Length];
-            int index = 0;
+            var newValues = new int[values.Length];
+            var index = 0;
 
             foreach (string value in values)
             {
-                if (!Int32.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out newValues[index++]))
+                if (!int.TryParse(value, NumberStyles.Integer, Parser.NumberFormatInfo, out newValues[index++]))
                 {
                     return null;
                 }

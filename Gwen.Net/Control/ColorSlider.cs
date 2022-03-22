@@ -68,13 +68,13 @@ namespace Gwen.Net.Control
 
             if (m_Texture == null)
             {
-                byte[] pixelData = new byte[ActualWidth * ActualHeight * 4];
+                var pixelData = new byte[ActualWidth * ActualHeight * 4];
 
-                for (int y = 0; y < ActualHeight; y++)
+                for (var y = 0; y < ActualHeight; y++)
                 {
                     Color c = GetColorAtHeight(y);
 
-                    for (int x = 0; x < ActualWidth; x++)
+                    for (var x = 0; x < ActualWidth; x++)
                     {
                         pixelData[4 * (x + (y * ActualWidth))] = c.R;
                         pixelData[(4 * (x + (y * ActualWidth))) + 1] = c.G;
@@ -170,7 +170,7 @@ namespace Gwen.Net.Control
 
         public void SetColor(Color color, bool doEvents = true)
         {
-            HSV hsv = color.ToHSV();
+            var hsv = color.ToHSV();
 
             m_SelectedDist = (int) (hsv.H / 360 * ActualHeight);
 

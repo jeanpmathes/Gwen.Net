@@ -50,7 +50,7 @@ namespace Gwen.Net.Control
             AddAccelerator("Ctrl + V", OnPaste);
             AddAccelerator("Ctrl + A", OnSelectAll);
 
-            SetText(String.Empty);
+            SetText(string.Empty);
         }
 
         private Point StartPoint
@@ -730,10 +730,10 @@ namespace Gwen.Net.Control
         {
             if (!HasSelection)
             {
-                return String.Empty;
+                return string.Empty;
             }
 
-            string str = String.Empty;
+            var str = string.Empty;
 
             if (StartPoint.Y == EndPoint.Y)
             {
@@ -750,7 +750,7 @@ namespace Gwen.Net.Control
 
                 str = m_Text[startPoint.Y].Substring(startPoint.X) + Environment.NewLine; //Copy start
 
-                for (int i = 1; i < endPoint.Y - startPoint.Y; i++)
+                for (var i = 1; i < endPoint.Y - startPoint.Y; i++)
                 {
                     str += m_Text[startPoint.Y + i] + Environment.NewLine; //Copy middle
                 }
@@ -785,7 +785,7 @@ namespace Gwen.Net.Control
                 }
 
                 /* Remove Middle */
-                for (int i = 1; i < endPoint.Y - startPoint.Y; i++)
+                for (var i = 1; i < endPoint.Y - startPoint.Y; i++)
                 {
                     m_Text.RemoveLine(startPoint.Y + 1);
                 }
@@ -897,7 +897,7 @@ namespace Gwen.Net.Control
                     skin.Renderer.DrawFilledRect(selectionBounds);
 
                     /* Middle */
-                    for (int i = 1; i < EndPoint.Y - StartPoint.Y; i++)
+                    for (var i = 1; i < EndPoint.Y - StartPoint.Y; i++)
                     {
                         pA = GetCharacterPosition(new Point(x: 0, StartPoint.Y + i));
                         pB = GetCharacterPosition(new Point(m_Text[StartPoint.Y + i].Length, StartPoint.Y + i));

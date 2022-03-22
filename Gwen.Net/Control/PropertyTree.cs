@@ -34,7 +34,7 @@ namespace Gwen.Net.Control
             {
                 foreach (ControlBase child in Children)
                 {
-                    PropertyTreeNode node = child as PropertyTreeNode;
+                    var node = child as PropertyTreeNode;
 
                     if (node != null)
                     {
@@ -48,7 +48,7 @@ namespace Gwen.Net.Control
             {
                 foreach (ControlBase child in Children)
                 {
-                    PropertyTreeNode node = child as PropertyTreeNode;
+                    var node = child as PropertyTreeNode;
 
                     if (node != null)
                     {
@@ -78,7 +78,7 @@ namespace Gwen.Net.Control
         {
             foreach (ControlBase child in Children)
             {
-                PropertyTreeNode node = child as PropertyTreeNode;
+                var node = child as PropertyTreeNode;
 
                 if (node == null)
                 {

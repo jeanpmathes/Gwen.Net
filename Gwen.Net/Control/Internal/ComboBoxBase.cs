@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Xml;
+﻿using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -70,7 +69,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>Newly created control.</returns>
         public virtual MenuItem AddItem(string label, string name = null, object UserData = null)
         {
-            MenuItem item = m_Menu.AddItem(label, String.Empty);
+            MenuItem item = m_Menu.AddItem(label, string.Empty);
             item.Name = name;
             item.Selected += OnItemSelected;
             item.UserData = UserData;
@@ -128,7 +127,7 @@ namespace Gwen.Net.Control.Internal
             if (!IsDisabled)
             {
                 //Convert selected to a menu item
-                MenuItem item = control as MenuItem;
+                var item = control as MenuItem;
 
                 if (null == item)
                 {

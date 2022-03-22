@@ -56,7 +56,7 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindow(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = String.Format("Window ({0})", ++m_WindowCount);
+            window.Title = string.Format("Window ({0})", ++m_WindowCount);
 
             window.Size = new Size(
                 m_Rand.Next(minValue: 200, maxValue: 400),
@@ -84,7 +84,7 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowWithMenuAndStatusBar(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = String.Format("Window ({0})", ++m_WindowCount);
+            window.Title = string.Format("Window ({0})", ++m_WindowCount);
 
             window.Size = new Size(
                 m_Rand.Next(minValue: 200, maxValue: 400),
@@ -103,9 +103,9 @@ namespace Gwen.Net.Tests.Components
             {
                 MenuItem root = menuStrip.AddItem("File");
                 root.Menu.AddItem("Load", "test16.png", "Ctrl+L");
-                root.Menu.AddItem("Save", String.Empty, "Ctrl+S");
-                root.Menu.AddItem("Save As..", String.Empty, "Ctrl+A");
-                root.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction((c, a) => window.Close());
+                root.Menu.AddItem("Save", string.Empty, "Ctrl+S");
+                root.Menu.AddItem("Save As..", string.Empty, "Ctrl+A");
+                root.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((c, a) => window.Close());
             }
 
             /* Resizing */
@@ -131,7 +131,7 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowAutoSizing(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = String.Format("Window ({0})", ++m_WindowCount);
+            window.Title = string.Format("Window ({0})", ++m_WindowCount);
             window.Left = m_Rand.Next(maxValue: 700);
             window.Top = m_Rand.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
@@ -167,7 +167,7 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowModal(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = String.Format("Modal Window ({0})", ++m_WindowCount);
+            window.Title = string.Format("Modal Window ({0})", ++m_WindowCount);
             window.Left = m_Rand.Next(maxValue: 700);
             window.Top = m_Rand.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
@@ -204,9 +204,11 @@ namespace Gwen.Net.Tests.Components
         private void OpenLongMsgbox(ControlBase control, EventArgs args)
         {
             MessageBox window =
-                new(this,
-                    @"In olden times when wishing still helped one, there lived a king whose daughters were all beautiful, but the youngest was so beautiful that the sun itself, which has seen so much, was astonished whenever it shone in her face. Close by the king's castle lay a great dark forest, and under an old lime-tree in the forest was a well, and when the day was very warm, the king's child went out into the forest and sat down by the side of the cool fountain, and when she was bored she took a golden ball, and threw it up on high and caught it, and this ball was her favorite plaything."
-                    , "Long Text", MessageBoxButtons.AbortRetryIgnore);
+                new(
+                    this,
+                    @"In olden times when wishing still helped one, there lived a king whose daughters were all beautiful, but the youngest was so beautiful that the sun itself, which has seen so much, was astonished whenever it shone in her face. Close by the king's castle lay a great dark forest, and under an old lime-tree in the forest was a well, and when the day was very warm, the king's child went out into the forest and sat down by the side of the cool fountain, and when she was bored she took a golden ball, and threw it up on high and caught it, and this ball was her favorite plaything.",
+                    "Long Text",
+                    MessageBoxButtons.AbortRetryIgnore);
 
             window.Dismissed += OnDismissed;
             window.SetPosition(m_Rand.Next(maxValue: 700), m_Rand.Next(maxValue: 400));

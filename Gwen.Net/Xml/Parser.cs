@@ -25,7 +25,7 @@ namespace Gwen.Net.Xml
         private static readonly Dictionary<Type, AttributeValueConverter> m_AttributeValueConverters = new();
         private static readonly Dictionary<Type, EventHandlerConverter> m_EventHandlerConverters = new();
 
-        public static readonly NumberFormatInfo NumberFormatInfo = new() {NumberGroupSeparator = ""};
+        public static readonly NumberFormatInfo NumberFormatInfo = new() { NumberGroupSeparator = "" };
 
         public static readonly char[] ArraySeparator =
         {
@@ -201,8 +201,8 @@ namespace Gwen.Net.Xml
             ElementDef elementDef;
 
             if (m_ElementHandlers.TryGetValue(
-                attrib != null && attrib.ElementName != null ? attrib.ElementName : type.Name,
-                out elementDef))
+                    attrib != null && attrib.ElementName != null ? attrib.ElementName : type.Name,
+                    out elementDef))
             {
                 if (elementDef.Type == type)
                 {
@@ -453,7 +453,7 @@ namespace Gwen.Net.Xml
                 if (m_Reader != null)
                 {
                     m_Reader.Dispose();
-                    ((IDisposable)m_Reader).Dispose();
+                    ((IDisposable) m_Reader).Dispose();
                     m_Reader = null;
                 }
             }
@@ -461,7 +461,7 @@ namespace Gwen.Net.Xml
 
         private static ControlBase DefaultElementHandler(Parser parser, Type type, ControlBase parent)
         {
-            ControlBase element = Activator.CreateInstance(type, parent) as ControlBase;
+            var element = Activator.CreateInstance(type, parent) as ControlBase;
 
             parser.ParseAttributes(element);
 
@@ -480,13 +480,13 @@ namespace Gwen.Net.Xml
         public static void ScanControls(Assembly assembly)
         {
             foreach (Type type in assembly.GetTypes()
-                .Where(t => t.IsDefined(typeof(XmlControlAttribute), inherit: false)))
+                         .Where(t => t.IsDefined(typeof(XmlControlAttribute), inherit: false)))
             {
                 object[] attribs = type.GetCustomAttributes(typeof(XmlControlAttribute), inherit: false);
 
                 if (attribs.Length > 0)
                 {
-                    XmlControlAttribute attrib = attribs[0] as XmlControlAttribute;
+                    var attrib = attribs[0] as XmlControlAttribute;
 
                     if (attrib != null)
                     {
@@ -523,7 +523,7 @@ namespace Gwen.Net.Xml
         private static void ScanProperties(ElementDef elementDef)
         {
             foreach (PropertyInfo propertyInfo in elementDef.Type.GetProperties()
-                .Where(pi => pi.IsDefined(typeof(XmlPropertyAttribute), inherit: false)))
+                         .Where(pi => pi.IsDefined(typeof(XmlPropertyAttribute), inherit: false)))
             {
                 if (m_AttributeValueConverters.ContainsKey(propertyInfo.PropertyType))
                 {
@@ -543,7 +543,7 @@ namespace Gwen.Net.Xml
         private static void ScanEvents(ElementDef elementDef)
         {
             foreach (EventInfo eventInfo in elementDef.Type.GetEvents()
-                .Where(ei => ei.IsDefined(typeof(XmlEventAttribute), inherit: false)))
+                         .Where(ei => ei.IsDefined(typeof(XmlEventAttribute), inherit: false)))
             {
                 elementDef.AddAttribute(eventInfo.Name, eventInfo);
             }

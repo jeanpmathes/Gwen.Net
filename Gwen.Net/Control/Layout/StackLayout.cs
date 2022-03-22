@@ -35,8 +35,8 @@ namespace Gwen.Net.Control.Layout
         {
             availableSize -= Padding;
 
-            int width = 0;
-            int height = 0;
+            var width = 0;
+            var height = 0;
 
             if (m_Horizontal)
             {

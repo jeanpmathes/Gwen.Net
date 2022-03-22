@@ -67,13 +67,13 @@ namespace Gwen.Net.Control
         {
             get
             {
-                GroupBox gb = FindChildByName("Alphagroupbox", recursive: true) as GroupBox;
+                var gb = FindChildByName("Alphagroupbox", recursive: true) as GroupBox;
 
                 return !gb.IsHidden;
             }
             set
             {
-                GroupBox gb = FindChildByName("Alphagroupbox", recursive: true) as GroupBox;
+                var gb = FindChildByName("Alphagroupbox", recursive: true) as GroupBox;
                 gb.IsHidden = !value;
                 //Invalidate();
             }
@@ -151,7 +151,7 @@ namespace Gwen.Net.Control
 
         private void NumericTyped(ControlBase control, EventArgs args)
         {
-            TextBoxNumeric box = control as TextBoxNumeric;
+            var box = control as TextBoxNumeric;
 
             if (null == box)
             {
@@ -163,7 +163,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            int textValue = (int) box.Value;
+            var textValue = (int) box.Value;
 
             if (textValue < 0)
             {
@@ -200,13 +200,13 @@ namespace Gwen.Net.Control
 
         private void UpdateColorControls(string name, Color col, int sliderVal)
         {
-            ColorDisplay disp = FindChildByName(name, recursive: true) as ColorDisplay;
+            var disp = FindChildByName(name, recursive: true) as ColorDisplay;
             disp.Color = col;
 
-            HorizontalSlider slider = FindChildByName(name + "Slider", recursive: true) as HorizontalSlider;
+            var slider = FindChildByName(name + "Slider", recursive: true) as HorizontalSlider;
             slider.Value = sliderVal;
 
-            TextBoxNumeric box = FindChildByName(name + "Box", recursive: true) as TextBoxNumeric;
+            var box = FindChildByName(name + "Box", recursive: true) as TextBoxNumeric;
             box.Value = sliderVal;
         }
 
@@ -218,7 +218,7 @@ namespace Gwen.Net.Control
             UpdateColorControls("Blue", new Color(a: 255, r: 0, g: 0, SelectedColor.B), SelectedColor.B);
             UpdateColorControls("Alpha", new Color(SelectedColor.A, r: 255, g: 255, b: 255), SelectedColor.A);
 
-            ColorDisplay disp = FindChildByName("Result", recursive: true) as ColorDisplay;
+            var disp = FindChildByName("Result", recursive: true) as ColorDisplay;
             disp.Color = SelectedColor;
 
             if (ColorChanged != null)
@@ -229,7 +229,7 @@ namespace Gwen.Net.Control
 
         private void SlidersMoved(ControlBase control, EventArgs args)
         {
-            HorizontalSlider slider = control as HorizontalSlider;
+            var slider = control as HorizontalSlider;
 
             if (slider != null)
             {
@@ -261,7 +261,7 @@ namespace Gwen.Net.Control
                 return "Alpha";
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         private void SetColorByName(string colorName, int colorValue)

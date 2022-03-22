@@ -58,7 +58,7 @@ namespace Gwen.Net.Tests.Components
 
         private void SliderMoved(ControlBase control, EventArgs args)
         {
-            Slider slider = control as Slider;
+            var slider = control as Slider;
             UnitPrint(String.Format("Slider moved: ValueChanged: {0}", slider.Value));
         }
     }

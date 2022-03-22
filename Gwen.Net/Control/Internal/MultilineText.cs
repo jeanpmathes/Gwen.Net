@@ -75,7 +75,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         [XmlProperty] public string Text
         {
-            get => String.Join(Environment.NewLine, m_TextLines.Select(t => t.String));
+            get => string.Join(Environment.NewLine, m_TextLines.Select(t => t.String));
             set => SetText(value);
         }
 
@@ -154,7 +154,7 @@ namespace Gwen.Net.Control.Internal
 
                 m_TextLines[position.Y].String = oldLineStart + newLines[0]; // First line
 
-                for (int i = 1; i < newLines.Length - 1; i++)
+                for (var i = 1; i < newLines.Length - 1; i++)
                 {
                     InsertLine(position.Y + i, newLines[i]); // Middle lines
                 }
@@ -306,8 +306,8 @@ namespace Gwen.Net.Control.Internal
         {
             availableSize -= Padding;
 
-            int width = 0;
-            int height = 0;
+            var width = 0;
+            var height = 0;
             int lineHeight = LineHeight;
 
             foreach (Text line in m_TextLines)

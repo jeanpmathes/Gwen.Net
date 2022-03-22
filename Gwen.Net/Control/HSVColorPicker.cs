@@ -143,14 +143,14 @@ namespace Gwen.Net.Control
 
         private void NumericTyped(ControlBase control, EventArgs args)
         {
-            NumericUpDown box = control as NumericUpDown;
+            var box = control as NumericUpDown;
 
             if (box == null)
             {
                 return;
             }
 
-            int value = (int) box.Value;
+            var value = (int) box.Value;
 
             if (value < 0)
             {

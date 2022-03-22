@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Xml;
+﻿using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -67,7 +66,7 @@ namespace Gwen.Net.Control
         /// </summary>
         protected override void OnTextChanged()
         {
-            if (String.IsNullOrEmpty(Text) || Text == "-")
+            if (string.IsNullOrEmpty(Text) || Text == "-")
             {
                 m_Value = 0;
                 //SetText("0");

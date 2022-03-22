@@ -122,29 +122,29 @@ namespace Gwen.Net.Tests.Components
 
             public void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
             {
-                m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem)args.SelectedItem).Text);
+                m_unit.UnitPrint(sender.Name + ": ItemSelected " + ((MenuItem) args.SelectedItem).Text);
             }
 
             public void OnSelectionChanged(ControlBase sender, ItemSelectedEventArgs args)
             {
-                m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton)args.SelectedItem).Text);
+                m_unit.UnitPrint(sender.Name + ": SelectionChanged " + ((LabeledRadioButton) args.SelectedItem).Text);
             }
 
             public void OnValueChanged(ControlBase sender, EventArgs args)
             {
-                float value = 0.0f;
+                var value = 0.0f;
 
                 if (sender is NumericUpDown)
                 {
-                    value = ((NumericUpDown)sender).Value;
+                    value = ((NumericUpDown) sender).Value;
                 }
                 else if (sender is VerticalSlider)
                 {
-                    value = ((VerticalSlider)sender).Value;
+                    value = ((VerticalSlider) sender).Value;
                 }
                 else if (sender is HorizontalSlider)
                 {
-                    value = ((HorizontalSlider)sender).Value;
+                    value = ((HorizontalSlider) sender).Value;
                 }
 
                 m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
@@ -154,11 +154,11 @@ namespace Gwen.Net.Tests.Components
             {
                 if (sender is MultilineTextBox)
                 {
-                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
+                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox) sender).Text);
                 }
                 else if (sender is TextBox)
                 {
-                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
+                    m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox) sender).Text);
                 }
             }
 
@@ -166,7 +166,7 @@ namespace Gwen.Net.Tests.Components
             {
                 if (sender is TextBox)
                 {
-                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
+                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox) sender).Text);
                 }
             }
 
@@ -174,22 +174,22 @@ namespace Gwen.Net.Tests.Components
             {
                 if (sender is CheckBox)
                 {
-                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
+                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox) sender).IsChecked);
                 }
                 else if (sender is LabeledCheckBox)
                 {
-                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
+                    m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox) sender).IsChecked);
                 }
             }
 
             public void OnRowSelected(ControlBase sender, ItemSelectedEventArgs args)
             {
-                m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow)args.SelectedItem).Text);
+                m_unit.UnitPrint(sender.Name + ": RowSelected " + ((ListBoxRow) args.SelectedItem).Text);
             }
 
             public void OnSelected(ControlBase sender, EventArgs args)
             {
-                m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
+                m_unit.UnitPrint(((TreeNode) sender).TreeControl.Name + ": Selected " + ((TreeNode) sender).Text);
             }
 
             public void OnClosed(ControlBase sender, EventArgs args)
@@ -220,7 +220,8 @@ namespace Gwen.Net.Tests.Components
                 if (handlerName == "OnItemSelected")
                 {
                     m_unit.UnitPrint(
-                        sender.Name + ": ItemSelected " + ((MenuItem)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                        sender.Name + ": ItemSelected " +
+                        ((MenuItem) ((ItemSelectedEventArgs) args).SelectedItem).Text);
 
                     return true;
                 }
@@ -229,26 +230,26 @@ namespace Gwen.Net.Tests.Components
                 {
                     m_unit.UnitPrint(
                         sender.Name + ": SelectionChanged " +
-                        ((LabeledRadioButton)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                        ((LabeledRadioButton) ((ItemSelectedEventArgs) args).SelectedItem).Text);
 
                     return true;
                 }
 
                 if (handlerName == "OnValueChanged")
                 {
-                    float value = 0.0f;
+                    var value = 0.0f;
 
                     if (sender is NumericUpDown)
                     {
-                        value = ((NumericUpDown)sender).Value;
+                        value = ((NumericUpDown) sender).Value;
                     }
                     else if (sender is VerticalSlider)
                     {
-                        value = ((VerticalSlider)sender).Value;
+                        value = ((VerticalSlider) sender).Value;
                     }
                     else if (sender is HorizontalSlider)
                     {
-                        value = ((HorizontalSlider)sender).Value;
+                        value = ((HorizontalSlider) sender).Value;
                     }
 
                     m_unit.UnitPrint(sender.Name + ": ValueChanged " + value);
@@ -260,11 +261,11 @@ namespace Gwen.Net.Tests.Components
                 {
                     if (sender is TextBox)
                     {
-                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox)sender).Text);
+                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((TextBox) sender).Text);
                     }
                     else if (sender is MultilineTextBox)
                     {
-                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox)sender).Text);
+                        m_unit.UnitPrint(sender.Name + ": TextChanged " + ((MultilineTextBox) sender).Text);
                     }
 
                     return true;
@@ -272,7 +273,7 @@ namespace Gwen.Net.Tests.Components
 
                 if (handlerName == "OnSubmitPressed")
                 {
-                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox)sender).Text);
+                    m_unit.UnitPrint(sender.Name + ": SubmitPressed " + ((TextBox) sender).Text);
 
                     return true;
                 }
@@ -281,11 +282,11 @@ namespace Gwen.Net.Tests.Components
                 {
                     if (sender is CheckBox)
                     {
-                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox)sender).IsChecked);
+                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((CheckBox) sender).IsChecked);
                     }
                     else if (sender is LabeledCheckBox)
                     {
-                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox)sender).IsChecked);
+                        m_unit.UnitPrint(sender.Name + ": CheckChanged " + ((LabeledCheckBox) sender).IsChecked);
                     }
 
                     return true;
@@ -294,14 +295,15 @@ namespace Gwen.Net.Tests.Components
                 if (handlerName == "OnRowSelected")
                 {
                     m_unit.UnitPrint(
-                        sender.Name + ": RowSelected " + ((ListBoxRow)((ItemSelectedEventArgs)args).SelectedItem).Text);
+                        sender.Name + ": RowSelected " +
+                        ((ListBoxRow) ((ItemSelectedEventArgs) args).SelectedItem).Text);
 
                     return true;
                 }
 
                 if (handlerName == "OnSelected")
                 {
-                    m_unit.UnitPrint(((TreeNode)sender).TreeControl.Name + ": Selected " + ((TreeNode)sender).Text);
+                    m_unit.UnitPrint(((TreeNode) sender).TreeControl.Name + ": Selected " + ((TreeNode) sender).Text);
 
                     return true;
                 }

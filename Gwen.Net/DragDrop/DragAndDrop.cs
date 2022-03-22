@@ -23,7 +23,7 @@ namespace Gwen.Net.DragDrop
 
         private static bool OnDrop(int x, int y)
         {
-            bool success = false;
+            var success = false;
 
             if (HoveredControl != null)
             {

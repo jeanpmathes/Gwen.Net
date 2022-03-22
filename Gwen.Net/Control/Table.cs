@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
 
             m_ColumnWidth = new int[TableRow.MaxColumns];
 
-            for (int i = 0; i < TableRow.MaxColumns; i++)
+            for (var i = 0; i < TableRow.MaxColumns; i++)
             {
                 m_ColumnWidth[i] = 20;
             }
@@ -195,8 +195,8 @@ namespace Gwen.Net.Control
                 return DoSizeToContents(availableSize);
             }
 
-            int height = 0;
-            int width = 0;
+            var height = 0;
+            var width = 0;
 
             foreach (TableRow row in Children)
             {
@@ -211,9 +211,9 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            int y = 0;
-            int width = 0;
-            bool even = false;
+            var y = 0;
+            var width = 0;
+            var even = false;
 
             foreach (TableRow row in Children)
             {
@@ -243,10 +243,10 @@ namespace Gwen.Net.Control
 
         protected Size DoSizeToContents(Size availableSize)
         {
-            int height = 0;
-            int width = 0;
+            var height = 0;
+            var width = 0;
 
-            for (int i = 0; i < ColumnCount; i++)
+            for (var i = 0; i < ColumnCount; i++)
             {
                 m_ColumnWidth[i] = 0;
             }
@@ -255,7 +255,7 @@ namespace Gwen.Net.Control
             {
                 row.DoMeasure(availableSize);
 
-                for (int i = 0; i < ColumnCount; i++)
+                for (var i = 0; i < ColumnCount; i++)
                 {
                     ControlBase cell = row.GetColumn(i);
 
@@ -267,7 +267,7 @@ namespace Gwen.Net.Control
             }
 
             // sum all column widths 
-            for (int i = 0; i < ColumnCount; i++)
+            for (var i = 0; i < ColumnCount; i++)
             {
                 width += m_ColumnWidth[i];
             }
@@ -276,7 +276,7 @@ namespace Gwen.Net.Control
 
             foreach (TableRow row in Children)
             {
-                for (int i = 0; i < ColumnCount; i++)
+                for (var i = 0; i < ColumnCount; i++)
                 {
                     if (i < ColumnCount - 1 || m_MaxWidth == 0)
                     {

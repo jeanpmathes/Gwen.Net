@@ -20,10 +20,10 @@ namespace Gwen.Net.Tests.Components
 
             {
                 Button button;
-                int buttonNum = 1;
+                var buttonNum = 1;
                 const int buttonCount = 10;
 
-                for (int n = 0; n < buttonCount; n++)
+                for (var n = 0; n < buttonCount; n++)
                 {
                     button = new Button(flowLayout);
                     button.VerticalAlignment = VerticalAlignment.Top;
@@ -43,7 +43,7 @@ namespace Gwen.Net.Tests.Components
             flowLayoutWidth.Min = 50;
             flowLayoutWidth.Max = 500;
             flowLayoutWidth.Value = flowLayout.Width;
-            flowLayoutWidth.ValueChanged += (control, args) => { flowLayout.Width = (int)flowLayoutWidth.Value; };
+            flowLayoutWidth.ValueChanged += (control, args) => { flowLayout.Width = (int) flowLayoutWidth.Value; };
         }
     }
 }

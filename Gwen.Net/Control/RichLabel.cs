@@ -61,7 +61,7 @@ namespace Gwen.Net.Control
                 LineBreaker lineBreaker = new RichText.Simple.LineBreaker(Skin.Renderer, Skin.DefaultFont);
 #endif
 
-                int y = 0;
+                var y = 0;
                 int x;
                 int width;
                 int height;
@@ -70,24 +70,24 @@ namespace Gwen.Net.Control
                 {
                     if (paragraph is ImageParagraph)
                     {
-                        ImageParagraph imageParagraph = paragraph as ImageParagraph;
+                        var imageParagraph = paragraph as ImageParagraph;
 
                         ImagePanel image = new(this);
                         image.ImageName = imageParagraph.ImageName;
 
                         if (imageParagraph.ImageSize != null)
                         {
-                            image.Size = (Size)imageParagraph.ImageSize;
+                            image.Size = (Size) imageParagraph.ImageSize;
                         }
 
                         if (imageParagraph.TextureRect != null)
                         {
-                            image.TextureRect = (Rectangle)imageParagraph.TextureRect;
+                            image.TextureRect = (Rectangle) imageParagraph.TextureRect;
                         }
 
                         if (imageParagraph.ImageColor != null)
                         {
-                            image.ImageColor = (Color)imageParagraph.ImageColor;
+                            image.ImageColor = (Color) imageParagraph.ImageColor;
                         }
 
                         image.DoMeasure(Size.Infinity);
@@ -119,7 +119,7 @@ namespace Gwen.Net.Control
                             {
                                 if (textBlock.Part is LinkPart)
                                 {
-                                    LinkPart linkPart = textBlock.Part as LinkPart;
+                                    var linkPart = textBlock.Part as LinkPart;
 
                                     LinkLabel link = new(this);
                                     link.Text = textBlock.Text;
@@ -129,12 +129,12 @@ namespace Gwen.Net.Control
 
                                     if (linkPart.Color != null)
                                     {
-                                        link.TextColor = (Color)linkPart.Color;
+                                        link.TextColor = (Color) linkPart.Color;
                                     }
 
                                     if (linkPart.HoverColor != null)
                                     {
-                                        link.HoverColor = (Color)linkPart.HoverColor;
+                                        link.HoverColor = (Color) linkPart.HoverColor;
                                     }
 
                                     if (linkPart.HoverFont != null)
@@ -156,7 +156,7 @@ namespace Gwen.Net.Control
                                 }
                                 else if (textBlock.Part is TextPart)
                                 {
-                                    TextPart textPart = textBlock.Part as TextPart;
+                                    var textPart = textBlock.Part as TextPart;
 
                                     Text text = new(this);
                                     text.String = textBlock.Text;
@@ -164,7 +164,7 @@ namespace Gwen.Net.Control
 
                                     if (textPart.Color != null)
                                     {
-                                        text.TextColor = (Color)textPart.Color;
+                                        text.TextColor = (Color) textPart.Color;
                                     }
 
                                     text.DoMeasure(Size.Infinity);

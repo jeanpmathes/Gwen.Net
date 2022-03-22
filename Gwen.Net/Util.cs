@@ -14,12 +14,12 @@ namespace Gwen.Net
 
         public static int Ceil(float x)
         {
-            return (int)Math.Ceiling(x);
+            return (int) Math.Ceiling(x);
         }
 
         public static Rectangle FloatRect(float x, float y, float w, float h)
         {
-            return new((int)x, (int)y, (int)w, (int)h);
+            return new((int) x, (int) y, (int) w, (int) h);
         }
 
         public static int Clamp(int x, int min, int max)
@@ -148,13 +148,13 @@ namespace Gwen.Net
         public static Color HSVToColor(float h, float s, float v)
         {
             int hi = Convert.ToInt32(Math.Floor(h / 60)) % 6;
-            float f = (h / 60) - (float)Math.Floor(h / 60);
+            float f = (h / 60) - (float) Math.Floor(h / 60);
 
             v = v * 255;
-            int va = Convert.ToInt32(v);
-            int p = Convert.ToInt32(v * (1 - s));
-            int q = Convert.ToInt32(v * (1 - (f * s)));
-            int t = Convert.ToInt32(v * (1 - ((1 - f) * s)));
+            var va = Convert.ToInt32(v);
+            var p = Convert.ToInt32(v * (1 - s));
+            var q = Convert.ToInt32(v * (1 - f * s));
+            var t = Convert.ToInt32(v * (1 - (1 - f) * s));
 
             if (hi == 0)
             {
@@ -197,7 +197,7 @@ namespace Gwen.Net
 
         public static Color Multiply(this Color color, float amount)
         {
-            return new(color.A, (int)(color.R * amount), (int)(color.G * amount), (int)(color.B * amount));
+            return new(color.A, (int) (color.R * amount), (int) (color.G * amount), (int) (color.B * amount));
         }
 
         public static Rectangle Add(this Rectangle r, Rectangle other)
@@ -214,7 +214,7 @@ namespace Gwen.Net
         public static string[] SplitAndKeep(string text, string separators)
         {
             List<string> strs = new();
-            int offset = 0;
+            var offset = 0;
             int length = text.Length;
             int sepLen = separators.Length;
             int i = text.IndexOf(separators);
@@ -224,7 +224,7 @@ namespace Gwen.Net
             {
                 word = text.Substring(offset, i - offset);
 
-                if (!String.IsNullOrWhiteSpace(word))
+                if (!string.IsNullOrWhiteSpace(word))
                 {
                     strs.Add(word);
                 }

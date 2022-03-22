@@ -201,46 +201,46 @@ namespace Gwen.Net.Tests.Components
 
         private void PaddingChanged(ControlBase control, EventArgs args)
         {
-            Slider val = control as Slider;
-            int i = (int)val.Value;
+            var val = control as Slider;
+            var i = (int) val.Value;
             outer.Padding = new Padding(i, i, i, i);
         }
 
         private void MarginChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = control.UserData as ControlBase;
-            Slider val = control as Slider;
-            int i = (int)val.Value;
+            var inner = control.UserData as ControlBase;
+            var val = control as Slider;
+            var i = (int) val.Value;
             inner.Margin = new Margin(i, i, i, i);
         }
 
         private void WidthChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = control.UserData as ControlBase;
-            Slider val = control as Slider;
+            var inner = control.UserData as ControlBase;
+            var val = control as Slider;
 
             if (inner.HorizontalAlignment != HorizontalAlignment.Stretch)
             {
-                inner.Width = (int)val.Value;
+                inner.Width = (int) val.Value;
             }
         }
 
         private void HeightChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = control.UserData as ControlBase;
-            Slider val = control as Slider;
+            var inner = control.UserData as ControlBase;
+            var val = control as Slider;
 
             if (inner.VerticalAlignment != VerticalAlignment.Stretch)
             {
-                inner.Height = (int)val.Value;
+                inner.Height = (int) val.Value;
             }
         }
 
         private void HAlignChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = control.UserData as ControlBase;
-            RadioButtonGroup rbg = (RadioButtonGroup)control;
-            inner.HorizontalAlignment = (HorizontalAlignment)rbg.Selected.UserData;
+            var inner = control.UserData as ControlBase;
+            var rbg = (RadioButtonGroup) control;
+            inner.HorizontalAlignment = (HorizontalAlignment) rbg.Selected.UserData;
 
             if (inner.HorizontalAlignment == HorizontalAlignment.Stretch)
             {
@@ -250,9 +250,9 @@ namespace Gwen.Net.Tests.Components
 
         private void VAlignChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = control.UserData as ControlBase;
-            RadioButtonGroup rbg = (RadioButtonGroup)control;
-            inner.VerticalAlignment = (VerticalAlignment)rbg.Selected.UserData;
+            var inner = control.UserData as ControlBase;
+            var rbg = (RadioButtonGroup) control;
+            inner.VerticalAlignment = (VerticalAlignment) rbg.Selected.UserData;
 
             if (inner.VerticalAlignment == VerticalAlignment.Stretch)
             {
@@ -262,12 +262,12 @@ namespace Gwen.Net.Tests.Components
 
         private void DockChanged(ControlBase control, EventArgs args)
         {
-            ControlBase inner = (ControlBase)control.UserData;
-            RadioButtonGroup rbg = (RadioButtonGroup)control;
-            ControlBase gb = inner.UserData as ControlBase;
-            int w = (int)(gb.FindChildByName("Width", recursive: true) as Slider).Value;
-            int h = (int)(gb.FindChildByName("Height", recursive: true) as Slider).Value;
-            inner.Dock = (Dock)rbg.Selected.UserData;
+            var inner = (ControlBase) control.UserData;
+            var rbg = (RadioButtonGroup) control;
+            var gb = inner.UserData as ControlBase;
+            var w = (int) (gb.FindChildByName("Width", recursive: true) as Slider).Value;
+            var h = (int) (gb.FindChildByName("Height", recursive: true) as Slider).Value;
+            inner.Dock = (Dock) rbg.Selected.UserData;
 
             switch (inner.Dock)
             {

@@ -18,12 +18,12 @@ namespace Gwen.Net.RichText.Simple
 
             List<TextBlock> textBlocks = new();
 
-            int lineStart = 0;
+            var lineStart = 0;
             int lineStop;
-            int w = 0;
-            int y = 0;
+            var w = 0;
+            var y = 0;
             int x = paragraph.FirstIndent;
-            int index = 0;
+            var index = 0;
 
             while (index < nodes.Count)
             {
@@ -59,13 +59,13 @@ namespace Gwen.Net.RichText.Simple
                         lineStop--;
                     }
 
-                    int height = 0;
-                    int baseline = 0;
+                    var height = 0;
+                    var baseline = 0;
 
                     for (int i = lineStart; i <= lineStop; i++)
                     {
                         height = Math.Max(height, nodes[i].Size.Height);
-                        baseline = Math.Max(baseline, (int)((TextPart)nodes[i].Part).Font.FontMetrics.Baseline);
+                        baseline = Math.Max(baseline, (int) ((TextPart) nodes[i].Part).Font.FontMetrics.Baseline);
                     }
 
                     StringBuilder str = new(capacity: 1000);
@@ -80,7 +80,7 @@ namespace Gwen.Net.RichText.Simple
                             textBlock.Part = part;
                             str.Clear();
 
-                            int h = 0;
+                            var h = 0;
 
                             for (int k = blockStart; k <= i; k++)
                             {
@@ -97,12 +97,12 @@ namespace Gwen.Net.RichText.Simple
 
                             textBlock.Position = new Point(
                                 x,
-                                y + baseline - (int)((TextPart)part).Font.FontMetrics.Baseline);
+                                y + baseline - (int) ((TextPart) part).Font.FontMetrics.Baseline);
 
                             textBlock.Text = str.ToString();
 
                             textBlock.Size = new Size(
-                                Renderer.MeasureText(((TextPart)part).Font, textBlock.Text).Width,
+                                Renderer.MeasureText(((TextPart) part).Font, textBlock.Text).Width,
                                 h);
 
                             x += textBlock.Size.Width;
@@ -145,7 +145,7 @@ namespace Gwen.Net.RichText.Simple
 
             Font font = DefaultFont;
 
-            for (int partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
+            for (var partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
             {
                 Part part = paragraph.Parts[partIndex];
 
@@ -156,7 +156,7 @@ namespace Gwen.Net.RichText.Simple
                     font = DefaultFont;
                 }
 
-                for (int wordIndex = 0; wordIndex < words.Length; wordIndex++)
+                for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)
                 {
                     string word = words[wordIndex];
 

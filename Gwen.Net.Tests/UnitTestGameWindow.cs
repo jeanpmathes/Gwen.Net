@@ -102,8 +102,8 @@ namespace Gwen.Net.Tests
         [STAThread]
         public static void Main()
         {
-            GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
-            NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
+            var gameWindowSettings = GameWindowSettings.Default;
+            var nativeWindowSettings = NativeWindowSettings.Default;
 
             nativeWindowSettings.Profile = ContextProfile.Core;
 

@@ -26,11 +26,11 @@ namespace Gwen.Net.Control
 
             if (parent is ListBox)
             {
-                m_ColumnCount = ((ListBox)parent).ColumnCount;
+                m_ColumnCount = ((ListBox) parent).ColumnCount;
             }
             else if (parent is Table)
             {
-                m_ColumnCount = ((Table)parent).ColumnCount;
+                m_ColumnCount = ((Table) parent).ColumnCount;
             }
 
             KeyboardInputEnabled = true;
@@ -85,7 +85,7 @@ namespace Gwen.Net.Control
                 throw new ArgumentException("Invalid column count", "columnCount");
             }
 
-            for (int i = 0; i < MaxColumns; i++)
+            for (var i = 0; i < MaxColumns; i++)
             {
                 if (i < columnCount)
                 {
@@ -196,10 +196,10 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            int width = 0;
-            int height = 0;
+            var width = 0;
+            var height = 0;
 
-            for (int i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < m_ColumnCount; i++)
             {
                 if (null == m_Columns[i])
                 {
@@ -217,10 +217,10 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            int x = 0;
-            int height = 0;
+            var x = 0;
+            var height = 0;
 
-            for (int i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < m_ColumnCount; i++)
             {
                 if (null == m_Columns[i])
                 {
@@ -251,7 +251,7 @@ namespace Gwen.Net.Control
         /// <param name="color">Text color.</param>
         public void SetTextColor(Color color)
         {
-            for (int i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < m_ColumnCount; i++)
             {
                 if (null == m_Columns[i])
                 {

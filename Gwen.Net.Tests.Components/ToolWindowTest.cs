@@ -36,7 +36,7 @@ namespace Gwen.Net.Tests.Components
 
             HorizontalLayout layout = new(window);
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 Button button = new(layout);
                 button.Size = new Size(width: 36, height: 36);
@@ -80,7 +80,7 @@ namespace Gwen.Net.Tests.Components
 
         private void Close(ControlBase control, EventArgs args)
         {
-            ToolWindow window = control.UserData as ToolWindow;
+            var window = control.UserData as ToolWindow;
             window.Close();
             window.Parent.RemoveChild(window, dispose: true);
         }

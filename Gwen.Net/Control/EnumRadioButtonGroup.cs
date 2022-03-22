@@ -11,7 +11,7 @@ namespace Gwen.Net.Control
                 throw new Exception("T must be an enumerated type!");
             }
 
-            for (int i = 0; i < Enum.GetValues(typeof(T)).Length; i++)
+            for (var i = 0; i < Enum.GetValues(typeof(T)).Length; i++)
             {
                 string name = Enum.GetNames(typeof(T))[i];
                 LabeledRadioButton lrb = AddOption(name);
@@ -21,7 +21,7 @@ namespace Gwen.Net.Control
 
         public T SelectedValue
         {
-            get => (T)Selected.UserData;
+            get => (T) Selected.UserData;
             set
             {
                 foreach (ControlBase child in Children)

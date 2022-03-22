@@ -41,7 +41,7 @@ namespace Gwen.Net.Tests.Components
             ctrl = new NumericUpDown(layout);
             ctrl.Margin = Margin.Five;
             ctrl.Width = 70;
-            ctrl.Max = Single.MaxValue;
+            ctrl.Max = float.MaxValue;
             ctrl.Min = 0;
             ctrl.Step = 1f;
             ctrl.ValueChanged += OnValueChanged;
@@ -49,7 +49,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OnValueChanged(ControlBase control, EventArgs args)
         {
-            UnitPrint(String.Format("NumericUpDown: ValueChanged: {0}", ((NumericUpDown)control).Value));
+            UnitPrint(string.Format("NumericUpDown: ValueChanged: {0}", ((NumericUpDown) control).Value));
         }
     }
 }

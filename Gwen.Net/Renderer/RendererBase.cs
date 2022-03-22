@@ -227,7 +227,7 @@ namespace Gwen.Net.Renderer
         /// <returns>Width and height of the rendered text.</returns>
         public virtual Size MeasureText(Font font, string text)
         {
-            Size p = new((int)(font.Size * Scale * text.Length * 0.4f), (int)(font.Size * Scale));
+            Size p = new((int) (font.Size * Scale * text.Length * 0.4f), (int) (font.Size * Scale));
 
             return p;
         }
@@ -242,7 +242,7 @@ namespace Gwen.Net.Renderer
         {
             float size = font.Size * Scale;
 
-            for (int i = 0; i < text.Length; i++)
+            for (var i = 0; i < text.Length; i++)
             {
                 char chr = text[i];
 
@@ -263,8 +263,8 @@ namespace Gwen.Net.Renderer
                 }
                 else if (chr >= 'a' && chr <= 'z')
                 {
-                    r.Y = (int)(r.Y + (size * 0.5f));
-                    r.Height = (int)(r.Height - (size * 0.4f));
+                    r.Y = (int) (r.Y + (size * 0.5f));
+                    r.Height = (int) (r.Height - (size * 0.4f));
                 }
                 else if (chr == '.' || chr == ',')
                 {

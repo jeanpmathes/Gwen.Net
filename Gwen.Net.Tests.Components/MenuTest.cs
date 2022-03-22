@@ -20,9 +20,9 @@ namespace Gwen.Net.Tests.Components
                 {
                     MenuItem root = menu.AddItem("File");
                     root.Menu.AddItem("Load", "test16.png", "Ctrl+L").SetAction(MenuItemSelect);
-                    root.Menu.AddItem("Save", String.Empty, "Ctrl+S").SetAction(MenuItemSelect);
-                    root.Menu.AddItem("Save As..", String.Empty, "Ctrl+A").SetAction(MenuItemSelect);
-                    root.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction(MenuItemSelect);
+                    root.Menu.AddItem("Save", string.Empty, "Ctrl+S").SetAction(MenuItemSelect);
+                    root.Menu.AddItem("Save As..", string.Empty, "Ctrl+A").SetAction(MenuItemSelect);
+                    root.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction(MenuItemSelect);
                 }
 
                 /* Russian */
@@ -136,8 +136,8 @@ namespace Gwen.Net.Tests.Components
 
         private void MenuItemSelect(ControlBase control, EventArgs args)
         {
-            MenuItem item = control as MenuItem;
-            UnitPrint(String.Format("Menu item selected: {0}", item.Text));
+            var item = control as MenuItem;
+            UnitPrint(string.Format("Menu item selected: {0}", item.Text));
         }
     }
 }

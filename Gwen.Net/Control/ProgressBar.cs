@@ -55,7 +55,7 @@ namespace Gwen.Net.Control
 
                 if (AutoLabel)
                 {
-                    int displayVal = (int)(m_Progress * 100);
+                    var displayVal = (int) (m_Progress * 100);
                     Text = displayVal + "%";
                 }
             }

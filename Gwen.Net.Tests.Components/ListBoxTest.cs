@@ -146,10 +146,7 @@ namespace Gwen.Net.Tests.Components
                 multiline.Dock = Dock.Top;
                 multiline.Text = "Enable MultiSelect";
 
-                multiline.CheckChanged += delegate
-                {
-                    ctrl.AllowMultiSelect = multiline.IsChecked;
-                };
+                multiline.CheckChanged += delegate { ctrl.AllowMultiSelect = multiline.IsChecked; };
 
                 vlayout = new VerticalLayout(hlayout);
 
@@ -159,10 +156,7 @@ namespace Gwen.Net.Tests.Components
                     TriangleButton.Text = "Row";
                     TriangleButton.Width = 100;
 
-                    TriangleButton.Clicked += delegate
-                    {
-                        ctrl.SelectedRow = Row;
-                    };
+                    TriangleButton.Clicked += delegate { ctrl.SelectedRow = Row; };
                 }
 
                 //Select by Text
@@ -171,10 +165,7 @@ namespace Gwen.Net.Tests.Components
                     TestBtn.Text = "Text";
                     TestBtn.Width = 100;
 
-                    TestBtn.Clicked += delegate
-                    {
-                        ctrl.SelectByText("Text");
-                    };
+                    TestBtn.Clicked += delegate { ctrl.SelectByText("Text"); };
                 }
 
                 //Select by Name
@@ -183,10 +174,7 @@ namespace Gwen.Net.Tests.Components
                     TestBtn.Text = "Name";
                     TestBtn.Width = 100;
 
-                    TestBtn.Clicked += delegate
-                    {
-                        ctrl.SelectByName("Name");
-                    };
+                    TestBtn.Clicked += delegate { ctrl.SelectByName("Name"); };
                 }
 
                 //Select by UserData
@@ -195,17 +183,14 @@ namespace Gwen.Net.Tests.Components
                     TestBtn.Text = "UserData";
                     TestBtn.Width = 100;
 
-                    TestBtn.Clicked += delegate
-                    {
-                        ctrl.SelectByUserData(userdata: 12);
-                    };
+                    TestBtn.Clicked += delegate { ctrl.SelectByUserData(userdata: 12); };
                 }
             }
         }
 
         private void RowSelected(ControlBase control, EventArgs args)
         {
-            ListBox list = control as ListBox;
+            var list = control as ListBox;
 
             UnitPrint(
                 String.Format(
@@ -218,7 +203,7 @@ namespace Gwen.Net.Tests.Components
         {
             // todo: how to determine which one was unselected (store somewhere)
             // or pass row as the event param?
-            ListBox list = control as ListBox;
+            var list = control as ListBox;
             UnitPrint("ListBox: OnRowUnselected");
         }
     }

@@ -77,7 +77,7 @@ namespace Gwen.Net.Control.Property
         /// <param name="control">Event source.</param>
         protected virtual void OnColorChanged(ControlBase control, EventArgs args)
         {
-            HSVColorPicker picker = control as HSVColorPicker;
+            var picker = control as HSVColorPicker;
             SetTextFromColor(picker.SelectedColor);
             DoChanged();
         }
@@ -94,7 +94,7 @@ namespace Gwen.Net.Control.Property
 
         private void SetTextFromColor(Color color)
         {
-            m_TextBox.Text = String.Format("{0} {1} {2}", color.R, color.G, color.B);
+            m_TextBox.Text = string.Format("{0} {1} {2}", color.R, color.G, color.B);
         }
 
         private Color GetColorFromText()
@@ -108,17 +108,17 @@ namespace Gwen.Net.Control.Property
 
             if (split.Length > 0 && split[0].Length > 0)
             {
-                Byte.TryParse(split[0], out red);
+                byte.TryParse(split[0], out red);
             }
 
             if (split.Length > 1 && split[1].Length > 0)
             {
-                Byte.TryParse(split[1], out green);
+                byte.TryParse(split[1], out green);
             }
 
             if (split.Length > 2 && split[2].Length > 0)
             {
-                Byte.TryParse(split[2], out blue);
+                byte.TryParse(split[2], out blue);
             }
 
             return new Color(alpha, red, green, blue);

@@ -23,7 +23,7 @@ namespace Gwen.Net.Control.Internal
         {
             AutoSizeToContents = true;
             m_Font = Skin.DefaultFont;
-            m_String = String.Empty;
+            m_String = string.Empty;
             m_FitToText = null;
             TextColor = Skin.Colors.Label.Default;
             MouseInputEnabled = false;
@@ -174,7 +174,7 @@ namespace Gwen.Net.Control.Internal
             {
                 size = Skin.Renderer.MeasureText(Font, " ");
             }
-            else if (!AutoSizeToContents && !String.IsNullOrWhiteSpace(m_FitToText))
+            else if (!AutoSizeToContents && !string.IsNullOrWhiteSpace(m_FitToText))
             {
                 size = Skin.Renderer.MeasureText(Font, m_FitToText);
             }
@@ -217,7 +217,7 @@ namespace Gwen.Net.Control.Internal
         public int GetClosestCharacter(Point p)
         {
             int px = p.X;
-            int left = 0;
+            var left = 0;
             int right = String.Length;
 
             int center;

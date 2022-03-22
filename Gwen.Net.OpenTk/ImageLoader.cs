@@ -9,21 +9,21 @@ namespace Gwen.Net.OpenTk
     {
         public delegate Bitmap Loader(string filename);
 
-        public static readonly Dictionary<string, Loader> loaders = new()
+        private static readonly Dictionary<string, Loader> loaders = new()
         {
-            {"jpeg", StandardLoader},
-            {"jpe", StandardLoader},
-            {"jfif", StandardLoader},
-            {"jpg", StandardLoader},
-            {"bmp", StandardLoader},
-            {"dib", StandardLoader},
-            {"rle", StandardLoader},
-            {"png", StandardLoader},
-            {"gif", StandardLoader},
-            {"tif", StandardLoader},
-            {"exif", StandardLoader},
-            {"wmf", StandardLoader},
-            {"emf", StandardLoader}
+            { "jpeg", StandardLoader },
+            { "jpe", StandardLoader },
+            { "jfif", StandardLoader },
+            { "jpg", StandardLoader },
+            { "bmp", StandardLoader },
+            { "dib", StandardLoader },
+            { "rle", StandardLoader },
+            { "png", StandardLoader },
+            { "gif", StandardLoader },
+            { "tif", StandardLoader },
+            { "exif", StandardLoader },
+            { "wmf", StandardLoader },
+            { "emf", StandardLoader }
         };
 
         public static Bitmap StandardLoader(string s)

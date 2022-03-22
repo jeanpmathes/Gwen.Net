@@ -107,7 +107,7 @@ namespace Gwen.Net.Control
 
         private float CalculateValueVertical()
         {
-            return m_VSplitter.ActualTop / (float)(ActualHeight - m_VSplitter.ActualHeight);
+            return m_VSplitter.ActualTop / (float) (ActualHeight - m_VSplitter.ActualHeight);
         }
 
         protected override Size Measure(Size availableSize)
@@ -117,7 +117,7 @@ namespace Gwen.Net.Control
             m_VSplitter.DoMeasure(new Size(availableSize.Width, SplitterSize));
             size.Height += m_VSplitter.Height;
 
-            int v = (int)((availableSize.Height - SplitterSize) * m_VVal);
+            var v = (int) ((availableSize.Height - SplitterSize) * m_VVal);
 
             if (m_ZoomedSection == -1)
             {
@@ -146,7 +146,7 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            int v = (int)((finalSize.Height - SplitterSize) * m_VVal);
+            var v = (int) ((finalSize.Height - SplitterSize) * m_VVal);
 
             m_VSplitter.DoArrange(
                 new Rectangle(x: 0, v, m_VSplitter.MeasuredSize.Width, m_VSplitter.MeasuredSize.Height));
@@ -256,7 +256,7 @@ namespace Gwen.Net.Control
 
             if (m_Sections[section] != null)
             {
-                for (int i = 0; i < 2; i++)
+                for (var i = 0; i < 2; i++)
                 {
                     if (i != section && m_Sections[i] != null)
                     {
@@ -279,7 +279,7 @@ namespace Gwen.Net.Control
         {
             m_ZoomedSection = -1;
 
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 if (m_Sections[i] != null)
                 {

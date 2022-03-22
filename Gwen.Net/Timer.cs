@@ -115,7 +115,7 @@ namespace Gwen.Net
                 return;
             }
 
-            int diff = (int)((currentTime - m_LastTime) * 1000.0f);
+            var diff = (int) ((currentTime - m_LastTime) * 1000.0f);
 
             foreach (Timer timer in m_Timers)
             {

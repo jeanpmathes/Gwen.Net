@@ -296,7 +296,7 @@ namespace Gwen.Net.Control
                 m_Accelerator = null;
             }
 
-            if (acc == String.Empty)
+            if (acc == string.Empty)
             {
                 return;
             }

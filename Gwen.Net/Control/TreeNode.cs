@@ -158,7 +158,7 @@ namespace Gwen.Net.Control
 
                 foreach (ControlBase child in Children)
                 {
-                    TreeNode node = child as TreeNode;
+                    var node = child as TreeNode;
 
                     if (node == null)
                     {
@@ -220,7 +220,7 @@ namespace Gwen.Net.Control
         {
             if (!IsRoot)
             {
-                int bottom = 0;
+                var bottom = 0;
 
                 if (m_InnerPanel.Children.Count > 0)
                 {
@@ -233,7 +233,7 @@ namespace Gwen.Net.Control
                     IsSelected,
                     m_Title.ActualHeight,
                     m_Title.ActualWidth,
-                    (int)(m_ToggleButton.ActualTop + (m_ToggleButton.ActualHeight * 0.5f)),
+                    (int) (m_ToggleButton.ActualTop + (m_ToggleButton.ActualHeight * 0.5f)),
                     bottom,
                     RootNode == Parent,
                     m_ToggleButton.ActualWidth);
@@ -369,7 +369,7 @@ namespace Gwen.Net.Control
         {
             while (NodeCount > 0)
             {
-                TreeNode node = Children[index: 0] as TreeNode;
+                var node = Children[index: 0] as TreeNode;
 
                 if (node == null)
                 {
@@ -441,7 +441,7 @@ namespace Gwen.Net.Control
 
             foreach (ControlBase child in Children)
             {
-                TreeNode node = child as TreeNode;
+                var node = child as TreeNode;
 
                 if (node == null)
                 {
@@ -466,7 +466,7 @@ namespace Gwen.Net.Control
 
             foreach (ControlBase child in Children)
             {
-                TreeNode node = child as TreeNode;
+                var node = child as TreeNode;
 
                 if (node == null)
                 {
@@ -485,7 +485,7 @@ namespace Gwen.Net.Control
         /// <returns>Found node or null.</returns>
         public TreeNode FindNodeByUserData(object userData, bool recursive = true)
         {
-            TreeNode node = Children.Where(x => x is TreeNode && x.UserData == userData).FirstOrDefault() as TreeNode;
+            var node = Children.Where(x => x is TreeNode && x.UserData == userData).FirstOrDefault() as TreeNode;
 
             if (node != null)
             {
@@ -587,7 +587,7 @@ namespace Gwen.Net.Control
 
         protected override void OnChildAdded(ControlBase child)
         {
-            TreeNode node = child as TreeNode;
+            var node = child as TreeNode;
 
             if (node != null)
             {

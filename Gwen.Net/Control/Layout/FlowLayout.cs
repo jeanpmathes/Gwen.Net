@@ -21,11 +21,11 @@ namespace Gwen.Net.Control.Layout
         {
             availableSize -= Padding;
 
-            int lineWidth = 0;
-            int lineHeight = 0;
-            int width = 0;
-            int height = 0;
-            int y = 0;
+            var lineWidth = 0;
+            var lineHeight = 0;
+            var width = 0;
+            var height = 0;
+            var y = 0;
 
             foreach (ControlBase child in Children)
             {
@@ -58,11 +58,11 @@ namespace Gwen.Net.Control.Layout
         {
             finalSize -= Padding;
 
-            int lineHeight = 0;
-            int width = 0;
-            int height = 0;
-            int x = 0;
-            int y = 0;
+            var lineHeight = 0;
+            var width = 0;
+            var height = 0;
+            var x = 0;
+            var y = 0;
 
             foreach (ControlBase child in Children)
             {

@@ -58,7 +58,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OnChanged(ControlBase control, EventArgs args)
         {
-            PropertyRow row = control as PropertyRow;
+            var row = control as PropertyRow;
             UnitPrint(String.Format("Property changed: {0}", row.Value));
         }
     }

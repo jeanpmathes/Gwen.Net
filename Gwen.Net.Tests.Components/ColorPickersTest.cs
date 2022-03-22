@@ -43,20 +43,17 @@ namespace Gwen.Net.Tests.Components
                 OpenWindow.HorizontalAlignment = HorizontalAlignment.Left;
                 OpenWindow.Text = "Open Window";
 
-                OpenWindow.Clicked += delegate
-                {
-                    window.Show();
-                };
+                OpenWindow.Clicked += delegate { window.Show(); };
             }
         }
 
         private void ColorChanged(ControlBase control, EventArgs args)
         {
-            IColorPicker picker = control as IColorPicker;
+            var picker = control as IColorPicker;
             Color c = picker.SelectedColor;
-            HSV hsv = c.ToHSV();
+            var hsv = c.ToHSV();
 
-            String text = String.Format(
+            string text = string.Format(
                 "Color changed: RGB: {0:X2}{1:X2}{2:X2} HSV: {3:F1} {4:F2} {5:F2}",
                 c.R,
                 c.G,

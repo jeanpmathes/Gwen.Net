@@ -23,7 +23,7 @@ namespace Gwen.Net.Control
         {
             m_Button = new Button(this);
             m_Button.Alignment = Alignment.Left | Alignment.CenterV;
-            m_Button.Text = String.Empty;
+            m_Button.Text = string.Empty;
             m_Button.TextPadding = Padding.Three;
             m_Button.Clicked += OnClicked;
 
@@ -56,7 +56,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void RemoveAll()
         {
-            m_Button.Text = String.Empty;
+            m_Button.Text = string.Empty;
             base.RemoveAll();
         }
 
@@ -68,7 +68,7 @@ namespace Gwen.Net.Control
         {
             if (!IsDisabled)
             {
-                MenuItem item = control as MenuItem;
+                var item = control as MenuItem;
 
                 if (null == item)
                 {

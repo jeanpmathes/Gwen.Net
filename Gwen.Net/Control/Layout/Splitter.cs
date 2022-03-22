@@ -81,7 +81,7 @@ namespace Gwen.Net.Control.Layout
 
         protected override Size Arrange(Size finalSize)
         {
-            int y = 0;
+            var y = 0;
 
             if (m_Panel[0] != null)
             {

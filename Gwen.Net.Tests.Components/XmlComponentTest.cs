@@ -75,9 +75,9 @@ namespace Gwen.Net.Tests.Components
 
             public void OnButtonClicked(ControlBase sender, ClickedEventArgs args)
             {
-                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
+                var value = GetControl("Value") as TextBoxNumeric;
 
-                int buttonId = (int)sender.UserData;
+                var buttonId = (int) sender.UserData;
 
                 if (buttonId == 1)
                 {
@@ -90,17 +90,17 @@ namespace Gwen.Net.Tests.Components
 
                 if (ValueChanged != null)
                 {
-                    ValueChanged(View, new ValueChangedEventArgs {Value = (int)value.Value});
+                    ValueChanged(View, new ValueChangedEventArgs { Value = (int) value.Value });
                 }
             }
 
             public void OnSubmitPressed(ControlBase sender, EventArgs args)
             {
-                TextBoxNumeric value = GetControl("Value") as TextBoxNumeric;
+                var value = GetControl("Value") as TextBoxNumeric;
 
                 if (ValueChanged != null)
                 {
-                    ValueChanged(View, new ValueChangedEventArgs {Value = (int)value.Value});
+                    ValueChanged(View, new ValueChangedEventArgs { Value = (int) value.Value });
                 }
             }
         }

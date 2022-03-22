@@ -223,7 +223,7 @@ namespace Gwen.Net.Control
                 UnselectAll();
             }
 
-            ListBoxRow row = control as ListBoxRow;
+            var row = control as ListBoxRow;
 
             if (row == null)
             {
@@ -264,7 +264,7 @@ namespace Gwen.Net.Control
         /// <returns>Newly created control.</returns>
         public ListBoxRow AddRow(string label)
         {
-            return AddRow(label, String.Empty);
+            return AddRow(label, string.Empty);
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Internal control name.</param>
         /// <param name="UserData">User data for newly created row</param>
         /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name, Object UserData)
+        public ListBoxRow AddRow(string label, string name, object UserData)
         {
             ListBoxRow row = new(this);
             m_Table.AddRow(row);
@@ -377,8 +377,8 @@ namespace Gwen.Net.Control
         protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
         {
             // [omeg] changed default behavior
-            bool clear = false; // !InputHandler.InputHandler.IsShiftDown;
-            ListBoxRow row = args.SelectedItem as ListBoxRow;
+            var clear = false; // !InputHandler.InputHandler.IsShiftDown;
+            var row = args.SelectedItem as ListBoxRow;
 
             if (row == null)
             {
@@ -404,7 +404,7 @@ namespace Gwen.Net.Control
         /// <param name="control">Event source.</param>
         protected virtual void OnRowDoubleClicked(ControlBase control, ClickedEventArgs args)
         {
-            ListBoxRow row = control as ListBoxRow;
+            var row = control as ListBoxRow;
 
             if (row == null)
             {

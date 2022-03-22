@@ -143,31 +143,31 @@ namespace Gwen.Net.Tests.Components
 
         private void NodeCollapsed(ControlBase control, EventArgs args)
         {
-            TreeNode node = control as TreeNode;
+            var node = control as TreeNode;
             UnitPrint(String.Format("Node collapsed: {0}", node.Text));
         }
 
         private void NodeExpanded(ControlBase control, EventArgs args)
         {
-            TreeNode node = control as TreeNode;
+            var node = control as TreeNode;
             UnitPrint(String.Format("Node expanded: {0}", node.Text));
         }
 
         private void NodeSelected(ControlBase control, EventArgs args)
         {
-            TreeNode node = control as TreeNode;
+            var node = control as TreeNode;
             UnitPrint(String.Format("Node selected: {0}", node.Text));
         }
 
         private void NodeClicked(ControlBase control, ClickedEventArgs args)
         {
-            TreeNode node = control as TreeNode;
+            var node = control as TreeNode;
             UnitPrint(String.Format("Node clicked: {0} @({1}, {2})", node.Text, args.X, args.Y));
         }
 
         private void NodeDoubleClicked(ControlBase control, ClickedEventArgs args)
         {
-            TreeNode node = control as TreeNode;
+            var node = control as TreeNode;
             UnitPrint(String.Format("Node double clicked: {0}", node.Text));
         }
     }

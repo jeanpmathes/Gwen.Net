@@ -40,7 +40,7 @@ namespace Gwen.Net.RichText
         {
             List<string> strs = new();
             int len = str.Length;
-            int index = 0;
+            var index = 0;
             int i;
 
             while (index < len)

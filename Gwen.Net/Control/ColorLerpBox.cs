@@ -68,13 +68,13 @@ namespace Gwen.Net.Control
         /// <param name="onlyHue">Deetrmines whether to only set H value (not SV).</param>
         public void SetColor(Color value, bool onlyHue = true, bool doEvents = true)
         {
-            HSV hsv = value.ToHSV();
+            var hsv = value.ToHSV();
             m_Hue = hsv.H;
 
             if (!onlyHue)
             {
-                m_CursorPos.X = (int)(hsv.S * ActualWidth);
-                m_CursorPos.Y = (int)((1 - hsv.V) * ActualHeight);
+                m_CursorPos.X = (int) (hsv.S * ActualWidth);
+                m_CursorPos.Y = (int) ((1 - hsv.V) * ActualHeight);
             }
 
             InvalidateTexture();
@@ -157,8 +157,8 @@ namespace Gwen.Net.Control
         /// <returns>Color value.</returns>
         private Color GetColorAt(int x, int y)
         {
-            float xPercent = x / (float)ActualWidth;
-            float yPercent = 1 - (y / (float)ActualHeight);
+            float xPercent = x / (float) ActualWidth;
+            float yPercent = 1 - (y / (float) ActualHeight);
 
             Color result = Util.HSVToColor(m_Hue, xPercent, yPercent);
 
@@ -185,11 +185,11 @@ namespace Gwen.Net.Control
         {
             if (m_Texture == null)
             {
-                byte[] pixelData = new byte[ActualWidth * ActualHeight * 4];
+                var pixelData = new byte[ActualWidth * ActualHeight * 4];
 
-                for (int x = 0; x < ActualWidth; x++)
+                for (var x = 0; x < ActualWidth; x++)
                 {
-                    for (int y = 0; y < ActualHeight; y++)
+                    for (var y = 0; y < ActualHeight; y++)
                     {
                         Color c = GetColorAt(x, y);
                         pixelData[4 * (x + (y * ActualWidth))] = c.R;

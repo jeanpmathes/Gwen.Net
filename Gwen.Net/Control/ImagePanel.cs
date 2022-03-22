@@ -65,8 +65,8 @@ namespace Gwen.Net.Control
                     return Rectangle.Empty;
                 }
 
-                int x1 = (int)(m_uv[0] * m_Texture.Width);
-                int y1 = (int)(m_uv[1] * m_Texture.Height);
+                var x1 = (int) (m_uv[0] * m_Texture.Width);
+                var y1 = (int) (m_uv[1] * m_Texture.Height);
                 int x2 = Util.Ceil(m_uv[2] * m_Texture.Width);
                 int y2 = Util.Ceil(m_uv[3] * m_Texture.Height);
 
@@ -79,10 +79,10 @@ namespace Gwen.Net.Control
                     return;
                 }
 
-                m_uv[0] = value.X / (float)m_Texture.Width;
-                m_uv[1] = value.Y / (float)m_Texture.Height;
-                m_uv[2] = m_uv[0] + (value.Width / (float)m_Texture.Width);
-                m_uv[3] = m_uv[1] + (value.Height / (float)m_Texture.Height);
+                m_uv[0] = value.X / (float) m_Texture.Width;
+                m_uv[1] = value.Y / (float) m_Texture.Height;
+                m_uv[2] = m_uv[0] + (value.Width / (float) m_Texture.Width);
+                m_uv[3] = m_uv[1] + (value.Height / (float) m_Texture.Height);
             }
         }
 

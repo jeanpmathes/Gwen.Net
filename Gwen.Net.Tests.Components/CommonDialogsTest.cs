@@ -28,7 +28,7 @@ namespace Gwen.Net.Tests.Components
                 {
                     openFile.Text = "";
 
-                    OpenFileDialog dialog = Component.Create<OpenFileDialog>(this);
+                    var dialog = Component.Create<OpenFileDialog>(this);
                     dialog.InitialFolder = "C:\\";
                     dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
                     dialog.Callback = path => openFile.Text = path != null ? path : "Cancelled";
@@ -49,7 +49,7 @@ namespace Gwen.Net.Tests.Components
                 button.Clicked += (sender, args) =>
                 {
                     saveFile.Text = "";
-                    SaveFileDialog dialog = Component.Create<SaveFileDialog>(this);
+                    var dialog = Component.Create<SaveFileDialog>(this);
                     dialog.Callback = path => saveFile.Text = path != null ? path : "Cancelled";
                 };
 
@@ -68,7 +68,7 @@ namespace Gwen.Net.Tests.Components
                 button.Clicked += (sender, args) =>
                 {
                     createFile.Text = "";
-                    SaveFileDialog dialog = Component.Create<SaveFileDialog>(this);
+                    var dialog = Component.Create<SaveFileDialog>(this);
                     dialog.Title = "Create File";
                     dialog.OkButtonText = "Create";
                     dialog.Callback = path => createFile.Text = path != null ? path : "Cancelled";
@@ -89,7 +89,7 @@ namespace Gwen.Net.Tests.Components
                 button.Clicked += (sender, args) =>
                 {
                     selectFolder.Text = "";
-                    FolderBrowserDialog dialog = Component.Create<FolderBrowserDialog>(this);
+                    var dialog = Component.Create<FolderBrowserDialog>(this);
                     dialog.InitialFolder = "C:\\";
                     dialog.Callback = path => selectFolder.Text = path != null ? path : "Cancelled";
                 };

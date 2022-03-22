@@ -69,7 +69,10 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Initial folder for the dialog.
         /// </summary>
-        public string InitialFolder { set => SetPath(value); }
+        public string InitialFolder
+        {
+            set => SetPath(value);
+        }
 
         /// <summary>
         ///     Set initial folder and selected item.
@@ -95,7 +98,10 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     File filters. See <see cref="SetFilters(string, int)" />.
         /// </summary>
-        public string Filters { set => SetFilters(value); }
+        public string Filters
+        {
+            set => SetFilters(value);
+        }
 
         /// <summary>
         ///     Text shown in the ok button.
@@ -202,7 +208,7 @@ namespace Gwen.Net.CommonDialog
 
             m_Filters.RemoveAll();
 
-            for (int i = 0; i < filters.Length; i += 2)
+            for (var i = 0; i < filters.Length; i += 2)
             {
                 m_Filters.AddItem(filters[i], filters[i], filters[i + 1]);
             }
@@ -343,7 +349,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnFolderSelected(ControlBase sender, EventArgs args)
         {
-            TreeNode node = sender as TreeNode;
+            var node = sender as TreeNode;
 
             if (node != null && node.UserData != null)
             {
@@ -353,7 +359,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
         {
-            string path = args.SelectedItem.UserData as string;
+            var path = args.SelectedItem.UserData as string;
 
             if (path != null)
             {
@@ -363,7 +369,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnItemDoubleClicked(ControlBase sender, ItemSelectedEventArgs args)
         {
-            string path = args.SelectedItem.UserData as string;
+            var path = args.SelectedItem.UserData as string;
 
             if (path != null)
             {
@@ -478,17 +484,17 @@ namespace Gwen.Net.CommonDialog
         {
             if (length > 1024 * 1024 * 1024)
             {
-                return String.Format("{0:0.0} GB", (double)length / (1024 * 1024 * 1024));
+                return String.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
             }
 
             if (length > 1024 * 1024)
             {
-                return String.Format("{0:0.0} MB", (double)length / (1024 * 1024));
+                return String.Format("{0:0.0} MB", (double) length / (1024 * 1024));
             }
 
             if (length > 1024)
             {
-                return String.Format("{0:0.0} kB", (double)length / 1024);
+                return String.Format("{0:0.0} kB", (double) length / 1024);
             }
 
             return String.Format("{0} B", length);

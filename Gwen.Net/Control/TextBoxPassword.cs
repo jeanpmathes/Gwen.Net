@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Xml;
+﻿using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -34,7 +33,7 @@ namespace Gwen.Net.Control
         /// </summary>
         protected override void OnTextChanged()
         {
-            m_Mask = new String(MaskCharacter, Text.Length);
+            m_Mask = new string(MaskCharacter, Text.Length);
             TextOverride = m_Mask;
             base.OnTextChanged();
         }

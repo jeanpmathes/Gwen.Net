@@ -5,23 +5,6 @@ namespace Gwen.Net.OpenTk
 {
     internal static class EmbeddedShaderLoader
     {
-        public static string GetShader<T>(string type)
-        {
-            Type programType = typeof(T);
-            string shaderName = $"{programType.FullName}.{type}";
-
-            Stream? stream = programType.Assembly.GetManifestResourceStream(shaderName);
-
-            if (stream == null)
-            {
-                throw new Exception($"Resource '{shaderName}' not found");
-            }
-
-            using StreamReader reader = new(stream);
-
-            return reader.ReadToEnd();
-        }
-
         /// <summary>
         ///     Loads the shader source from an assembly. Where the <typeparamref name="TRoot" /> provides the root namespace to
         ///     resolve the shader resource
@@ -35,11 +18,11 @@ namespace Gwen.Net.OpenTk
             Type programType = typeof(TRoot);
             string shaderName = $"{programType.Namespace}.{name}.{type}";
 
-            Stream? stream = programType.Assembly.GetManifestResourceStream(shaderName);
+            Stream stream = programType.Assembly.GetManifestResourceStream(shaderName);
 
             if (stream == null)
             {
-                throw new Exception($"Resource '{shaderName}' not found");
+                throw new InvalidOperationException($"Resource '{shaderName}' not found");
             }
 
             using StreamReader reader = new(stream);

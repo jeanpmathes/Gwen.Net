@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Gwen.Net.Anim;
 using Gwen.Net.Control.Internal;
@@ -226,7 +225,7 @@ namespace Gwen.Net.Control
                     return ((Label) m_ToolTip).Text;
                 }
 
-                return String.Empty;
+                return string.Empty;
             }
             set => SetToolTipText(value);
         }
@@ -898,8 +897,8 @@ namespace Gwen.Net.Control
 
         public override string ToString()
         {
-            string type = GetType().ToString();
-            string name = String.IsNullOrWhiteSpace(Name) ? "" : " Name: " + Name;
+            var type = GetType().ToString();
+            string name = string.IsNullOrWhiteSpace(Name) ? "" : " Name: " + Name;
 
             if (this is MenuItem)
             {
@@ -2526,7 +2525,7 @@ namespace Gwen.Net.Control
         /// <returns>True if handled.</returns>
         protected virtual bool OnKeyPressed(GwenMappedKey key, bool down = true)
         {
-            bool handled = false;
+            var handled = false;
 
             switch (key)
             {
@@ -2832,12 +2831,12 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="chr">Character typed.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnChar(Char chr)
+        protected virtual bool OnChar(char chr)
         {
             return false;
         }
 
-        internal bool InputChar(Char chr)
+        internal bool InputChar(char chr)
         {
             return OnChar(chr);
         }

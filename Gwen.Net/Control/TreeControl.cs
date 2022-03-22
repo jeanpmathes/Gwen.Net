@@ -40,7 +40,7 @@ namespace Gwen.Net.Control
 
                 foreach (ControlBase child in RootNode.Children)
                 {
-                    TreeNode node = child as TreeNode;
+                    var node = child as TreeNode;
 
                     if (node == null)
                     {
@@ -61,7 +61,7 @@ namespace Gwen.Net.Control
         {
             get
             {
-                List<TreeNode> selectedNodes = SelectedNodes as List<TreeNode>;
+                var selectedNodes = SelectedNodes as List<TreeNode>;
 
                 if (selectedNodes.Count > 0)
                 {

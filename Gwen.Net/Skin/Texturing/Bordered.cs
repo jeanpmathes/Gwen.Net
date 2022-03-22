@@ -27,7 +27,7 @@ namespace Gwen.Net.Skin.Texturing
         {
             m_Rects = new SubRect[9];
 
-            for (int i = 0; i < m_Rects.Length; i++)
+            for (var i = 0; i < m_Rects.Length; i++)
             {
                 m_Rects[i].uv = new float[4];
             }
@@ -102,10 +102,10 @@ namespace Gwen.Net.Skin.Texturing
 
             SetRect(num: 8, x + w - m_Margin.Right, y + h - m_Margin.Bottom, m_Margin.Right, m_Margin.Bottom);
 
-            m_Margin.Left = (int)(m_Margin.Left * drawMarginScale);
-            m_Margin.Right = (int)(m_Margin.Right * drawMarginScale);
-            m_Margin.Top = (int)(m_Margin.Top * drawMarginScale);
-            m_Margin.Bottom = (int)(m_Margin.Bottom * drawMarginScale);
+            m_Margin.Left = (int) (m_Margin.Left * drawMarginScale);
+            m_Margin.Right = (int) (m_Margin.Right * drawMarginScale);
+            m_Margin.Top = (int) (m_Margin.Top * drawMarginScale);
+            m_Margin.Bottom = (int) (m_Margin.Bottom * drawMarginScale);
 
             m_Width = w - x;
             m_Height = h - y;
