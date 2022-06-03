@@ -36,7 +36,7 @@ namespace Gwen.Net.OpenTk
             AttachToWindowEvents();
             renderer = ResolveRenderer();
 
-            skin = new TexturedBase(renderer, "DefaultSkin2.png")
+            skin = new TexturedBase(renderer, Settings.SkinFile.Name)
             {
                 DefaultFont = new Font(renderer, "Calibri", size: 11)
             };
