@@ -30,8 +30,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Shaders\gui.gl40.frag" />
     <EmbeddedResource Include="Shaders\gui.gl40.vert" />
-    <EmbeddedResource Include="Shaders\gui.gl20.frag" />
-    <EmbeddedResource Include="Shaders\gui.gl20.vert" />
   </ItemGroup>
 
   <ItemGroup>
