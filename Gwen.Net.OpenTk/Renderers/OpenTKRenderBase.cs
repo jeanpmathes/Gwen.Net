@@ -9,7 +9,7 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Gwen.Net.OpenTk.Renderers
 {
-    public abstract class OpenTKRendererBase : RendererBase
+    public abstract class OpenTkRendererBase : RendererBase
     {
         protected static int lastTextureID;
         private readonly Graphics graphics;
@@ -24,7 +24,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         private readonly Dictionary<string, Bitmap> preloadedTextures = new();
 
-        protected OpenTKRendererBase(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback)
+        protected OpenTkRendererBase(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback)
         {
             GLVersion = (GL.GetInteger(GetPName.MajorVersion) * 10) + GL.GetInteger(GetPName.MinorVersion);
 

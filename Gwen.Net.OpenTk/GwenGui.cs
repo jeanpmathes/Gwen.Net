@@ -15,7 +15,7 @@ namespace Gwen.Net.OpenTk
     {
         private Canvas canvas;
         private OpenTkInputTranslator input;
-        private OpenTKRendererBase renderer;
+        private OpenTkRendererBase renderer;
         private SkinBase skin;
 
         internal GwenGui(GameWindow parent, GwenGuiSettings settings)
@@ -131,9 +131,9 @@ namespace Gwen.Net.OpenTk
             Parent.Cursor = mouseCursor;
         }
 
-        private static OpenTKRendererBase ResolveRenderer(GwenGuiSettings settings)
+        private static OpenTkRendererBase ResolveRenderer(GwenGuiSettings settings)
         {
-            return new OpenTKGL40Renderer(settings.TexturePreloads, settings.TexturePreloadErrorCallback);
+            return new OpenTkGL40Renderer(settings.TexturePreloads, settings.TexturePreloadErrorCallback);
         }
     }
 }

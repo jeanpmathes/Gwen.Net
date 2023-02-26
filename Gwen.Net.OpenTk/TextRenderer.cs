@@ -12,7 +12,7 @@ namespace Gwen.Net.OpenTk
         private readonly Graphics graphics;
         private bool disposed;
 
-        public TextRenderer(int width, int height, OpenTKRendererBase renderer)
+        public TextRenderer(int width, int height, OpenTkRendererBase renderer)
         {
             if (width <= 0)
             {
@@ -58,7 +58,7 @@ namespace Gwen.Net.OpenTk
                 new System.Drawing.Point(point.X, point.Y),
                 format); // render text on the bitmap
 
-            OpenTKRendererBase.LoadTextureInternal(Texture, bitmap); // copy bitmap to gl texture
+            OpenTkRendererBase.LoadTextureInternal(Texture, bitmap); // copy bitmap to gl texture
         }
 
         private void Dispose(bool manual)
