@@ -11,7 +11,7 @@
           This specific fork is adapted to the needs of the VoxelGame project.
       </Description>
       <RepositoryUrl>https://github.com/pershingthesecond/Gwen.Net</RepositoryUrl>
-      <PackageLicenseUrl>https://raw.githubusercontent.com/pershingthesecond/Gwen.Net/master/LICENSE</PackageLicenseUrl>
+      <PackageLicense>https://raw.githubusercontent.com/pershingthesecond/Gwen.Net/master/LICENSE</PackageLicense>
   </PropertyGroup>
 
 </Project>
