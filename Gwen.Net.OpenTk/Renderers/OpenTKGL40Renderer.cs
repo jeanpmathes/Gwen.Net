@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Gwen.Net.OpenTk.Shaders;
 using OpenTK.Graphics.OpenGL;
@@ -22,12 +23,11 @@ namespace Gwen.Net.OpenTk.Renderers
 
         private int vbo;
         private int vertNum;
-
-
+        
         private bool wasBlendEnabled;
         private bool wasDepthTestEnabled;
 
-        public OpenTKGL40Renderer(bool restoreRenderState = true)
+        public OpenTKGL40Renderer(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback, bool restoreRenderState = true) : base(texturePreloads, errorCallback)
         {
             vertices = new Vertex[MaxVerts];
             vertexSize = Marshal.SizeOf(vertices[0]);

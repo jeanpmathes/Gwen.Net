@@ -147,8 +147,7 @@ namespace Gwen.Net.Renderer
         /// <summary>
         ///     Loads the specified texture.
         /// </summary>
-        /// <param name="t"></param>
-        public virtual void LoadTexture(Texture t) {}
+        public virtual void LoadTexture(Texture t, Action<Exception> errorCallback) {}
 
         /// <summary>
         ///     Initializes texture from raw pixel data.

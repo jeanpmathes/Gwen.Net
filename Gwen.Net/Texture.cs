@@ -61,10 +61,11 @@ namespace Gwen.Net
         ///     Loads the specified texture.
         /// </summary>
         /// <param name="name">Texture name.</param>
-        public void Load(string name)
+        /// <param name="errorCallback">Callback to invoke when texture fails to load.</param>
+        public void Load(string name, Action<Exception> errorCallback)
         {
             Name = name;
-            m_Renderer.LoadTexture(this);
+            m_Renderer.LoadTexture(this, errorCallback);
         }
 
         /// <summary>

@@ -34,9 +34,9 @@ namespace Gwen.Net.OpenTk
         {
             GwenPlatform.Init(new NetCorePlatform(SetCursor));
             AttachToWindowEvents();
-            renderer = ResolveRenderer();
+            renderer = ResolveRenderer(Settings);
 
-            skin = new TexturedBase(renderer, Settings.SkinFile.Name)
+            skin = new TexturedBase(renderer, Settings.SkinFile, Settings.SkinLoadingErrorCallback)
             {
                 DefaultFont = new Font(renderer, "Calibri", size: 11)
             };
@@ -130,9 +130,9 @@ namespace Gwen.Net.OpenTk
             Parent.Cursor = mouseCursor;
         }
 
-        private static OpenTKRendererBase ResolveRenderer()
+        private static OpenTKRendererBase ResolveRenderer(GwenGuiSettings settings)
         {
-            return new OpenTKGL40Renderer();
+            return new OpenTKGL40Renderer(settings.TexturePreloads, settings.TexturePreloadErrorCallback);
         }
     }
 }

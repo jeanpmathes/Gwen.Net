@@ -22,7 +22,9 @@ namespace Gwen.Net.OpenTk.Renderers
         protected int drawCallCount;
         protected bool textureEnabled;
 
-        public OpenTKRendererBase()
+        private readonly Dictionary<string, Bitmap> preloadedTextures = new();
+
+        protected OpenTKRendererBase(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback)
         {
             GLVersion = (GL.GetInteger(GetPName.MajorVersion) * 10) + GL.GetInteger(GetPName.MinorVersion);
 
@@ -30,6 +32,19 @@ namespace Gwen.Net.OpenTk.Renderers
             graphics = Graphics.FromImage(new Bitmap(width: 1024, height: 1024));
             stringFormat = new StringFormat(StringFormat.GenericTypographic);
             stringFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+            foreach (TexturePreload texturePreload in texturePreloads)
+            {
+                try
+                {
+                    Bitmap bitmap = new(texturePreload.File.FullName);
+                    preloadedTextures.Add(texturePreload.Name, bitmap);
+                }
+                catch (Exception e)
+                {
+                    errorCallback(texturePreload, e);
+                }
+            }
         }
 
         public int TextCacheSize => stringCache.Count;
@@ -327,7 +342,6 @@ namespace Gwen.Net.OpenTk.Renderers
 
         internal static void LoadTextureInternal(Texture t, Bitmap bmp)
         {
-
             PixelFormat lock_format;
 
             switch (bmp.PixelFormat)
@@ -391,7 +405,7 @@ namespace Gwen.Net.OpenTk.Renderers
             bmp.Dispose();
         }
 
-        public override void LoadTexture(Texture t)
+        public override void LoadTexture(Texture t, Action<Exception> errorCallback)
         {
             Bitmap bmp;
 
@@ -399,9 +413,10 @@ namespace Gwen.Net.OpenTk.Renderers
             {
                 bmp = ImageLoader.Load(t.Name);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 t.Failed = true;
+                errorCallback(exception);
 
                 return;
             }
@@ -412,21 +427,24 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void LoadTextureStream(Texture t, Stream data)
         {
-            Bitmap bmp;
+            bool preloaded = preloadedTextures.TryGetValue(t.Name, out Bitmap bitmap);
 
-            try
+            if (!preloaded)
             {
-                bmp = ImageLoader.Load(t.Name);
+                try
+                {
+                    bitmap = ImageLoader.Load(t.Name);
+                }
+                catch (Exception)
+                {
+                    t.Failed = true;
+                    return;
+                }
             }
-            catch (Exception)
-            {
-                t.Failed = true;
-
-                return;
-            }
-
-            LoadTextureInternal(t, bmp);
-            bmp.Dispose();
+            
+            LoadTextureInternal(t, bitmap);
+            if (!preloaded)
+                bitmap.Dispose();
         }
 
         public override void LoadTextureRaw(Texture t, byte[] pixelData)
@@ -495,7 +513,6 @@ namespace Gwen.Net.OpenTk.Renderers
             // Eventually the bug needs to be fixed (color picker in a window causes graphical errors), but for now,
             // this is fine.
             GL.BindTexture(TextureTarget.Texture2D, lastTextureID);
-
         }
 
         public override void FreeTexture(Texture t)

@@ -32,7 +32,7 @@ namespace Gwen.Net.Control
         public string ImageName
         {
             get => m_Texture.Name;
-            set => m_Texture.Load(value);
+            set => m_Texture.Load(value, _ => {});
         }
 
         /// <summary>
