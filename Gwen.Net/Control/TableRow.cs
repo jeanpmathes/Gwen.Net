@@ -11,9 +11,9 @@ namespace Gwen.Net.Control
     {
         // [omeg] todo: get rid of this
         public const int MaxColumns = 5;
-        private readonly Label[] m_Columns;
+        private readonly Label[] columns;
 
-        private int m_ColumnCount;
+        private int columnCount;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TableRow" /> class.
@@ -22,16 +22,14 @@ namespace Gwen.Net.Control
         public TableRow(ControlBase parent)
             : base(parent)
         {
-            m_Columns = new Label[MaxColumns];
+            columns = new Label[MaxColumns];
 
-            if (parent is ListBox)
+            columnCount = parent switch
             {
-                m_ColumnCount = ((ListBox) parent).ColumnCount;
-            }
-            else if (parent is Table)
-            {
-                m_ColumnCount = ((Table) parent).ColumnCount;
-            }
+                ListBox listBox => listBox.ColumnCount,
+                Table table => table.ColumnCount,
+                _ => columnCount
+            };
 
             KeyboardInputEnabled = true;
         }
@@ -41,7 +39,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public int ColumnCount
         {
-            get => m_ColumnCount;
+            get => columnCount;
             set => SetColumnCount(value);
         }
 
@@ -61,7 +59,7 @@ namespace Gwen.Net.Control
 
         internal Label GetColumn(int index)
         {
-            return m_Columns[index];
+            return columns[index];
         }
 
         /// <summary>
@@ -72,45 +70,44 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sets the number of columns.
         /// </summary>
-        /// <param name="columnCount">Number of columns.</param>
-        protected void SetColumnCount(int columnCount)
+        /// <param name="newColumnCount">Number of columns.</param>
+        protected void SetColumnCount(int newColumnCount)
         {
-            if (columnCount == m_ColumnCount)
+            if (newColumnCount == columnCount)
             {
                 return;
             }
 
-            if (columnCount >= MaxColumns)
+            if (newColumnCount >= MaxColumns)
             {
-                throw new ArgumentException("Invalid column count", "columnCount");
+                throw new ArgumentException("Invalid column count", nameof(newColumnCount));
             }
 
             for (var i = 0; i < MaxColumns; i++)
             {
-                if (i < columnCount)
+                if (i < newColumnCount)
                 {
-                    if (null == m_Columns[i])
-                    {
-                        m_Columns[i] = new Label(this);
-                        m_Columns[i].Padding = Padding.Three;
+                    if (columns[i] != null) continue;
 
-                        m_Columns[i].Margin = new Margin(
-                            left: 0,
-                            top: 0,
-                            right: 2,
-                            bottom: 0); // to separate them slightly
+                    columns[i] = new Label(this);
+                    columns[i].Padding = Padding.Three;
 
-                        m_Columns[i].TextColor = Skin.Colors.ListBox.Text_Normal;
-                    }
+                    columns[i].Margin = new Margin(
+                        left: 0,
+                        top: 0,
+                        right: 2,
+                        bottom: 0); // to separate them slightly
+
+                    columns[i].TextColor = Skin.Colors.ListBox.Text_Normal;
                 }
-                else if (null != m_Columns[i])
+                else if (null != columns[i])
                 {
-                    RemoveChild(m_Columns[i], dispose: true);
-                    m_Columns[i] = null;
+                    RemoveChild(columns[i], dispose: true);
+                    columns[i] = null;
                 }
             }
 
-            m_ColumnCount = columnCount;
+            this.columnCount = newColumnCount;
         }
 
         /// <summary>
@@ -120,17 +117,17 @@ namespace Gwen.Net.Control
         /// <param name="width">Column width.</param>
         public void SetColumnWidth(int column, int width)
         {
-            if (null == m_Columns[column])
+            if (null == columns[column])
             {
                 return;
             }
 
-            if (m_Columns[column].Width == width)
+            if (columns[column].Width == width)
             {
                 return;
             }
 
-            m_Columns[column].Width = width;
+            columns[column].Width = width;
         }
 
         /// <summary>
@@ -140,23 +137,23 @@ namespace Gwen.Net.Control
         /// <param name="text">Text to set.</param>
         public void SetCellText(int columnIndex, string text)
         {
-            if (null == m_Columns[columnIndex])
+            if (null == columns[columnIndex])
             {
-                m_Columns[columnIndex] = new Label(this);
-                m_Columns[columnIndex].Padding = Padding.Three;
+                columns[columnIndex] = new Label(this);
+                columns[columnIndex].Padding = Padding.Three;
 
-                m_Columns[columnIndex].Margin =
+                columns[columnIndex].Margin =
                     new Margin(left: 0, top: 0, right: 2, bottom: 0); // to separate them slightly
 
-                m_Columns[columnIndex].TextColor = Skin.Colors.ListBox.Text_Normal;
+                columns[columnIndex].TextColor = Skin.Colors.ListBox.Text_Normal;
             }
 
-            if (columnIndex >= m_ColumnCount)
+            if (columnIndex >= columnCount)
             {
-                throw new ArgumentException("Invalid column index", "columnIndex");
+                throw new ArgumentException("Invalid column index", nameof(columnIndex));
             }
 
-            m_Columns[columnIndex].Text = text;
+            columns[columnIndex].Text = text;
         }
 
         /// <summary>
@@ -167,13 +164,13 @@ namespace Gwen.Net.Control
         /// <param name="enableMouseInput">Determines whether mouse input should be enabled for the cell.</param>
         public void SetCellContents(int column, ControlBase control, bool enableMouseInput = false)
         {
-            if (null == m_Columns[column])
+            if (null == columns[column])
             {
                 return;
             }
 
-            control.Parent = m_Columns[column];
-            m_Columns[column].MouseInputEnabled = enableMouseInput;
+            control.Parent = columns[column];
+            columns[column].MouseInputEnabled = enableMouseInput;
         }
 
         /// <summary>
@@ -183,7 +180,7 @@ namespace Gwen.Net.Control
         /// <returns>Control embedded in the cell.</returns>
         public ControlBase GetCellContents(int column)
         {
-            return m_Columns[column];
+            return columns[column];
         }
 
         protected virtual void OnRowSelected()
@@ -199,14 +196,14 @@ namespace Gwen.Net.Control
             var width = 0;
             var height = 0;
 
-            for (var i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < columnCount; i++)
             {
-                if (null == m_Columns[i])
+                if (null == columns[i])
                 {
                     continue;
                 }
 
-                Size size = m_Columns[i].DoMeasure(new Size(availableSize.Width - width, availableSize.Height));
+                Size size = columns[i].DoMeasure(new Size(availableSize.Width - width, availableSize.Height));
 
                 width += size.Width;
                 height = Math.Max(height, size.Height);
@@ -220,26 +217,26 @@ namespace Gwen.Net.Control
             var x = 0;
             var height = 0;
 
-            for (var i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < columnCount; i++)
             {
-                if (null == m_Columns[i])
+                if (null == columns[i])
                 {
                     continue;
                 }
 
-                if (i == m_ColumnCount - 1)
+                if (i == columnCount - 1)
                 {
-                    m_Columns[i].DoArrange(
-                        new Rectangle(x, y: 0, finalSize.Width - x, m_Columns[i].MeasuredSize.Height));
+                    columns[i].DoArrange(
+                        new Rectangle(x, y: 0, finalSize.Width - x, columns[i].MeasuredSize.Height));
                 }
                 else
                 {
-                    m_Columns[i].DoArrange(
-                        new Rectangle(x, y: 0, m_Columns[i].MeasuredSize.Width, m_Columns[i].MeasuredSize.Height));
+                    columns[i].DoArrange(
+                        new Rectangle(x, y: 0, columns[i].MeasuredSize.Width, columns[i].MeasuredSize.Height));
                 }
 
-                x += m_Columns[i].MeasuredSize.Width;
-                height = Math.Max(height, m_Columns[i].MeasuredSize.Height);
+                x += columns[i].MeasuredSize.Width;
+                height = Math.Max(height, columns[i].MeasuredSize.Height);
             }
 
             return new Size(finalSize.Width, height);
@@ -247,18 +244,19 @@ namespace Gwen.Net.Control
 
         /// <summary>
         ///     Sets the text color for all cells.
+        ///     The color is overridden by the selected color if the row is selected.
         /// </summary>
         /// <param name="color">Text color.</param>
         public void SetTextColor(Color color)
         {
-            for (var i = 0; i < m_ColumnCount; i++)
+            for (var i = 0; i < columnCount; i++)
             {
-                if (null == m_Columns[i])
+                if (null == columns[i])
                 {
                     continue;
                 }
 
-                m_Columns[i].TextColor = color;
+                columns[i].TextColor = color;
             }
         }
 
@@ -269,13 +267,14 @@ namespace Gwen.Net.Control
         /// <returns>Column cell text.</returns>
         public string GetText(int column = 0)
         {
-            return m_Columns[column].Text;
+            return columns[column].Text;
         }
 
         /// <summary>
         ///     Handler for Copy event.
         /// </summary>
         /// <param name="from">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected override void OnCopy(ControlBase from, EventArgs args)
         {
             GwenPlatform.SetClipboardText(Text);

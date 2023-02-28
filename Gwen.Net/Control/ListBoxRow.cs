@@ -10,7 +10,7 @@ namespace Gwen.Net.Control
     [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ListBoxRow : TableRow
     {
-        private bool m_Selected;
+        private bool selected;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ListBoxRow" /> class.
@@ -26,26 +26,48 @@ namespace Gwen.Net.Control
         }
 
         public ListBox ListBox { get; }
+        
+        private Color? selectedColorOverride;
+        private Color? normalColorOverride;
 
+        public Color? SelectedTextOverride
+        {
+            get => selectedColorOverride;
+            set
+            {
+                selectedColorOverride = value;
+                UpdateTextColor();
+            }
+        }
+
+        public Color? NormalTextOverride
+        {
+            get => normalColorOverride;
+            set
+            {
+                normalColorOverride = value;
+                UpdateTextColor();
+            }
+        }
+        
         /// <summary>
         ///     Indicates whether the control is selected.
         /// </summary>
         public bool IsSelected
         {
-            get => m_Selected;
+            get => selected;
             set
             {
-                m_Selected = value;
-
-                if (value)
-                {
-                    SetTextColor(Skin.Colors.ListBox.Text_Selected);
-                }
-                else
-                {
-                    SetTextColor(Skin.Colors.ListBox.Text_Normal);
-                }
+                selected = value;
+                UpdateTextColor();
             }
+        }
+
+        private void UpdateTextColor()
+        {
+            SetTextColor(IsSelected 
+                ? SelectedTextOverride ?? Skin.Colors.ListBox.Text_Selected 
+                : NormalTextOverride ?? Skin.Colors.ListBox.Text_Normal);
         }
 
         /// <summary>
