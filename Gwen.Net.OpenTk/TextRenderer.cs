@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using Gwen.Net.OpenTk.Renderers;
+using Gwen.Net.Renderer;
 
 namespace Gwen.Net.OpenTk
 {
@@ -12,7 +13,7 @@ namespace Gwen.Net.OpenTk
         private readonly Graphics graphics;
         private bool disposed;
 
-        public TextRenderer(int width, int height, OpenTkRendererBase renderer)
+        public TextRenderer(int width, int height, RendererBase renderer)
         {
             if (width <= 0)
             {

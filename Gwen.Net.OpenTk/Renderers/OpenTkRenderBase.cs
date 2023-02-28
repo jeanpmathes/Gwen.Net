@@ -372,12 +372,9 @@ namespace Gwen.Net.OpenTk.Renderers
 
                     return;
             }
-
-
-            int glTex;
-
+            
             // Create the opengl texture
-            GL.GenTextures(n: 1, out glTex);
+            GL.GenTextures(n: 1, out int glTex);
 
             GL.BindTexture(TextureTarget.Texture2D, glTex);
             lastTextureID = glTex;
@@ -415,7 +412,6 @@ namespace Gwen.Net.OpenTk.Renderers
 
 
             bmp.UnlockBits(data);
-            bmp.Dispose();
         }
 
         public override void LoadTexture(Texture t, Action<Exception> errorCallback)
