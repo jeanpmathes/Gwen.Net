@@ -157,6 +157,16 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
+        ///     Sets the font of a specified cell.
+        /// </summary>
+        /// <param name="columnIndex">The column index.</param>
+        /// <param name="font">The font.</param>
+        public void SetCellFont(int columnIndex, Font font)
+        {
+            columns[columnIndex].Font = font;
+        }
+        
+        /// <summary>
         ///     Sets the contents of a specified cell.
         /// </summary>
         /// <param name="column">Column number.</param>

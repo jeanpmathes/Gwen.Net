@@ -117,7 +117,7 @@ namespace Gwen.Net.Control
                         else
                         {
                             string colText = parser.GetAttribute("Text");
-                            element.SetCellText(colIndex++, colText != null ? colText : string.Empty);
+                            element.SetCellText(colIndex++, colText ?? string.Empty);
                         }
                     }
                 }
