@@ -336,16 +336,6 @@ namespace Gwen.Net.Skin
             InitializeTextures();
         }
 
-        public TexturedBase(RendererBase renderer, Stream textureData)
-            : base(renderer)
-        {
-            texture = new Texture(Renderer);
-            texture.LoadStream(textureData);
-
-            InitializeColors();
-            InitializeTextures();
-        }
-
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

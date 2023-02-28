@@ -64,7 +64,20 @@ namespace Gwen.Net.OpenTk.Renderers
         public override void Dispose()
         {
             FlushTextCache();
+            
+            DisposePreloadedTextures();
+
             base.Dispose();
+        }
+
+        private void DisposePreloadedTextures()
+        {
+            foreach (Bitmap bitmap in preloadedTextures.Values)
+            {
+                bitmap.Dispose();
+            }
+
+            preloadedTextures.Clear();
         }
 
         protected override void OnScaleChanged(float oldScale)
@@ -407,26 +420,6 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void LoadTexture(Texture t, Action<Exception> errorCallback)
         {
-            Bitmap bmp;
-
-            try
-            {
-                bmp = ImageLoader.Load(t.Name);
-            }
-            catch (Exception exception)
-            {
-                t.Failed = true;
-                errorCallback(exception);
-
-                return;
-            }
-
-            LoadTextureInternal(t, bmp);
-            bmp.Dispose();
-        }
-
-        public override void LoadTextureStream(Texture t, Stream data)
-        {
             bool preloaded = preloadedTextures.TryGetValue(t.Name, out Bitmap bitmap);
 
             if (!preloaded)
@@ -443,6 +436,7 @@ namespace Gwen.Net.OpenTk.Renderers
             }
             
             LoadTextureInternal(t, bitmap);
+            
             if (!preloaded)
                 bitmap.Dispose();
         }

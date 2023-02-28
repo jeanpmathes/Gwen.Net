@@ -157,13 +157,6 @@ namespace Gwen.Net.Renderer
         public virtual void LoadTextureRaw(Texture t, byte[] pixelData) {}
 
         /// <summary>
-        ///     Initializes texture from image file data.
-        /// </summary>
-        /// <param name="t">Texture to initialize.</param>
-        /// <param name="data">Image file as stream.</param>
-        public virtual void LoadTextureStream(Texture t, Stream data) {}
-
-        /// <summary>
         ///     Frees the specified texture.
         /// </summary>
         /// <param name="t">Texture to free.</param>

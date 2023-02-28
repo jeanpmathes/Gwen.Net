@@ -81,11 +81,6 @@ namespace Gwen.Net
             m_Renderer.LoadTextureRaw(this, pixelData);
         }
 
-        public void LoadStream(Stream data)
-        {
-            m_Renderer.LoadTextureStream(this, data);
-        }
-
 #if DEBUG
         ~Texture()
         {
