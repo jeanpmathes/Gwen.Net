@@ -30,7 +30,10 @@ namespace Gwen.Net.Control
         private Color? selectedColorOverride;
         private Color? normalColorOverride;
 
-        public Color? SelectedTextOverride
+        /// <summary>
+        /// Set an override color for the selected text.
+        /// </summary>
+        public Color? SelectedTextOverrideColor
         {
             get => selectedColorOverride;
             set
@@ -40,7 +43,10 @@ namespace Gwen.Net.Control
             }
         }
 
-        public Color? NormalTextOverride
+        /// <summary>
+        /// Set an override color for the normal text.
+        /// </summary>
+        public Color? NormalTextOverrideColor
         {
             get => normalColorOverride;
             set
@@ -66,8 +72,8 @@ namespace Gwen.Net.Control
         private void UpdateTextColor()
         {
             SetTextColor(IsSelected 
-                ? SelectedTextOverride ?? Skin.Colors.ListBox.Text_Selected 
-                : NormalTextOverride ?? Skin.Colors.ListBox.Text_Normal);
+                ? selectedColorOverride ?? Skin.Colors.ListBox.Text_Selected 
+                : normalColorOverride ?? Skin.Colors.ListBox.Text_Normal);
         }
 
         /// <summary>
