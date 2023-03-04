@@ -10,10 +10,10 @@ namespace Gwen.Net.Control
     [XmlControl]
     public class Label : ControlBase
     {
-        protected readonly Text m_Text;
-        private Alignment m_Align;
-        private bool m_AutoSizeToContent;
-        private Padding m_TextPadding;
+        protected readonly Text text;
+        private Alignment align;
+        private bool autoSizeToContent;
+        private Padding textPadding;
 
 
         /// <summary>
@@ -22,10 +22,9 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public Label(ControlBase parent) : base(parent)
         {
-            m_Text = new Text(this);
-            //m_Text.Font = Skin.DefaultFont;
+            text = new Text(this);
 
-            m_AutoSizeToContent = true;
+            autoSizeToContent = true;
 
             MouseInputEnabled = false;
             Alignment = Alignment.Left | Alignment.Top;
@@ -36,10 +35,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Alignment Alignment
         {
-            get => m_Align;
+            get => align;
             set
             {
-                m_Align = value;
+                align = value;
                 Invalidate();
             }
         }
@@ -49,8 +48,8 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual string Text
         {
-            get => m_Text.String;
-            set => m_Text.String = value;
+            get => text.String;
+            set => text.String = value;
         }
 
         /// <summary>
@@ -58,10 +57,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Font Font
         {
-            get => m_Text.Font;
+            get => text.Font;
             set
             {
-                m_Text.Font = value;
+                text.Font = value;
                 Invalidate();
             }
         }
@@ -71,8 +70,8 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Color TextColor
         {
-            get => m_Text.TextColor;
-            set => m_Text.TextColor = value;
+            get => text.TextColor;
+            set => text.TextColor = value;
         }
 
         /// <summary>
@@ -80,8 +79,8 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Color TextColorOverride
         {
-            get => m_Text.TextColorOverride;
-            set => m_Text.TextColorOverride = value;
+            get => text.TextColorOverride;
+            set => text.TextColorOverride = value;
         }
 
         /// <summary>
@@ -89,8 +88,8 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public string TextOverride
         {
-            get => m_Text.TextOverride;
-            set => m_Text.TextOverride = value;
+            get => text.TextOverride;
+            set => text.TextOverride = value;
         }
 
         /// <summary>
@@ -98,10 +97,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public bool AutoSizeToContents
         {
-            get => m_AutoSizeToContent;
+            get => autoSizeToContent;
             set
             {
-                m_AutoSizeToContent = value;
+                autoSizeToContent = value;
                 IsVirtualControl = !value;
 
                 if (value)
@@ -116,10 +115,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Padding TextPadding
         {
-            get => m_TextPadding;
+            get => textPadding;
             set
             {
-                m_TextPadding = value;
+                textPadding = value;
                 Invalidate();
             }
         }
@@ -188,7 +187,7 @@ namespace Gwen.Net.Control
         /// <returns></returns>
         protected virtual Point GetClosestCharacter(int x, int y)
         {
-            return new(m_Text.GetClosestCharacter(m_Text.CanvasPosToLocal(new Point(x, y))), y: 0);
+            return new(text.GetClosestCharacter(text.CanvasPosToLocal(new Point(x, y))), y: 0);
         }
 
         /// <summary>
@@ -198,35 +197,35 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            return m_Text.DoMeasure(availableSize) + m_TextPadding + Padding;
+            return text.DoMeasure(availableSize) + textPadding + Padding;
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            Size innerSize = finalSize - m_TextPadding - Padding;
-            Rectangle rect = new(Point.Zero, Size.Min(m_Text.MeasuredSize, innerSize));
+            Size innerSize = finalSize - textPadding - Padding;
+            Rectangle rect = new(Point.Zero, Size.Min(text.MeasuredSize, innerSize));
 
-            if ((m_Align & Alignment.CenterH) != 0)
+            if ((align & Alignment.CenterH) != 0)
             {
-                rect.X = (innerSize.Width - m_Text.MeasuredSize.Width) / 2;
+                rect.X = (innerSize.Width - text.MeasuredSize.Width) / 2;
             }
-            else if ((m_Align & Alignment.Right) != 0)
+            else if ((align & Alignment.Right) != 0)
             {
-                rect.X = innerSize.Width - m_Text.MeasuredSize.Width;
-            }
-
-            if ((m_Align & Alignment.CenterV) != 0)
-            {
-                rect.Y = (innerSize.Height - m_Text.MeasuredSize.Height) / 2;
-            }
-            else if ((m_Align & Alignment.Bottom) != 0)
-            {
-                rect.Y = innerSize.Height - m_Text.MeasuredSize.Height;
+                rect.X = innerSize.Width - text.MeasuredSize.Width;
             }
 
-            rect.Offset(m_TextPadding + Padding);
+            if ((align & Alignment.CenterV) != 0)
+            {
+                rect.Y = (innerSize.Height - text.MeasuredSize.Height) / 2;
+            }
+            else if ((align & Alignment.Bottom) != 0)
+            {
+                rect.Y = innerSize.Height - text.MeasuredSize.Height;
+            }
 
-            m_Text.DoArrange(rect);
+            rect.Offset(textPadding + Padding);
+
+            text.DoArrange(rect);
 
             return finalSize;
         }
@@ -238,15 +237,18 @@ namespace Gwen.Net.Control
         /// <returns>Character coordinates (local).</returns>
         public virtual Point GetCharacterPosition(int index)
         {
-            Point p = m_Text.GetCharacterPosition(index);
+            Point p = text.GetCharacterPosition(index);
 
-            return new Point(p.X + m_Text.ActualLeft, p.Y + m_Text.ActualTop);
+            return new Point(p.X + text.ActualLeft, p.Y + text.ActualTop);
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin) {}
+        protected override void Render(SkinBase skin)
+        {
+            // The text element will render itself.
+        }
     }
 }

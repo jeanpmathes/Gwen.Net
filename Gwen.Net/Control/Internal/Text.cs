@@ -10,9 +10,9 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Text : ControlBase
     {
-        private string m_FitToText;
-        private Font m_Font;
-        private string m_String;
+        private string fitToText;
+        private Font font;
+        private string @string;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Text" /> class.
@@ -22,9 +22,9 @@ namespace Gwen.Net.Control.Internal
             : base(parent)
         {
             AutoSizeToContents = true;
-            m_Font = Skin.DefaultFont;
-            m_String = string.Empty;
-            m_FitToText = null;
+            font = Skin.DefaultFont;
+            @string = string.Empty;
+            fitToText = null;
             TextColor = Skin.Colors.Label.Default;
             MouseInputEnabled = false;
             TextColorOverride = new Color(a: 0, r: 255, g: 255, b: 255); // A==0, override disabled
@@ -38,10 +38,10 @@ namespace Gwen.Net.Control.Internal
         /// </remarks>
         public Font Font
         {
-            get => m_Font;
+            get => font;
             set
             {
-                m_Font = value;
+                font = value;
                 Invalidate();
             }
         }
@@ -51,15 +51,15 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public string String
         {
-            get => m_String;
+            get => @string;
             set
             {
-                if (value == m_String)
+                if (value == @string)
                 {
                     return;
                 }
 
-                m_String = value;
+                @string = value;
 
                 if (AutoSizeToContents)
                 {
@@ -98,15 +98,15 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public string FitToText
         {
-            get => m_FitToText;
+            get => fitToText;
             set
             {
-                if (m_FitToText == value)
+                if (fitToText == value)
                 {
                     return;
                 }
 
-                m_FitToText = value;
+                fitToText = value;
                 Invalidate();
             }
         }
@@ -137,7 +137,7 @@ namespace Gwen.Net.Control.Internal
 			{
 				Point lastPos = Point.Zero;
 
-				for (int i = 0; i < m_String.Length + 1; i++)
+				for (int i = 0; i < string.Length + 1; i++)
 				{
 					String sub = (TextOverride ?? String).Substring(0, i);
 					Point p = Skin.Renderer.MeasureText(Font, sub);
@@ -166,7 +166,7 @@ namespace Gwen.Net.Control.Internal
                 throw new InvalidOperationException("Text control font not set.");
             }
 
-            Size size = Size.Zero;
+            Size size;
 
             string text = TextOverride ?? String;
 
@@ -174,9 +174,9 @@ namespace Gwen.Net.Control.Internal
             {
                 size = Skin.Renderer.MeasureText(Font, " ");
             }
-            else if (!AutoSizeToContents && !string.IsNullOrWhiteSpace(m_FitToText))
+            else if (!AutoSizeToContents && !string.IsNullOrWhiteSpace(fitToText))
             {
-                size = Skin.Renderer.MeasureText(Font, m_FitToText);
+                size = Skin.Renderer.MeasureText(Font, fitToText);
             }
             else
             {

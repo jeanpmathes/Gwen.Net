@@ -8,11 +8,11 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Table : ControlBase
     {
-        private readonly int[] m_ColumnWidth;
-        private int m_ColumnCount;
-        private int m_MaxWidth; // for autosizing, if nonzero - fills last cell up to this size
-        private bool m_RowMeasurementDirty;
-        private bool m_SizeToContents;
+        private readonly int[] columnWidth;
+        private int columnCount;
+        private int maxWidth; // for autosizing, if nonzero - fills last cell up to this size
+        private bool rowMeasurementDirty;
+        private bool sizeToContents;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Table" /> class.
@@ -20,18 +20,25 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public Table(ControlBase parent) : base(parent)
         {
-            m_ColumnCount = 1;
+            columnCount = 1;
 
-            m_ColumnWidth = new int[TableRow.MaxColumns];
+            columnWidth = new int[TableRow.MaxColumns];
 
             for (var i = 0; i < TableRow.MaxColumns; i++)
             {
-                m_ColumnWidth[i] = 20;
+                columnWidth[i] = 20;
             }
 
             AutoSizeToContent = false;
-            m_SizeToContents = false;
-            m_RowMeasurementDirty = false;
+            sizeToContents = false;
+            rowMeasurementDirty = false;
+        }
+
+        protected override void OnBoundsChanged(Rectangle oldBounds)
+        {
+            base.OnBoundsChanged(oldBounds);
+            
+            rowMeasurementDirty = true;
         }
 
         /// <summary>
@@ -39,7 +46,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public int ColumnCount
         {
-            get => m_ColumnCount;
+            get => columnCount;
             set
             {
                 SetColumnCount(value);
@@ -69,17 +76,17 @@ namespace Gwen.Net.Control
         /// <param name="count">Number of columns.</param>
         public void SetColumnCount(int count)
         {
-            if (m_ColumnCount == count)
+            if (columnCount == count)
             {
                 return;
             }
 
-            foreach (TableRow row in Children.OfType<TableRow>())
+            foreach (TableRow row in Children)
             {
                 row.ColumnCount = count;
             }
 
-            m_ColumnCount = count;
+            columnCount = count;
         }
 
         /// <summary>
@@ -89,12 +96,12 @@ namespace Gwen.Net.Control
         /// <param name="width">Column width.</param>
         public void SetColumnWidth(int column, int width)
         {
-            if (m_ColumnWidth[column] == width)
+            if (columnWidth[column] == width)
             {
                 return;
             }
 
-            m_ColumnWidth[column] = width;
+            columnWidth[column] = width;
             Invalidate();
         }
 
@@ -105,7 +112,7 @@ namespace Gwen.Net.Control
         /// <returns>Column width.</returns>
         public int GetColumnWidth(int column)
         {
-            return m_ColumnWidth[column];
+            return columnWidth[column];
         }
 
         /// <summary>
@@ -115,8 +122,8 @@ namespace Gwen.Net.Control
         public TableRow AddRow()
         {
             TableRow row = new(this);
-            row.ColumnCount = m_ColumnCount;
-            m_RowMeasurementDirty = true;
+            row.ColumnCount = columnCount;
+            rowMeasurementDirty = true;
 
             return row;
         }
@@ -128,8 +135,8 @@ namespace Gwen.Net.Control
         public void AddRow(TableRow row)
         {
             row.Parent = this;
-            row.ColumnCount = m_ColumnCount;
-            m_RowMeasurementDirty = true;
+            row.ColumnCount = columnCount;
+            rowMeasurementDirty = true;
         }
 
         /// <summary>
@@ -152,7 +159,7 @@ namespace Gwen.Net.Control
         public void RemoveRow(TableRow row)
         {
             RemoveChild(row, dispose: true);
-            m_RowMeasurementDirty = true;
+            rowMeasurementDirty = true;
         }
 
         /// <summary>
@@ -188,9 +195,9 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            if (m_RowMeasurementDirty && (AutoSizeToContent || m_SizeToContents))
+            if (rowMeasurementDirty && (AutoSizeToContent || sizeToContents))
             {
-                m_SizeToContents = false;
+                sizeToContents = false;
 
                 return DoSizeToContents(availableSize);
             }
@@ -236,8 +243,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public void SizeToContent(int maxWidth = 0)
         {
-            m_MaxWidth = maxWidth;
-            m_SizeToContents = true;
+            this.maxWidth = maxWidth;
+            sizeToContents = true;
             Invalidate();
         }
 
@@ -248,7 +255,7 @@ namespace Gwen.Net.Control
 
             for (var i = 0; i < ColumnCount; i++)
             {
-                m_ColumnWidth[i] = 0;
+                columnWidth[i] = 0;
             }
 
             foreach (TableRow row in Children)
@@ -259,9 +266,9 @@ namespace Gwen.Net.Control
                 {
                     ControlBase cell = row.GetColumn(i);
 
-                    if (null != cell)
+                    if (cell != null)
                     {
-                        m_ColumnWidth[i] = Math.Max(m_ColumnWidth[i], cell.MeasuredSize.Width);
+                        columnWidth[i] = Math.Max(columnWidth[i], cell.MeasuredSize.Width);
                     }
                 }
             }
@@ -269,7 +276,7 @@ namespace Gwen.Net.Control
             // sum all column widths 
             for (var i = 0; i < ColumnCount; i++)
             {
-                width += m_ColumnWidth[i];
+                width += columnWidth[i];
             }
 
             width = 0;
@@ -278,13 +285,13 @@ namespace Gwen.Net.Control
             {
                 for (var i = 0; i < ColumnCount; i++)
                 {
-                    if (i < ColumnCount - 1 || m_MaxWidth == 0)
+                    if (i < ColumnCount - 1 || maxWidth == 0)
                     {
-                        row.SetColumnWidth(i, m_ColumnWidth[i]);
+                        row.SetColumnWidth(i, columnWidth[i]);
                     }
                     else
                     {
-                        row.SetColumnWidth(i, m_ColumnWidth[i] + Math.Max(val1: 0, m_MaxWidth - width));
+                        row.SetColumnWidth(i, columnWidth[i] + Math.Max(val1: 0, maxWidth - width));
                     }
                 }
 
@@ -294,14 +301,14 @@ namespace Gwen.Net.Control
                 height += row.MeasuredSize.Height;
             }
 
-            m_RowMeasurementDirty = false;
+            rowMeasurementDirty = false;
 
-            if (m_MaxWidth == 0 || m_MaxWidth < width)
+            if (maxWidth == 0 || maxWidth < width)
             {
                 return new Size(width, height);
             }
 
-            return new Size(m_MaxWidth, height);
+            return new Size(maxWidth, height);
         }
     }
 }
