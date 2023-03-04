@@ -105,7 +105,7 @@ namespace Gwen.Net.Control.Internal
                 }
 
                 // Conform to minimum size here so we don't
-                // go all weird when we snap it in the base conrt
+                // go all weird when we snap it in the base control
 
                 if (bounds.Width < min.Width)
                 {

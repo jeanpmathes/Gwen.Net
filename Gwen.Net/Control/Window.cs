@@ -28,7 +28,7 @@ namespace Gwen.Net.Control
             m_TitleBar.SendToBack();
             m_TitleBar.Dragged += OnDragged;
 
-            m_DragBar = m_TitleBar;
+            dragBar = m_TitleBar;
 
             m_InnerPanel = new InnerContentControl(this);
             m_InnerPanel.SendToBack();

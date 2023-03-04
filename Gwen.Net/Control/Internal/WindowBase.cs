@@ -16,17 +16,17 @@ namespace Gwen.Net.Control.Internal
 {
     public abstract class WindowBase : ResizableControl
     {
-        private readonly ControlBase m_RealParent;
-        protected Dragger m_DragBar;
+        private readonly ControlBase realParent;
+        protected Dragger dragBar;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WindowBase" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        public WindowBase(ControlBase parent)
+        protected WindowBase(ControlBase parent)
             : base(parent.GetCanvas())
         {
-            m_RealParent = parent;
+            realParent = parent;
 
             EnableResizing();
             BringToFront();
@@ -43,8 +43,8 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         [XmlProperty] public bool IsDraggingEnabled
         {
-            get => m_DragBar.Target != null;
-            set => m_DragBar.Target = value ? this : null;
+            get => dragBar.Target != null;
+            set => dragBar.Target = value ? this : null;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the control is on top of its parent's children.
         /// </summary>
-        public override bool IsOnTop => Parent.Children.Where(x => x is Window).Last() == this;
+        public override bool IsOnTop => Parent.Children.Last(x => x is Window) == this;
 
         [XmlEvent] public event GwenEventHandler<EventArgs> Closed;
 
@@ -99,14 +99,28 @@ namespace Gwen.Net.Control.Internal
 
         protected virtual void OnDragged(ControlBase control, EventArgs args)
         {
-            StartPosition = StartPosition.Manual;
+            SetDragAndResizeCompatibleProperties();
         }
 
         protected override void OnResized(ControlBase control, EventArgs args)
         {
+            SetDragAndResizeCompatibleProperties();
+            base.OnResized(control, args);
+        }
+        
+        private void SetDragAndResizeCompatibleProperties()
+        {
             StartPosition = StartPosition.Manual;
 
-            base.OnResized(control, args);
+            if (HorizontalAlignment == HorizontalAlignment.Center)
+            {
+                HorizontalAlignment = HorizontalAlignment.Left;
+            }
+            
+            if (VerticalAlignment == VerticalAlignment.Center)
+            {
+                VerticalAlignment = VerticalAlignment.Top;
+            }
         }
 
         public override bool SetBounds(int x, int y, int width, int height)
@@ -119,8 +133,8 @@ namespace Gwen.Net.Control.Internal
             }
             else if (StartPosition == StartPosition.CenterParent)
             {
-                Point pt = m_RealParent.LocalPosToCanvas(
-                    new Point(m_RealParent.ActualWidth / 2, m_RealParent.ActualHeight / 2));
+                Point pt = realParent.LocalPosToCanvas(
+                    new Point(realParent.ActualWidth / 2, realParent.ActualHeight / 2));
 
                 x = pt.X - (width / 2);
                 y = pt.Y - (height / 2);

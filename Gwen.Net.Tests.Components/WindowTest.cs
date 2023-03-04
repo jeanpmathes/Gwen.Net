@@ -7,13 +7,13 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Containers", Order = 300)]
     public class WindowTest : GUnit
     {
-        private readonly Random m_Rand;
-        private int m_WindowCount;
+        private readonly Random random;
+        private int windowCount;
 
         public WindowTest(ControlBase parent)
             : base(parent)
         {
-            m_Rand = new Random();
+            random = new Random();
 
             VerticalLayout layout = new(this);
             layout.HorizontalAlignment = HorizontalAlignment.Left;
@@ -50,20 +50,20 @@ namespace Gwen.Net.Tests.Components
             button.Text = "Open a Long MessageBox";
             button.Clicked += OpenLongMsgbox;
 
-            m_WindowCount = 0;
+            windowCount = 0;
         }
 
         private void OpenWindow(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Window ({0})", ++m_WindowCount);
+            window.Title = $"Window ({++windowCount})";
 
             window.Size = new Size(
-                m_Rand.Next(minValue: 200, maxValue: 400),
-                m_Rand.Next(minValue: 200, maxValue: 400));
+                random.Next(minValue: 200, maxValue: 400),
+                random.Next(minValue: 200, maxValue: 400));
 
-            window.Left = m_Rand.Next(maxValue: 700);
-            window.Top = m_Rand.Next(maxValue: 400);
+            window.Left = random.Next(maxValue: 700);
+            window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
 
             RadioButtonGroup rbg = new(window);
@@ -84,14 +84,14 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowWithMenuAndStatusBar(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Window ({0})", ++m_WindowCount);
+            window.Title = $"Window ({++windowCount})";
 
             window.Size = new Size(
-                m_Rand.Next(minValue: 200, maxValue: 400),
-                m_Rand.Next(minValue: 200, maxValue: 400));
+                random.Next(minValue: 200, maxValue: 400),
+                random.Next(minValue: 200, maxValue: 400));
 
-            window.Left = m_Rand.Next(maxValue: 700);
-            window.Top = m_Rand.Next(maxValue: 400);
+            window.Left = random.Next(maxValue: 700);
+            window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 1, top: 0, right: 1, bottom: 1);
 
             DockLayout layout = new(window);
@@ -131,9 +131,9 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowAutoSizing(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Window ({0})", ++m_WindowCount);
-            window.Left = m_Rand.Next(maxValue: 700);
-            window.Top = m_Rand.Next(maxValue: 400);
+            window.Title = string.Format("Window ({0})", ++windowCount);
+            window.Left = random.Next(maxValue: 700);
+            window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
             window.HorizontalAlignment = HorizontalAlignment.Left;
             window.VerticalAlignment = VerticalAlignment.Top;
@@ -167,9 +167,9 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowModal(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Modal Window ({0})", ++m_WindowCount);
-            window.Left = m_Rand.Next(maxValue: 700);
-            window.Top = m_Rand.Next(maxValue: 400);
+            window.Title = string.Format("Modal Window ({0})", ++windowCount);
+            window.Left = random.Next(maxValue: 700);
+            window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
             window.HorizontalAlignment = HorizontalAlignment.Left;
             window.VerticalAlignment = VerticalAlignment.Top;
@@ -198,7 +198,7 @@ namespace Gwen.Net.Tests.Components
         {
             MessageBox window = new(this, "Message box test text.");
             window.Dismissed += OnDismissed;
-            window.SetPosition(m_Rand.Next(maxValue: 700), m_Rand.Next(maxValue: 400));
+            window.SetPosition(random.Next(maxValue: 700), random.Next(maxValue: 400));
         }
 
         private void OpenLongMsgbox(ControlBase control, EventArgs args)
@@ -211,7 +211,7 @@ namespace Gwen.Net.Tests.Components
                     MessageBoxButtons.AbortRetryIgnore);
 
             window.Dismissed += OnDismissed;
-            window.SetPosition(m_Rand.Next(maxValue: 700), m_Rand.Next(maxValue: 400));
+            window.SetPosition(random.Next(maxValue: 700), random.Next(maxValue: 400));
         }
 
         private void OnDismissed(ControlBase sender, MessageBoxResultEventArgs args)

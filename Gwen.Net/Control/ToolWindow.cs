@@ -16,9 +16,9 @@ namespace Gwen.Net.Control
         public ToolWindow(ControlBase parent)
             : base(parent)
         {
-            m_DragBar = new Dragger(this);
-            m_DragBar.Target = this;
-            m_DragBar.SendToBack();
+            dragBar = new Dragger(this);
+            dragBar.Target = this;
+            dragBar.SendToBack();
 
             Vertical = false;
 
@@ -35,13 +35,13 @@ namespace Gwen.Net.Control
 
                 if (m_vertical)
                 {
-                    m_DragBar.Height = BaseUnit + 2;
-                    m_DragBar.Width = Util.Ignore;
+                    dragBar.Height = BaseUnit + 2;
+                    dragBar.Width = Util.Ignore;
                 }
                 else
                 {
-                    m_DragBar.Width = BaseUnit + 2;
-                    m_DragBar.Height = Util.Ignore;
+                    dragBar.Width = BaseUnit + 2;
+                    dragBar.Height = Util.Ignore;
                 }
 
                 EnableResizing();
@@ -51,8 +51,8 @@ namespace Gwen.Net.Control
 
         protected override void AdaptToScaleChange()
         {
-            if (m_vertical) m_DragBar.Height = BaseUnit + 2;
-            else m_DragBar.Width = BaseUnit + 2;
+            if (m_vertical) dragBar.Height = BaseUnit + 2;
+            else dragBar.Width = BaseUnit + 2;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Gwen.Net.Control
         {
             bool hasFocus = IsOnTop;
 
-            skin.DrawToolWindow(this, m_vertical, m_vertical ? m_DragBar.ActualHeight : m_DragBar.ActualWidth);
+            skin.DrawToolWindow(this, m_vertical, m_vertical ? dragBar.ActualHeight : dragBar.ActualWidth);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            Size titleBarSize = m_DragBar.DoMeasure(new Size(availableSize.Width, availableSize.Height));
+            Size titleBarSize = dragBar.DoMeasure(new Size(availableSize.Width, availableSize.Height));
 
             if (m_InnerPanel != null)
             {
@@ -112,11 +112,11 @@ namespace Gwen.Net.Control
         {
             if (m_vertical)
             {
-                m_DragBar.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, m_DragBar.MeasuredSize.Height));
+                dragBar.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, dragBar.MeasuredSize.Height));
             }
             else
             {
-                m_DragBar.DoArrange(new Rectangle(x: 0, y: 0, m_DragBar.MeasuredSize.Width, finalSize.Height));
+                dragBar.DoArrange(new Rectangle(x: 0, y: 0, dragBar.MeasuredSize.Width, finalSize.Height));
             }
 
             if (m_InnerPanel != null)
@@ -126,17 +126,17 @@ namespace Gwen.Net.Control
                     m_InnerPanel.DoArrange(
                         new Rectangle(
                             x: 0,
-                            m_DragBar.MeasuredSize.Height,
+                            dragBar.MeasuredSize.Height,
                             finalSize.Width,
-                            finalSize.Height - m_DragBar.MeasuredSize.Height));
+                            finalSize.Height - dragBar.MeasuredSize.Height));
                 }
                 else
                 {
                     m_InnerPanel.DoArrange(
                         new Rectangle(
-                            m_DragBar.MeasuredSize.Width,
+                            dragBar.MeasuredSize.Width,
                             y: 0,
-                            finalSize.Width - m_DragBar.MeasuredSize.Width,
+                            finalSize.Width - dragBar.MeasuredSize.Width,
                             finalSize.Height));
                 }
             }
