@@ -47,23 +47,23 @@ namespace Gwen.Net.Control
         {
             Cursor = Cursor.Finger;
 
-            m_normalColor = m_Text.TextColor;
-            m_Text.TextColor = HoverColor;
+            m_normalColor = text.TextColor;
+            text.TextColor = HoverColor;
 
             if (HoverFont != null)
             {
-                m_normalFont = m_Text.Font;
-                m_Text.Font = HoverFont;
+                m_normalFont = text.Font;
+                text.Font = HoverFont;
             }
         }
 
         private void OnHoverLeave(ControlBase control, EventArgs args)
         {
-            m_Text.TextColor = m_normalColor;
+            text.TextColor = m_normalColor;
 
             if (HoverFont != null)
             {
-                m_Text.Font = m_normalFont;
+                text.Font = m_normalFont;
             }
         }
 
