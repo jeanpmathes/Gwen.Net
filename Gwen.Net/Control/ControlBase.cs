@@ -25,44 +25,44 @@ namespace Gwen.Net.Control
         /// <param name="arguments">Additional arguments. May be empty (EventArgs.Empty).</param>
         public delegate void GwenEventHandler<in T>(ControlBase sender, T arguments) where T : EventArgs;
 
-        private bool m_Disposed;
+        private bool disposed;
 
-        private ControlBase m_Parent;
+        private ControlBase parent;
 
         /// <summary>
         ///     This is the panel's actual parent - most likely the logical
         ///     parent's InnerPanel (if it has one). You should rarely need this.
         /// </summary>
-        private ControlBase m_ActualParent;
+        private ControlBase actualParent;
 
-        private ControlBase m_ToolTip;
+        private ControlBase toolTip;
 
-        private SkinBase m_Skin;
+        private SkinBase skin;
 
-        private Rectangle m_Bounds;
-        private Rectangle m_RenderBounds;
+        private Rectangle bounds;
+        private Rectangle renderBounds;
 
-        private Rectangle m_DesiredBounds;
+        private Rectangle desiredBounds;
 
-        private Rectangle m_AnchorBounds;
-        private Anchor m_Anchor;
+        private Rectangle anchorBounds;
+        private Anchor anchor;
 
-        private Size m_MeasuredSize;
+        private Size measuredSize;
 
-        private Size m_MinimumSize = Size.One;
-        private Size m_MaximumSize = Size.Infinity;
+        private Size minimumSize = Size.One;
+        private Size maximumSize = Size.Infinity;
 
-        protected Padding m_Padding;
-        private Margin m_Margin;
+        protected Padding padding;
+        private Margin margin;
 
-        private bool m_CacheTextureDirty;
+        private bool cacheTextureDirty;
 
-        private Package m_DragAndDrop_Package;
+        private Package dragAndDropPackage;
 
         /// <summary>
         ///     Real list of children.
         /// </summary>
-        private readonly List<ControlBase> m_Children;
+        private readonly List<ControlBase> children;
 
         /// <summary>
         ///     Invoked when mouse pointer enters the control.
@@ -113,32 +113,32 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Logical list of children.
         /// </summary>
-        public virtual List<ControlBase> Children => m_Children;
+        public virtual List<ControlBase> Children => children;
 
         /// <summary>
         ///     The logical parent. It's usually what you expect, the control you've parented it to.
         /// </summary>
         public ControlBase Parent
         {
-            get => m_Parent;
+            get => parent;
             set
             {
-                if (m_Parent == value)
+                if (parent == value)
                 {
                     return;
                 }
 
-                if (m_Parent != null)
+                if (parent != null)
                 {
-                    m_Parent.RemoveChild(this, dispose: false);
+                    parent.RemoveChild(this, dispose: false);
                 }
 
-                m_Parent = value;
-                m_ActualParent = null;
+                parent = value;
+                actualParent = null;
 
-                if (m_Parent != null)
+                if (parent != null)
                 {
-                    m_Parent.AddChild(this);
+                    parent.AddChild(this);
                 }
             }
         }
@@ -183,14 +183,14 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Skin != null)
+                if (skin != null)
                 {
-                    return m_Skin;
+                    return skin;
                 }
 
-                if (m_Parent != null)
+                if (parent != null)
                 {
-                    return m_Parent.Skin;
+                    return parent.Skin;
                 }
 
                 throw new InvalidOperationException("GetSkin: null");
@@ -202,14 +202,14 @@ namespace Gwen.Net.Control
         /// </summary>
         public ControlBase ToolTip
         {
-            get => m_ToolTip;
+            get => toolTip;
             set
             {
-                m_ToolTip = value;
+                toolTip = value;
 
-                if (m_ToolTip != null)
+                if (toolTip != null)
                 {
-                    m_ToolTip.Collapse(collapsed: true, measure: false);
+                    toolTip.Collapse(collapsed: true, measure: false);
                 }
             }
         }
@@ -221,9 +221,9 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_ToolTip != null && m_ToolTip is Label)
+                if (toolTip != null && toolTip is Label)
                 {
-                    return ((Label) m_ToolTip).Text;
+                    return ((Label) toolTip).Text;
                 }
 
                 return string.Empty;
@@ -238,12 +238,12 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Parent == null)
+                if (parent == null)
                 {
                     return false;
                 }
 
-                return m_Parent.IsMenuComponent;
+                return parent.IsMenuComponent;
             }
         }
 
@@ -255,15 +255,15 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Minimum size that the control needs to draw itself correctly. Valid after DoMeasure call. This includes margins.
         /// </summary>
-        public Size MeasuredSize => m_MeasuredSize;
+        public Size MeasuredSize => measuredSize;
 
         public virtual float Scale
         {
             get
             {
-                if (m_Parent != null)
+                if (parent != null)
                 {
-                    return m_Parent.Scale;
+                    return parent.Scale;
                 }
 
                 return 1.0f;
@@ -278,15 +278,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual Padding Padding
         {
-            get => m_Padding;
+            get => padding;
             set
             {
-                if (m_Padding == value)
+                if (padding == value)
                 {
                     return;
                 }
 
-                m_Padding = value;
+                padding = value;
                 Invalidate();
             }
         }
@@ -296,15 +296,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Margin Margin
         {
-            get => m_Margin;
+            get => margin;
             set
             {
-                if (m_Margin == value)
+                if (margin == value)
                 {
                     return;
                 }
 
-                m_Margin = value;
+                margin = value;
                 InvalidateParent();
             }
         }
@@ -342,7 +342,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is on top of its parent's children.
         /// </summary>
-        public virtual bool IsOnTop => this == Parent.m_Children.First(); // todo: validate
+        public virtual bool IsOnTop => this == Parent.children.First(); // todo: validate
 
         /// <summary>
         ///     Component if this control is the base of the user defined control group.
@@ -475,12 +475,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Control's size and position relative to the parent.
         /// </summary>
-        public Rectangle Bounds => m_Bounds;
+        public Rectangle Bounds => bounds;
 
         /// <summary>
         ///     Bounds for the renderer.
         /// </summary>
-        public Rectangle RenderBounds => m_RenderBounds;
+        public Rectangle RenderBounds => renderBounds;
 
         /// <summary>
         ///     Bounds adjusted by padding.
@@ -492,10 +492,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Size MinimumSize
         {
-            get => m_MinimumSize;
+            get => minimumSize;
             set
             {
-                m_MinimumSize = value;
+                minimumSize = value;
                 InvalidateParent();
             }
         }
@@ -505,10 +505,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Size MaximumSize
         {
-            get => m_MaximumSize;
+            get => maximumSize;
             set
             {
-                m_MaximumSize = value;
+                maximumSize = value;
                 InvalidateParent();
             }
         }
@@ -550,57 +550,57 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualLeft => m_Bounds.X;
+        public int ActualLeft => bounds.X;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualTop => m_Bounds.Y;
+        public int ActualTop => bounds.Y;
 
         /// <summary>
         ///     Width of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualWidth => m_Bounds.Width;
+        public int ActualWidth => bounds.Width;
 
         /// <summary>
         ///     Height of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualHeight => m_Bounds.Height;
+        public int ActualHeight => bounds.Height;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public Point ActualPosition => m_Bounds.Location;
+        public Point ActualPosition => bounds.Location;
 
         /// <summary>
         ///     Size of the control. Valid after DoArrange call.
         /// </summary>
-        public Size ActualSize => m_Bounds.Size;
+        public Size ActualSize => bounds.Size;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualRight => m_Bounds.Right;
+        public int ActualRight => bounds.Right;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualBottom => m_Bounds.Bottom;
+        public int ActualBottom => bounds.Bottom;
 
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
         [XmlProperty] public virtual int Left
         {
-            get => m_DesiredBounds.X;
+            get => desiredBounds.X;
             set
             {
-                if (m_DesiredBounds.X == value)
+                if (desiredBounds.X == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.X = value;
+                desiredBounds.X = value;
                 InvalidateParent();
             }
         }
@@ -610,15 +610,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual int Top
         {
-            get => m_DesiredBounds.Y;
+            get => desiredBounds.Y;
             set
             {
-                if (m_DesiredBounds.Y == value)
+                if (desiredBounds.Y == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.Y = value;
+                desiredBounds.Y = value;
                 InvalidateParent();
             }
         }
@@ -629,15 +629,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual int Width
         {
-            get => m_DesiredBounds.Width;
+            get => desiredBounds.Width;
             set
             {
-                if (m_DesiredBounds.Width == value)
+                if (desiredBounds.Width == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.Width =
+                desiredBounds.Width =
                     value; /*if (m_HorizontalAlignment == HorizontalAlignment.Stretch) m_HorizontalAlignment = HorizontalAlignment.Left;*/
 
                 InvalidateParent();
@@ -650,15 +650,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual int Height
         {
-            get => m_DesiredBounds.Height;
+            get => desiredBounds.Height;
             set
             {
-                if (m_DesiredBounds.Height == value)
+                if (desiredBounds.Height == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.Height =
+                desiredBounds.Height =
                     value; /*if (m_VerticalAlignment == VerticalAlignment.Stretch) m_VerticalAlignment = VerticalAlignment.Top;*/
 
                 InvalidateParent();
@@ -670,15 +670,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual Point Position
         {
-            get => m_DesiredBounds.Location;
+            get => desiredBounds.Location;
             set
             {
-                if (m_DesiredBounds.Location == value)
+                if (desiredBounds.Location == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.Location = value;
+                desiredBounds.Location = value;
                 InvalidateParent();
             }
         }
@@ -688,15 +688,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual Size Size
         {
-            get => m_DesiredBounds.Size;
+            get => desiredBounds.Size;
             set
             {
-                if (m_DesiredBounds.Size == value)
+                if (desiredBounds.Size == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds.Size = value;
+                desiredBounds.Size = value;
                 InvalidateParent();
             }
         }
@@ -707,15 +707,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public virtual Rectangle DesiredBounds
         {
-            get => m_DesiredBounds;
+            get => desiredBounds;
             set
             {
-                if (m_DesiredBounds == value)
+                if (desiredBounds == value)
                 {
                     return;
                 }
 
-                m_DesiredBounds = value;
+                desiredBounds = value;
                 InvalidateParent();
             }
         }
@@ -725,15 +725,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Rectangle AnchorBounds
         {
-            get => m_AnchorBounds;
+            get => anchorBounds;
             set
             {
-                if (m_AnchorBounds == value)
+                if (anchorBounds == value)
                 {
                     return;
                 }
 
-                m_AnchorBounds = value;
+                anchorBounds = value;
                 Invalidate();
             }
         }
@@ -743,15 +743,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public Anchor Anchor
         {
-            get => m_Anchor;
+            get => anchor;
             set
             {
-                if (m_Anchor == value)
+                if (anchor == value)
                 {
                     return;
                 }
 
-                m_Anchor = value;
+                anchor = value;
                 Invalidate();
             }
         }
@@ -796,18 +796,18 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public ControlBase(ControlBase parent = null)
         {
-            m_Children = new List<ControlBase>();
+            children = new List<ControlBase>();
             m_Accelerators = new Dictionary<string, GwenEventHandler<EventArgs>>();
 
-            m_Bounds = new Rectangle(Point.Zero, Size.Infinity);
-            m_Padding = Padding.Zero;
-            m_Margin = Margin.Zero;
+            bounds = new Rectangle(Point.Zero, Size.Infinity);
+            padding = Padding.Zero;
+            margin = Margin.Zero;
 
-            m_Anchor = Anchor.LeftTop;
+            anchor = Anchor.LeftTop;
 
-            m_DesiredBounds = new Rectangle(x: 0, y: 0, Util.Ignore, Util.Ignore);
+            desiredBounds = new Rectangle(x: 0, y: 0, Util.Ignore, Util.Ignore);
 
-            m_AnchorBounds = new Rectangle(x: 0, y: 0, width: 0, height: 0);
+            anchorBounds = new Rectangle(x: 0, y: 0, width: 0, height: 0);
 
             SetInternalFlag(
                 InternalFlags.AlignHStretch | InternalFlags.AlignVStretch | InternalFlags.DockNone,
@@ -822,10 +822,10 @@ namespace Gwen.Net.Control
 
             Invalidate();
             Cursor = Cursor.Normal;
-            m_ToolTip = null;
+            toolTip = null;
             IsTabable = false;
             ShouldDrawBackground = true;
-            m_CacheTextureDirty = true;
+            cacheTextureDirty = true;
             ShouldCacheToTexture = false;
 
             BoundsOutlineColor = Color.Red;
@@ -838,7 +838,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void Dispose()
         {
-            if (m_Disposed)
+            if (disposed)
             {
 #if DEBUG
                 Debug.WriteLine("Control {{{0}}} disposed twice.", this);
@@ -865,19 +865,19 @@ namespace Gwen.Net.Control
             Net.ToolTip.ControlDeleted(this);
             Animation.Cancel(this);
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 child.Dispose();
             }
 
-            if (m_ToolTip != null)
+            if (toolTip != null)
             {
-                m_ToolTip.Dispose();
+                toolTip.Dispose();
             }
 
-            m_Children.Clear();
+            children.Clear();
 
-            m_Disposed = true;
+            disposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -925,7 +925,7 @@ namespace Gwen.Net.Control
         /// <returns></returns>
         public virtual Canvas GetCanvas()
         {
-            ControlBase canvas = m_Parent;
+            ControlBase canvas = parent;
 
             if (canvas == null)
             {
@@ -1008,7 +1008,7 @@ namespace Gwen.Net.Control
             Label tooltip = new(this)
             {
                 Parent = null,
-                m_Skin = Skin,
+                skin = Skin,
                 Text = text,
                 TextColorOverride = Skin.Colors.TooltipText,
                 Padding = new Padding(left: 5, top: 3, right: 5, bottom: 3)
@@ -1028,11 +1028,11 @@ namespace Gwen.Net.Control
             {
                 NeedsLayout = true;
 
-                if (m_Parent != null)
+                if (parent != null)
                 {
-                    if (!m_Parent.NeedsLayout)
+                    if (!parent.NeedsLayout)
                     {
-                        m_Parent.Invalidate();
+                        parent.Invalidate();
                     }
                 }
             }
@@ -1053,9 +1053,9 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void InvalidateParent()
         {
-            if (m_Parent != null)
+            if (parent != null)
             {
-                m_Parent.Invalidate();
+                parent.Invalidate();
             }
         }
 
@@ -1064,23 +1064,23 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void SendToBack()
         {
-            if (m_ActualParent == null)
+            if (actualParent == null)
             {
                 return;
             }
 
-            if (m_ActualParent.m_Children.Count == 0)
+            if (actualParent.children.Count == 0)
             {
                 return;
             }
 
-            if (m_ActualParent.m_Children.First() == this)
+            if (actualParent.children.First() == this)
             {
                 return;
             }
 
-            m_ActualParent.m_Children.Remove(this);
-            m_ActualParent.m_Children.Insert(index: 0, this);
+            actualParent.children.Remove(this);
+            actualParent.children.Insert(index: 0, this);
         }
 
         /// <summary>
@@ -1088,30 +1088,30 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void BringToFront()
         {
-            if (m_ActualParent == null)
+            if (actualParent == null)
             {
                 return;
             }
 
-            if (m_ActualParent.m_Children.Last() == this)
+            if (actualParent.children.Last() == this)
             {
                 return;
             }
 
-            m_ActualParent.m_Children.Remove(this);
-            m_ActualParent.m_Children.Add(this);
+            actualParent.children.Remove(this);
+            actualParent.children.Add(this);
             Redraw();
         }
 
         public virtual void BringNextToControl(ControlBase child, bool behind)
         {
-            if (null == m_ActualParent)
+            if (null == actualParent)
             {
                 return;
             }
 
-            int index = m_ActualParent.m_Children.IndexOf(this);
-            int newIndex = m_ActualParent.m_Children.IndexOf(child);
+            int index = actualParent.children.IndexOf(this);
+            int newIndex = actualParent.children.IndexOf(child);
 
             if (index == -1 || newIndex == -1)
             {
@@ -1125,14 +1125,14 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            if (newIndex == m_ActualParent.m_Children.Count - 1 && behind)
+            if (newIndex == actualParent.children.Count - 1 && behind)
             {
                 BringToFront();
 
                 return;
             }
 
-            m_ActualParent.m_Children.Remove(this);
+            actualParent.children.Remove(this);
 
             if (newIndex > index)
             {
@@ -1144,7 +1144,7 @@ namespace Gwen.Net.Control
                 newIndex++;
             }
 
-            m_ActualParent.m_Children.Insert(newIndex, this);
+            actualParent.children.Insert(newIndex, this);
         }
 
         /// <summary>
@@ -1184,8 +1184,8 @@ namespace Gwen.Net.Control
         /// <param name="child">Control to be added as a child.</param>
         public virtual void AddChild(ControlBase child)
         {
-            m_Children.Add(child);
-            child.m_ActualParent = this;
+            children.Add(child);
+            child.actualParent = this;
 
             OnChildAdded(child);
         }
@@ -1197,7 +1197,7 @@ namespace Gwen.Net.Control
         /// <param name="dispose">Determines whether the child should be disposed (added to delayed delete queue).</param>
         public virtual void RemoveChild(ControlBase child, bool dispose)
         {
-            m_Children.Remove(child);
+            children.Remove(child);
             OnChildRemoved(child);
 
             if (dispose)
@@ -1212,9 +1212,9 @@ namespace Gwen.Net.Control
         public virtual void DeleteAllChildren()
         {
             // todo: probably shouldn't invalidate after each removal
-            while (m_Children.Count > 0)
+            while (children.Count > 0)
             {
-                RemoveChild(m_Children[index: 0], dispose: true);
+                RemoveChild(children[index: 0], dispose: true);
             }
         }
 
@@ -1263,8 +1263,8 @@ namespace Gwen.Net.Control
 
             SetBounds(x, y, ActualWidth, ActualHeight);
 
-            m_DesiredBounds.X = m_Bounds.X;
-            m_DesiredBounds.Y = m_Bounds.Y;
+            desiredBounds.X = bounds.X;
+            desiredBounds.Y = bounds.Y;
         }
 
         /// <summary>
@@ -1325,21 +1325,21 @@ namespace Gwen.Net.Control
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
         public virtual bool SetBounds(int x, int y, int width, int height)
         {
-            if (m_Bounds.X == x &&
-                m_Bounds.Y == y &&
-                m_Bounds.Width == width &&
-                m_Bounds.Height == height)
+            if (bounds.X == x &&
+                bounds.Y == y &&
+                bounds.Width == width &&
+                bounds.Height == height)
             {
                 return false;
             }
 
             Rectangle oldBounds = Bounds;
 
-            m_Bounds.X = x;
-            m_Bounds.Y = y;
+            bounds.X = x;
+            bounds.Y = y;
 
-            m_Bounds.Width = width;
-            m_Bounds.Height = height;
+            bounds.Width = width;
+            bounds.Height = height;
 
             OnBoundsChanged(oldBounds);
 
@@ -1365,7 +1365,7 @@ namespace Gwen.Net.Control
         /// </summary>
         protected virtual void OnScaleChanged()
         {
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 child.OnScaleChanged();
             }
@@ -1410,7 +1410,7 @@ namespace Gwen.Net.Control
                 render.ClipRegion = new Rectangle(x: 0, y: 0, ActualWidth, ActualHeight);
             }
 
-            if (m_CacheTextureDirty && render.ClipRegionVisible)
+            if (cacheTextureDirty && render.ClipRegionVisible)
             {
                 render.StartClip();
 
@@ -1428,10 +1428,10 @@ namespace Gwen.Net.Control
                 //render.RenderOffset = old;
                 //render.ClipRegion = old;
 
-                if (m_Children.Count > 0)
+                if (children.Count > 0)
                 {
                     //Now render my kids
-                    foreach (ControlBase child in m_Children)
+                    foreach (ControlBase child in children)
                     {
                         if (child.IsHidden || child.IsCollapsed)
                         {
@@ -1445,7 +1445,7 @@ namespace Gwen.Net.Control
                 if (ShouldCacheToTexture)
                 {
                     cache.FinishCacheTexture(this);
-                    m_CacheTextureDirty = false;
+                    cacheTextureDirty = false;
                 }
             }
 
@@ -1467,9 +1467,9 @@ namespace Gwen.Net.Control
         {
             // If this control has a different skin,
             // then so does its children.
-            if (m_Skin != null)
+            if (this.skin != null)
             {
-                skin = m_Skin;
+                skin = this.skin;
             }
 
             // Do think
@@ -1526,10 +1526,10 @@ namespace Gwen.Net.Control
             //Render myself first
             Render(skin);
 
-            if (m_Children.Count > 0)
+            if (children.Count > 0)
             {
                 //Now render my kids
-                foreach (ControlBase child in m_Children)
+                foreach (ControlBase child in children)
                 {
                     if (child.IsHidden || child.IsCollapsed)
                     {
@@ -1556,19 +1556,19 @@ namespace Gwen.Net.Control
         /// <param name="doChildren">Deterines whether to change children skin.</param>
         public virtual void SetSkin(SkinBase skin, bool doChildren = false)
         {
-            if (m_Skin == skin)
+            if (this.skin == skin)
             {
                 return;
             }
 
-            m_Skin = skin;
+            this.skin = skin;
             //Invalidate();
             Redraw();
             OnSkinChanged(skin);
 
             if (doChildren)
             {
-                foreach (ControlBase child in m_Children)
+                foreach (ControlBase child in children)
                 {
                     child.SetSkin(skin, doChildren: true);
                 }
@@ -1587,9 +1587,9 @@ namespace Gwen.Net.Control
         /// <param name="delta">Scroll delta.</param>
         protected virtual bool OnMouseWheeled(int delta)
         {
-            if (m_ActualParent != null)
+            if (actualParent != null)
             {
-                return m_ActualParent.OnMouseWheeled(delta);
+                return actualParent.OnMouseWheeled(delta);
             }
 
             return false;
@@ -1841,7 +1841,7 @@ namespace Gwen.Net.Control
 
             // todo: convert to linq FindLast
             IEnumerable<ControlBase>
-                rev = ((IList<ControlBase>) m_Children)
+                rev = ((IList<ControlBase>) children)
                     .Reverse(); // IList.Reverse creates new list, List.Reverse works in place.. go figure
 
             foreach (ControlBase child in rev)
@@ -1872,12 +1872,12 @@ namespace Gwen.Net.Control
         /// <returns>Minimum size that the control needs to draw itself correctly.</returns>
         protected virtual Size Measure(Size availableSize)
         {
-            int parentWidth = m_Padding.Left + m_Padding.Right;
-            int parentHeight = m_Padding.Top + m_Padding.Bottom;
-            int childrenWidth = m_Padding.Left + m_Padding.Right;
-            int childrenHeight = m_Padding.Top + m_Padding.Bottom;
+            int parentWidth = padding.Left + padding.Right;
+            int parentHeight = padding.Top + padding.Bottom;
+            int childrenWidth = padding.Left + padding.Right;
+            int childrenHeight = padding.Top + padding.Bottom;
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -1916,7 +1916,7 @@ namespace Gwen.Net.Control
                 }
             }
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -1942,7 +1942,7 @@ namespace Gwen.Net.Control
                 parentHeight = Math.Max(parentHeight, childrenHeight + childSize.Height);
             }
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -1986,20 +1986,20 @@ namespace Gwen.Net.Control
         /// <returns>Minimum size that the control needs to draw itself correctly.</returns>
         public Size DoMeasure(Size availableSize)
         {
-            availableSize -= m_Margin;
+            availableSize -= margin;
 
-            if (!Util.IsIgnore(m_DesiredBounds.Width))
+            if (!Util.IsIgnore(desiredBounds.Width))
             {
-                availableSize.Width = Math.Min(availableSize.Width, m_DesiredBounds.Width);
+                availableSize.Width = Math.Min(availableSize.Width, desiredBounds.Width);
             }
 
-            if (!Util.IsIgnore(m_DesiredBounds.Height))
+            if (!Util.IsIgnore(desiredBounds.Height))
             {
-                availableSize.Height = Math.Min(availableSize.Height, m_DesiredBounds.Height);
+                availableSize.Height = Math.Min(availableSize.Height, desiredBounds.Height);
             }
 
-            availableSize.Width = Util.Clamp(availableSize.Width, m_MinimumSize.Width, m_MaximumSize.Width);
-            availableSize.Height = Util.Clamp(availableSize.Height, m_MinimumSize.Height, m_MaximumSize.Height);
+            availableSize.Width = Util.Clamp(availableSize.Width, minimumSize.Width, maximumSize.Width);
+            availableSize.Height = Util.Clamp(availableSize.Height, minimumSize.Height, maximumSize.Height);
 
             Size size = Measure(availableSize);
 
@@ -2008,18 +2008,18 @@ namespace Gwen.Net.Control
                 throw new InvalidOperationException("Measured size cannot be infinity.");
             }
 
-            if (!Util.IsIgnore(m_DesiredBounds.Width))
+            if (!Util.IsIgnore(desiredBounds.Width))
             {
-                size.Width = m_DesiredBounds.Width;
+                size.Width = desiredBounds.Width;
             }
 
-            if (!Util.IsIgnore(m_DesiredBounds.Height))
+            if (!Util.IsIgnore(desiredBounds.Height))
             {
-                size.Height = m_DesiredBounds.Height;
+                size.Height = desiredBounds.Height;
             }
 
-            size.Width = Util.Clamp(size.Width, m_MinimumSize.Width, m_MaximumSize.Width);
-            size.Height = Util.Clamp(size.Height, m_MinimumSize.Height, m_MaximumSize.Height);
+            size.Width = Util.Clamp(size.Width, minimumSize.Width, maximumSize.Width);
+            size.Height = Util.Clamp(size.Height, minimumSize.Height, maximumSize.Height);
 
             if (size.Width > availableSize.Width)
             {
@@ -2031,11 +2031,11 @@ namespace Gwen.Net.Control
                 size.Height = availableSize.Height;
             }
 
-            size += m_Margin;
+            size += margin;
 
-            m_MeasuredSize = size;
+            measuredSize = size;
 
-            return m_MeasuredSize;
+            return measuredSize;
         }
 
         /// <summary>
@@ -2046,12 +2046,12 @@ namespace Gwen.Net.Control
         /// <returns>Space that the control filled.</returns>
         protected virtual Size Arrange(Size finalSize)
         {
-            int childrenLeft = m_Padding.Left;
-            int childrenTop = m_Padding.Top;
-            int childrenRight = m_Padding.Right;
-            int childrenBottom = m_Padding.Bottom;
+            int childrenLeft = padding.Left;
+            int childrenTop = padding.Top;
+            int childrenRight = padding.Right;
+            int childrenBottom = padding.Bottom;
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -2103,7 +2103,7 @@ namespace Gwen.Net.Control
                 child.DoArrange(bounds);
             }
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -2129,7 +2129,7 @@ namespace Gwen.Net.Control
                 child.DoArrange(bounds);
             }
 
-            foreach (ControlBase child in m_Children)
+            foreach (ControlBase child in children)
             {
                 if (child.IsCollapsed)
                 {
@@ -2179,48 +2179,48 @@ namespace Gwen.Net.Control
 
             if (halign != HorizontalAlignment.Stretch)
             {
-                finalSize.Width = m_MeasuredSize.Width;
+                finalSize.Width = measuredSize.Width;
             }
 
             if (valign != VerticalAlignment.Stretch)
             {
-                finalSize.Height = m_MeasuredSize.Height;
+                finalSize.Height = measuredSize.Height;
             }
 
-            finalSize -= m_Margin;
+            finalSize -= margin;
 
-            if (!Util.IsIgnore(m_DesiredBounds.Width))
+            if (!Util.IsIgnore(desiredBounds.Width))
             {
-                finalSize.Width = Math.Min(finalRect.Width, m_DesiredBounds.Width);
+                finalSize.Width = Math.Min(finalRect.Width, desiredBounds.Width);
             }
 
-            if (!Util.IsIgnore(m_DesiredBounds.Height))
+            if (!Util.IsIgnore(desiredBounds.Height))
             {
-                finalSize.Height = Math.Min(finalRect.Height, m_DesiredBounds.Height);
+                finalSize.Height = Math.Min(finalRect.Height, desiredBounds.Height);
             }
 
             Size arrangedSize = Arrange(finalSize);
 
-            if (!Util.IsIgnore(m_DesiredBounds.Width))
+            if (!Util.IsIgnore(desiredBounds.Width))
             {
-                arrangedSize.Width = m_DesiredBounds.Width;
+                arrangedSize.Width = desiredBounds.Width;
             }
             else if (halign == HorizontalAlignment.Stretch)
             {
                 arrangedSize.Width = finalSize.Width;
             }
 
-            if (!Util.IsIgnore(m_DesiredBounds.Height))
+            if (!Util.IsIgnore(desiredBounds.Height))
             {
-                arrangedSize.Height = m_DesiredBounds.Height;
+                arrangedSize.Height = desiredBounds.Height;
             }
             else if (valign == VerticalAlignment.Stretch)
             {
                 arrangedSize.Height = finalSize.Height;
             }
 
-            arrangedSize.Width = Util.Clamp(arrangedSize.Width, m_MinimumSize.Width, m_MaximumSize.Width);
-            arrangedSize.Height = Util.Clamp(arrangedSize.Height, m_MinimumSize.Height, m_MaximumSize.Height);
+            arrangedSize.Width = Util.Clamp(arrangedSize.Width, minimumSize.Width, maximumSize.Width);
+            arrangedSize.Height = Util.Clamp(arrangedSize.Height, minimumSize.Height, maximumSize.Height);
 
             if (arrangedSize.Width > finalSize.Width)
             {
@@ -2233,7 +2233,7 @@ namespace Gwen.Net.Control
             }
 
             Size areaSize = finalRect.Size;
-            areaSize -= m_Margin;
+            areaSize -= margin;
 
             Point offset = Point.Zero;
 
@@ -2256,8 +2256,8 @@ namespace Gwen.Net.Control
             }
 
             SetBounds(
-                finalRect.Left + m_Margin.Left + offset.X,
-                finalRect.Top + m_Margin.Top + offset.Y,
+                finalRect.Left + margin.Left + offset.X,
+                finalRect.Top + margin.Top + offset.Y,
                 arrangedSize.Width,
                 arrangedSize.Height);
 
@@ -2270,8 +2270,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void DoLayout()
         {
-            Measure(m_Bounds.Size);
-            Arrange(m_Bounds.Size);
+            Measure(bounds.Size);
+            Arrange(bounds.Size);
 
             NeedsLayout = false;
             LayoutDone = true;
@@ -2318,7 +2318,7 @@ namespace Gwen.Net.Control
         /// <returns>True if the control is our child.</returns>
         public bool IsChild(ControlBase child)
         {
-            return m_Children.Contains(child);
+            return children.Contains(child);
         }
 
         /// <summary>
@@ -2328,12 +2328,12 @@ namespace Gwen.Net.Control
         /// <returns>Canvas coordinates.</returns>
         public virtual Point LocalPosToCanvas(Point pnt)
         {
-            if (m_ActualParent != null)
+            if (actualParent != null)
             {
                 int x = pnt.X + ActualLeft;
                 int y = pnt.Y + ActualTop;
 
-                return m_ActualParent.LocalPosToCanvas(new Point(x, y));
+                return actualParent.LocalPosToCanvas(new Point(x, y));
             }
 
             return pnt;
@@ -2346,12 +2346,12 @@ namespace Gwen.Net.Control
         /// <returns>Local coordinates.</returns>
         public virtual Point CanvasPosToLocal(Point pnt)
         {
-            if (m_ActualParent != null)
+            if (actualParent != null)
             {
                 int x = pnt.X - ActualLeft;
                 int y = pnt.Y - ActualTop;
 
-                return m_ActualParent.CanvasPosToLocal(new Point(x, y));
+                return actualParent.CanvasPosToLocal(new Point(x, y));
             }
 
             return pnt;
@@ -2363,7 +2363,7 @@ namespace Gwen.Net.Control
         public virtual void CloseMenus()
         {
             // todo: not very efficient with the copying and recursive closing, maybe store currently open menus somewhere (canvas)?
-            ControlBase[] childrenCopy = m_Children.ToArray();
+            ControlBase[] childrenCopy = children.ToArray();
 
             foreach (ControlBase child in childrenCopy)
             {
@@ -2376,11 +2376,11 @@ namespace Gwen.Net.Control
         /// </summary>
         protected virtual void UpdateRenderBounds()
         {
-            m_RenderBounds.X = 0;
-            m_RenderBounds.Y = 0;
+            renderBounds.X = 0;
+            renderBounds.Y = 0;
 
-            m_RenderBounds.Width = m_Bounds.Width;
-            m_RenderBounds.Height = m_Bounds.Height;
+            renderBounds.Width = bounds.Width;
+            renderBounds.Height = bounds.Height;
         }
 
         /// <summary>
@@ -2394,26 +2394,26 @@ namespace Gwen.Net.Control
         // giver
         public virtual Package DragAndDrop_GetPackage(int x, int y)
         {
-            return m_DragAndDrop_Package;
+            return dragAndDropPackage;
         }
 
         // giver
         public virtual bool DragAndDrop_Draggable()
         {
-            if (m_DragAndDrop_Package == null)
+            if (dragAndDropPackage == null)
             {
                 return false;
             }
 
-            return m_DragAndDrop_Package.IsDraggable;
+            return dragAndDropPackage.IsDraggable;
         }
 
         // giver
         public virtual void DragAndDrop_SetPackage(bool draggable, string name = "", object userData = null)
         {
-            if (m_DragAndDrop_Package == null)
+            if (dragAndDropPackage == null)
             {
-                m_DragAndDrop_Package = new Package { IsDraggable = draggable, Name = name, UserData = userData };
+                dragAndDropPackage = new Package { IsDraggable = draggable, Name = name, UserData = userData };
             }
         }
 
@@ -2473,7 +2473,7 @@ namespace Gwen.Net.Control
                 }
             }
 
-            return m_Children.Any(child => child.HandleAccelerator(accelerator));
+            return children.Any(child => child.HandleAccelerator(accelerator));
         }
 
         /// <summary>
@@ -2502,11 +2502,11 @@ namespace Gwen.Net.Control
         public virtual void Redraw()
         {
             UpdateColors();
-            m_CacheTextureDirty = true;
+            cacheTextureDirty = true;
 
-            if (m_Parent != null)
+            if (parent != null)
             {
-                m_Parent.Redraw();
+                parent.Redraw();
             }
         }
 

@@ -137,7 +137,7 @@ namespace Gwen.Net.Control.Internal
 			{
 				Point lastPos = Point.Zero;
 
-				for (int i = 0; i < string.Length + 1; i++)
+				for (int i = 0; i < @string.Length + 1; i++)
 				{
 					String sub = (TextOverride ?? String).Substring(0, i);
 					Point p = Skin.Renderer.MeasureText(Font, sub);

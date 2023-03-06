@@ -260,6 +260,11 @@ namespace Gwen.Net.Control
 
             foreach (TableRow row in Children)
             {
+                for (var i = 0; i < ColumnCount; i++)
+                {
+                    row.SetColumnWidth(i, Util.Ignore);
+                }
+                
                 row.DoMeasure(availableSize);
 
                 for (var i = 0; i < ColumnCount; i++)

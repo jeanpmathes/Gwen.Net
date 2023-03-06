@@ -12,10 +12,8 @@ namespace Gwen.Net.Control
     {
         protected readonly Text text;
         private Alignment align;
-        private bool autoSizeToContent;
         private Padding textPadding;
-
-
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="Label" /> class.
         /// </summary>
@@ -23,8 +21,6 @@ namespace Gwen.Net.Control
         public Label(ControlBase parent) : base(parent)
         {
             text = new Text(this);
-
-            autoSizeToContent = true;
 
             MouseInputEnabled = false;
             Alignment = Alignment.Left | Alignment.Top;
@@ -97,10 +93,10 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public bool AutoSizeToContents
         {
-            get => autoSizeToContent;
+            get => text.AutoSizeToContents;
             set
             {
-                autoSizeToContent = value;
+                text.AutoSizeToContents = value;
                 IsVirtualControl = !value;
 
                 if (value)
@@ -187,7 +183,7 @@ namespace Gwen.Net.Control
         /// <returns></returns>
         protected virtual Point GetClosestCharacter(int x, int y)
         {
-            return new(text.GetClosestCharacter(text.CanvasPosToLocal(new Point(x, y))), y: 0);
+            return new Point(text.GetClosestCharacter(text.CanvasPosToLocal(new Point(x, y))), y: 0);
         }
 
         /// <summary>
