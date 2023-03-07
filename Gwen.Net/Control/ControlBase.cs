@@ -80,22 +80,22 @@ namespace Gwen.Net.Control
         [XmlEvent] public event GwenEventHandler<EventArgs> BoundsChanged;
 
         /// <summary>
-        ///     Invoked when the control has been left-clicked.
+        ///     Invoked when the control has been left-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
         [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> Clicked;
 
         /// <summary>
-        ///     Invoked when the control has been double-left-clicked.
+        ///     Invoked when the control has been double-left-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
         [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> DoubleClicked;
 
         /// <summary>
-        ///     Invoked when the control has been right-clicked.
+        ///     Invoked when the control has been right-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
         [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> RightClicked;
 
         /// <summary>
-        ///     Invoked when the control has been double-right-clicked.
+        ///     Invoked when the control has been double-right-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
         [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> DoubleRightClicked;
 

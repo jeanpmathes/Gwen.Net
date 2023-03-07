@@ -6,8 +6,8 @@ namespace Gwen.Net.Control.Internal
 {
     public abstract class ButtonBase : ControlBase
     {
-        private bool m_Depressed;
-        private bool m_ToggleStatus;
+        private bool depressed;
+        private bool toggleStatus;
 
         public ButtonBase(ControlBase parent)
             : base(parent)
@@ -20,15 +20,15 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         [XmlProperty] public bool IsDepressed
         {
-            get => m_Depressed;
+            get => depressed;
             set
             {
-                if (m_Depressed == value)
+                if (depressed == value)
                 {
                     return;
                 }
 
-                m_Depressed = value;
+                depressed = value;
                 Redraw();
             }
         }
@@ -43,7 +43,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         [XmlProperty] public bool ToggleState
         {
-            get => m_ToggleStatus;
+            get => toggleStatus;
             set
             {
                 if (!IsToggle)
@@ -51,28 +51,28 @@ namespace Gwen.Net.Control.Internal
                     return;
                 }
 
-                if (m_ToggleStatus == value)
+                if (toggleStatus == value)
                 {
                     return;
                 }
 
-                m_ToggleStatus = value;
+                toggleStatus = value;
 
-                if (Toggled != null)
+                if (Toggled != null && !IsDisabled)
                 {
                     Toggled.Invoke(this, EventArgs.Empty);
                 }
 
-                if (m_ToggleStatus)
+                if (toggleStatus)
                 {
-                    if (ToggledOn != null)
+                    if (ToggledOn != null && !IsDisabled)
                     {
                         ToggledOn.Invoke(this, EventArgs.Empty);
                     }
                 }
                 else
                 {
-                    if (ToggledOff != null)
+                    if (ToggledOff != null && !IsDisabled)
                     {
                         ToggledOff.Invoke(this, EventArgs.Empty);
                     }
@@ -83,27 +83,27 @@ namespace Gwen.Net.Control.Internal
         }
 
         /// <summary>
-        ///     Invoked when the button is pressed.
+        ///     Invoked when the button is pressed. Will not be invoked if the button is disabled.
         /// </summary>
         [XmlEvent] public event GwenEventHandler<EventArgs> Pressed;
 
         /// <summary>
-        ///     Invoked when the button is released.
+        ///     Invoked when the button is released. Will not be invoked if the button is disabled.
         /// </summary>
         [XmlEvent] public event GwenEventHandler<EventArgs> Released;
 
         /// <summary>
-        ///     Invoked when the button's toggle state has changed.
+        ///     Invoked when the button's toggle state has changed. Will not be invoked if the button is disabled.
         /// </summary>
         [XmlEvent] public event GwenEventHandler<EventArgs> Toggled;
 
         /// <summary>
-        ///     Invoked when the button's toggle state has changed to On.
+        ///     Invoked when the button's toggle state has changed to On. Will not be invoked if the button is disabled.
         /// </summary>
         [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOn;
 
         /// <summary>
-        ///     Invoked when the button's toggle state has changed to Off.
+        ///     Invoked when the button's toggle state has changed to Off. Will not be invoked if the button is disabled.
         /// </summary>
         [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOff;
 
@@ -131,20 +131,19 @@ namespace Gwen.Net.Control.Internal
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-            //base.OnMouseClickedLeft(x, y, down);
             if (down)
             {
                 IsDepressed = true;
                 InputHandler.MouseFocus = this;
 
-                if (Pressed != null)
+                if (Pressed != null && !IsDisabled)
                 {
                     Pressed.Invoke(this, EventArgs.Empty);
                 }
             }
             else
             {
-                if (IsHovered && m_Depressed)
+                if (IsHovered && depressed)
                 {
                     OnClicked(x, y);
                 }
@@ -152,7 +151,7 @@ namespace Gwen.Net.Control.Internal
                 IsDepressed = false;
                 InputHandler.MouseFocus = null;
 
-                if (Released != null)
+                if (Released != null && !IsDisabled)
                 {
                     Released.Invoke(this, EventArgs.Empty);
                 }

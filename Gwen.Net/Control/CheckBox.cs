@@ -11,7 +11,7 @@ namespace Gwen.Net.Control
     [XmlControl]
     public class CheckBox : ButtonBase
     {
-        private bool m_Checked;
+        private bool @checked;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CheckBox" /> class.
@@ -29,15 +29,15 @@ namespace Gwen.Net.Control
         /// </summary>
         [XmlProperty] public bool IsChecked
         {
-            get => m_Checked;
+            get => @checked;
             set
             {
-                if (m_Checked == value)
+                if (@checked == value)
                 {
                     return;
                 }
 
-                m_Checked = value;
+                @checked = value;
                 OnCheckChanged();
             }
         }
@@ -119,7 +119,7 @@ namespace Gwen.Net.Control
         protected override void Render(SkinBase skin)
         {
             base.Render(skin);
-            skin.DrawCheckBox(this, m_Checked, IsDepressed);
+            skin.DrawCheckBox(this, @checked, IsDepressed);
         }
 
         /// <summary>
@@ -127,15 +127,8 @@ namespace Gwen.Net.Control
         /// </summary>
         protected override void OnClicked(int x, int y)
         {
-            if (IsDisabled)
-            {
-                return;
-            }
-
-            if (IsChecked && !AllowUncheck)
-            {
-                return;
-            }
+            if (IsDisabled) return;
+            if (IsChecked && !AllowUncheck) return;
 
             base.OnClicked(x, y);
         }
