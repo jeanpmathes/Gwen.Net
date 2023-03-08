@@ -55,7 +55,7 @@ namespace Gwen.Net.CommonDialog
                     View,
                     String.Format("File '{0}' already exists. Do you want to replace it?", GetFileName(path)),
                     Title,
-                    MessageBoxButtons.YesNo);
+                    buttons: MessageBoxButtons.YesNo);
 
                 win.Dismissed += OnMessageBoxDismissed;
                 win.UserData = path;

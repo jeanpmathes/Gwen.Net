@@ -7,8 +7,8 @@ namespace Gwen.Net.Control
     public enum MessageBoxButtons
     {
         AbortRetryIgnore,
-        OK,
-        OKCancel,
+        Ok,
+        OkCancel,
         RetryCancel,
         YesNo,
         YesNoCancel
@@ -27,20 +27,37 @@ namespace Gwen.Net.Control
 
     public class MessageBoxResultEventArgs : EventArgs
     {
-        public MessageBoxResult Result { get; set; }
+        public MessageBoxResult Result { get; init; }
     }
 
+    /// <summary>
+    /// The text used in the message box buttons.
+    /// </summary>
+    public class MessageBoxButtonTexts
+    {
+        public string Abort { get; init; } = "Abort";
+        public string Retry { get; init; } = "Retry";
+        public string Ignore { get; init; } = "Ignore";
+        public string Ok { get; init; } = "Ok";
+        public string Cancel { get; init; } = "Cancel";
+        public string Yes { get; init; } = "Yes";
+        public string No { get; init; } = "No";
+
+        /// <summary>
+        /// A shared instance of the default text. It is used by the <see cref="MessageBox"/> class by default.
+        /// </summary>
+        public static MessageBoxButtonTexts Shared { get; set; } = new();
+    }
+    
     /// <summary>
     ///     Simple message box.
     /// </summary>
     public class MessageBox : Window
     {
-        private readonly RichLabel m_Text;
-
         /// <summary>
         ///     Invoked when the message box has been dismissed.
         /// </summary>
-        public GwenEventHandler<MessageBoxResultEventArgs> Dismissed;
+        public GwenEventHandler<MessageBoxResultEventArgs> Dismissed { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MessageBox" /> class.
@@ -48,9 +65,10 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         /// <param name="text">Message to display.</param>
         /// <param name="caption">Window caption.</param>
+        /// <param name="buttonText">The text used in the message box buttons.</param>
         /// <param name="buttons">Message box buttons.</param>
-        public MessageBox(ControlBase parent, string text, string caption = "",
-            MessageBoxButtons buttons = MessageBoxButtons.OK)
+        public MessageBox(ControlBase parent, string text, string caption, 
+            MessageBoxButtonTexts buttonText, MessageBoxButtons buttons = MessageBoxButtons.Ok)
             : base(parent)
         {
             HorizontalAlignment = HorizontalAlignment.Left;
@@ -65,10 +83,10 @@ namespace Gwen.Net.Control
 
             DockLayout layout = new(this);
 
-            m_Text = new RichLabel(layout);
-            m_Text.Dock = Dock.Fill;
-            m_Text.Margin = Margin.Ten;
-            m_Text.Document = new Document(text);
+            RichLabel textLabel = new(layout);
+            textLabel.Dock = Dock.Fill;
+            textLabel.Margin = Margin.Ten;
+            textLabel.Document = new Document(text);
 
             HorizontalLayout buttonsLayout = new(layout);
             buttonsLayout.Dock = Dock.Bottom;
@@ -77,34 +95,34 @@ namespace Gwen.Net.Control
             switch (buttons)
             {
                 case MessageBoxButtons.AbortRetryIgnore:
-                    CreateButton(buttonsLayout, "Abort", MessageBoxResult.Abort);
-                    CreateButton(buttonsLayout, "Retry", MessageBoxResult.Retry);
-                    CreateButton(buttonsLayout, "Ignore", MessageBoxResult.Ignore);
+                    CreateButton(buttonsLayout, buttonText.Abort, MessageBoxResult.Abort);
+                    CreateButton(buttonsLayout, buttonText.Retry, MessageBoxResult.Retry);
+                    CreateButton(buttonsLayout, buttonText.Ignore, MessageBoxResult.Ignore);
 
                     break;
-                case MessageBoxButtons.OK:
-                    CreateButton(buttonsLayout, "Ok", MessageBoxResult.Ok);
+                case MessageBoxButtons.Ok:
+                    CreateButton(buttonsLayout, buttonText.Ok, MessageBoxResult.Ok);
 
                     break;
-                case MessageBoxButtons.OKCancel:
-                    CreateButton(buttonsLayout, "Ok", MessageBoxResult.Ok);
-                    CreateButton(buttonsLayout, "Cancel", MessageBoxResult.Cancel);
+                case MessageBoxButtons.OkCancel:
+                    CreateButton(buttonsLayout, buttonText.Ok, MessageBoxResult.Ok);
+                    CreateButton(buttonsLayout, buttonText.Cancel, MessageBoxResult.Cancel);
 
                     break;
                 case MessageBoxButtons.RetryCancel:
-                    CreateButton(buttonsLayout, "Retry", MessageBoxResult.Retry);
-                    CreateButton(buttonsLayout, "Cancel", MessageBoxResult.Cancel);
+                    CreateButton(buttonsLayout, buttonText.Retry, MessageBoxResult.Retry);
+                    CreateButton(buttonsLayout, buttonText.Cancel, MessageBoxResult.Cancel);
 
                     break;
                 case MessageBoxButtons.YesNo:
-                    CreateButton(buttonsLayout, "Yes", MessageBoxResult.Yes);
-                    CreateButton(buttonsLayout, "No", MessageBoxResult.No);
+                    CreateButton(buttonsLayout, buttonText.Yes, MessageBoxResult.Yes);
+                    CreateButton(buttonsLayout, buttonText.No, MessageBoxResult.No);
 
                     break;
                 case MessageBoxButtons.YesNoCancel:
-                    CreateButton(buttonsLayout, "Yes", MessageBoxResult.Yes);
-                    CreateButton(buttonsLayout, "No", MessageBoxResult.No);
-                    CreateButton(buttonsLayout, "Cancel", MessageBoxResult.Cancel);
+                    CreateButton(buttonsLayout, buttonText.Yes, MessageBoxResult.Yes);
+                    CreateButton(buttonsLayout, buttonText.No, MessageBoxResult.No);
+                    CreateButton(buttonsLayout, buttonText.Cancel, MessageBoxResult.Cancel);
 
                     break;
             }
@@ -116,12 +134,13 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         /// <param name="text">Message to display.</param>
         /// <param name="caption">Window caption.</param>
+        /// <param name="buttonText">The text used in the message box buttons.</param>
         /// <param name="buttons">Message box buttons.</param>
         /// <returns>Message box.</returns>
-        public static MessageBox Show(ControlBase parent, string text, string caption = "",
-            MessageBoxButtons buttons = MessageBoxButtons.OK)
+        public static MessageBox Show(ControlBase parent, string text,
+            string caption = "", MessageBoxButtonTexts buttonText = null, MessageBoxButtons buttons = MessageBoxButtons.Ok)
         {
-            MessageBox messageBox = new(parent, text, caption, buttons);
+            MessageBox messageBox = new(parent, text, caption, buttonText ?? MessageBoxButtonTexts.Shared, buttons);
 
             return messageBox;
         }

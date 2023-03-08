@@ -438,7 +438,7 @@ namespace Gwen.Net.CommonDialog
             }
             catch (Exception ex)
             {
-                MessageBox.Show(View, ex.Message, Title);
+                MessageBox.Show(View, ex.Message,  Title);
 
                 return;
             }

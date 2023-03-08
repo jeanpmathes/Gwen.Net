@@ -196,7 +196,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OpenMsgbox(ControlBase control, EventArgs args)
         {
-            MessageBox window = new(this, "Message box test text.");
+            MessageBox window = new(this, "Message box test text.", "", MessageBoxButtonTexts.Shared);
             window.Dismissed += OnDismissed;
             window.SetPosition(random.Next(maxValue: 700), random.Next(maxValue: 400));
         }
@@ -208,6 +208,7 @@ namespace Gwen.Net.Tests.Components
                     this,
                     @"In olden times when wishing still helped one, there lived a king whose daughters were all beautiful, but the youngest was so beautiful that the sun itself, which has seen so much, was astonished whenever it shone in her face. Close by the king's castle lay a great dark forest, and under an old lime-tree in the forest was a well, and when the day was very warm, the king's child went out into the forest and sat down by the side of the cool fountain, and when she was bored she took a golden ball, and threw it up on high and caught it, and this ball was her favorite plaything.",
                     "Long Text",
+                    MessageBoxButtonTexts.Shared,
                     MessageBoxButtons.AbortRetryIgnore);
 
             window.Dismissed += OnDismissed;
