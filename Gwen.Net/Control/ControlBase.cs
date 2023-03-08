@@ -108,7 +108,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Accelerator map.
         /// </summary>
-        private readonly Dictionary<string, GwenEventHandler<EventArgs>> m_Accelerators;
+        private readonly Dictionary<string, GwenEventHandler<EventArgs>> accelerators;
 
         /// <summary>
         ///     Logical list of children.
@@ -797,7 +797,7 @@ namespace Gwen.Net.Control
         public ControlBase(ControlBase parent = null)
         {
             children = new List<ControlBase>();
-            m_Accelerators = new Dictionary<string, GwenEventHandler<EventArgs>>();
+            accelerators = new Dictionary<string, GwenEventHandler<EventArgs>>();
 
             bounds = new Rectangle(Point.Zero, Size.Infinity);
             padding = Padding.Zero;
@@ -2465,9 +2465,9 @@ namespace Gwen.Net.Control
         {
             if (InputHandler.KeyboardFocus == this || !AccelOnlyFocus)
             {
-                if (m_Accelerators.ContainsKey(accelerator))
+                if (accelerators.ContainsKey(accelerator))
                 {
-                    m_Accelerators[accelerator].Invoke(this, EventArgs.Empty);
+                    accelerators[accelerator].Invoke(this, EventArgs.Empty);
 
                     return true;
                 }
@@ -2484,7 +2484,7 @@ namespace Gwen.Net.Control
         public void AddAccelerator(string accelerator, GwenEventHandler<EventArgs> handler)
         {
             accelerator = accelerator.Trim().ToUpperInvariant();
-            m_Accelerators[accelerator] = handler;
+            accelerators[accelerator] = handler;
         }
 
         /// <summary>
@@ -2493,7 +2493,7 @@ namespace Gwen.Net.Control
         /// <param name="accelerator">Accelerator text.</param>
         public void AddAccelerator(string accelerator)
         {
-            m_Accelerators[accelerator] = DefaultAcceleratorHandler;
+            accelerators[accelerator] = DefaultAcceleratorHandler;
         }
 
         /// <summary>

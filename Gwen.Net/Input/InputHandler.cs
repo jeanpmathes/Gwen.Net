@@ -183,8 +183,6 @@ namespace Gwen.Net.Input
             accelString.Append(chr);
             var acc = accelString.ToString();
 
-            //Debug::Msg("Accelerator string :%S\n", accelString.c_str());)
-
             if (KeyboardFocus != null && KeyboardFocus.HandleAccelerator(acc))
             {
                 return true;
@@ -329,9 +327,8 @@ namespace Gwen.Net.Input
             {
                 keyData.RightMouseDown = down;
             }
-
-            // Double click.
-            // Todo: Shouldn't double click if mouse has moved significantly
+            
+            // todo: Shouldn't double click if mouse has moved significantly
             var isDoubleClick = false;
 
             if (down &&
@@ -363,15 +360,6 @@ namespace Gwen.Net.Input
             {
                 HoveredControl.Touch();
             }
-
-#if GWEN_HOOKSYSTEM
-            if (bDown)
-            {
-                if (Hook::CallHook(&Hook::BaseHook::OnControlClicked, HoveredControl, MousePosition.x,
-                                   MousePosition.y))
-                    return true;
-            }
-#endif
 
             switch (mouseButton)
             {
@@ -509,7 +497,7 @@ namespace Gwen.Net.Input
 
             if (control.KeyboardInputEnabled)
             {
-                //Make sure none of our children have keyboard focus first - todo recursive
+                //Make sure none of our children have keyboard focus first - todo: recursive
                 if (control.Children.Any(child => child == KeyboardFocus))
                 {
                     return;

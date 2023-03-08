@@ -150,8 +150,10 @@ namespace Gwen.Net.Control.Internal
 
                 IsDepressed = false;
                 InputHandler.MouseFocus = null;
-
-                if (Released != null && !IsDisabled)
+                
+                bool IsUnderMouse(Point localMouse) => localMouse is {X: >= 0, Y: >= 0} && localMouse.X < ActualWidth && localMouse.Y < ActualHeight;
+                
+                if (Released != null && !IsDisabled && IsUnderMouse(CanvasPosToLocal(new Point(x, y))))
                 {
                     Released.Invoke(this, EventArgs.Empty);
                 }
