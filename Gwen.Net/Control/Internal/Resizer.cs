@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Resizer : Dragger
     {
-        private Dock m_ResizeDir;
+        private Dock resizeDir;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Resizer" /> class.
@@ -16,7 +16,7 @@ namespace Gwen.Net.Control.Internal
         public Resizer(ControlBase parent)
             : base(parent)
         {
-            m_ResizeDir = Dock.Left;
+            resizeDir = Dock.Left;
             MouseInputEnabled = true;
             Target = parent;
         }
@@ -28,7 +28,7 @@ namespace Gwen.Net.Control.Internal
         {
             set
             {
-                m_ResizeDir = value;
+                resizeDir = value;
 
                 if ((0 != (value & Dock.Left) && 0 != (value & Dock.Top)) ||
                     (0 != (value & Dock.Right) && 0 != (value & Dock.Bottom)))
@@ -86,6 +86,11 @@ namespace Gwen.Net.Control.Internal
 
             Rectangle oldBounds = m_Target.Bounds;
             Rectangle bounds = m_Target.Bounds;
+            
+            // If the desired bounds are not set to the current bounds, setting the bounds below can cause one of the dimensions to be set to 0.
+            // This will cause the control to jump around when resizing.
+            // Maybe there is a better way to fix this, but this works for now.
+            m_Target.DesiredBounds = bounds;
 
             Size min = m_Target.MinimumSize;
 
@@ -93,7 +98,7 @@ namespace Gwen.Net.Control.Internal
             delta.X -= x;
             delta.Y -= y;
 
-            if (0 != (m_ResizeDir & Dock.Left))
+            if (0 != (resizeDir & Dock.Left))
             {
                 bounds.X -= delta.X;
                 bounds.Width += delta.X;
@@ -104,8 +109,7 @@ namespace Gwen.Net.Control.Internal
                     bounds.X = 0;
                 }
 
-                // Conform to minimum size here so we don't
-                // go all weird when we snap it in the base control
+                // Conform to minimum size here so we don't go all weird when we snap it in the base control.
 
                 if (bounds.Width < min.Width)
                 {
@@ -118,7 +122,7 @@ namespace Gwen.Net.Control.Internal
                 m_Target.Width = bounds.Width;
             }
 
-            if (0 != (m_ResizeDir & Dock.Top))
+            if (0 != (resizeDir & Dock.Top))
             {
                 bounds.Y -= delta.Y;
                 bounds.Height += delta.Y;
@@ -129,9 +133,8 @@ namespace Gwen.Net.Control.Internal
                     bounds.Y = 0;
                 }
 
-                // Conform to minimum size here so we don't
-                // go all weird when we snap it in the base conrt
-
+                // Conform to minimum size here so we don't go all weird when we snap it in the base control.
+                
                 if (bounds.Height < min.Height)
                 {
                     int diff = min.Height - bounds.Height;
@@ -143,7 +146,7 @@ namespace Gwen.Net.Control.Internal
                 m_Target.Height = bounds.Height;
             }
 
-            if (0 != (m_ResizeDir & Dock.Right))
+            if (0 != (resizeDir & Dock.Right))
             {
                 bounds.Width -= delta.X;
 
@@ -158,7 +161,7 @@ namespace Gwen.Net.Control.Internal
                 m_Target.Width = bounds.Width;
             }
 
-            if (0 != (m_ResizeDir & Dock.Bottom))
+            if (0 != (resizeDir & Dock.Bottom))
             {
                 bounds.Height -= delta.Y;
 
@@ -173,10 +176,10 @@ namespace Gwen.Net.Control.Internal
                 m_Target.Height = bounds.Height;
             }
 
-            // Lets set quickly new bounds and let the layout measure and arrange child controls later
+            // Lets set quickly new bounds and let the layout measure and arrange child controls later.
             m_Target.SetBounds(bounds);
 
-            // Set bounds that are checked by SetBounds() implementations
+            // Set bounds that are checked by SetBounds() implementations.
             if (!Util.IsIgnore(m_Target.Width))
             {
                 m_Target.Width = m_Target.Bounds.Width;
