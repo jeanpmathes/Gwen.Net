@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using Collections.Generic;
 using Gwen.Net.OpenTk;
 using Gwen.Net.Tests.Components;
@@ -8,6 +9,8 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+
+[assembly: SupportedOSPlatform("windows")]
 
 namespace Gwen.Net.Tests
 {
@@ -57,11 +60,11 @@ namespace Gwen.Net.Tests
             gui.Resize(e.Size);
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs args)
         {
             if (UpdateFrequency == 0)
             {
-                updateFrameTimes.Put(e.Time);
+                updateFrameTimes.Put(args.Time);
 
                 if (updateFrameTimes.Sum(t => t) >= 1)
                 {
@@ -76,7 +79,7 @@ namespace Gwen.Net.Tests
             }
         }
 
-        protected override void OnRenderFrame(FrameEventArgs e)
+        protected override void OnRenderFrame(FrameEventArgs args)
         {
             GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
             gui.Render();
@@ -84,7 +87,7 @@ namespace Gwen.Net.Tests
 
             if (RenderFrequency == 0)
             {
-                renderFrameTimes.Put(e.Time);
+                renderFrameTimes.Put(args.Time);
 
                 if (renderFrameTimes.Sum(t => t) >= 1)
                 {

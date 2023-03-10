@@ -28,7 +28,7 @@ namespace Gwen.Net.OpenTk
 
         public static Bitmap StandardLoader(string s)
         {
-            return new(s);
+            return new Bitmap(s);
         }
 
         public static Bitmap Load(string filename)
