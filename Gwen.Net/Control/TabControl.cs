@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Control with multiple tabs that can be reordered and dragged.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class TabControl : ContentControl
     {
         private readonly ScrollBarButton[] m_Scroll;
@@ -52,7 +50,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if tabs can be reordered by dragging.
         /// </summary>
-        [XmlProperty] public bool AllowReorder
+        public bool AllowReorder
         {
             get => TabStrip.AllowReorder;
             set => TabStrip.AllowReorder = value;
@@ -66,7 +64,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current tab strip position.
         /// </summary>
-        [XmlProperty] public Dock TabStripPosition
+        public Dock TabStripPosition
         {
             get => TabStrip.StripPosition;
             set => TabStrip.StripPosition = value;
@@ -83,7 +81,7 @@ namespace Gwen.Net.Control
         public int TabCount => TabStrip.Children.Count;
 
         // Ugly way to implement padding but other ways would be more complicated
-        [XmlProperty] public override Padding Padding
+        public override Padding Padding
         {
             get => m_ActualPadding;
             set
@@ -106,12 +104,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when a tab has been added.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> TabAdded;
+        public event GwenEventHandler<EventArgs> TabAdded;
 
         /// <summary>
         ///     Invoked when a tab has been removed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> TabRemoved;
+        public event GwenEventHandler<EventArgs> TabRemoved;
 
         /// <summary>
         ///     Adds a new page/tab.
@@ -333,43 +331,6 @@ namespace Gwen.Net.Control
         protected virtual void ScrollPressedRight(ControlBase control, EventArgs args)
         {
             TabStrip.ScrollOffset++;
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            TabControl element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "TabPage")
-                    {
-                        string pageLabel = parser.GetAttribute("Text");
-
-                        if (pageLabel == null)
-                        {
-                            pageLabel = "";
-                        }
-
-                        string pageName = parser.GetAttribute("Name");
-
-                        if (pageName == null)
-                        {
-                            pageName = "";
-                        }
-
-                        TabButton button = element.AddPage(pageLabel);
-                        button.Name = pageName;
-
-                        ControlBase page = button.Page;
-                        parser.ParseContainerContent(page);
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

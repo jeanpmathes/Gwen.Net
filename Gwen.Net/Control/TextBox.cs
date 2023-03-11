@@ -3,14 +3,12 @@ using Gwen.Net.Control.Internal;
 using Gwen.Net.Input;
 using Gwen.Net.Platform;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Text box (editable).
     /// </summary>
-    [XmlControl]
     public class TextBox : ControlBase
     {
         private readonly ScrollArea m_ScrollArea;
@@ -67,7 +65,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether text should be selected when the control is focused.
         /// </summary>
-        [XmlProperty] public bool SelectAllOnFocus
+        public bool SelectAllOnFocus
         {
             get => m_SelectAll;
             set
@@ -81,7 +79,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlProperty] public bool LooseFocusOnSubmit { get; set; } = true;
+        public bool LooseFocusOnSubmit { get; set; } = true;
 
         /// <summary>
         ///     Indicates whether the text has active selection.
@@ -124,7 +122,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        [XmlProperty] public virtual string Text
+        public virtual string Text
         {
             get => m_Text.String;
             set => SetText(value);
@@ -133,7 +131,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text color.
         /// </summary>
-        [XmlProperty] public Color TextColor
+        public Color TextColor
         {
             get => m_Text.TextColor;
             set => m_Text.TextColor = value;
@@ -142,7 +140,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Override text color (used by tooltips).
         /// </summary>
-        [XmlProperty] public Color TextColorOverride
+        public Color TextColorOverride
         {
             get => m_Text.TextColorOverride;
             set => m_Text.TextColorOverride = value;
@@ -151,7 +149,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text override - used to display different string.
         /// </summary>
-        [XmlProperty] public string TextOverride
+        public string TextOverride
         {
             get => m_Text.TextOverride;
             set => m_Text.TextOverride = value;
@@ -160,7 +158,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Font.
         /// </summary>
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => m_Text.Font;
             set
@@ -174,7 +172,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Set the size of the control to be able to show the text of this property.
         /// </summary>
-        [XmlProperty] public string FitToText
+        public string FitToText
         {
             get => m_Text.FitToText;
             set
@@ -192,12 +190,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the text has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> TextChanged;
+        public event GwenEventHandler<EventArgs> TextChanged;
 
         /// <summary>
         ///     Invoked when the submit key has been pressed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> SubmitPressed;
+        public event GwenEventHandler<EventArgs> SubmitPressed;
 
         /// <summary>
         ///     Determines whether the control can insert text at a given cursor position.

@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Splitter control.
     /// </summary>
-    [XmlControl]
     public class CrossSplitter : ControlBase
     {
         private readonly SplitterBar m_CSplitter;
@@ -65,7 +63,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets a value indicating whether splitters should be visible.
         /// </summary>
-        [XmlProperty] public bool SplittersVisible
+        public bool SplittersVisible
         {
             get => m_CSplitter.ShouldDrawBackground;
             set
@@ -79,22 +77,22 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the size of the splitter.
         /// </summary>
-        [XmlProperty] public int SplitterSize { get; set; }
+        public int SplitterSize { get; set; }
 
         /// <summary>
         ///     Invoked when one of the panels has been zoomed (maximized).
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> PanelZoomed;
+        public event GwenEventHandler<EventArgs> PanelZoomed;
 
         /// <summary>
         ///     Invoked when one of the panels has been unzoomed (restored).
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> PanelUnZoomed;
+        public event GwenEventHandler<EventArgs> PanelUnZoomed;
 
         /// <summary>
         ///     Invoked when the zoomed panel has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ZoomChanged;
+        public event GwenEventHandler<EventArgs> ZoomChanged;
 
         /// <summary>
         ///     Centers the panels so that they take even amount of space.

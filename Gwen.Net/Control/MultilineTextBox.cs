@@ -3,11 +3,9 @@ using Gwen.Net.Control.Internal;
 using Gwen.Net.Input;
 using Gwen.Net.Platform;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
-    [XmlControl]
     public class MultilineTextBox : ScrollControl
     {
         private readonly bool m_SelectAll;
@@ -137,7 +135,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control will accept Tab characters as input.
         /// </summary>
-        [XmlProperty] public bool AcceptTabs { get; set; }
+        public bool AcceptTabs { get; set; }
 
         /// <summary>
         ///     Returns the number of lines that are in the Multiline Text Box.
@@ -150,13 +148,13 @@ namespace Gwen.Net.Control
         ///     Gets and sets the text to display to the user. Each line is seperated by
         ///     an Environment.NetLine character.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => m_Text.Text;
             set => SetText(value);
         }
 
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => m_Text.Font;
             set => m_Text.Font = value;
@@ -165,7 +163,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the text has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> TextChanged;
+        public event GwenEventHandler<EventArgs> TextChanged;
 
         /// <summary>
         ///     Sets the label text.

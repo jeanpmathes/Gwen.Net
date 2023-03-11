@@ -1,13 +1,11 @@
 ﻿using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Static text label.
     /// </summary>
-    [XmlControl]
     public class Label : ControlBase
     {
         protected readonly Text text;
@@ -29,7 +27,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text alignment.
         /// </summary>
-        [XmlProperty] public Alignment Alignment
+        public Alignment Alignment
         {
             get => align;
             set
@@ -42,7 +40,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        [XmlProperty] public virtual string Text
+        public virtual string Text
         {
             get => text.String;
             set => text.String = value;
@@ -51,7 +49,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Font.
         /// </summary>
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => text.Font;
             set
@@ -64,7 +62,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text color.
         /// </summary>
-        [XmlProperty] public Color TextColor
+        public Color TextColor
         {
             get => text.TextColor;
             set => text.TextColor = value;
@@ -73,7 +71,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Override text color (used by tooltips).
         /// </summary>
-        [XmlProperty] public Color TextColorOverride
+        public Color TextColorOverride
         {
             get => text.TextColorOverride;
             set => text.TextColorOverride = value;
@@ -82,7 +80,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text override - used to display different string.
         /// </summary>
-        [XmlProperty] public string TextOverride
+        public string TextOverride
         {
             get => text.TextOverride;
             set => text.TextOverride = value;
@@ -91,7 +89,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if the control should autosize to its text.
         /// </summary>
-        [XmlProperty] public bool AutoSizeToContents
+        public bool AutoSizeToContents
         {
             get => text.AutoSizeToContents;
             set
@@ -109,7 +107,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text padding.
         /// </summary>
-        [XmlProperty] public Padding TextPadding
+        public Padding TextPadding
         {
             get => textPadding;
             set
@@ -119,7 +117,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> Clicked
+        public override event GwenEventHandler<ClickedEventArgs> Clicked
         {
             add
             {
@@ -133,7 +131,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> DoubleClicked
+        public override event GwenEventHandler<ClickedEventArgs> DoubleClicked
         {
             add
             {
@@ -147,7 +145,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> RightClicked
+        public override event GwenEventHandler<ClickedEventArgs> RightClicked
         {
             add
             {
@@ -161,7 +159,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> DoubleRightClicked
+        public override event GwenEventHandler<ClickedEventArgs> DoubleRightClicked
         {
             add
             {

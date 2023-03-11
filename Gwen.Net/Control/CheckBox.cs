@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     CheckBox control.
     /// </summary>
-    [XmlControl]
     public class CheckBox : ButtonBase
     {
         private bool @checked;
@@ -27,7 +25,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the checkbox is checked.
         /// </summary>
-        [XmlProperty] public bool IsChecked
+        public bool IsChecked
         {
             get => @checked;
             set
@@ -64,17 +62,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the checkbox has been checked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Checked;
+        public event GwenEventHandler<EventArgs> Checked;
 
         /// <summary>
         ///     Invoked when the checkbox has been unchecked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> UnChecked;
+        public event GwenEventHandler<EventArgs> UnChecked;
 
         /// <summary>
         ///     Invoked when the checkbox state has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> CheckChanged;
+        public event GwenEventHandler<EventArgs> CheckChanged;
 
         /// <summary>
         ///     Handler for CheckChanged event.

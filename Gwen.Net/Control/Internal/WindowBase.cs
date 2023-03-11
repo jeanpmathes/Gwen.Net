@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -41,7 +40,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Is window draggable.
         /// </summary>
-        [XmlProperty] public bool IsDraggingEnabled
+        public bool IsDraggingEnabled
         {
             get => dragBar.Target != null;
             set => dragBar.Target = value ? this : null;
@@ -50,9 +49,9 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the control should be disposed on close.
         /// </summary>
-        [XmlProperty] public bool DeleteOnClose { get; set; }
+        public bool DeleteOnClose { get; set; }
 
-        [XmlProperty] public override Padding Padding
+        public override Padding Padding
         {
             get => m_InnerPanel.Padding;
             set => m_InnerPanel.Padding = value;
@@ -61,14 +60,14 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Starting position of the window.
         /// </summary>
-        [XmlProperty] public StartPosition StartPosition { get; set; } = StartPosition.Manual;
+        public StartPosition StartPosition { get; set; } = StartPosition.Manual;
 
         /// <summary>
         ///     Indicates whether the control is on top of its parent's children.
         /// </summary>
-        public override bool IsOnTop => Parent.Children.Last(x => x is Window) == this;
+        public override bool IsOnTop => Parent.Children.LastOrDefault(x => x is Window) == this;
 
-        [XmlEvent] public event GwenEventHandler<EventArgs> Closed;
+        public event GwenEventHandler<EventArgs> Closed;
 
         public override void Show()
         {

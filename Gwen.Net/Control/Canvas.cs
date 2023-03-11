@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gwen.Net.Anim;
 using Gwen.Net.DragDrop;
 using Gwen.Net.Input;
@@ -13,9 +14,9 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Canvas : ControlBase
     {
-        private readonly List<IDisposable> m_DisposeQueue; // dictionary for faster access?
+        private readonly List<IDisposable> disposeQueue; // dictionary for faster access?
 
-        private readonly HashSet<ControlBase> m_MeasureQueue = new();
+        private readonly HashSet<ControlBase> measureQueue = new();
 
         // [omeg] these are not created by us, so no disposing
         internal ControlBase FirstTab;
@@ -36,7 +37,7 @@ namespace Gwen.Net.Control
             BackgroundColor = Color.White;
             ShouldDrawBackground = false;
 
-            m_DisposeQueue = new List<IDisposable>();
+            disposeQueue = new List<IDisposable>();
         }
 
         /// <summary>
@@ -192,16 +193,17 @@ namespace Gwen.Net.Control
             {
                 DoLayout();
             }
+            
+            ISet<ControlBase> measured = new HashSet<ControlBase>();
 
             // Check if individual controls need layout
-            if (m_MeasureQueue.Count > 0)
+            while (measureQueue.Count > 0)
             {
-                foreach (ControlBase element in m_MeasureQueue)
-                {
-                    element.DoLayout();
-                }
-
-                m_MeasureQueue.Clear();
+                ControlBase element = measureQueue.First();
+                measureQueue.Remove(element);
+                bool added = measured.Add(element);
+                
+                if (added) element.DoLayout();
             }
         }
 
@@ -212,9 +214,9 @@ namespace Gwen.Net.Control
         /// <param name="control">Control to delete.</param>
         public void AddDelayedDelete(ControlBase control)
         {
-            if (!m_DisposeQueue.Contains(control))
+            if (!disposeQueue.Contains(control))
             {
-                m_DisposeQueue.Add(control);
+                disposeQueue.Add(control);
                 RemoveChild(control, dispose: false);
             }
 #if DEBUG
@@ -227,19 +229,19 @@ namespace Gwen.Net.Control
 
         private void ProcessDelayedDeletes()
         {
-            //if (m_DisposeQueue.Count > 0)
-            //    System.Diagnostics.Debug.Print("Canvas.ProcessDelayedDeletes: {0} items", m_DisposeQueue.Count);
-            foreach (IDisposable control in m_DisposeQueue)
+            //if (disposeQueue.Count > 0)
+            //    System.Diagnostics.Debug.Print("Canvas.ProcessDelayedDeletes: {0} items", disposeQueue.Count);
+            foreach (IDisposable control in disposeQueue)
             {
                 control.Dispose();
             }
 
-            m_DisposeQueue.Clear();
+            disposeQueue.Clear();
         }
 
         public void AddToMeasure(ControlBase element)
         {
-            m_MeasureQueue.Add(element);
+            measureQueue.Add(element);
         }
 
         /// <summary>

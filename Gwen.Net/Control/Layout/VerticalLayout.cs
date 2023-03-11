@@ -1,11 +1,8 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control.Layout
+﻿namespace Gwen.Net.Control.Layout
 {
     /// <summary>
     ///     Arrange child controls into a column.
     /// </summary>
-    [XmlControl]
     public class VerticalLayout : StackLayout
     {
         /// <summary>

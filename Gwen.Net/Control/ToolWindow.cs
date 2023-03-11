@@ -1,10 +1,8 @@
 ﻿using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
-    [XmlControl]
     public class ToolWindow : WindowBase
     {
         private bool m_vertical;
@@ -26,7 +24,7 @@ namespace Gwen.Net.Control
             m_InnerPanel.SendToBack();
         }
 
-        [XmlProperty] public bool Vertical
+        public bool Vertical
         {
             get => m_vertical;
             set

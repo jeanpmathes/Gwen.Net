@@ -5,14 +5,12 @@ using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
 using Gwen.Net.Input;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Popup menu.
     /// </summary>
-    [XmlControl]
     public class Menu : ScrollControl
     {
         protected StackLayout m_Layout;
@@ -48,12 +46,12 @@ namespace Gwen.Net.Control
         /// </summary>
         public MenuItem ParentMenuItem { get; internal set; }
 
-        [XmlProperty] public bool IconMarginDisabled { get; set; }
+        public bool IconMarginDisabled { get; set; }
 
         /// <summary>
         ///     Determines whether the menu should be disposed on close.
         /// </summary>
-        [XmlProperty] public bool DeleteOnClose { get; set; }
+        public bool DeleteOnClose { get; set; }
 
         /// <summary>
         ///     Determines whether the menu should open on mouse hover.

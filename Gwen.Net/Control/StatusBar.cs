@@ -1,12 +1,10 @@
 ﻿using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Status bar.
     /// </summary>
-    [XmlControl]
     public class StatusBar : ControlBase
     {
         private readonly Label m_Label;
@@ -30,13 +28,13 @@ namespace Gwen.Net.Control
             m_Label.Dock = Dock.Fill;
         }
 
-        [XmlProperty] public string Text
+        public string Text
         {
             get => m_Label.Text;
             set => m_Label.Text = value;
         }
 
-        [XmlProperty] public Color TextColor
+        public Color TextColor
         {
             get => m_Label.TextColor;
             set => m_Label.TextColor = value;

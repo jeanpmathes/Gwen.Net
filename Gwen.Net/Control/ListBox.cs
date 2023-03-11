@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     ListBox control.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ListBox : ScrollControl
     {
         private readonly List<ListBoxRow> selectedRows;
@@ -44,7 +42,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether multiple rows can be selected at once.
         /// </summary>
-        [XmlProperty] public bool AllowMultiSelect
+        public bool AllowMultiSelect
         {
             get => multiSelect;
             set
@@ -58,7 +56,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlProperty] public bool AlternateColor
+        public bool AlternateColor
         {
             get => table.AlternateColor;
             set => table.AlternateColor = value;
@@ -67,7 +65,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether rows can be unselected by clicking on them again.
         /// </summary>
-        [XmlProperty] public bool IsToggle { get; set; }
+        public bool IsToggle { get; set; }
 
         /// <summary>
         ///     Number of rows in the list box.
@@ -119,7 +117,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets the selected row number.
         /// </summary>
-        [XmlProperty] public int SelectedRowIndex
+        public int SelectedRowIndex
         {
             get
             {
@@ -138,7 +136,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Column count of table rows.
         /// </summary>
-        [XmlProperty] public int ColumnCount
+        public int ColumnCount
         {
             get => table.ColumnCount;
             set
@@ -151,17 +149,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when a row has been selected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> RowSelected;
+        public event GwenEventHandler<ItemSelectedEventArgs> RowSelected;
 
         /// <summary>
         ///     Invoked whan a row has beed unselected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> RowUnselected;
+        public event GwenEventHandler<ItemSelectedEventArgs> RowUnselected;
 
         /// <summary>
         ///     Invoked whan a row has beed double clicked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> RowDoubleClicked;
+        public event GwenEventHandler<ItemSelectedEventArgs> RowDoubleClicked;
 
         /// <summary>
         ///     Selects the specified row by index.
@@ -491,25 +489,6 @@ namespace Gwen.Net.Control
                     return;
                 }
             }
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            ListBox element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "Row")
-                    {
-                        element.AddRow(parser.ParseElement<ListBoxRow>(element));
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

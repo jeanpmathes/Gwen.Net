@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
     ///     Multi line text.
     /// </summary>
-    [XmlControl]
     public class MultilineText : ControlBase
     {
         private readonly List<Text> m_TextLines = new();
@@ -73,7 +71,7 @@ namespace Gwen.Net.Control.Internal
         ///     Gets and sets the text to display to the user. Each line is seperated by
         ///     an Environment.NetLine character.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => string.Join(Environment.NewLine, m_TextLines.Select(t => t.String));
             set => SetText(value);
@@ -82,7 +80,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Font.
         /// </summary>
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => m_Font;
             set

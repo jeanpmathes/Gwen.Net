@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Numeric up/down.
     /// </summary>
-    [XmlControl]
     public class NumericUpDown : TextBoxNumeric
     {
         private readonly UpDownButton_Down m_Down;
@@ -48,19 +46,19 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Minimum value.
         /// </summary>
-        [XmlProperty] public float Min { get; set; }
+        public float Min { get; set; }
 
         /// <summary>
         ///     Maximum value.
         /// </summary>
-        [XmlProperty] public float Max { get; set; }
+        public float Max { get; set; }
 
-        [XmlProperty] public float Step { get; set; }
+        public float Step { get; set; }
 
         /// <summary>
         ///     Numeric value of the control.
         /// </summary>
-        [XmlProperty] public override float Value
+        public override float Value
         {
             get => base.Value;
             set
@@ -87,7 +85,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the value has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ValueChanged;
+        public event GwenEventHandler<EventArgs> ValueChanged;
 
         /// <summary>
         ///     Handler for Up Arrow keyboard event.

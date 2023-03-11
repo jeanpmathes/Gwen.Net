@@ -1,13 +1,11 @@
 ﻿using System;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Menu strip.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class MenuStrip : Menu
     {
         /// <summary>
@@ -65,25 +63,6 @@ namespace Gwen.Net.Control
             item.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
             item.Padding = new Padding(left: 4, top: 4, right: 4, bottom: 4);
             item.HoverEnter += OnHoverItem;
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            MenuStrip element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "MenuItem")
-                    {
-                        element.AddItem(parser.ParseElement<MenuItem>(element));
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

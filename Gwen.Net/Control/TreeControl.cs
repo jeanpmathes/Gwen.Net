@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Tree control.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class TreeControl : ScrollControl
     {
         /// <summary>
@@ -75,7 +73,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if multiple nodes can be selected at the same time.
         /// </summary>
-        [XmlProperty] public bool AllowMultiSelect { get; set; }
+        public bool AllowMultiSelect { get; set; }
 
         /// <summary>
         ///     Get the root node of the tree view. Root node is an invisible always expanded node that works
@@ -86,7 +84,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node's selected state has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> SelectionChanged
+        public event GwenEventHandler<EventArgs> SelectionChanged
         {
             add => RootNode.SelectionChanged += value;
             remove => RootNode.SelectionChanged -= value;
@@ -95,7 +93,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node has been selected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Selected
+        public event GwenEventHandler<EventArgs> Selected
         {
             add => RootNode.Selected += value;
             remove => RootNode.Selected -= value;
@@ -104,7 +102,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node has been unselected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Unselected
+        public event GwenEventHandler<EventArgs> Unselected
         {
             add => RootNode.Unselected += value;
             remove => RootNode.Unselected -= value;
@@ -113,7 +111,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node has been double clicked and contains no child nodes.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> NodeDoubleClicked
+        public event GwenEventHandler<EventArgs> NodeDoubleClicked
         {
             add => RootNode.NodeDoubleClicked += value;
             remove => RootNode.NodeDoubleClicked -= value;
@@ -122,7 +120,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node has been expanded.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Expanded
+        public event GwenEventHandler<EventArgs> Expanded
         {
             add => RootNode.Expanded += value;
             remove => RootNode.Expanded -= value;
@@ -131,7 +129,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node has been collapsed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Collapsed
+        public event GwenEventHandler<EventArgs> Collapsed
         {
             add => RootNode.Collapsed += value;
             remove => RootNode.Collapsed -= value;
@@ -246,25 +244,6 @@ namespace Gwen.Net.Control
             {
                 UnselectAll();
             }
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            TreeControl element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "TreeNode")
-                    {
-                        parser.ParseElement<TreeNode>(element);
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

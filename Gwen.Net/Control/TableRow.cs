@@ -1,6 +1,5 @@
 ﻿using System;
 using Gwen.Net.Platform;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -51,7 +50,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text of the first column.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => GetText();
             set => SetCellText(columnIndex: 0, value);

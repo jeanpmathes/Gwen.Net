@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     HSV color picker with "before" and "after" color boxes.
     /// </summary>
-    [XmlControl(ElementName = "ColorPicker")]
     public class HSVColorPicker : ControlBase, IColorPicker
     {
         private readonly ColorDisplay m_After;
@@ -104,7 +102,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     The "before" color.
         /// </summary>
-        [XmlProperty] public Color DefaultColor
+        public Color DefaultColor
         {
             get => m_Before.Color;
             set => m_Before.Color = value;
@@ -113,7 +111,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Show / hide default color box
         /// </summary>
-        [XmlProperty] public bool EnableDefaultColor
+        public bool EnableDefaultColor
         {
             get => m_enableDefaultColor;
             set
@@ -139,7 +137,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the selected color has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ColorChanged;
+        public event GwenEventHandler<EventArgs> ColorChanged;
 
         private void NumericTyped(ControlBase control, EventArgs args)
         {

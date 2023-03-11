@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>Gwen.UnitTest</AssemblyName>
-    <RootNamespace>Gwen.UnitTest</RootNamespace>
       <LangVersion>10</LangVersion>
   </PropertyGroup>
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using Gwen.Net.Input;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -41,7 +40,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Number of notches on the slider axis.
         /// </summary>
-        [XmlProperty] public int NotchCount
+        public int NotchCount
         {
             get => m_NotchCount;
             set => m_NotchCount = value;
@@ -50,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the slider should snap to notches.
         /// </summary>
-        [XmlProperty] public bool SnapToNotches
+        public bool SnapToNotches
         {
             get => m_SnapToNotches;
             set => m_SnapToNotches = value;
@@ -59,7 +58,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Minimum value.
         /// </summary>
-        [XmlProperty] public float Min
+        public float Min
         {
             get => m_Min;
             set => SetRange(value, m_Max);
@@ -68,7 +67,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Maximum value.
         /// </summary>
-        [XmlProperty] public float Max
+        public float Max
         {
             get => m_Max;
             set => SetRange(m_Min, value);
@@ -77,7 +76,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Current value.
         /// </summary>
-        [XmlProperty] public float Value
+        public float Value
         {
             get => m_Min + (m_Value * (m_Max - m_Min));
             set
@@ -102,7 +101,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Invoked when the value has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ValueChanged;
+        public event GwenEventHandler<EventArgs> ValueChanged;
 
         /// <summary>
         ///     Handler for Right Arrow keyboard event.

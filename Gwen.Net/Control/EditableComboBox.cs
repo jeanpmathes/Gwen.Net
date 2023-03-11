@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Editable ComboBox control.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class EditableComboBox : ComboBoxBase
     {
         private readonly ComboBoxButton m_Button;
@@ -34,7 +32,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        [XmlProperty] public virtual string Text
+        public virtual string Text
         {
             get => m_TextBox.Text;
             set => m_TextBox.SetText(value);
@@ -43,7 +41,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text color.
         /// </summary>
-        [XmlProperty] public Color TextColor
+        public Color TextColor
         {
             get => m_TextBox.TextColor;
             set => m_TextBox.TextColor = value;
@@ -52,7 +50,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Font.
         /// </summary>
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => m_TextBox.Font;
             set => m_TextBox.Font = value;
@@ -63,7 +61,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the text has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> TextChanged
+        public event GwenEventHandler<EventArgs> TextChanged
         {
             add => m_TextBox.TextChanged += value;
             remove => m_TextBox.TextChanged -= value;
@@ -72,7 +70,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the submit key has been pressed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> SubmitPressed
+        public event GwenEventHandler<EventArgs> SubmitPressed
         {
             add => m_TextBox.SubmitPressed += value;
             remove => m_TextBox.SubmitPressed -= value;
@@ -140,24 +138,5 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="skin">Skin to use.</param>
         protected override void RenderFocus(SkinBase skin) {}
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            EditableComboBox element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "Option")
-                    {
-                        element.AddItem(parser.ParseElement<MenuItem>(element));
-                    }
-                }
-            }
-
-            return element;
-        }
     }
 }

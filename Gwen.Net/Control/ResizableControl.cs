@@ -1,6 +1,5 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -77,7 +76,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Enable or disable resizing.
         /// </summary>
-        [XmlProperty] public Resizing Resizing
+        public Resizing Resizing
         {
             get
             {

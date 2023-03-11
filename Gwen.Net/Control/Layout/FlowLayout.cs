@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Layout
 {
@@ -7,7 +6,6 @@ namespace Gwen.Net.Control.Layout
     ///     FlowLayout is a layout like <see cref="GridLayout" /> with auto sized columns
     ///     but you don't need to know exact number of columns.
     /// </summary>
-    [XmlControl]
     public class FlowLayout : ControlBase
     {
         /// <summary>

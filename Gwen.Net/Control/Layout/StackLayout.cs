@@ -1,11 +1,8 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control.Layout
+﻿namespace Gwen.Net.Control.Layout
 {
     /// <summary>
     ///     Arrange child controls into a row or a column.
     /// </summary>
-    [XmlControl]
     public class StackLayout : ControlBase
     {
         private bool m_Horizontal;
@@ -16,7 +13,7 @@ namespace Gwen.Net.Control.Layout
         /// <summary>
         ///     If set, arrange child controls into a row instead of a column.
         /// </summary>
-        [XmlProperty] public bool Horizontal
+        public bool Horizontal
         {
             get => m_Horizontal;
             set

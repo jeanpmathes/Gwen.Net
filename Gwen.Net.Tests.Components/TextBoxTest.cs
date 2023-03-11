@@ -2,10 +2,10 @@
 using System.IO;
 using System.Text;
 using Gwen.Net.CommonDialog;
+using Gwen.Net.Components;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 using Gwen.Net.Platform;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Tests.Components
 {

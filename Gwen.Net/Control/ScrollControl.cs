@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Base for controls whose interior can be scrolled.
     /// </summary>
-    [XmlControl]
     public class ScrollControl : ContentControl
     {
         private readonly ScrollBar m_HorizontalScrollBar;
@@ -74,7 +72,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control can be scrolled horizontally.
         /// </summary>
-        [XmlProperty] public bool CanScrollH
+        public bool CanScrollH
         {
             get => m_CanScrollH;
             set => EnableScroll(value, m_CanScrollV);
@@ -83,7 +81,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control can be scrolled vertically.
         /// </summary>
-        [XmlProperty] public bool CanScrollV
+        public bool CanScrollV
         {
             get => m_CanScrollV;
             set => EnableScroll(m_CanScrollH, value);
@@ -92,7 +90,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     If set, try to set the control size the same as the content size. If it doesn't fit, enable scrolling.
         /// </summary>
-        [XmlProperty] public bool AutoSizeToContent
+        public bool AutoSizeToContent
         {
             get => m_AutoSizeToContent;
             set
@@ -110,7 +108,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the scroll bars should be hidden if not needed.
         /// </summary>
-        [XmlProperty] public bool AutoHideBars { get; set; }
+        public bool AutoHideBars { get; set; }
 
         public Size ViewableContentSize => m_ScrollArea.ViewableContentSize;
 

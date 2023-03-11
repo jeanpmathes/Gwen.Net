@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Vertical slider.
     /// </summary>
-    [XmlControl]
     public class VerticalSlider : Slider
     {
         /// <summary>

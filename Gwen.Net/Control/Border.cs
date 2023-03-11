@@ -1,5 +1,4 @@
 ﻿using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -17,35 +16,20 @@ namespace Gwen.Net.Control
         TreeControl,
         CategoryList
     }
-
-    [XmlControl]
+    
     public class Border : ControlBase
     {
-        private BorderType m_BorderType;
-
         public Border(ControlBase parent)
             : base(parent)
         {
-            m_BorderType = BorderType.PanelNormal;
+            BorderType = BorderType.PanelNormal;
         }
 
-        [XmlProperty] public BorderType BorderType
-        {
-            get => m_BorderType;
-            set
-            {
-                if (m_BorderType == value)
-                {
-                    return;
-                }
-
-                m_BorderType = value;
-            }
-        }
+        public BorderType BorderType { get; set; }
 
         protected override void Render(SkinBase skin)
         {
-            skin.DrawBorder(this, m_BorderType);
+            skin.DrawBorder(this, BorderType);
         }
     }
 }

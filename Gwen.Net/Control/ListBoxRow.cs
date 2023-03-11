@@ -1,13 +1,11 @@
 ﻿using System;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     List box row (selectable).
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ListBoxRow : TableRow
     {
         private bool selected;
@@ -100,36 +98,6 @@ namespace Gwen.Net.Control
                 //IsSelected = true; // [omeg] ListBox manages that
                 OnRowSelected();
             }
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            ListBoxRow element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                var colIndex = 1;
-
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "Column")
-                    {
-                        if (parser.MoveToContent())
-                        {
-                            ControlBase column = parser.ParseElement(element);
-                            element.SetCellContents(colIndex++, column, enableMouseInput: true);
-                        }
-                        else
-                        {
-                            string colText = parser.GetAttribute("Text");
-                            element.SetCellText(colIndex++, colText ?? string.Empty);
-                        }
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

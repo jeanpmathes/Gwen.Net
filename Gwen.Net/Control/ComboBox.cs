@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     ComboBox control.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class ComboBox : ComboBoxBase
     {
         private readonly Button m_Button;
@@ -114,24 +112,5 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="skin">Skin to use.</param>
         protected override void RenderFocus(SkinBase skin) {}
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            ComboBox element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "Option")
-                    {
-                        element.AddItem(parser.ParseElement<MenuItem>(element));
-                    }
-                }
-            }
-
-            return element;
-        }
     }
 }

@@ -4,14 +4,12 @@ using System.Linq;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Tree control node.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class TreeNode : ContentControl
     {
         private bool m_Selected;
@@ -66,14 +64,14 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the node is selectable.
         /// </summary>
-        [XmlProperty] public bool IsSelectable { get; set; }
+        public bool IsSelectable { get; set; }
 
         public int NodeCount => Children.Count;
 
         /// <summary>
         ///     Indicates whether the node is selected.
         /// </summary>
-        [XmlProperty] public bool IsSelected
+        public bool IsSelected
         {
             get => m_Selected;
             set
@@ -141,7 +139,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Node's label.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => m_Title.Text;
             set => m_Title.Text = value;
@@ -180,37 +178,37 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the node label has been pressed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> LabelPressed;
+        public event GwenEventHandler<EventArgs> LabelPressed;
 
         /// <summary>
         ///     Invoked when the node's selected state has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> SelectionChanged;
+        public event GwenEventHandler<EventArgs> SelectionChanged;
 
         /// <summary>
         ///     Invoked when the node has been selected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Selected;
+        public event GwenEventHandler<EventArgs> Selected;
 
         /// <summary>
         ///     Invoked when the node has been double clicked and contains no child nodes.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> NodeDoubleClicked;
+        public event GwenEventHandler<EventArgs> NodeDoubleClicked;
 
         /// <summary>
         ///     Invoked when the node has been unselected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Unselected;
+        public event GwenEventHandler<EventArgs> Unselected;
 
         /// <summary>
         ///     Invoked when the node has been expanded.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Expanded;
+        public event GwenEventHandler<EventArgs> Expanded;
 
         /// <summary>
         ///     Invoked when the node has been collapsed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Collapsed;
+        public event GwenEventHandler<EventArgs> Collapsed;
 
         /// <summary>
         ///     Renders the control using specified skin.
@@ -599,13 +597,13 @@ namespace Gwen.Net.Control
             base.OnChildAdded(child);
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> Clicked
+        public override event GwenEventHandler<ClickedEventArgs> Clicked
         {
             add => m_Title.Clicked += delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
             remove => m_Title.Clicked -= delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> DoubleClicked
+        public override event GwenEventHandler<ClickedEventArgs> DoubleClicked
         {
             add
             {
@@ -620,14 +618,14 @@ namespace Gwen.Net.Control
             };
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> RightClicked
+        public override event GwenEventHandler<ClickedEventArgs> RightClicked
         {
             add => m_Title.RightClicked += delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
             remove =>
                 m_Title.RightClicked -= delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
         }
 
-        [XmlEvent] public override event GwenEventHandler<ClickedEventArgs> DoubleRightClicked
+        public override event GwenEventHandler<ClickedEventArgs> DoubleRightClicked
         {
             add
             {
@@ -643,25 +641,6 @@ namespace Gwen.Net.Control
             {
                 value(this, args);
             };
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            TreeNode element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "TreeNode")
-                    {
-                        parser.ParseElement<TreeNode>(element);
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

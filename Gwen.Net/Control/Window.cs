@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Movable window with title bar.
     /// </summary>
-    [XmlControl]
     public class Window : WindowBase
     {
         private readonly WindowTitleBar m_TitleBar;
@@ -37,7 +35,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Window caption.
         /// </summary>
-        [XmlProperty] public string Title
+        public string Title
         {
             get => m_TitleBar.Title.Text;
             set => m_TitleBar.Title.Text = value;
@@ -46,7 +44,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the window has close button.
         /// </summary>
-        [XmlProperty] public bool IsClosable
+        public bool IsClosable
         {
             get => !m_TitleBar.CloseButton.IsCollapsed;
             set => m_TitleBar.CloseButton.IsCollapsed = !value;
@@ -55,7 +53,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Make window modal and set background color. If alpha value is zero, make background dimmed.
         /// </summary>
-        [XmlProperty] public Color ModalBackground
+        public Color ModalBackground
         {
             set
             {
@@ -73,7 +71,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Set true to make window modal.
         /// </summary>
-        [XmlProperty] public bool Modal
+        public bool Modal
         {
             get => m_Modal != null;
             set => MakeModal();

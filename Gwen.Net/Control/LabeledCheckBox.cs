@@ -1,12 +1,10 @@
 ﻿using System;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     CheckBox with label.
     /// </summary>
-    [XmlControl]
     public class LabeledCheckBox : ControlBase
     {
         private readonly CheckBox m_CheckBox;
@@ -33,7 +31,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is checked.
         /// </summary>
-        [XmlProperty] public bool IsChecked
+        public bool IsChecked
         {
             get => m_CheckBox.IsChecked;
             set => m_CheckBox.IsChecked = value;
@@ -42,7 +40,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label text.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => m_Label.Text;
             set => m_Label.Text = value;
@@ -51,17 +49,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the control has been checked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Checked;
+        public event GwenEventHandler<EventArgs> Checked;
 
         /// <summary>
         ///     Invoked when the control has been unchecked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> UnChecked;
+        public event GwenEventHandler<EventArgs> UnChecked;
 
         /// <summary>
         ///     Invoked when the control's check has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> CheckChanged;
+        public event GwenEventHandler<EventArgs> CheckChanged;
 
         protected override Size Measure(Size availableSize)
         {

@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Group box (container).
     /// </summary>
-    [XmlControl]
     public class GroupBox : ContentControl
     {
         private readonly Text m_Text;
@@ -28,13 +26,13 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        [XmlProperty] public virtual string Text
+        public virtual string Text
         {
             get => m_Text.String;
             set => m_Text.String = value;
         }
 
-        [XmlProperty] public override Padding Padding
+        public override Padding Padding
         {
             get => m_InnerPanel.Padding;
             set => m_InnerPanel.Padding = value;

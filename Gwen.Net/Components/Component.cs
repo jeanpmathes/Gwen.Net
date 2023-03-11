@@ -1,60 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Gwen.Net.Control;
 
-namespace Gwen.Net.Xml
+namespace Gwen.Net.Components
 {
     /// <summary>
     ///     Base class for all components. A component is a group of Gwen controls that handles user input of them.
-    ///     Component can be (and should be) created using XML and that makes it easier to use and maintain than creating a new
-    ///     Gwen control.
     /// </summary>
     public abstract class Component : IDisposable
     {
-        private static readonly Dictionary<string, ComponentDef> m_registerdComponents = new();
-
         /// <summary>
         ///     Constructor for implementing the component from a Gwen control.
         /// </summary>
-        /// <param name="parent">Parent Gwen control of the component.</param>
-        /// <param name="view">Gwen control that will be a view of the copmponent.</param>
-        protected Component(ControlBase parent, ControlBase view)
+        /// <param name="view">Gwen control that will be a view of the component.</param>
+        protected Component(ControlBase view)
         {
-            if (view == null)
-            {
-                throw new NullReferenceException("View must not be null.");
-            }
-
-            view.Parent = parent;
+            if (view == null) throw new ArgumentNullException(nameof(view));
+            
             view.Component = this;
 
-            View = view;
-        }
-
-        /// <summary>
-        ///     Constructor for implementing the component from XML.
-        /// </summary>
-        /// <param name="parent">Parent Gwen control of the component.</param>
-        /// <param name="xmlSource">XML to be a view of the component.</param>
-        protected Component(ControlBase parent, IXmlSource xmlSource)
-        {
-            Stream stream = xmlSource.GetStream();
-
-            ControlBase view = null;
-
-            using (Parser parser = new(stream))
-            {
-                view = parser.Parse(parent);
-            }
-
-            if (view == null)
-            {
-                throw new NullReferenceException("View must not be null.");
-            }
-
-            view.Component = this;
             View = view;
         }
 
@@ -68,47 +32,6 @@ namespace Gwen.Net.Xml
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Register a component. All components must be registerd before using them.
-        /// </summary>
-        /// <typeparam name="T">Type of component.</typeparam>
-        /// <param name="name">Optional name for component. By default the name is component type name.</param>
-        /// <param name="data">Optional data used when creating a component instance.</param>
-        public static void Register<T>(string name = null, params object[] data)
-        {
-            if (name == null)
-            {
-                name = typeof(T).Name;
-            }
-
-            if (!m_registerdComponents.ContainsKey(name))
-            {
-                if (Parser.RegisterElement(name, typeof(T), ElementHandler))
-                {
-                    m_registerdComponents[name] = new ComponentDef(typeof(T), data);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Remove component registration. After this the component is not usable anymore from XML.
-        /// </summary>
-        /// <typeparam name="T">Type of component.</typeparam>
-        /// <param name="name">Optional name for component. By default the name is component type name.</param>
-        public static void Unregister<T>(string name = null)
-        {
-            if (name == null)
-            {
-                name = typeof(T).Name;
-            }
-
-            if (m_registerdComponents.ContainsKey(name))
-            {
-                m_registerdComponents.Remove(name);
-                Parser.UnregisterElement(name);
-            }
         }
 
         /// <summary>
@@ -149,48 +72,19 @@ namespace Gwen.Net.Xml
                 component = Activator.CreateInstance(type, parent) as Component;
             }
 
+            if (component == null)
+            {
+                throw new InvalidOperationException("Unable to create a component. Component is null.");
+            }
+            
             if (component.View == null)
             {
-                throw new NullReferenceException("Unable to create a component. Component contains no view.");
+                throw new InvalidOperationException("Unable to create a component. Component contains no view.");
             }
 
             component.OnCreated();
 
             return component;
-        }
-
-        /// <summary>
-        ///     Create a new instance of component by name. Component must be created with Create function, not calling
-        ///     constructor.
-        /// </summary>
-        /// <param name="name">Name of component.</param>
-        /// <param name="parent">Parent Gwen control of the component.</param>
-        /// <param name="data">
-        ///     Optional data for a component constructor. If the component registration contains also data, that
-        ///     data is used first, then this optional data.
-        /// </param>
-        /// <returns>Created instance of the component.</returns>
-        public static Component Create(string name, ControlBase parent, params object[] data)
-        {
-            ComponentDef compDef;
-
-            if (m_registerdComponents.TryGetValue(name, out compDef))
-            {
-                Component component;
-
-                if (compDef.Data != null)
-                {
-                    component = Create(compDef.Type, parent, compDef.Data.Concat(data).ToArray());
-                }
-                else
-                {
-                    component = Create(compDef.Type, parent, data);
-                }
-
-                return component;
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -228,19 +122,10 @@ namespace Gwen.Net.Xml
         {
             if (View == null)
             {
-                throw new NullReferenceException("Unable to get a control. Component contains no view.");
+                throw new InvalidOperationException("Unable to get a control. Component contains no view.");
             }
 
-            ControlBase control = null;
-
-            if (View.Name == name)
-            {
-                control = View;
-            }
-            else
-            {
-                control = View.FindChildByName(name, recursive: true);
-            }
+            ControlBase control = View.Name == name ? View : View.FindChildByName(name, recursive: true);
 
             if (control == null)
             {
@@ -298,7 +183,7 @@ namespace Gwen.Net.Xml
         /// </summary>
         /// <param name="name">Name of the property.</param>
         /// <param name="value">Value of the property.</param>
-        /// <returns>True if the property value was succesfully evaluated, false otherwise.</returns>
+        /// <returns>True if the property value was successfully evaluated, false otherwise.</returns>
         /// <remarks>No need to call the base implementation.</remarks>
         public virtual bool GetValue(string name, out object value)
         {
@@ -314,69 +199,21 @@ namespace Gwen.Net.Xml
         /// </summary>
         /// <param name="name">Name of the property.</param>
         /// <param name="value">Value of the property.</param>
-        /// <returns>True if the property value was succesfully set, false otherwise.</returns>
+        /// <returns>True if the property value was successfully set, false otherwise.</returns>
         /// <remarks>No need to call the base implementation. If you implement this, implement also <see cref="ValueType" />.</remarks>
         public virtual bool SetValue(string name, object value)
         {
             return false;
         }
 
-        private static ControlBase ElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            ComponentDef compDef;
-
-            if (m_registerdComponents.TryGetValue(parser.Name, out compDef))
-            {
-                Component component;
-
-                if (compDef.Data != null)
-                {
-                    component = Create(compDef.Type, parent, compDef.Data);
-                }
-                else
-                {
-                    component = Create(compDef.Type, parent);
-                }
-
-                parser.ParseComponentAttributes(component);
-
-                if (parser.MoveToContent())
-                {
-                    foreach (string elementName in parser.NextElement())
-                    {
-                        component.OnChildAdded(parser.ParseElement(component.View));
-                    }
-                }
-
-                return component.View;
-            }
-
-            throw new Exception("Implementation for the element not found.");
-        }
-
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                if (View != null)
-                {
-                    View.Component = null;
-                    View.Dispose();
-                    View = null;
-                }
-            }
-        }
+            if (!disposing) return;
+            if (View == null) return;
 
-        private class ComponentDef
-        {
-            public ComponentDef(Type type, object[] data = null)
-            {
-                Type = type;
-                Data = data;
-            }
-
-            public Type Type { get; }
-            public object[] Data { get; }
+            View.Component = null;
+            View.Dispose();
+            View = null;
         }
     }
 }

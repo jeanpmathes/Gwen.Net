@@ -4,14 +4,12 @@ using System;
 using System.Collections.Generic;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.RichText;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Multiline label with text chunks having different color/font.
     /// </summary>
-    [XmlControl]
     public class RichLabel : ControlBase
     {
         private int m_BuildWidth;
@@ -43,7 +41,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        [XmlEvent] public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
+        public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
 
         protected void Rebuild()
         {

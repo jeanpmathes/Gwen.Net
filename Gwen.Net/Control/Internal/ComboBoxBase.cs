@@ -1,6 +1,4 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control.Internal
+﻿namespace Gwen.Net.Control.Internal
 {
     public abstract class ComboBoxBase : ControlBase
     {
@@ -59,7 +57,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Invoked when the selected item has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> ItemSelected;
+        public event GwenEventHandler<ItemSelectedEventArgs> ItemSelected;
 
         /// <summary>
         ///     Adds a new item.

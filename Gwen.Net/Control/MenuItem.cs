@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Menu item.
     /// </summary>
-    [XmlControl(CustomHandler = "XmlElementHandler")]
     public class MenuItem : Button
     {
         private Label m_Accelerator;
@@ -36,7 +34,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if the menu item is checkable.
         /// </summary>
-        [XmlProperty] public bool IsCheckable { get; set; }
+        public bool IsCheckable { get; set; }
 
         /// <summary>
         ///     Indicates if the parent menu is open.
@@ -57,7 +55,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the check value.
         /// </summary>
-        [XmlProperty] public bool IsChecked
+        public bool IsChecked
         {
             get => m_Checked;
             set
@@ -121,22 +119,22 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the item is selected.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> Selected;
+        public event GwenEventHandler<ItemSelectedEventArgs> Selected;
 
         /// <summary>
         ///     Invoked when the item is checked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Checked;
+        public event GwenEventHandler<EventArgs> Checked;
 
         /// <summary>
         ///     Invoked when the item is unchecked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> UnChecked;
+        public event GwenEventHandler<EventArgs> UnChecked;
 
         /// <summary>
         ///     Invoked when the item's check value is changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> CheckChanged;
+        public event GwenEventHandler<EventArgs> CheckChanged;
 
         /// <summary>
         ///     Renders the control using specified skin.
@@ -316,38 +314,6 @@ namespace Gwen.Net.Control
             }
 
             return item;
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            MenuItem element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                ControlBase e = parent;
-
-                while (e != null && e.Component == null)
-                {
-                    e = e.Parent;
-                }
-
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "MenuItem")
-                    {
-                        element.Menu.AddItem(parser.ParseElement<MenuItem>(element));
-                    }
-                    else if (elementName == "MenuDivider")
-                    {
-                        element.Menu.AddDivider();
-                    }
-
-                    element.Menu.Component = e != null ? e.Component : null;
-                }
-            }
-
-            return element;
         }
     }
 }

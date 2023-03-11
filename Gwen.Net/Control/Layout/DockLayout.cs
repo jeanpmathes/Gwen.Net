@@ -1,12 +1,9 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control.Layout
+﻿namespace Gwen.Net.Control.Layout
 {
     /// <summary>
     ///     Dock child controls into the edges of this control. This is controlled by
     ///     the Dock property of the child control.
     /// </summary>
-    [XmlControl]
     public class DockLayout : ControlBase
     {
         /// <summary>

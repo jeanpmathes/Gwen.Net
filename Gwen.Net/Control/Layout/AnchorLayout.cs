@@ -1,6 +1,4 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control.Layout
+﻿namespace Gwen.Net.Control.Layout
 {
     /// <summary>
     ///     Arrange child controls by anchoring them proportionally into the edges of this control.
@@ -10,7 +8,6 @@ namespace Gwen.Net.Control.Layout
     ///     properties of the child control. You must set an AnchorBounds property of this control to
     ///     inform the layout process the default size of the area.
     /// </remarks>
-    [XmlControl]
     public class AnchorLayout : ControlBase
     {
         /// <summary>

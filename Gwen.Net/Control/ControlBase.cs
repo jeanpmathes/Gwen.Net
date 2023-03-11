@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Gwen.Net.Anim;
+using Gwen.Net.Components;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.DragDrop;
 using Gwen.Net.Input;
 using Gwen.Net.Platform;
 using Gwen.Net.Renderer;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -67,37 +67,37 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when mouse pointer enters the control.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> HoverEnter;
+        public event GwenEventHandler<EventArgs> HoverEnter;
 
         /// <summary>
         ///     Invoked when mouse pointer leaves the control.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> HoverLeave;
+        public event GwenEventHandler<EventArgs> HoverLeave;
 
         /// <summary>
         ///     Invoked when control's bounds have been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> BoundsChanged;
+        public event GwenEventHandler<EventArgs> BoundsChanged;
 
         /// <summary>
         ///     Invoked when the control has been left-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
-        [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> Clicked;
+        public virtual event GwenEventHandler<ClickedEventArgs> Clicked;
 
         /// <summary>
         ///     Invoked when the control has been double-left-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
-        [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> DoubleClicked;
+        public virtual event GwenEventHandler<ClickedEventArgs> DoubleClicked;
 
         /// <summary>
         ///     Invoked when the control has been right-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
-        [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> RightClicked;
+        public virtual event GwenEventHandler<ClickedEventArgs> RightClicked;
 
         /// <summary>
         ///     Invoked when the control has been double-right-clicked. If the control is disabled, this event is still invoked.
         /// </summary>
-        [XmlEvent] public virtual event GwenEventHandler<ClickedEventArgs> DoubleRightClicked;
+        public virtual event GwenEventHandler<ClickedEventArgs> DoubleRightClicked;
 
         /// <summary>
         ///     Returns true if any on click events are set.
@@ -146,7 +146,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Dock position.
         /// </summary>
-        [XmlProperty] public Dock Dock
+        public Dock Dock
         {
             get => (Dock) GetInternalFlag(InternalFlags.Dock_Mask);
             set
@@ -217,7 +217,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label typed tool tip text.
         /// </summary>
-        [XmlProperty] public string ToolTipText
+        public string ToolTipText
         {
             get
             {
@@ -276,7 +276,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current padding - inner spacing. Padding is not valid for all controls.
         /// </summary>
-        [XmlProperty] public virtual Padding Padding
+        public virtual Padding Padding
         {
             get => padding;
             set
@@ -294,7 +294,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current margin - outer spacing.
         /// </summary>
-        [XmlProperty] public Margin Margin
+        public Margin Margin
         {
             get => margin;
             set
@@ -312,7 +312,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Vertical alignment of the control if the control is smaller than the available space.
         /// </summary>
-        [XmlProperty] public VerticalAlignment VerticalAlignment
+        public VerticalAlignment VerticalAlignment
         {
             get => (VerticalAlignment) GetInternalFlag(InternalFlags.AlignV_Mask);
             set
@@ -327,7 +327,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Horizontal alignment of the control if the control is smaller than the available space.
         /// </summary>
-        [XmlProperty] public HorizontalAlignment HorizontalAlignment
+        public HorizontalAlignment HorizontalAlignment
         {
             get => (HorizontalAlignment) GetInternalFlag(InternalFlags.AlignH_Mask);
             set
@@ -352,7 +352,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     User data associated with the control.
         /// </summary>
-        [XmlProperty] public object UserData { get; set; }
+        public object UserData { get; set; }
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
@@ -367,7 +367,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is disabled.
         /// </summary>
-        [XmlProperty] public bool IsDisabled
+        public bool IsDisabled
         {
             get => IsSetInternalFlag(InternalFlags.Disabled);
             set => SetInternalFlag(InternalFlags.Disabled, value);
@@ -376,7 +376,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is hidden.
         /// </summary>
-        [XmlProperty] public virtual bool IsHidden
+        public virtual bool IsHidden
         {
             get => IsSetInternalFlag(InternalFlags.Hidden);
             set
@@ -391,7 +391,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is hidden.
         /// </summary>
-        [XmlProperty] public virtual bool IsCollapsed
+        public virtual bool IsCollapsed
         {
             get => IsSetInternalFlag(InternalFlags.Collapsed);
             set
@@ -470,7 +470,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the control's internal name.
         /// </summary>
-        [XmlProperty] public string Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Control's size and position relative to the parent.
@@ -490,7 +490,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Size restriction.
         /// </summary>
-        [XmlProperty] public Size MinimumSize
+        public Size MinimumSize
         {
             get => minimumSize;
             set
@@ -503,7 +503,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Size restriction.
         /// </summary>
-        [XmlProperty] public Size MaximumSize
+        public Size MaximumSize
         {
             get => maximumSize;
             set
@@ -590,7 +590,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
-        [XmlProperty] public virtual int Left
+        public virtual int Left
         {
             get => desiredBounds.X;
             set
@@ -608,7 +608,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
-        [XmlProperty] public virtual int Top
+        public virtual int Top
         {
             get => desiredBounds.Y;
             set
@@ -627,7 +627,7 @@ namespace Gwen.Net.Control
         ///     Desired size of the control. Set this value only if HorizontalAlignment is not Stretch. By default this value is
         ///     ignored.
         /// </summary>
-        [XmlProperty] public virtual int Width
+        public virtual int Width
         {
             get => desiredBounds.Width;
             set
@@ -648,7 +648,7 @@ namespace Gwen.Net.Control
         ///     Desired size of the control. Set this value only if VerticalAlignment is not Stretch. By default this value is
         ///     ignored.
         /// </summary>
-        [XmlProperty] public virtual int Height
+        public virtual int Height
         {
             get => desiredBounds.Height;
             set
@@ -668,7 +668,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
-        [XmlProperty] public virtual Point Position
+        public virtual Point Position
         {
             get => desiredBounds.Location;
             set
@@ -686,7 +686,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Desired size of the control. Set this only if both of alignments are not Stretch. By default this value is ignored.
         /// </summary>
-        [XmlProperty] public virtual Size Size
+        public virtual Size Size
         {
             get => desiredBounds.Size;
             set
@@ -705,7 +705,7 @@ namespace Gwen.Net.Control
         ///     Desired location and size of the control. Set this only if both of alignments are not Stretch. Used only on default
         ///     layout (DockLayout) if Dock property is None. By default size is ignored.
         /// </summary>
-        [XmlProperty] public virtual Rectangle DesiredBounds
+        public virtual Rectangle DesiredBounds
         {
             get => desiredBounds;
             set
@@ -723,7 +723,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Default location and size of the control insize the container. Used only on AnchorLayout.
         /// </summary>
-        [XmlProperty] public Rectangle AnchorBounds
+        public Rectangle AnchorBounds
         {
             get => anchorBounds;
             set
@@ -741,7 +741,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     How the control is moved and/or stretched if the container size changes. Used only on AnchorLayout.
         /// </summary>
-        [XmlProperty] public Anchor Anchor
+        public Anchor Anchor
         {
             get => anchor;
             set

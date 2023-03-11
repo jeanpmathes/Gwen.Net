@@ -1,6 +1,5 @@
 ﻿using System;
 using Gwen.Net.Input;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -18,7 +17,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the button is depressed.
         /// </summary>
-        [XmlProperty] public bool IsDepressed
+        public bool IsDepressed
         {
             get => depressed;
             set
@@ -36,12 +35,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the button is toggleable.
         /// </summary>
-        [XmlProperty] public bool IsToggle { get; set; }
+        public bool IsToggle { get; set; }
 
         /// <summary>
         ///     Determines the button's toggle state.
         /// </summary>
-        [XmlProperty] public bool ToggleState
+        public bool ToggleState
         {
             get => toggleStatus;
             set
@@ -85,27 +84,27 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Invoked when the button is pressed. Will not be invoked if the button is disabled.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Pressed;
+        public event GwenEventHandler<EventArgs> Pressed;
 
         /// <summary>
         ///     Invoked when the button is released. Will not be invoked if the button is disabled.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Released;
+        public event GwenEventHandler<EventArgs> Released;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed. Will not be invoked if the button is disabled.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Toggled;
+        public event GwenEventHandler<EventArgs> Toggled;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed to On. Will not be invoked if the button is disabled.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOn;
+        public event GwenEventHandler<EventArgs> ToggledOn;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed to Off. Will not be invoked if the button is disabled.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ToggledOff;
+        public event GwenEventHandler<EventArgs> ToggledOff;
 
         /// <summary>
         ///     Toggles the button.

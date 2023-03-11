@@ -1,14 +1,12 @@
 ﻿using System;
 using Gwen.Net.Input;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     RadioButton with label.
     /// </summary>
-    [XmlControl]
     public class LabeledRadioButton : ControlBase
     {
         private readonly Label m_Label;
@@ -37,7 +35,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label text.
         /// </summary>
-        [XmlProperty] public string Text
+        public string Text
         {
             get => m_Label.Text;
             set => m_Label.Text = value;
@@ -49,7 +47,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the radiobutton has been checked.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> Checked
+        public event GwenEventHandler<EventArgs> Checked
         {
             add => RadioButton.Checked += value;
             remove => RadioButton.Checked -= value;

@@ -1,10 +1,8 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
-    [XmlControl]
     public class VerticalSplitter : ControlBase
     {
         private readonly SplitterBar m_HSplitter;
@@ -40,7 +38,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Splitter position (0 - 1)
         /// </summary>
-        [XmlProperty] public float Value
+        public float Value
         {
             get => m_HVal;
             set => SetHValue(value);
@@ -54,7 +52,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets a value indicating whether splitters should be visible.
         /// </summary>
-        [XmlProperty] public bool SplittersVisible
+        public bool SplittersVisible
         {
             get => m_HSplitter.ShouldDrawBackground;
             set => m_HSplitter.ShouldDrawBackground = value;
@@ -63,22 +61,22 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the size of the splitter.
         /// </summary>
-        [XmlProperty] public int SplitterSize { get; set; }
+        public int SplitterSize { get; set; }
 
         /// <summary>
         ///     Invoked when one of the panels has been zoomed (maximized).
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> PanelZoomed;
+        public event GwenEventHandler<EventArgs> PanelZoomed;
 
         /// <summary>
         ///     Invoked when one of the panels has been unzoomed (restored).
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> PanelUnZoomed;
+        public event GwenEventHandler<EventArgs> PanelUnZoomed;
 
         /// <summary>
         ///     Invoked when the zoomed panel has been changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<EventArgs> ZoomChanged;
+        public event GwenEventHandler<EventArgs> ZoomChanged;
 
         /// <summary>
         ///     Centers the panels so that they take even amount of space.

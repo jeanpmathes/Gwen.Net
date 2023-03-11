@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Gwen.Net.Control.Layout;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Radio button group.
     /// </summary>
-    [XmlControl(ElementName = "RadioButton", CustomHandler = "XmlElementHandler")]
     public class RadioButtonGroup : VerticalLayout
     {
         /// <summary>
@@ -44,7 +42,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the selected option has changed.
         /// </summary>
-        [XmlEvent] public event GwenEventHandler<ItemSelectedEventArgs> SelectionChanged;
+        public event GwenEventHandler<ItemSelectedEventArgs> SelectionChanged;
 
         /// <summary>
         ///     Adds a new option.
@@ -153,25 +151,6 @@ namespace Gwen.Net.Control
             {
                 (option as LabeledRadioButton).RadioButton.Press();
             }
-        }
-
-        internal static ControlBase XmlElementHandler(Parser parser, Type type, ControlBase parent)
-        {
-            RadioButtonGroup element = new(parent);
-            parser.ParseAttributes(element);
-
-            if (parser.MoveToContent())
-            {
-                foreach (string elementName in parser.NextElement())
-                {
-                    if (elementName == "Option")
-                    {
-                        element.AddOption(parser.ParseElement<LabeledRadioButton>(element));
-                    }
-                }
-            }
-
-            return element;
         }
     }
 }

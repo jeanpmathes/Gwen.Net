@@ -1,7 +1,6 @@
 ﻿using System;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -26,7 +25,6 @@ namespace Gwen.Net.Control
     /// <summary>
     ///     Button control.
     /// </summary>
-    [XmlControl]
     public class Button : ButtonBase
     {
         private Alignment m_Align;
@@ -49,7 +47,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        [XmlProperty] public virtual string Text
+        public virtual string Text
         {
             get => m_Text.String;
             set
@@ -62,7 +60,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Font.
         /// </summary>
-        [XmlProperty] public Font Font
+        public Font Font
         {
             get => m_Text.Font;
             set
@@ -75,7 +73,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text color.
         /// </summary>
-        [XmlProperty] public Color TextColor
+        public Color TextColor
         {
             get => m_Text.TextColor;
             set
@@ -88,7 +86,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Override text color (used by tooltips).
         /// </summary>
-        [XmlProperty] public Color TextColorOverride
+        public Color TextColorOverride
         {
             get => m_Text.TextColorOverride;
             set
@@ -101,7 +99,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text padding.
         /// </summary>
-        [XmlProperty] public Padding TextPadding
+        public Padding TextPadding
         {
             get => m_TextPadding;
             set
@@ -119,7 +117,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text alignment.
         /// </summary>
-        [XmlProperty] public Alignment Alignment
+        public Alignment Alignment
         {
             get => m_Align;
             set
@@ -137,7 +135,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines how the image is aligned inside the button.
         /// </summary>
-        [XmlProperty] public ImageAlign ImageAlign
+        public ImageAlign ImageAlign
         {
             get => m_ImageAlign;
             set
@@ -155,7 +153,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Returns the current image name (or null if no image set) or set a new image.
         /// </summary>
-        [XmlProperty] public string ImageName
+        public string ImageName
         {
             get
             {
@@ -180,7 +178,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the size of the image.
         /// </summary>
-        [XmlProperty] public Size ImageSize
+        public Size ImageSize
         {
             get
             {
@@ -205,7 +203,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the texture coordinates of the image in pixels.
         /// </summary>
-        [XmlProperty] public Rectangle ImageTextureRect
+        public Rectangle ImageTextureRect
         {
             get
             {
@@ -230,7 +228,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the color of the image.
         /// </summary>
-        [XmlProperty] public Color ImageColor
+        public Color ImageColor
         {
             get
             {

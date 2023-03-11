@@ -1,11 +1,8 @@
-﻿using Gwen.Net.Xml;
-
-namespace Gwen.Net.Control
+﻿namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Numeric text box - accepts only float numbers.
     /// </summary>
-    [XmlControl]
     public class TextBoxNumeric : TextBox
     {
         /// <summary>
@@ -25,7 +22,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current numerical value.
         /// </summary>
-        [XmlProperty] public virtual float Value
+        public virtual float Value
         {
             get => m_Value;
             set

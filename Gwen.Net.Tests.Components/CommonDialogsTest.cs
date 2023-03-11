@@ -1,11 +1,11 @@
 ﻿using Gwen.Net.CommonDialog;
+using Gwen.Net.Components;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Tests.Components
 {
-    [UnitTest(Category = "Xml", Order = 602)]
+    [UnitTest(Category = "Components", Order = 600)]
     public class CommonDialogsTest : GUnit
     {
         public CommonDialogsTest(ControlBase parent)

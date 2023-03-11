@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control
 {
@@ -13,7 +12,6 @@ namespace Gwen.Net.Control
         public string Link { get; }
     }
 
-    [XmlControl]
     public class LinkLabel : Label
     {
         private Color? m_hoverColor;
@@ -31,17 +29,17 @@ namespace Gwen.Net.Control
             base.Clicked += OnClicked;
         }
 
-        [XmlProperty] public string Link { get; set; }
+        public string Link { get; set; }
 
-        [XmlProperty] public Color HoverColor
+        public Color HoverColor
         {
             get => m_hoverColor != null ? (Color)m_hoverColor : TextColor;
             set => m_hoverColor = value;
         }
 
-        [XmlProperty] public Font HoverFont { get; set; }
+        public Font HoverFont { get; set; }
 
-        [XmlEvent] public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
+        public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
 
         private void OnHoverEnter(ControlBase control, EventArgs args)
         {

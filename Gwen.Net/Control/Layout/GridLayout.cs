@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gwen.Net.Xml;
 
 namespace Gwen.Net.Control.Layout
 {
@@ -29,7 +28,6 @@ namespace Gwen.Net.Control.Layout
     ///     Arrange child controls into columns and rows by adding them in column and row order.
     ///     Add every column of the first row, then every column of the second row etc.
     /// </summary>
-    [XmlControl]
     public class GridLayout : ControlBase
     {
         public const float AutoSize = float.NaN;
@@ -59,7 +57,7 @@ namespace Gwen.Net.Control.Layout
         /// <summary>
         ///     Number of columns. This can be used when all cells are auto size.
         /// </summary>
-        [XmlProperty] public int ColumnCount
+        public int ColumnCount
         {
             get => columnCount;
             set
@@ -72,7 +70,7 @@ namespace Gwen.Net.Control.Layout
         /// <summary>
         ///     Column widths. <see cref="GridCellSizes" />
         /// </summary>
-        [XmlProperty] public GridCellSizes ColumnWidths
+        public GridCellSizes ColumnWidths
         {
             set => SetColumnWidths(value.ToArray());
         }
@@ -80,7 +78,7 @@ namespace Gwen.Net.Control.Layout
         /// <summary>
         ///     Row heights. <see cref="GridCellSizes" />
         /// </summary>
-        [XmlProperty] public GridCellSizes RowHeights
+        public GridCellSizes RowHeights
         {
             set => SetRowHeights(value.ToArray());
         }
