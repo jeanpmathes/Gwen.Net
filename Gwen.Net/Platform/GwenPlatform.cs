@@ -21,10 +21,10 @@ namespace Gwen.Net.Platform
         /// <summary>
         ///     Set the current platform.
         /// </summary>
-        /// <param name="platform">Platform.</param>
-        public static void Init(IPlatform platform)
+        /// <param name="initPlatform">Platform.</param>
+        public static void Init(IPlatform initPlatform)
         {
-            GwenPlatform.platform = platform;
+            platform = initPlatform;
         }
 
         /// <summary>

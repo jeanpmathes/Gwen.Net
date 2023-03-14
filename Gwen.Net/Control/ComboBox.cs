@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control.Internal;
+﻿using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
@@ -9,8 +8,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ComboBox : ComboBoxBase
     {
-        private readonly Button m_Button;
-        private readonly DownArrow m_DownArrow;
+        private readonly Button button;
+        private readonly DownArrow downArrow;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ComboBox" /> class.
@@ -19,20 +18,20 @@ namespace Gwen.Net.Control
         public ComboBox(ControlBase parent)
             : base(parent)
         {
-            m_Button = new Button(this);
-            m_Button.Alignment = Alignment.Left | Alignment.CenterV;
-            m_Button.Text = string.Empty;
-            m_Button.TextPadding = Padding.Three;
-            m_Button.Clicked += OnClicked;
+            button = new Button(this);
+            button.Alignment = Alignment.Left | Alignment.CenterV;
+            button.Text = string.Empty;
+            button.TextPadding = Padding.Three;
+            button.Clicked += OnClicked;
 
-            m_DownArrow = new DownArrow(this);
+            downArrow = new DownArrow(this);
 
             IsTabable = true;
             KeyboardInputEnabled = true;
         }
 
-        internal bool IsDepressed => m_Button.IsDepressed;
-        public override bool IsHovered => m_Button.IsHovered;
+        internal bool IsDepressed => button.IsDepressed;
+        public override bool IsHovered => button.IsHovered;
 
         /// <summary>
         ///     Internal Pressed implementation.
@@ -54,7 +53,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void RemoveAll()
         {
-            m_Button.Text = string.Empty;
+            button.Text = string.Empty;
             base.RemoveAll();
         }
 
@@ -62,6 +61,7 @@ namespace Gwen.Net.Control
         ///     Internal handler for item selected event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected override void OnItemSelected(ControlBase control, ItemSelectedEventArgs args)
         {
             if (!IsDisabled)
@@ -73,7 +73,7 @@ namespace Gwen.Net.Control
                     return;
                 }
 
-                m_Button.Text = item.Text;
+                button.Text = item.Text;
             }
 
             base.OnItemSelected(control, args);
@@ -81,19 +81,19 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            return Size.Max(m_Button.DoMeasure(availableSize), m_DownArrow.DoMeasure(availableSize));
+            return Size.Max(button.DoMeasure(availableSize), downArrow.DoMeasure(availableSize));
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_Button.DoArrange(new Rectangle(Point.Zero, finalSize));
+            button.DoArrange(new Rectangle(Point.Zero, finalSize));
 
-            m_DownArrow.DoArrange(
+            downArrow.DoArrange(
                 new Rectangle(
-                    finalSize.Width - m_Button.TextPadding.Right - m_DownArrow.MeasuredSize.Width,
-                    (finalSize.Height - m_DownArrow.MeasuredSize.Height) / 2,
-                    m_DownArrow.MeasuredSize.Width,
-                    m_DownArrow.MeasuredSize.Height));
+                    finalSize.Width - button.TextPadding.Right - downArrow.MeasuredSize.Width,
+                    (finalSize.Height - downArrow.MeasuredSize.Height) / 2,
+                    downArrow.MeasuredSize.Width,
+                    downArrow.MeasuredSize.Height));
 
             return finalSize;
         }
@@ -101,16 +101,16 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawComboBox(this, m_Button.IsDepressed, IsOpen);
+            currentSkin.DrawComboBox(this, button.IsDepressed, IsOpen);
         }
 
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin) {}
     }
 }

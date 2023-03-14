@@ -9,8 +9,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class EditableComboBox : ComboBoxBase
     {
-        private readonly ComboBoxButton m_Button;
-        private readonly TextBox m_TextBox;
+        private readonly ComboBoxButton button;
+        private readonly TextBox textBox;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="EditableComboBox" /> class.
@@ -19,11 +19,11 @@ namespace Gwen.Net.Control
         public EditableComboBox(ControlBase parent)
             : base(parent)
         {
-            m_TextBox = new TextBox(this);
+            textBox = new TextBox(this);
 
-            m_Button = new ComboBoxButton(m_TextBox, this);
-            m_Button.Dock = Dock.Right;
-            m_Button.Clicked += OnClicked;
+            button = new ComboBoxButton(textBox, this);
+            button.Dock = Dock.Right;
+            button.Clicked += OnClicked;
 
             IsTabable = true;
             KeyboardInputEnabled = true;
@@ -34,8 +34,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual string Text
         {
-            get => m_TextBox.Text;
-            set => m_TextBox.SetText(value);
+            get => textBox.Text;
+            set => textBox.SetText(value);
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color TextColor
         {
-            get => m_TextBox.TextColor;
-            set => m_TextBox.TextColor = value;
+            get => textBox.TextColor;
+            set => textBox.TextColor = value;
         }
 
         /// <summary>
@@ -52,19 +52,19 @@ namespace Gwen.Net.Control
         /// </summary>
         public Font Font
         {
-            get => m_TextBox.Font;
-            set => m_TextBox.Font = value;
+            get => textBox.Font;
+            set => textBox.Font = value;
         }
 
-        internal bool IsDepressed => m_Button.IsDepressed;
+        internal bool IsDepressed => button.IsDepressed;
 
         /// <summary>
         ///     Invoked when the text has changed.
         /// </summary>
         public event GwenEventHandler<EventArgs> TextChanged
         {
-            add => m_TextBox.TextChanged += value;
-            remove => m_TextBox.TextChanged -= value;
+            add => textBox.TextChanged += value;
+            remove => textBox.TextChanged -= value;
         }
 
         /// <summary>
@@ -72,8 +72,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public event GwenEventHandler<EventArgs> SubmitPressed
         {
-            add => m_TextBox.SubmitPressed += value;
-            remove => m_TextBox.SubmitPressed -= value;
+            add => textBox.SubmitPressed += value;
+            remove => textBox.SubmitPressed -= value;
         }
 
         /// <summary>
@@ -95,6 +95,7 @@ namespace Gwen.Net.Control
         ///     Internal handler for item selected event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected override void OnItemSelected(ControlBase control, ItemSelectedEventArgs args)
         {
             if (!IsDisabled)
@@ -106,7 +107,7 @@ namespace Gwen.Net.Control
                     return;
                 }
 
-                m_TextBox.Text = item.Text;
+                textBox.Text = item.Text;
             }
 
             base.OnItemSelected(control, args);
@@ -114,12 +115,12 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            return m_TextBox.DoMeasure(availableSize);
+            return textBox.DoMeasure(availableSize);
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_TextBox.DoArrange(new Rectangle(Point.Zero, finalSize));
+            textBox.DoArrange(new Rectangle(Point.Zero, finalSize));
 
             return finalSize;
         }
@@ -127,16 +128,16 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawComboBox(this, m_Button.IsDepressed, IsOpen);
+            currentSkin.DrawComboBox(this, button.IsDepressed, IsOpen);
         }
 
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin) {}
     }
 }

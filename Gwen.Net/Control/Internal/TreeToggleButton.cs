@@ -28,16 +28,16 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin) {}
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawTreeButton(this, ToggleState);
+            currentSkin.DrawTreeButton(this, ToggleState);
         }
     }
 }

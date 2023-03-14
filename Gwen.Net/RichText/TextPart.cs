@@ -4,7 +4,7 @@ namespace Gwen.Net.RichText
 {
     public class TextPart : Part
     {
-        private static readonly char[] m_separator =
+        private static readonly char[] separator =
         {
             ' ',
             '\n',
@@ -29,29 +29,29 @@ namespace Gwen.Net.RichText
 
         public Font Font { get; protected set; }
 
-        public override string[] Split(ref Font font)
+        public override string[] Split(ref Font splitFont)
         {
-            Font = font;
+            Font = splitFont;
 
             return StringSplit(Text);
         }
 
-        protected string[] StringSplit(string str)
+        protected static string[] StringSplit(string str)
         {
-            List<string> strs = new();
+            List<string> strings = new();
             int len = str.Length;
             var index = 0;
             int i;
 
             while (index < len)
             {
-                i = str.IndexOfAny(m_separator, index);
+                i = str.IndexOfAny(separator, index);
 
                 if (i == index)
                 {
                     if (str[i] == ' ')
                     {
-                        strs.Add(" ");
+                        strings.Add(" ");
 
                         while (index < len && str[index] == ' ')
                         {
@@ -60,7 +60,7 @@ namespace Gwen.Net.RichText
                     }
                     else
                     {
-                        strs.Add("\n");
+                        strings.Add("\n");
                         index++;
 
                         if (index < len && str[index - 1] == '\r' && str[index] == '\n')
@@ -73,24 +73,24 @@ namespace Gwen.Net.RichText
                 {
                     if (str[i] == ' ')
                     {
-                        strs.Add(str.Substring(index, i - index + 1));
+                        strings.Add(str.Substring(index, i - index + 1));
                         index = i + 1;
                     }
                     else
                     {
-                        strs.Add(str.Substring(index, i - index));
+                        strings.Add(str.Substring(index, i - index));
                         index = i;
                     }
                 }
                 else
                 {
-                    strs.Add(str.Substring(index));
+                    strings.Add(str.Substring(index));
 
                     break;
                 }
             }
 
-            return strs.ToArray();
+            return strings.ToArray();
         }
     }
 }

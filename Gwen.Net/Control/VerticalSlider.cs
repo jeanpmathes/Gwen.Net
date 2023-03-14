@@ -18,7 +18,7 @@ namespace Gwen.Net.Control
         {
             Width = BaseUnit;
 
-            m_SliderBar.IsHorizontal = false;
+            sliderBar.IsHorizontal = false;
         }
 
         protected override void AdaptToScaleChange()
@@ -29,14 +29,14 @@ namespace Gwen.Net.Control
 
         protected override float CalculateValue()
         {
-            return 1 - (m_SliderBar.ActualTop / (float) (ActualHeight - m_SliderBar.ActualHeight));
+            return 1 - (sliderBar.ActualTop / (float) (ActualHeight - sliderBar.ActualHeight));
         }
 
         protected override void UpdateBarFromValue()
         {
-            m_SliderBar.MoveTo(
-                (ActualWidth - m_SliderBar.ActualWidth) / 2,
-                (int) ((ActualHeight - m_SliderBar.ActualHeight) * (1 - m_Value)));
+            sliderBar.MoveTo(
+                (ActualWidth - sliderBar.ActualWidth) / 2,
+                (int) ((ActualHeight - sliderBar.ActualHeight) * (1 - value)));
         }
 
         /// <summary>
@@ -49,21 +49,21 @@ namespace Gwen.Net.Control
         {
             base.OnMouseClickedLeft(x, y, down);
 
-            m_SliderBar.MoveTo(
-                (ActualWidth - m_SliderBar.ActualWidth) / 2,
-                (int) (CanvasPosToLocal(new Point(x, y)).Y - (m_SliderBar.ActualHeight * 0.5)));
+            sliderBar.MoveTo(
+                (ActualWidth - sliderBar.ActualWidth) / 2,
+                (int) (CanvasPosToLocal(new Point(x, y)).Y - (sliderBar.ActualHeight * 0.5)));
 
-            m_SliderBar.InputMouseClickedLeft(x, y, down);
-            OnMoved(m_SliderBar, EventArgs.Empty);
+            sliderBar.InputMouseClickedLeft(x, y, down);
+            OnMoved(sliderBar, EventArgs.Empty);
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawSlider(this, horizontal: false, m_SnapToNotches ? m_NotchCount : 0, m_SliderBar.ActualHeight);
+            currentSkin.DrawSlider(this, horizontal: false, snapToNotches ? notchCount : 0, sliderBar.ActualHeight);
         }
     }
 }

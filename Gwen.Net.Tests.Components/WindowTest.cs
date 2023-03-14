@@ -68,17 +68,17 @@ namespace Gwen.Net.Tests.Components
 
             RadioButtonGroup rbg = new(window);
             rbg.Dock = Dock.Top;
-            rbg.AddOption("Resize disabled", "None").Checked += (c, a) => window.Resizing = Resizing.None;
-            rbg.AddOption("Resize width", "Width").Checked += (c, a) => window.Resizing = Resizing.Width;
-            rbg.AddOption("Resize height", "Height").Checked += (c, a) => window.Resizing = Resizing.Height;
-            rbg.AddOption("Resize both", "Both").Checked += (c, a) => window.Resizing = Resizing.Both;
+            rbg.AddOption("Resize disabled", "None").Checked += (_, _) => window.Resizing = Resizing.None;
+            rbg.AddOption("Resize width", "Width").Checked += (_, _) => window.Resizing = Resizing.Width;
+            rbg.AddOption("Resize height", "Height").Checked += (_, _) => window.Resizing = Resizing.Height;
+            rbg.AddOption("Resize both", "Both").Checked += (_, _) => window.Resizing = Resizing.Both;
             rbg.SetSelectionByName("Both");
 
             LabeledCheckBox dragging = new(window);
             dragging.Dock = Dock.Top;
             dragging.Text = "Dragging";
             dragging.IsChecked = true;
-            dragging.CheckChanged += (c, a) => window.IsDraggingEnabled = dragging.IsChecked;
+            dragging.CheckChanged += (_, _) => window.IsDraggingEnabled = dragging.IsChecked;
         }
 
         private void OpenWindowWithMenuAndStatusBar(ControlBase control, EventArgs args)
@@ -105,16 +105,16 @@ namespace Gwen.Net.Tests.Components
                 root.Menu.AddItem("Load", "test16.png", "Ctrl+L");
                 root.Menu.AddItem("Save", string.Empty, "Ctrl+S");
                 root.Menu.AddItem("Save As..", string.Empty, "Ctrl+A");
-                root.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((c, a) => window.Close());
+                root.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((_, _) => window.Close());
             }
 
             /* Resizing */
             {
                 MenuItem root = menuStrip.AddItem("Resizing");
-                root.Menu.AddItem("Disabled").SetAction((c, a) => window.Resizing = Resizing.None);
-                root.Menu.AddItem("Width").SetAction((c, a) => window.Resizing = Resizing.Width);
-                root.Menu.AddItem("Height").SetAction((c, a) => window.Resizing = Resizing.Height);
-                root.Menu.AddItem("Both").SetAction((c, a) => window.Resizing = Resizing.Both);
+                root.Menu.AddItem("Disabled").SetAction((_, _) => window.Resizing = Resizing.None);
+                root.Menu.AddItem("Width").SetAction((_, _) => window.Resizing = Resizing.Width);
+                root.Menu.AddItem("Height").SetAction((_, _) => window.Resizing = Resizing.Height);
+                root.Menu.AddItem("Both").SetAction((_, _) => window.Resizing = Resizing.Both);
             }
 
             StatusBar statusBar = new(layout);
@@ -131,7 +131,7 @@ namespace Gwen.Net.Tests.Components
         private void OpenWindowAutoSizing(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Window ({0})", ++windowCount);
+            window.Title = $"Window ({++windowCount})";
             window.Left = random.Next(maxValue: 700);
             window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
@@ -160,14 +160,14 @@ namespace Gwen.Net.Tests.Components
                 label.Text = "Hide / Show Label";
                 //label.IsCollapsed = true;
 
-                button.Clicked += (s, a) => label.IsCollapsed = !label.IsCollapsed;
+                button.Clicked += (_, _) => label.IsCollapsed = !label.IsCollapsed;
             }
         }
 
         private void OpenWindowModal(ControlBase control, EventArgs args)
         {
             Window window = new(this);
-            window.Title = string.Format("Modal Window ({0})", ++windowCount);
+            window.Title = $"Modal Window ({++windowCount})";
             window.Left = random.Next(maxValue: 700);
             window.Top = random.Next(maxValue: 400);
             window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);

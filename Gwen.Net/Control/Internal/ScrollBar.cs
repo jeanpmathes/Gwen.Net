@@ -8,14 +8,14 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class ScrollBar : ControlBase
     {
-        protected readonly ScrollBarBar m_Bar;
-        protected readonly ScrollBarButton[] m_ScrollButton;
-        protected float m_ContentSize;
+        protected readonly ScrollBarBar bar;
+        protected readonly ScrollBarButton[] scrollButton;
+        protected float contentSize;
 
-        protected bool m_Depressed;
-        protected float m_NudgeAmount;
-        protected float m_ScrollAmount;
-        protected float m_ViewableContentSize;
+        protected bool depressed;
+        protected float nudgeAmount;
+        protected float scrollAmount;
+        protected float viewableContentSize;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ScrollBar" /> class.
@@ -23,17 +23,17 @@ namespace Gwen.Net.Control.Internal
         /// <param name="parent">Parent control.</param>
         protected ScrollBar(ControlBase parent) : base(parent)
         {
-            m_ScrollButton = new ScrollBarButton[2];
-            m_ScrollButton[0] = new ScrollBarButton(this);
-            m_ScrollButton[1] = new ScrollBarButton(this);
+            scrollButton = new ScrollBarButton[2];
+            scrollButton[0] = new ScrollBarButton(this);
+            scrollButton[1] = new ScrollBarButton(this);
 
-            m_Bar = new ScrollBarBar(this);
+            bar = new ScrollBarBar(this);
 
-            m_Depressed = false;
+            depressed = false;
 
-            m_ScrollAmount = 0;
-            m_ContentSize = 0;
-            m_ViewableContentSize = 0;
+            scrollAmount = 0;
+            contentSize = 0;
+            viewableContentSize = 0;
 
             NudgeAmount = 20;
         }
@@ -55,13 +55,13 @@ namespace Gwen.Net.Control.Internal
 
         public virtual float NudgeAmount
         {
-            get => m_NudgeAmount / m_ContentSize;
-            set => m_NudgeAmount = value;
+            get => nudgeAmount / contentSize;
+            set => nudgeAmount = value;
         }
 
-        public float ScrollAmount => m_ScrollAmount;
-        public float ContentSize => m_ContentSize;
-        public float ViewableContentSize => m_ViewableContentSize;
+        public float ScrollAmount => scrollAmount;
+        public float ContentSize => contentSize;
+        public float ViewableContentSize => viewableContentSize;
 
         /// <summary>
         ///     Indicates whether the bar is horizontal.
@@ -81,21 +81,21 @@ namespace Gwen.Net.Control.Internal
         /// <returns>True if control state changed.</returns>
         public virtual bool SetScrollAmount(float value, bool forceUpdate = false)
         {
-            if (m_ScrollAmount == value && !forceUpdate)
+            if (scrollAmount == value && !forceUpdate)
             {
                 return false;
             }
 
-            m_ScrollAmount = value;
+            scrollAmount = value;
             OnBarMoved(this, EventArgs.Empty);
 
             return true;
         }
 
-        public void SetContentSize(float contentSize, float viewableContentSize)
+        public void SetContentSize(float newContentSize, float newViewableContentSize)
         {
-            m_ContentSize = contentSize;
-            m_ViewableContentSize = viewableContentSize;
+            this.contentSize = newContentSize;
+            this.viewableContentSize = newViewableContentSize;
 
             UpdateBarSize();
         }
@@ -113,16 +113,17 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawScrollBar(this, IsHorizontal, m_Depressed);
+            currentSkin.DrawScrollBar(this, IsHorizontal, depressed);
         }
 
         /// <summary>
         ///     Handler for the BarMoved event.
         /// </summary>
         /// <param name="control">The control.</param>
+        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         protected virtual void OnBarMoved(ControlBase control, EventArgs args)
         {
             if (BarMoved != null)

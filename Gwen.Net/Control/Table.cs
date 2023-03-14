@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Gwen.Net.Control
 {
@@ -241,9 +240,9 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sizes to fit contents.
         /// </summary>
-        public void SizeToContent(int maxWidth = 0)
+        public void SizeToContent(int newMaxWidth = 0)
         {
-            this.maxWidth = maxWidth;
+            this.maxWidth = newMaxWidth;
             sizeToContents = true;
             Invalidate();
         }

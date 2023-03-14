@@ -9,7 +9,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ColorPicker : ControlBase, IColorPicker
     {
-        private Color m_Color;
+        private Color color;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorPicker" /> class.
@@ -29,8 +29,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public int R
         {
-            get => m_Color.R;
-            set => m_Color = new Color(m_Color.A, value, m_Color.G, m_Color.B);
+            get => color.R;
+            set => color = new Color(color.A, value, color.G, color.B);
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public int G
         {
-            get => m_Color.G;
-            set => m_Color = new Color(m_Color.A, m_Color.R, value, m_Color.B);
+            get => color.G;
+            set => color = new Color(color.A, color.R, value, color.B);
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public int B
         {
-            get => m_Color.B;
-            set => m_Color = new Color(m_Color.A, m_Color.R, m_Color.G, value);
+            get => color.B;
+            set => color = new Color(color.A, color.R, color.G, value);
         }
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public int A
         {
-            get => m_Color.A;
-            set => m_Color = new Color(value, m_Color.R, m_Color.G, m_Color.B);
+            get => color.A;
+            set => color = new Color(value, color.R, color.G, color.B);
         }
 
         /// <summary>
@@ -84,10 +84,10 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color SelectedColor
         {
-            get => m_Color;
+            get => color;
             set
             {
-                m_Color = value;
+                color = value;
                 UpdateControls();
             }
         }
@@ -102,10 +102,10 @@ namespace Gwen.Net.Control
             VerticalLayout colorControlLayout = new(this);
             colorControlLayout.Dock = Dock.Fill;
 
-            CreateColorControl(colorControlLayout, "Red", index: 0);
-            CreateColorControl(colorControlLayout, "Green", index: 1);
-            CreateColorControl(colorControlLayout, "Blue", index: 2);
-            CreateColorControl(colorControlLayout, "Alpha", index: 3);
+            CreateColorControl(colorControlLayout, "Red");
+            CreateColorControl(colorControlLayout, "Green");
+            CreateColorControl(colorControlLayout, "Blue");
+            CreateColorControl(colorControlLayout, "Alpha");
 
             GroupBox finalGroup = new(this);
             finalGroup.Dock = Dock.Right;
@@ -121,7 +121,7 @@ namespace Gwen.Net.Control
             disp.Height = Util.Ignore;
         }
 
-        private void CreateColorControl(ControlBase parent, string name, int index)
+        private void CreateColorControl(ControlBase parent, string name)
         {
             GroupBox colorGroup = new(parent);
             colorGroup.Text = name;
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
             HorizontalSlider slider = new(layout);
             slider.Dock = Dock.Fill;
             slider.VerticalAlignment = VerticalAlignment.Center;
-            slider.SetRange(min: 0, max: 255);
+            slider.SetRange(newMin: 0, newMax: 255);
             slider.Name = name + "Slider";
             slider.ValueChanged += SlidersMoved;
         }

@@ -176,7 +176,7 @@ namespace Gwen.Net.Skin
                 public Bordered down;
                 public Bordered disabled;
 
-                public struct Button
+                public struct ButtonColors
                 {
                     public Single normal;
                     public Single hover;
@@ -184,7 +184,7 @@ namespace Gwen.Net.Skin
                     public Single disabled;
                 }
 
-                public Button button;
+                public ButtonColors buttonColors;
             }
 
             public struct Slider
@@ -349,71 +349,71 @@ namespace Gwen.Net.Skin
 
         private void InitializeColors()
         {
-            Colors.Window.TitleActive = Renderer.PixelColor(texture, 4 + (8 * 0), y: 508, Color.Red);
-            Colors.Window.TitleInactive = Renderer.PixelColor(texture, 4 + (8 * 1), y: 508, Color.Yellow);
+            colors.windowColors.titleActive = Renderer.PixelColor(texture, 4 + (8 * 0), y: 508, Color.Red);
+            colors.windowColors.titleInactive = Renderer.PixelColor(texture, 4 + (8 * 1), y: 508, Color.Yellow);
 
-            Colors.Button.Normal = Renderer.PixelColor(texture, 4 + (8 * 2), y: 508, Color.Yellow);
-            Colors.Button.Hover = Renderer.PixelColor(texture, 4 + (8 * 3), y: 508, Color.Yellow);
-            Colors.Button.Down = Renderer.PixelColor(texture, 4 + (8 * 2), y: 500, Color.Yellow);
-            Colors.Button.Disabled = Renderer.PixelColor(texture, 4 + (8 * 3), y: 500, Color.Yellow);
+            colors.buttonColors.normal = Renderer.PixelColor(texture, 4 + (8 * 2), y: 508, Color.Yellow);
+            colors.buttonColors.hover = Renderer.PixelColor(texture, 4 + (8 * 3), y: 508, Color.Yellow);
+            colors.buttonColors.down = Renderer.PixelColor(texture, 4 + (8 * 2), y: 500, Color.Yellow);
+            colors.buttonColors.disabled = Renderer.PixelColor(texture, 4 + (8 * 3), y: 500, Color.Yellow);
 
-            Colors.Tab.Active.Normal = Renderer.PixelColor(texture, 4 + (8 * 4), y: 508, Color.Yellow);
-            Colors.Tab.Active.Hover = Renderer.PixelColor(texture, 4 + (8 * 5), y: 508, Color.Yellow);
-            Colors.Tab.Active.Down = Renderer.PixelColor(texture, 4 + (8 * 4), y: 500, Color.Yellow);
-            Colors.Tab.Active.Disabled = Renderer.PixelColor(texture, 4 + (8 * 5), y: 500, Color.Yellow);
-            Colors.Tab.Inactive.Normal = Renderer.PixelColor(texture, 4 + (8 * 6), y: 508, Color.Yellow);
-            Colors.Tab.Inactive.Hover = Renderer.PixelColor(texture, 4 + (8 * 7), y: 508, Color.Yellow);
-            Colors.Tab.Inactive.Down = Renderer.PixelColor(texture, 4 + (8 * 6), y: 500, Color.Yellow);
-            Colors.Tab.Inactive.Disabled = Renderer.PixelColor(texture, 4 + (8 * 7), y: 500, Color.Yellow);
+            colors.tabColors.activeColors.normal = Renderer.PixelColor(texture, 4 + (8 * 4), y: 508, Color.Yellow);
+            colors.tabColors.activeColors.hover = Renderer.PixelColor(texture, 4 + (8 * 5), y: 508, Color.Yellow);
+            colors.tabColors.activeColors.down = Renderer.PixelColor(texture, 4 + (8 * 4), y: 500, Color.Yellow);
+            colors.tabColors.activeColors.disabled = Renderer.PixelColor(texture, 4 + (8 * 5), y: 500, Color.Yellow);
+            colors.tabColors.inactiveColors.normal = Renderer.PixelColor(texture, 4 + (8 * 6), y: 508, Color.Yellow);
+            colors.tabColors.inactiveColors.hover = Renderer.PixelColor(texture, 4 + (8 * 7), y: 508, Color.Yellow);
+            colors.tabColors.inactiveColors.down = Renderer.PixelColor(texture, 4 + (8 * 6), y: 500, Color.Yellow);
+            colors.tabColors.inactiveColors.disabled = Renderer.PixelColor(texture, 4 + (8 * 7), y: 500, Color.Yellow);
 
-            Colors.Label.Default = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
-            Colors.Label.Bright = Renderer.PixelColor(texture, 4 + (8 * 9), y: 508, Color.Yellow);
-            Colors.Label.Dark = Renderer.PixelColor(texture, 4 + (8 * 8), y: 500, Color.Yellow);
-            Colors.Label.Highlight = Renderer.PixelColor(texture, 4 + (8 * 9), y: 500, Color.Yellow);
+            colors.labelColors.@default = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
+            colors.labelColors.bright = Renderer.PixelColor(texture, 4 + (8 * 9), y: 508, Color.Yellow);
+            colors.labelColors.dark = Renderer.PixelColor(texture, 4 + (8 * 8), y: 500, Color.Yellow);
+            colors.labelColors.highlight = Renderer.PixelColor(texture, 4 + (8 * 9), y: 500, Color.Yellow);
 
-            Colors.TextBox.Text = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
-            Colors.TextBox.Background_Selected = Renderer.PixelColor(texture, 4 + (8 * 10), y: 500, Color.Yellow);
-            Colors.TextBox.Caret = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
+            colors.textBoxColors.text = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
+            colors.textBoxColors.backgroundSelected = Renderer.PixelColor(texture, 4 + (8 * 10), y: 500, Color.Yellow);
+            colors.textBoxColors.caret = Renderer.PixelColor(texture, 4 + (8 * 8), y: 508, Color.Yellow);
 
-            Colors.ListBox.Text_Normal = Renderer.PixelColor(texture, 4 + (8 * 11), y: 508, Color.Yellow);
-            Colors.ListBox.Text_Selected = Renderer.PixelColor(texture, 4 + (8 * 11), y: 500, Color.Yellow);
+            colors.listBoxColors.textNormal = Renderer.PixelColor(texture, 4 + (8 * 11), y: 508, Color.Yellow);
+            colors.listBoxColors.textSelected = Renderer.PixelColor(texture, 4 + (8 * 11), y: 500, Color.Yellow);
 
-            Colors.Tree.Lines = Renderer.PixelColor(texture, 4 + (8 * 10), y: 508, Color.Yellow);
-            Colors.Tree.Normal = Renderer.PixelColor(texture, 4 + (8 * 11), y: 508, Color.Yellow);
-            Colors.Tree.Hover = Renderer.PixelColor(texture, 4 + (8 * 10), y: 500, Color.Yellow);
-            Colors.Tree.Selected = Renderer.PixelColor(texture, 4 + (8 * 11), y: 500, Color.Yellow);
+            colors.treeColors.lines = Renderer.PixelColor(texture, 4 + (8 * 10), y: 508, Color.Yellow);
+            colors.treeColors.normal = Renderer.PixelColor(texture, 4 + (8 * 11), y: 508, Color.Yellow);
+            colors.treeColors.hover = Renderer.PixelColor(texture, 4 + (8 * 10), y: 500, Color.Yellow);
+            colors.treeColors.selected = Renderer.PixelColor(texture, 4 + (8 * 11), y: 500, Color.Yellow);
 
-            Colors.Properties.Line_Normal = Renderer.PixelColor(texture, 4 + (8 * 12), y: 508, Color.Yellow);
-            Colors.Properties.Line_Selected = Renderer.PixelColor(texture, 4 + (8 * 13), y: 508, Color.Yellow);
-            Colors.Properties.Line_Hover = Renderer.PixelColor(texture, 4 + (8 * 12), y: 500, Color.Yellow);
-            Colors.Properties.Title = Renderer.PixelColor(texture, 4 + (8 * 13), y: 500, Color.Yellow);
-            Colors.Properties.Column_Normal = Renderer.PixelColor(texture, 4 + (8 * 14), y: 508, Color.Yellow);
-            Colors.Properties.Column_Selected = Renderer.PixelColor(texture, 4 + (8 * 15), y: 508, Color.Yellow);
-            Colors.Properties.Column_Hover = Renderer.PixelColor(texture, 4 + (8 * 14), y: 500, Color.Yellow);
-            Colors.Properties.Border = Renderer.PixelColor(texture, 4 + (8 * 15), y: 500, Color.Yellow);
-            Colors.Properties.Label_Normal = Renderer.PixelColor(texture, 4 + (8 * 16), y: 508, Color.Yellow);
-            Colors.Properties.Label_Selected = Renderer.PixelColor(texture, 4 + (8 * 17), y: 508, Color.Yellow);
-            Colors.Properties.Label_Hover = Renderer.PixelColor(texture, 4 + (8 * 16), y: 500, Color.Yellow);
+            colors.propertiesColors.lineNormal = Renderer.PixelColor(texture, 4 + (8 * 12), y: 508, Color.Yellow);
+            colors.propertiesColors.lineSelected = Renderer.PixelColor(texture, 4 + (8 * 13), y: 508, Color.Yellow);
+            colors.propertiesColors.lineHover = Renderer.PixelColor(texture, 4 + (8 * 12), y: 500, Color.Yellow);
+            colors.propertiesColors.title = Renderer.PixelColor(texture, 4 + (8 * 13), y: 500, Color.Yellow);
+            colors.propertiesColors.columnNormal = Renderer.PixelColor(texture, 4 + (8 * 14), y: 508, Color.Yellow);
+            colors.propertiesColors.columnSelected = Renderer.PixelColor(texture, 4 + (8 * 15), y: 508, Color.Yellow);
+            colors.propertiesColors.columnHover = Renderer.PixelColor(texture, 4 + (8 * 14), y: 500, Color.Yellow);
+            colors.propertiesColors.border = Renderer.PixelColor(texture, 4 + (8 * 15), y: 500, Color.Yellow);
+            colors.propertiesColors.labelNormal = Renderer.PixelColor(texture, 4 + (8 * 16), y: 508, Color.Yellow);
+            colors.propertiesColors.labelSelected = Renderer.PixelColor(texture, 4 + (8 * 17), y: 508, Color.Yellow);
+            colors.propertiesColors.labelHover = Renderer.PixelColor(texture, 4 + (8 * 16), y: 500, Color.Yellow);
 
-            Colors.ModalBackground = Renderer.PixelColor(texture, 4 + (8 * 18), y: 508, Color.Yellow);
+            colors.modalBackground = Renderer.PixelColor(texture, 4 + (8 * 18), y: 508, Color.Yellow);
 
-            Colors.TooltipText = Renderer.PixelColor(texture, 4 + (8 * 19), y: 508, Color.Yellow);
+            colors.tooltipText = Renderer.PixelColor(texture, 4 + (8 * 19), y: 508, Color.Yellow);
 
-            Colors.Category.Header = Renderer.PixelColor(texture, 4 + (8 * 18), y: 500, Color.Yellow);
-            Colors.Category.Header_Closed = Renderer.PixelColor(texture, 4 + (8 * 19), y: 500, Color.Yellow);
-            Colors.Category.Line.Text = Renderer.PixelColor(texture, 4 + (8 * 20), y: 508, Color.Yellow);
-            Colors.Category.Line.Text_Hover = Renderer.PixelColor(texture, 4 + (8 * 21), y: 508, Color.Yellow);
-            Colors.Category.Line.Text_Selected = Renderer.PixelColor(texture, 4 + (8 * 20), y: 500, Color.Yellow);
-            Colors.Category.Line.Button = Renderer.PixelColor(texture, 4 + (8 * 21), y: 500, Color.Yellow);
-            Colors.Category.Line.Button_Hover = Renderer.PixelColor(texture, 4 + (8 * 22), y: 508, Color.Yellow);
-            Colors.Category.Line.Button_Selected = Renderer.PixelColor(texture, 4 + (8 * 23), y: 508, Color.Yellow);
-            Colors.Category.LineAlt.Text = Renderer.PixelColor(texture, 4 + (8 * 22), y: 500, Color.Yellow);
-            Colors.Category.LineAlt.Text_Hover = Renderer.PixelColor(texture, 4 + (8 * 23), y: 500, Color.Yellow);
-            Colors.Category.LineAlt.Text_Selected = Renderer.PixelColor(texture, 4 + (8 * 24), y: 508, Color.Yellow);
-            Colors.Category.LineAlt.Button = Renderer.PixelColor(texture, 4 + (8 * 25), y: 508, Color.Yellow);
-            Colors.Category.LineAlt.Button_Hover = Renderer.PixelColor(texture, 4 + (8 * 24), y: 500, Color.Yellow);
+            colors.categoryColors.header = Renderer.PixelColor(texture, 4 + (8 * 18), y: 500, Color.Yellow);
+            colors.categoryColors.headerClosed = Renderer.PixelColor(texture, 4 + (8 * 19), y: 500, Color.Yellow);
+            colors.categoryColors.lineColors.text = Renderer.PixelColor(texture, 4 + (8 * 20), y: 508, Color.Yellow);
+            colors.categoryColors.lineColors.textHover = Renderer.PixelColor(texture, 4 + (8 * 21), y: 508, Color.Yellow);
+            colors.categoryColors.lineColors.textSelected = Renderer.PixelColor(texture, 4 + (8 * 20), y: 500, Color.Yellow);
+            colors.categoryColors.lineColors.button = Renderer.PixelColor(texture, 4 + (8 * 21), y: 500, Color.Yellow);
+            colors.categoryColors.lineColors.buttonHover = Renderer.PixelColor(texture, 4 + (8 * 22), y: 508, Color.Yellow);
+            colors.categoryColors.lineColors.buttonSelected = Renderer.PixelColor(texture, 4 + (8 * 23), y: 508, Color.Yellow);
+            colors.categoryColors.lineAltColors.text = Renderer.PixelColor(texture, 4 + (8 * 22), y: 500, Color.Yellow);
+            colors.categoryColors.lineAltColors.textHover = Renderer.PixelColor(texture, 4 + (8 * 23), y: 500, Color.Yellow);
+            colors.categoryColors.lineAltColors.textSelected = Renderer.PixelColor(texture, 4 + (8 * 24), y: 508, Color.Yellow);
+            colors.categoryColors.lineAltColors.button = Renderer.PixelColor(texture, 4 + (8 * 25), y: 508, Color.Yellow);
+            colors.categoryColors.lineAltColors.buttonHover = Renderer.PixelColor(texture, 4 + (8 * 24), y: 500, Color.Yellow);
 
-            Colors.Category.LineAlt.Button_Selected =
+            colors.categoryColors.lineAltColors.buttonSelected =
                 Renderer.PixelColor(texture, 4 + (8 * 25), y: 500, Color.Yellow);
         }
 
@@ -523,12 +523,12 @@ namespace Gwen.Net.Skin
             textures.checkBox.active.@checked = new Single(texture, x: 448, y: 32, w: 15, h: 15);
             textures.checkBox.active.normal = new Single(texture, x: 464, y: 32, w: 15, h: 15);
             textures.checkBox.disabled.normal = new Single(texture, x: 448, y: 48, w: 15, h: 15);
-            textures.checkBox.disabled.normal = new Single(texture, x: 464, y: 48, w: 15, h: 15);
+            textures.checkBox.disabled.@checked = new Single(texture, x: 464, y: 48, w: 15, h: 15);
 
             textures.radioButton.active.@checked = new Single(texture, x: 448, y: 64, w: 15, h: 15);
             textures.radioButton.active.normal = new Single(texture, x: 464, y: 64, w: 15, h: 15);
             textures.radioButton.disabled.normal = new Single(texture, x: 448, y: 80, w: 15, h: 15);
-            textures.radioButton.disabled.normal = new Single(texture, x: 464, y: 80, w: 15, h: 15);
+            textures.radioButton.disabled.@checked = new Single(texture, x: 464, y: 80, w: 15, h: 15);
 
             textures.textBox.normal = new Bordered(texture, x: 0, y: 150, w: 127, h: 21, Margin.Four);
             textures.textBox.focus = new Bordered(texture, x: 0, y: 172, w: 127, h: 21, Margin.Four);
@@ -685,10 +685,10 @@ namespace Gwen.Net.Skin
                 h: 31,
                 new Margin(left: 8, top: 8, right: 32, bottom: 8));
 
-            textures.input.comboBox.button.normal = new Single(texture, x: 496, y: 272, w: 15, h: 15);
-            textures.input.comboBox.button.hover = new Single(texture, x: 496, 272 + 16, w: 15, h: 15);
-            textures.input.comboBox.button.down = new Single(texture, x: 496, 272 + 32, w: 15, h: 15);
-            textures.input.comboBox.button.disabled = new Single(texture, x: 496, 272 + 48, w: 15, h: 15);
+            textures.input.comboBox.buttonColors.normal = new Single(texture, x: 496, y: 272, w: 15, h: 15);
+            textures.input.comboBox.buttonColors.hover = new Single(texture, x: 496, 272 + 16, w: 15, h: 15);
+            textures.input.comboBox.buttonColors.down = new Single(texture, x: 496, 272 + 32, w: 15, h: 15);
+            textures.input.comboBox.buttonColors.disabled = new Single(texture, x: 496, 272 + 48, w: 15, h: 15);
 
             textures.input.upDown.up.normal = new Single(texture, x: 384, y: 112, w: 7, h: 7);
             textures.input.upDown.up.hover = new Single(texture, 384 + 8, y: 112, w: 7, h: 7);
@@ -869,10 +869,10 @@ namespace Gwen.Net.Skin
             rect.Y += (int) (textHeight * 0.5f);
             rect.Height -= (int) (textHeight * 0.5f);
 
-            Color m_colDarker = new(a: 50, r: 0, g: 50, b: 60);
-            Color m_colLighter = new(a: 150, r: 255, g: 255, b: 255);
+            Color colDarker = new(a: 50, r: 0, g: 50, b: 60);
+            Color colLighter = new(a: 150, r: 255, g: 255, b: 255);
 
-            Renderer.DrawColor = m_colLighter;
+            Renderer.DrawColor = colLighter;
 
             Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + 1, textStart - 3, height: 1));
 
@@ -889,7 +889,7 @@ namespace Gwen.Net.Skin
             Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + 1, width: 1, rect.Height));
             Renderer.DrawFilledRect(new Rectangle(rect.X + rect.Width - 2, rect.Y + 1, width: 1, rect.Height - 1));
 
-            Renderer.DrawColor = m_colDarker;
+            Renderer.DrawColor = colDarker;
 
             Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y, textStart - 3, height: 1));
 
@@ -1285,10 +1285,8 @@ namespace Gwen.Net.Skin
             textures.input.comboBox.normal.Draw(Renderer, control.RenderBounds);
         }
 
-        public override void DrawKeyboardHighlight(ControlBase control, Rectangle r, int offset)
+        public override void DrawKeyboardHighlight(ControlBase control, Rectangle rect, int offset)
         {
-            Rectangle rect = r;
-
             rect.X += offset;
             rect.Y += offset;
             rect.Width -= offset * 2;
@@ -1299,7 +1297,7 @@ namespace Gwen.Net.Skin
 
             for (var i = 0; i < rect.Width * 0.5; i++)
             {
-                m_Renderer.DrawColor = Color.Black;
+                renderer.DrawColor = Color.Black;
 
                 if (!skip)
                 {
@@ -1373,26 +1371,26 @@ namespace Gwen.Net.Skin
         {
             if (disabled)
             {
-                textures.input.comboBox.button.disabled.Draw(Renderer, control.RenderBounds);
+                textures.input.comboBox.buttonColors.disabled.Draw(Renderer, control.RenderBounds);
 
                 return;
             }
 
             if (down || open)
             {
-                textures.input.comboBox.button.down.Draw(Renderer, control.RenderBounds);
+                textures.input.comboBox.buttonColors.down.Draw(Renderer, control.RenderBounds);
 
                 return;
             }
 
             if (hovered)
             {
-                textures.input.comboBox.button.hover.Draw(Renderer, control.RenderBounds);
+                textures.input.comboBox.buttonColors.hover.Draw(Renderer, control.RenderBounds);
 
                 return;
             }
 
-            textures.input.comboBox.button.normal.Draw(Renderer, control.RenderBounds);
+            textures.input.comboBox.buttonColors.normal.Draw(Renderer, control.RenderBounds);
         }
 
         public override void DrawNumericUpDownButton(ControlBase control, bool depressed, bool up)
@@ -1519,7 +1517,7 @@ namespace Gwen.Net.Skin
 
             if (backgroundColor == null)
             {
-                Renderer.DrawColor = Colors.ModalBackground;
+                Renderer.DrawColor = colors.modalBackground;
             }
             else
             {

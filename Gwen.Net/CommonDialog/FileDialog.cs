@@ -271,14 +271,14 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Set current path.
         /// </summary>
-        /// <param name="path">Path.</param>
+        /// <param name="newPath">Path.</param>
         /// <returns>True if the path change was successful. False otherwise.</returns>
-        public bool SetPath(string path)
+        public bool SetPath(string newPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(newPath))
             {
-                currentFolder = path;
-                this.path.Text = currentFolder;
+                currentFolder = newPath;
+                path.Text = currentFolder;
                 UpdateItemList();
 
                 return true;
@@ -294,21 +294,21 @@ namespace Gwen.Net.CommonDialog
         /// <param name="current">Set this index as a current filter.</param>
         public void SetFilters(string filterStr, int current = 0)
         {
-            string[] filters = filterStr.Split(separator: '|');
+            string[] newFilters = filterStr.Split(separator: '|');
 
-            if ((filters.Length & 0x1) == 0x1)
+            if ((newFilters.Length & 0x1) == 0x1)
             {
                 throw new Exception("Error in filter.");
             }
 
-            this.filters.RemoveAll();
+            filters.RemoveAll();
 
-            for (var i = 0; i < filters.Length; i += 2)
+            for (var i = 0; i < newFilters.Length; i += 2)
             {
-                this.filters.AddItem(filters[i], filters[i], filters[i + 1]);
+                filters.AddItem(newFilters[i], newFilters[i], newFilters[i + 1]);
             }
 
-            this.filters.SelectedIndex = current;
+            filters.SelectedIndex = current;
         }
 
         /// <summary>
@@ -323,39 +323,39 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Close the dialog and call the call back function.
         /// </summary>
-        /// <param name="path">Parameter for the call back function.</param>
-        protected void Close(string path)
+        /// <param name="callbackPath">Parameter for the call back function.</param>
+        protected void Close(string callbackPath)
         {
-            OnClosing(path, doClose: true);
+            OnClosing(callbackPath, doClose: true);
         }
 
         /// <summary>
         ///     Called when the user selects a file or directory.
         /// </summary>
-        /// <param name="path">Full path of selected file or directory.</param>
-        protected virtual void OnItemSelected(string path)
+        /// <param name="selectedPath">Full path of selected file or directory.</param>
+        protected virtual void OnItemSelected(string selectedPath)
         {
-            if ((DirectoryExists(path) && foldersOnly) || (FileExists(path) && !foldersOnly))
+            if ((DirectoryExists(selectedPath) && foldersOnly) || (FileExists(selectedPath) && !foldersOnly))
             {
-                SetCurrentItem(GetFileName(path));
+                SetCurrentItem(GetFileName(selectedPath));
             }
         }
 
         /// <summary>
         ///     Called to validate the file or directory name when the user enters it.
         /// </summary>
-        /// <param name="path">Full path of the name.</param>
+        /// <param name="submittedPath">Full path of the name.</param>
         /// <returns>Is the name valid.</returns>
-        protected virtual bool IsSubmittedNameOk(string path)
+        protected virtual bool IsSubmittedNameOk(string submittedPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(submittedPath))
             {
                 if (!foldersOnly)
                 {
-                    SetPath(path);
+                    SetPath(submittedPath);
                 }
             }
-            else if (FileExists(path))
+            else if (FileExists(submittedPath))
             {
                 return true;
             }
@@ -370,9 +370,9 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Called to validate the path when the user presses the ok button.
         /// </summary>
-        /// <param name="path">Full path.</param>
+        /// <param name="pathToValidate">Full path.</param>
         /// <returns>Is the path valid.</returns>
-        protected virtual bool ValidateFileName(string path)
+        protected virtual bool ValidateFileName(string pathToValidate)
         {
             return true;
         }
@@ -380,9 +380,9 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Called when the dialog is closing.
         /// </summary>
-        /// <param name="path">Path for the call back function</param>
+        /// <param name="callbackPath">Path for the call back function</param>
         /// <param name="doClose">True if the dialog needs to be closed.</param>
-        protected virtual void OnClosing(string path, bool doClose)
+        protected virtual void OnClosing(string callbackPath, bool doClose)
         {
             if (onClosing)
             {
@@ -398,7 +398,7 @@ namespace Gwen.Net.CommonDialog
 
             if (Callback != null)
             {
-                Callback(path);
+                Callback(callbackPath);
             }
         }
 
@@ -422,18 +422,18 @@ namespace Gwen.Net.CommonDialog
 
         private void OnNewFolderClicked(ControlBase sender, ClickedEventArgs args)
         {
-            string path = this.path.Text;
+            string folderPath = path.Text;
 
-            if (DirectoryExists(path))
+            if (DirectoryExists(folderPath))
             {
-                this.path.Focus();
+                path.Focus();
             }
             else
             {
                 try
                 {
-                    CreateDirectory(path);
-                    SetPath(path);
+                    CreateDirectory(folderPath);
+                    SetPath(folderPath);
                 }
                 catch (Exception ex)
                 {
@@ -454,23 +454,19 @@ namespace Gwen.Net.CommonDialog
 
         private void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
         {
-            var path = args.SelectedItem.UserData as string;
-
-            if (path != null)
+            if (args.SelectedItem.UserData is string selectedPath)
             {
-                OnItemSelected(path);
+                OnItemSelected(selectedPath);
             }
         }
 
         private void OnItemDoubleClicked(ControlBase sender, ItemSelectedEventArgs args)
         {
-            var path = args.SelectedItem.UserData as string;
-
-            if (path != null)
+            if (args.SelectedItem.UserData is string selectedPath)
             {
-                if (DirectoryExists(path))
+                if (DirectoryExists(selectedPath))
                 {
-                    SetPath(path);
+                    SetPath(selectedPath);
                 }
                 else
                 {
@@ -481,9 +477,9 @@ namespace Gwen.Net.CommonDialog
 
         private void OnNameSubmitted(ControlBase sender, EventArgs args)
         {
-            string path = Combine(currentFolder, selectedName.Text);
+            string submittedPath = Combine(currentFolder, selectedName.Text);
 
-            if (IsSubmittedNameOk(path))
+            if (IsSubmittedNameOk(submittedPath))
             {
                 OnOkClicked(sender: null, args: null);
             }
@@ -497,22 +493,22 @@ namespace Gwen.Net.CommonDialog
 
         private void OnOkClicked(ControlBase sender, ClickedEventArgs args)
         {
-            string path = Combine(currentFolder, selectedName.Text);
+            string clickedPath = Combine(currentFolder, selectedName.Text);
 
-            if (ValidateFileName(path))
+            if (ValidateFileName(clickedPath))
             {
-                OnClosing(path, doClose: true);
+                OnClosing(clickedPath, doClose: true);
             }
         }
 
         private void OnCancelClicked(ControlBase sender, ClickedEventArgs args)
         {
-            OnClosing(path: null, doClose: true);
+            OnClosing(callbackPath: null, doClose: true);
         }
 
         private void OnWindowClosed(ControlBase sender, EventArgs args)
         {
-            OnClosing(path: null, doClose: false);
+            OnClosing(callbackPath: null, doClose: false);
         }
 
         private void UpdateItemList()
@@ -573,32 +569,6 @@ namespace Gwen.Net.CommonDialog
             }
 
             folders.ExpandAll();
-        }
-
-        private string FormatFileLength(long length)
-        {
-            if (length > 1024 * 1024 * 1024)
-            {
-                return String.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
-            }
-
-            if (length > 1024 * 1024)
-            {
-                return String.Format("{0:0.0} MB", (double) length / (1024 * 1024));
-            }
-
-            if (length > 1024)
-            {
-                return String.Format("{0:0.0} kB", (double) length / 1024);
-            }
-
-            return String.Format("{0} B", length);
-        }
-
-        private string FormatFileTime(DateTime dateTime)
-        {
-            return "";
-            //return String.Format("{0} {1}", dateTime.ToShortDateString(), dateTime.ToLongTimeString());
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class CloseButton : ButtonBase
     {
-        private readonly Window m_Window;
+        private readonly Window window;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CloseButton" /> class.
@@ -17,16 +17,16 @@ namespace Gwen.Net.Control.Internal
         public CloseButton(ControlBase parent, Window owner)
             : base(parent)
         {
-            m_Window = owner;
+            window = owner;
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawWindowCloseButton(this, IsDepressed && IsHovered, IsHovered && ShouldDrawHover, !m_Window.IsOnTop);
+            currentSkin.DrawWindowCloseButton(this, IsDepressed && IsHovered, IsHovered && ShouldDrawHover, !window.IsOnTop);
         }
     }
 }

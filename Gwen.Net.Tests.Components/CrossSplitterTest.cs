@@ -6,59 +6,59 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Layout", Order = 403)]
     public class CrossSplitterTest : GUnit
     {
-        private int m_CurZoom;
-        private readonly CrossSplitter m_Splitter;
+        private int curZoom;
+        private readonly CrossSplitter splitter;
 
         public CrossSplitterTest(ControlBase parent)
             : base(parent)
         {
-            m_CurZoom = 0;
+            curZoom = 0;
 
-            m_Splitter = new CrossSplitter(this);
-            m_Splitter.Dock = Dock.Fill;
+            splitter = new CrossSplitter(this);
+            splitter.Dock = Dock.Fill;
 
             {
-                VerticalSplitter splitter = new(m_Splitter);
-                Button button1 = new(splitter);
+                VerticalSplitter verticalSplitter = new(splitter);
+                Button button1 = new(verticalSplitter);
                 button1.Text = "Vertical left";
-                Button button2 = new(splitter);
+                Button button2 = new(verticalSplitter);
                 button2.Text = "Vertical right";
-                splitter.SetPanel(index: 0, button1);
-                splitter.SetPanel(index: 1, button2);
-                m_Splitter.SetPanel(index: 0, splitter);
+                verticalSplitter.SetPanel(index: 0, button1);
+                verticalSplitter.SetPanel(index: 1, button2);
+                splitter.SetPanel(index: 0, verticalSplitter);
             }
 
             {
-                HorizontalSplitter splitter = new(m_Splitter);
-                Button button1 = new(splitter);
+                HorizontalSplitter horizontalSplitter = new(splitter);
+                Button button1 = new(horizontalSplitter);
                 button1.Text = "Horizontal up";
-                Button button2 = new(splitter);
+                Button button2 = new(horizontalSplitter);
                 button2.Text = "Horizontal down";
-                splitter.SetPanel(index: 0, button1);
-                splitter.SetPanel(index: 1, button2);
-                m_Splitter.SetPanel(index: 1, splitter);
+                horizontalSplitter.SetPanel(index: 0, button1);
+                horizontalSplitter.SetPanel(index: 1, button2);
+                splitter.SetPanel(index: 1, horizontalSplitter);
             }
 
             {
-                HorizontalSplitter splitter = new(m_Splitter);
-                Button button1 = new(splitter);
+                HorizontalSplitter horizontalSplitter = new(splitter);
+                Button button1 = new(horizontalSplitter);
                 button1.Text = "Horizontal up";
-                Button button2 = new(splitter);
+                Button button2 = new(horizontalSplitter);
                 button2.Text = "Horizontal down";
-                splitter.SetPanel(index: 0, button1);
-                splitter.SetPanel(index: 1, button2);
-                m_Splitter.SetPanel(index: 2, splitter);
+                horizontalSplitter.SetPanel(index: 0, button1);
+                horizontalSplitter.SetPanel(index: 1, button2);
+                splitter.SetPanel(index: 2, horizontalSplitter);
             }
 
             {
-                VerticalSplitter splitter = new(m_Splitter);
-                Button button1 = new(splitter);
+                VerticalSplitter verticalSplitter = new(splitter);
+                Button button1 = new(verticalSplitter);
                 button1.Text = "Vertical left";
-                Button button2 = new(splitter);
+                Button button2 = new(verticalSplitter);
                 button2.Text = "Vertical right";
-                splitter.SetPanel(index: 0, button1);
-                splitter.SetPanel(index: 1, button2);
-                m_Splitter.SetPanel(index: 3, splitter);
+                verticalSplitter.SetPanel(index: 0, button1);
+                verticalSplitter.SetPanel(index: 1, button2);
+                splitter.SetPanel(index: 3, verticalSplitter);
             }
 
             //Status bar to hold unit testing buttons
@@ -96,36 +96,29 @@ namespace Gwen.Net.Tests.Components
 
         private void ZoomTest(ControlBase control, EventArgs args)
         {
-            m_Splitter.Zoom(m_CurZoom);
-            m_CurZoom++;
+            splitter.Zoom(curZoom);
+            curZoom++;
 
-            if (m_CurZoom == 4)
+            if (curZoom == 4)
             {
-                m_CurZoom = 0;
+                curZoom = 0;
             }
         }
 
         private void UnZoomTest(ControlBase control, EventArgs args)
         {
-            m_Splitter.UnZoom();
+            splitter.UnZoom();
         }
 
         private void CenterPanels(ControlBase control, EventArgs args)
         {
-            m_Splitter.CenterPanels();
-            m_Splitter.UnZoom();
+            splitter.CenterPanels();
+            splitter.UnZoom();
         }
 
         private void ToggleSplitters(ControlBase control, EventArgs args)
         {
-            m_Splitter.SplittersVisible = !m_Splitter.SplittersVisible;
+            splitter.SplittersVisible = !splitter.SplittersVisible;
         }
-
-#if false
-		protected override void Layout(Skin.Base skin)
-        {
-            
-        }
-#endif
     }
 }

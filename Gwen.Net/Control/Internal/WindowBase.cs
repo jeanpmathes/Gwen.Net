@@ -53,8 +53,8 @@ namespace Gwen.Net.Control.Internal
 
         public override Padding Padding
         {
-            get => m_InnerPanel.Padding;
-            set => m_InnerPanel.Padding = value;
+            get => innerPanel.Padding;
+            set => innerPanel.Padding = value;
         }
 
         /// <summary>

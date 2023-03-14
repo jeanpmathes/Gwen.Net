@@ -21,12 +21,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             if (ShouldDrawBackground)
             {
-                skin.DrawButton(this, depressed: true, hovered: false, IsDisabled);
+                currentSkin.DrawButton(this, depressed: true, hovered: false, IsDisabled);
             }
         }
     }

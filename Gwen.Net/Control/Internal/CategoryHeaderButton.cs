@@ -25,11 +25,11 @@
         {
             if (IsDepressed || ToggleState)
             {
-                TextColor = Skin.Colors.Category.Header_Closed;
+                TextColor = Skin.colors.categoryColors.headerClosed;
             }
             else
             {
-                TextColor = Skin.Colors.Category.Header;
+                TextColor = Skin.colors.categoryColors.header;
             }
         }
     }

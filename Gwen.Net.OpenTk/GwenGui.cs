@@ -47,7 +47,7 @@ namespace Gwen.Net.OpenTk
             canvas.SetSize(Parent.Size.X, Parent.Size.Y);
             renderer.Resize(Parent.Size.X, Parent.Size.Y);
             canvas.ShouldDrawBackground = true;
-            canvas.BackgroundColor = skin.Colors.ModalBackground;
+            canvas.BackgroundColor = skin.ModalBackground;
         }
 
         public void Render()

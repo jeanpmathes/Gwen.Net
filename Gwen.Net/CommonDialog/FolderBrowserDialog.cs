@@ -20,19 +20,19 @@ namespace Gwen.Net.CommonDialog
             OkButtonText = "Select";
         }
 
-        protected override void OnItemSelected(string path)
+        protected override void OnItemSelected(string selectedPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(selectedPath))
             {
-                SetCurrentItem(GetFileName(path));
+                SetCurrentItem(GetFileName(selectedPath));
             }
         }
 
-        protected override bool IsSubmittedNameOk(string path)
+        protected override bool IsSubmittedNameOk(string submittedPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(submittedPath))
             {
-                SetPath(path);
+                SetPath(submittedPath);
 
                 return true;
             }
@@ -40,9 +40,9 @@ namespace Gwen.Net.CommonDialog
             return false;
         }
 
-        protected override bool ValidateFileName(string path)
+        protected override bool ValidateFileName(string pathToValidate)
         {
-            return DirectoryExists(path);
+            return DirectoryExists(pathToValidate);
         }
     }
 }

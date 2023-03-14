@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -31,7 +30,7 @@ namespace Gwen.Net.Tests.Components
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Five;
                     button.ShouldDrawBackground = false;
-                    button.Text = String.Format("Button {0}", buttonNum++);
+                    button.Text = $"Button {buttonNum++}";
                     button.SetImage("test16.png", ImageAlign.Above);
                 }
             }
@@ -43,7 +42,7 @@ namespace Gwen.Net.Tests.Components
             flowLayoutWidth.Min = 50;
             flowLayoutWidth.Max = 500;
             flowLayoutWidth.Value = flowLayout.Width;
-            flowLayoutWidth.ValueChanged += (control, args) => { flowLayout.Width = (int) flowLayoutWidth.Value; };
+            flowLayoutWidth.ValueChanged += (_, _) => { flowLayout.Width = (int) flowLayoutWidth.Value; };
         }
     }
 }

@@ -7,18 +7,19 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     internal class ComboBoxButton : ButtonBase
     {
-        private readonly EditableComboBox m_ComboBox;
+        private readonly EditableComboBox comboBox;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ComboBoxButton" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
+        /// <param name="comboBox">Editable combobox that owns this button.</param>
         public ComboBoxButton(ControlBase parent, EditableComboBox comboBox)
             : base(parent)
         {
             Width = BaseUnit;
 
-            m_ComboBox = comboBox;
+            this.comboBox = comboBox;
         }
 
         protected override void AdaptToScaleChange()
@@ -29,10 +30,10 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawComboBoxArrow(this, IsHovered, IsDepressed, m_ComboBox.IsOpen, m_ComboBox.IsDisabled);
+            currentSkin.DrawComboBoxArrow(this, IsHovered, IsDepressed, comboBox.IsOpen, comboBox.IsDisabled);
         }
     }
 }

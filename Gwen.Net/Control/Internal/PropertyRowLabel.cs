@@ -5,7 +5,7 @@
     /// </summary>
     public class PropertyRowLabel : Label
     {
-        private readonly PropertyRow m_PropertyRow;
+        private readonly PropertyRow propertyRow;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyRowLabel" /> class.
@@ -13,9 +13,8 @@
         /// <param name="parent">Parent control.</param>
         public PropertyRowLabel(PropertyRow parent) : base(parent)
         {
-            //AutoSizeToContents = false;
             Alignment = Alignment.Left | Alignment.CenterV;
-            m_PropertyRow = parent;
+            propertyRow = parent;
         }
 
         /// <summary>
@@ -25,26 +24,26 @@
         {
             if (IsDisabled)
             {
-                TextColor = Skin.Colors.Button.Disabled;
+                TextColor = Skin.colors.buttonColors.disabled;
 
                 return;
             }
 
-            if (m_PropertyRow != null && m_PropertyRow.IsEditing)
+            if (propertyRow != null && propertyRow.IsEditing)
             {
-                TextColor = Skin.Colors.Properties.Label_Selected;
+                TextColor = Skin.colors.propertiesColors.labelSelected;
 
                 return;
             }
 
-            if (m_PropertyRow != null && m_PropertyRow.IsHovered)
+            if (propertyRow != null && propertyRow.IsHovered)
             {
-                TextColor = Skin.Colors.Properties.Label_Hover;
+                TextColor = Skin.colors.propertiesColors.labelHover;
 
                 return;
             }
 
-            TextColor = Skin.Colors.Properties.Label_Normal;
+            TextColor = Skin.colors.propertiesColors.labelNormal;
         }
     }
 }

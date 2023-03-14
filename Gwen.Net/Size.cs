@@ -91,7 +91,7 @@ namespace Gwen.Net
 
         public override string ToString()
         {
-            return String.Format("Width = {0} Height = {1}", Width, Height);
+            return $"Width = {Width} Height = {Height}";
         }
 
         public static readonly Size Zero = new(width: 0, height: 0);

@@ -5,7 +5,7 @@
     /// </summary>
     public class CheckProperty : PropertyBase
     {
-        protected readonly CheckBox m_CheckBox;
+        protected readonly CheckBox checkBox;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CheckProperty" /> class.
@@ -14,12 +14,12 @@
         public CheckProperty(ControlBase parent)
             : base(parent)
         {
-            m_CheckBox = new CheckBox(this);
-            m_CheckBox.Dock = Dock.Left;
-            m_CheckBox.ShouldDrawBackground = false;
-            m_CheckBox.CheckChanged += OnValueChanged;
-            m_CheckBox.IsTabable = true;
-            m_CheckBox.KeyboardInputEnabled = true;
+            checkBox = new CheckBox(this);
+            checkBox.Dock = Dock.Left;
+            checkBox.ShouldDrawBackground = false;
+            checkBox.CheckChanged += OnValueChanged;
+            checkBox.IsTabable = true;
+            checkBox.KeyboardInputEnabled = true;
         }
 
         /// <summary>
@@ -27,19 +27,19 @@
         /// </summary>
         public override string Value
         {
-            get => m_CheckBox.IsChecked ? "1" : "0";
+            get => checkBox.IsChecked ? "1" : "0";
             set => base.Value = value;
         }
 
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public override bool IsEditing => m_CheckBox.HasFocus;
+        public override bool IsEditing => checkBox.HasFocus;
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public override bool IsHovered => base.IsHovered || m_CheckBox.IsHovered;
+        public override bool IsHovered => base.IsHovered || checkBox.IsHovered;
 
         /// <summary>
         ///     Sets the property value.
@@ -50,11 +50,11 @@
         {
             if (value == "1" || value.ToLower() == "true" || value.ToLower() == "yes")
             {
-                m_CheckBox.IsChecked = true;
+                checkBox.IsChecked = true;
             }
             else
             {
-                m_CheckBox.IsChecked = false;
+                checkBox.IsChecked = false;
             }
         }
     }

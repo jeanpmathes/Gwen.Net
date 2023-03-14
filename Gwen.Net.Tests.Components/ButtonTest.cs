@@ -106,9 +106,9 @@ namespace Gwen.Net.Tests.Components
                     button.Padding = new Padding(left: 20, top: 20, right: 20, bottom: 20);
                     button.Text = "Toggle me";
                     button.IsToggle = true;
-                    button.Toggled += onToggle;
-                    button.ToggledOn += onToggleOn;
-                    button.ToggledOff += onToggleOff;
+                    button.Toggled += OnToggle;
+                    button.ToggledOn += OnToggleOn;
+                    button.ToggledOff += OnToggleOff;
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
@@ -135,39 +135,39 @@ namespace Gwen.Net.Tests.Components
                     button.Padding = Padding.Three;
                     button.Text = "Event tester";
                     button.Size = new Size(width: 300, height: 200);
-                    button.Pressed += onButtonAp;
-                    button.Clicked += onButtonAc;
-                    button.Released += onButtonAr;
+                    button.Pressed += OnButtonAp;
+                    button.Clicked += OnButtonAc;
+                    button.Released += OnButtonAr;
                 }
             }
         }
 
-        private void onButtonAc(ControlBase control, EventArgs args)
+        private void OnButtonAc(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: Clicked");
         }
 
-        private void onButtonAp(ControlBase control, EventArgs args)
+        private void OnButtonAp(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: Pressed");
         }
 
-        private void onButtonAr(ControlBase control, EventArgs args)
+        private void OnButtonAr(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: Released");
         }
 
-        private void onToggle(ControlBase control, EventArgs args)
+        private void OnToggle(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: Toggled");
         }
 
-        private void onToggleOn(ControlBase control, EventArgs args)
+        private void OnToggleOn(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: ToggleOn");
         }
 
-        private void onToggleOff(ControlBase control, EventArgs args)
+        private void OnToggleOff(ControlBase control, EventArgs args)
         {
             UnitPrint("Button: ToggledOff");
         }

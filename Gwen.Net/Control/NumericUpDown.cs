@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
 
@@ -9,10 +10,10 @@ namespace Gwen.Net.Control
     /// </summary>
     public class NumericUpDown : TextBoxNumeric
     {
-        private readonly UpDownButton_Down m_Down;
+        private readonly UpDownButtonDownKind downButton;
 
-        private readonly Splitter m_Splitter;
-        private readonly UpDownButton_Up m_Up;
+        private readonly Splitter splitter;
+        private readonly UpDownButtonUpKind upButton;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="NumericUpDown" /> class.
@@ -21,23 +22,23 @@ namespace Gwen.Net.Control
         public NumericUpDown(ControlBase parent)
             : base(parent)
         {
-            m_Splitter = new Splitter(this);
-            m_Splitter.Dock = Dock.Right;
+            splitter = new Splitter(this);
+            splitter.Dock = Dock.Right;
 
-            m_Up = new UpDownButton_Up(m_Splitter);
-            m_Up.Clicked += OnButtonUp;
-            m_Up.IsTabable = false;
-            m_Splitter.SetPanel(panelIndex: 0, m_Up);
+            upButton = new UpDownButtonUpKind(splitter);
+            upButton.Clicked += OnButtonUp;
+            upButton.IsTabable = false;
+            splitter.SetPanel(panelIndex: 0, upButton);
 
-            m_Down = new UpDownButton_Down(m_Splitter);
-            m_Down.Clicked += OnButtonDown;
-            m_Down.IsTabable = false;
-            m_Down.Padding = new Padding(left: 0, top: 1, right: 1, bottom: 0);
-            m_Splitter.SetPanel(panelIndex: 1, m_Down);
+            downButton = new UpDownButtonDownKind(splitter);
+            downButton.Clicked += OnButtonDown;
+            downButton.IsTabable = false;
+            downButton.Padding = new Padding(left: 0, top: 1, right: 1, bottom: 0);
+            splitter.SetPanel(panelIndex: 1, downButton);
 
             Max = 100f;
             Min = 0f;
-            m_Value = 0f;
+            value = 0f;
             Step = 1f;
 
             Text = "0";
@@ -53,7 +54,23 @@ namespace Gwen.Net.Control
         /// </summary>
         public float Max { get; set; }
 
-        public float Step { get; set; }
+        private float step;
+        
+        public float Step
+        {
+            get => step;
+            set
+            {
+                var decimalPlaces = 0;
+                while (Math.Abs(value - Math.Round(value, decimalPlaces)) > 0.00001f)
+                {
+                    decimalPlaces++;
+                }
+                
+                DecimalPlaces = decimalPlaces;
+                step = value;
+            } 
+        }
 
         /// <summary>
         ///     Numeric value of the control.
@@ -73,7 +90,7 @@ namespace Gwen.Net.Control
                     value = Max;
                 }
 
-                if (value == m_Value)
+                if (value == this.value)
                 {
                     return;
                 }
@@ -125,22 +142,24 @@ namespace Gwen.Net.Control
         ///     Handler for the button up event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnButtonUp(ControlBase control, EventArgs args)
         {
-            Value = m_Value + Step;
+            Value = value + Step;
         }
 
         /// <summary>
         ///     Handler for the button down event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnButtonDown(ControlBase control, ClickedEventArgs args)
         {
-            Value = m_Value - Step;
+            Value = value - Step;
         }
 
         /// <summary>
-        ///     Determines whether the text can be assighed to the control.
+        ///     Determines whether the text can be assigned to the control.
         /// </summary>
         /// <param name="str">Text to evaluate.</param>
         /// <returns>True if the text is allowed.</returns>
@@ -179,24 +198,24 @@ namespace Gwen.Net.Control
             }
         }
 
-        public override void SetValue(float value, bool doEvents = true)
+        public override void SetValue(float newValue, bool doEvents = true)
         {
-            if (value < Min)
+            if (newValue < Min)
             {
-                value = Min;
+                newValue = Min;
             }
 
-            if (value > Max)
+            if (newValue > Max)
             {
-                value = Max;
+                newValue = Max;
             }
 
-            if (value == m_Value)
+            if (newValue == value)
             {
                 return;
             }
 
-            base.SetValue(value, doEvents);
+            base.SetValue(newValue, doEvents);
         }
     }
 }

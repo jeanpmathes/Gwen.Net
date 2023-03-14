@@ -7,7 +7,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class StatusBar : ControlBase
     {
-        private readonly Label m_Label;
+        private readonly Label label;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="StatusBar" /> class.
@@ -22,22 +22,22 @@ namespace Gwen.Net.Control
             HorizontalAlignment = HorizontalAlignment.Stretch;
             VerticalAlignment = VerticalAlignment.Bottom;
 
-            m_Label = new Label(this);
-            m_Label.AutoSizeToContents = false;
-            m_Label.Alignment = Alignment.Left | Alignment.CenterV;
-            m_Label.Dock = Dock.Fill;
+            label = new Label(this);
+            label.AutoSizeToContents = false;
+            label.Alignment = Alignment.Left | Alignment.CenterV;
+            label.Dock = Dock.Fill;
         }
 
         public string Text
         {
-            get => m_Label.Text;
-            set => m_Label.Text = value;
+            get => label.Text;
+            set => label.Text = value;
         }
 
         public Color TextColor
         {
-            get => m_Label.TextColor;
-            set => m_Label.TextColor = value;
+            get => label.TextColor;
+            set => label.TextColor = value;
         }
 
         protected override void AdaptToScaleChange()
@@ -72,10 +72,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawStatusBar(this);
+            currentSkin.DrawStatusBar(this);
         }
     }
 }

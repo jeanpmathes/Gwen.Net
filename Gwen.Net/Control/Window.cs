@@ -9,8 +9,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Window : WindowBase
     {
-        private readonly WindowTitleBar m_TitleBar;
-        private Modal m_Modal;
+        private readonly WindowTitleBar titleBar;
+        private Modal modal;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Window" /> class.
@@ -19,17 +19,17 @@ namespace Gwen.Net.Control
         public Window(ControlBase parent)
             : base(parent)
         {
-            m_TitleBar = new WindowTitleBar(this);
-            m_TitleBar.Height = BaseUnit + 9;
-            m_TitleBar.Title.TextColor = Skin.Colors.Window.TitleInactive;
-            m_TitleBar.CloseButton.Clicked += CloseButtonPressed;
-            m_TitleBar.SendToBack();
-            m_TitleBar.Dragged += OnDragged;
+            titleBar = new WindowTitleBar(this);
+            titleBar.Height = BaseUnit + 9;
+            titleBar.Title.TextColor = Skin.colors.windowColors.titleInactive;
+            titleBar.CloseButton.Clicked += CloseButtonPressed;
+            titleBar.SendToBack();
+            titleBar.Dragged += OnDragged;
 
-            dragBar = m_TitleBar;
+            dragBar = titleBar;
 
-            m_InnerPanel = new InnerContentControl(this);
-            m_InnerPanel.SendToBack();
+            innerPanel = new InnerContentControl(this);
+            innerPanel.SendToBack();
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public string Title
         {
-            get => m_TitleBar.Title.Text;
-            set => m_TitleBar.Title.Text = value;
+            get => titleBar.Title.Text;
+            set => titleBar.Title.Text = value;
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool IsClosable
         {
-            get => !m_TitleBar.CloseButton.IsCollapsed;
-            set => m_TitleBar.CloseButton.IsCollapsed = !value;
+            get => !titleBar.CloseButton.IsCollapsed;
+            set => titleBar.CloseButton.IsCollapsed = !value;
         }
 
         /// <summary>
@@ -73,21 +73,24 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool Modal
         {
-            get => m_Modal != null;
-            set => MakeModal();
+            get => modal != null;
+            set
+            {
+                if (value) MakeModal();
+            }
         }
 
         protected override void AdaptToScaleChange()
         {
-            m_TitleBar.Height = BaseUnit + 9;
+            titleBar.Height = BaseUnit + 9;
         }
 
         public override void Close()
         {
-            if (m_Modal != null)
+            if (modal != null)
             {
-                m_Modal.DelayedDelete();
-                m_Modal = null;
+                modal.DelayedDelete();
+                modal = null;
             }
 
             base.Close();
@@ -105,91 +108,91 @@ namespace Gwen.Net.Control
         /// <param name="backgroundColor">Determines background color.</param>
         public void MakeModal(bool dim = false, Color? backgroundColor = null)
         {
-            if (m_Modal != null)
+            if (modal != null)
             {
                 return;
             }
 
-            m_Modal = new Modal(GetCanvas());
-            Parent = m_Modal;
+            modal = new Modal(GetCanvas());
+            Parent = modal;
 
             if (dim)
             {
-                m_Modal.ShouldDrawBackground = true;
+                modal.ShouldDrawBackground = true;
             }
             else
             {
-                m_Modal.ShouldDrawBackground = false;
+                modal.ShouldDrawBackground = false;
             }
 
             if (backgroundColor != null)
             {
-                m_Modal.ShouldDrawBackground = true;
-                m_Modal.BackgroundColor = backgroundColor;
+                modal.ShouldDrawBackground = true;
+                modal.BackgroundColor = backgroundColor;
             }
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             bool hasFocus = IsOnTop;
 
             if (hasFocus)
             {
-                m_TitleBar.Title.TextColor = Skin.Colors.Window.TitleActive;
+                titleBar.Title.TextColor = Skin.colors.windowColors.titleActive;
             }
             else
             {
-                m_TitleBar.Title.TextColor = Skin.Colors.Window.TitleInactive;
+                titleBar.Title.TextColor = Skin.colors.windowColors.titleInactive;
             }
 
-            skin.DrawWindow(this, m_TitleBar.ActualHeight, hasFocus);
+            currentSkin.DrawWindow(this, titleBar.ActualHeight, hasFocus);
         }
 
         /// <summary>
         ///     Renders under the actual control (shadows etc).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderUnder(SkinBase currentSkin)
         {
-            base.RenderUnder(skin);
-            skin.DrawShadow(this);
+            base.RenderUnder(currentSkin);
+            currentSkin.DrawShadow(this);
         }
 
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin) {}
 
         protected override Size Measure(Size availableSize)
         {
-            Size titleBarSize = m_TitleBar.DoMeasure(new Size(availableSize.Width, availableSize.Height));
+            Size titleBarSize = titleBar.DoMeasure(new Size(availableSize.Width, availableSize.Height));
 
-            if (m_InnerPanel != null)
+            if (innerPanel != null)
             {
-                m_InnerPanel.DoMeasure(new Size(availableSize.Width, availableSize.Height - titleBarSize.Height));
+                innerPanel.DoMeasure(new Size(availableSize.Width, availableSize.Height - titleBarSize.Height));
             }
 
             return base.Measure(
-                new Size(m_InnerPanel.MeasuredSize.Width, m_InnerPanel.MeasuredSize.Height + titleBarSize.Height));
+                new Size(innerPanel.MeasuredSize.Width, innerPanel.MeasuredSize.Height + titleBarSize.Height));
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_TitleBar.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, m_TitleBar.MeasuredSize.Height));
+            titleBar.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, titleBar.MeasuredSize.Height));
 
-            if (m_InnerPanel != null)
+            if (innerPanel != null)
             {
-                m_InnerPanel.DoArrange(
+                innerPanel.DoArrange(
                     new Rectangle(
                         x: 0,
-                        m_TitleBar.MeasuredSize.Height,
+                        titleBar.MeasuredSize.Height,
                         finalSize.Width,
-                        finalSize.Height - m_TitleBar.MeasuredSize.Height));
+                        finalSize.Height - titleBar.MeasuredSize.Height));
             }
 
             return base.Arrange(finalSize);
@@ -202,10 +205,10 @@ namespace Gwen.Net.Control
 
         public override void Dispose()
         {
-            if (m_Modal != null)
+            if (modal != null)
             {
-                m_Modal.DelayedDelete();
-                m_Modal = null;
+                modal.DelayedDelete();
+                modal = null;
             }
             else
             {

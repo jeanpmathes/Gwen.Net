@@ -9,7 +9,7 @@ namespace Gwen.Net.Control.Property
     /// </summary>
     public class ColorProperty : Text
     {
-        protected readonly ColorButton m_Button;
+        protected readonly ColorButton button;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorProperty" /> class.
@@ -17,11 +17,11 @@ namespace Gwen.Net.Control.Property
         /// <param name="parent">Parent control.</param>
         public ColorProperty(ControlBase parent) : base(parent)
         {
-            m_Button = new ColorButton(m_TextBox);
-            m_Button.Dock = Dock.Right;
-            m_Button.Width = 20;
-            m_Button.Margin = new Margin(left: 1, top: 1, right: 1, bottom: 2);
-            m_Button.Clicked += OnButtonPressed;
+            button = new ColorButton(textBox);
+            button.Dock = Dock.Right;
+            button.Width = 20;
+            button.Margin = new Margin(left: 1, top: 1, right: 1, bottom: 2);
+            button.Clicked += OnButtonPressed;
         }
 
         /// <summary>
@@ -29,19 +29,20 @@ namespace Gwen.Net.Control.Property
         /// </summary>
         public override string Value
         {
-            get => m_TextBox.Text;
+            get => textBox.Text;
             set => base.Value = value;
         }
 
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public override bool IsEditing => m_TextBox == InputHandler.KeyboardFocus;
+        public override bool IsEditing => textBox == InputHandler.KeyboardFocus;
 
         /// <summary>
         ///     Color-select button press handler.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnButtonPressed(ControlBase control, EventArgs args)
         {
             Canvas canvas = GetCanvas();
@@ -57,24 +58,25 @@ namespace Gwen.Net.Control.Property
             picker.SetColor(GetColorFromText(), onlyHue: false, reset: true);
             picker.ColorChanged += OnColorChanged;
 
-            Point p = m_Button.LocalPosToCanvas(Point.Zero);
+            Point p = button.LocalPosToCanvas(Point.Zero);
 
             popup.DoMeasure(canvas.ActualSize);
 
             popup.DoArrange(
                 new Rectangle(
-                    p.X + m_Button.ActualWidth - popup.MeasuredSize.Width,
+                    p.X + button.ActualWidth - popup.MeasuredSize.Width,
                     p.Y + ActualHeight,
                     popup.MeasuredSize.Width,
                     popup.MeasuredSize.Height));
 
-            popup.Open(new Point(p.X + m_Button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight));
+            popup.Open(new Point(p.X + button.ActualWidth - popup.MeasuredSize.Width, p.Y + ActualHeight));
         }
 
         /// <summary>
         ///     Color changed handler.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnColorChanged(ControlBase control, EventArgs args)
         {
             var picker = control as HSVColorPicker;
@@ -89,17 +91,17 @@ namespace Gwen.Net.Control.Property
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
         public override void SetValue(string value, bool fireEvents = false)
         {
-            m_TextBox.SetText(value, fireEvents);
+            textBox.SetText(value, fireEvents);
         }
 
         private void SetTextFromColor(Color color)
         {
-            m_TextBox.Text = string.Format("{0} {1} {2}", color.R, color.G, color.B);
+            textBox.Text = $"{color.R} {color.G} {color.B}";
         }
 
         private Color GetColorFromText()
         {
-            string[] split = m_TextBox.Text.Split(separator: ' ');
+            string[] split = textBox.Text.Split(separator: ' ');
 
             byte red = 0;
             byte green = 0;
@@ -127,7 +129,7 @@ namespace Gwen.Net.Control.Property
         protected override void DoChanged()
         {
             base.DoChanged();
-            m_Button.Color = GetColorFromText();
+            button.Color = GetColorFromText();
         }
     }
 }

@@ -65,43 +65,43 @@ namespace Gwen.Net.Tests.Components
                 gb1.VerticalAlignment = VerticalAlignment.Top;
                 gb1.Padding = Padding.Five;
                 gb1.Text = "Yo dawg,";
-                ControlBase gb1l = new DockLayout(gb1);
+                ControlBase gb1L = new DockLayout(gb1);
 
-                GroupBox gb2 = new(gb1l);
+                GroupBox gb2 = new(gb1L);
                 gb2.Text = "I herd";
                 gb2.Dock = Dock.Left;
                 gb2.Margin = Margin.Three;
                 gb2.Padding = Padding.Five;
 
-                GroupBox gb3 = new(gb1l);
+                GroupBox gb3 = new(gb1L);
                 gb3.Text = "You like";
                 gb3.Dock = Dock.Fill;
-                ControlBase gb3l = new DockLayout(gb3);
+                ControlBase gb3L = new DockLayout(gb3);
 
-                GroupBox gb4 = new(gb3l);
+                GroupBox gb4 = new(gb3L);
                 gb4.Text = "Group Boxes,";
                 gb4.Dock = Dock.Top;
 
-                GroupBox gb5 = new(gb3l);
+                GroupBox gb5 = new(gb3L);
                 gb5.Text = "So I put Group";
                 gb5.Dock = Dock.Fill;
-                ControlBase gb5l = new DockLayout(gb5);
+                ControlBase gb5L = new DockLayout(gb5);
 
-                GroupBox gb6 = new(gb5l);
+                GroupBox gb6 = new(gb5L);
                 gb6.Text = "Boxes in yo";
                 gb6.Dock = Dock.Left;
 
-                GroupBox gb7 = new(gb5l);
+                GroupBox gb7 = new(gb5L);
                 gb7.Text = "Boxes so you can";
                 gb7.Dock = Dock.Top;
-                ControlBase gb7l = new DockLayout(gb7);
+                ControlBase gb7L = new DockLayout(gb7);
 
-                GroupBox gb8 = new(gb7l);
+                GroupBox gb8 = new(gb7L);
                 gb8.Text = "Group Box while";
                 gb8.Dock = Dock.Top;
                 gb8.Margin = Margin.Five;
 
-                GroupBox gb9 = new(gb7l);
+                GroupBox gb9 = new(gb7L);
                 gb9.Text = "u Group Box";
                 gb9.Dock = Dock.Bottom;
                 gb9.Padding = Padding.Five;

@@ -17,7 +17,7 @@ namespace Gwen.Net.Control
     public class ResizableControl : ContentControl
     {
         private const int ResizerThickness = 6;
-        private readonly Resizer[] m_Resizer;
+        private readonly Resizer[] resizerGroup;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ResizableControl" /> class.
@@ -26,48 +26,48 @@ namespace Gwen.Net.Control
         public ResizableControl(ControlBase parent)
             : base(parent)
         {
-            m_Resizer = new Resizer[8];
+            this.resizerGroup = new Resizer[8];
             MinimumSize = new Size(width: 5, height: 5);
             ClampMovement = false;
 
             Resizer resizer;
 
-            resizer = m_Resizer[(int) ResizerPos.Bottom] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.Bottom] = new Resizer(this);
             resizer.ResizeDir = Dock.Bottom;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.LeftBottom] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.LeftBottom] = new Resizer(this);
             resizer.ResizeDir = Dock.Bottom | Dock.Left;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.RightBottom] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.RightBottom] = new Resizer(this);
             resizer.ResizeDir = Dock.Bottom | Dock.Right;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.Top] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.Top] = new Resizer(this);
             resizer.ResizeDir = Dock.Top;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.LeftTop] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.LeftTop] = new Resizer(this);
             resizer.ResizeDir = Dock.Left | Dock.Top;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.RightTop] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.RightTop] = new Resizer(this);
             resizer.ResizeDir = Dock.Right | Dock.Top;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.Left] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.Left] = new Resizer(this);
             resizer.ResizeDir = Dock.Left;
             resizer.Resized += OnResized;
             resizer.Target = this;
 
-            resizer = m_Resizer[(int) ResizerPos.Right] = new Resizer(this);
+            resizer = this.resizerGroup[(int) ResizerPos.Right] = new Resizer(this);
             resizer.ResizeDir = Dock.Right;
             resizer.Resized += OnResized;
             resizer.Target = this;
@@ -135,6 +135,7 @@ namespace Gwen.Net.Control
         ///     Handler for the resized event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnResized(ControlBase control, EventArgs args)
         {
             if (Resized != null)
@@ -145,7 +146,7 @@ namespace Gwen.Net.Control
 
         protected Resizer GetResizer(ResizerPos resizerPos)
         {
-            return m_Resizer[(int) resizerPos];
+            return resizerGroup[(int) resizerPos];
         }
 
         /// <summary>
@@ -183,13 +184,13 @@ namespace Gwen.Net.Control
             {
                 if (d[i])
                 {
-                    m_Resizer[i].MouseInputEnabled = false;
-                    m_Resizer[i].Collapse(collapsed: true, measure: false);
+                    resizerGroup[i].MouseInputEnabled = false;
+                    resizerGroup[i].Collapse(collapsed: true, measure: false);
                 }
                 else
                 {
-                    m_Resizer[i].MouseInputEnabled = true;
-                    m_Resizer[i].Collapse(collapsed: false, measure: false);
+                    resizerGroup[i].MouseInputEnabled = true;
+                    resizerGroup[i].Collapse(collapsed: false, measure: false);
                 }
             }
 
@@ -248,77 +249,77 @@ namespace Gwen.Net.Control
         /// <returns>True if bounds changed.</returns>
         public override bool SetSize(int width, int height)
         {
-            bool Changed = base.SetSize(width, height);
+            bool changed = base.SetSize(width, height);
 
-            if (Changed)
+            if (changed)
             {
                 OnResized(this, EventArgs.Empty);
             }
 
-            return Changed;
+            return changed;
         }
 
         protected override Size Measure(Size availableSize)
         {
-            m_Resizer[(int) ResizerPos.Left]
+            resizerGroup[(int) ResizerPos.Left]
                 .DoMeasure(new Size(ResizerThickness, availableSize.Height - (2 * ResizerThickness)));
 
-            m_Resizer[(int) ResizerPos.LeftTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
+            resizerGroup[(int) ResizerPos.LeftTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Top]
+            resizerGroup[(int) ResizerPos.Top]
                 .DoMeasure(new Size(availableSize.Width - (2 * ResizerThickness), ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.RightTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
+            resizerGroup[(int) ResizerPos.RightTop].DoMeasure(new Size(ResizerThickness, ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Right]
+            resizerGroup[(int) ResizerPos.Right]
                 .DoMeasure(new Size(ResizerThickness, availableSize.Height - (2 * ResizerThickness)));
 
-            m_Resizer[(int) ResizerPos.RightBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
+            resizerGroup[(int) ResizerPos.RightBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Bottom]
+            resizerGroup[(int) ResizerPos.Bottom]
                 .DoMeasure(new Size(availableSize.Width - (2 * ResizerThickness), ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.LeftBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
+            resizerGroup[(int) ResizerPos.LeftBottom].DoMeasure(new Size(ResizerThickness, ResizerThickness));
 
             return availableSize;
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_Resizer[(int) ResizerPos.Left].DoArrange(
+            resizerGroup[(int) ResizerPos.Left].DoArrange(
                 new Rectangle(x: 0, ResizerThickness, ResizerThickness, finalSize.Height - (2 * ResizerThickness)));
 
-            m_Resizer[(int) ResizerPos.LeftTop]
+            resizerGroup[(int) ResizerPos.LeftTop]
                 .DoArrange(new Rectangle(x: 0, y: 0, ResizerThickness, ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Top].DoArrange(
+            resizerGroup[(int) ResizerPos.Top].DoArrange(
                 new Rectangle(ResizerThickness, y: 0, finalSize.Width - (2 * ResizerThickness), ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.RightTop].DoArrange(
+            resizerGroup[(int) ResizerPos.RightTop].DoArrange(
                 new Rectangle(finalSize.Width - ResizerThickness, y: 0, ResizerThickness, ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Right].DoArrange(
+            resizerGroup[(int) ResizerPos.Right].DoArrange(
                 new Rectangle(
                     finalSize.Width - ResizerThickness,
                     ResizerThickness,
                     ResizerThickness,
                     finalSize.Height - (2 * ResizerThickness)));
 
-            m_Resizer[(int) ResizerPos.RightBottom].DoArrange(
+            resizerGroup[(int) ResizerPos.RightBottom].DoArrange(
                 new Rectangle(
                     finalSize.Width - ResizerThickness,
                     finalSize.Height - ResizerThickness,
                     ResizerThickness,
                     ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.Bottom].DoArrange(
+            resizerGroup[(int) ResizerPos.Bottom].DoArrange(
                 new Rectangle(
                     ResizerThickness,
                     finalSize.Height - ResizerThickness,
                     finalSize.Width - (2 * ResizerThickness),
                     ResizerThickness));
 
-            m_Resizer[(int) ResizerPos.LeftBottom].DoArrange(
+            resizerGroup[(int) ResizerPos.LeftBottom].DoArrange(
                 new Rectangle(x: 0, finalSize.Height - ResizerThickness, ResizerThickness, ResizerThickness));
 
             return finalSize;

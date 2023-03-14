@@ -4,9 +4,9 @@ namespace Gwen.Net.Control
 {
     public class ItemSelectedEventArgs : EventArgs
     {
-        internal ItemSelectedEventArgs(ControlBase selecteditem)
+        internal ItemSelectedEventArgs(ControlBase selectedItem)
         {
-            SelectedItem = selecteditem;
+            SelectedItem = selectedItem;
         }
 
         public ControlBase SelectedItem { get; }

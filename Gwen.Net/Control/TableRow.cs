@@ -97,7 +97,7 @@ namespace Gwen.Net.Control
                         right: 2,
                         bottom: 0); // to separate them slightly
 
-                    columns[i].TextColor = Skin.Colors.ListBox.Text_Normal;
+                    columns[i].TextColor = Skin.colors.listBoxColors.textNormal;
                 }
                 else if (null != columns[i])
                 {
@@ -106,7 +106,7 @@ namespace Gwen.Net.Control
                 }
             }
 
-            this.columnCount = newColumnCount;
+            columnCount = newColumnCount;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
                 columns[columnIndex].Margin =
                     new Margin(left: 0, top: 0, right: 2, bottom: 0); // to separate them slightly
 
-                columns[columnIndex].TextColor = Skin.Colors.ListBox.Text_Normal;
+                columns[columnIndex].TextColor = Skin.colors.listBoxColors.textNormal;
             }
 
             if (columnIndex >= columnCount)

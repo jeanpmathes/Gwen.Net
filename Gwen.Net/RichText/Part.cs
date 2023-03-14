@@ -2,6 +2,6 @@
 {
     public abstract class Part
     {
-        public abstract string[] Split(ref Font font);
+        public abstract string[] Split(ref Font splitFont);
     }
 }

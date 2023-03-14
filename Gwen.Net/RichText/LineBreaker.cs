@@ -15,6 +15,6 @@ namespace Gwen.Net.RichText
 
         public Font DefaultFont { get; }
 
-        public abstract List<TextBlock> LineBreak(Paragraph paragraph, int width);
+        public abstract List<TextBlock> LineBreak(Paragraph currentParagraph, int width);
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Gwen.Net.Anim;
 using Gwen.Net.Components;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.DragDrop;
@@ -148,10 +147,10 @@ namespace Gwen.Net.Control
         /// </summary>
         public Dock Dock
         {
-            get => (Dock) GetInternalFlag(InternalFlags.Dock_Mask);
+            get => (Dock) GetInternalFlag(InternalFlags.DockMask);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.Dock_Mask, (InternalFlags) value))
+                if (CheckAndChangeInternalFlag(InternalFlags.DockMask, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -314,10 +313,10 @@ namespace Gwen.Net.Control
         /// </summary>
         public VerticalAlignment VerticalAlignment
         {
-            get => (VerticalAlignment) GetInternalFlag(InternalFlags.AlignV_Mask);
+            get => (VerticalAlignment) GetInternalFlag(InternalFlags.AlignMaskV);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.AlignV_Mask, (InternalFlags) value))
+                if (CheckAndChangeInternalFlag(InternalFlags.AlignMaskV, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -329,10 +328,10 @@ namespace Gwen.Net.Control
         /// </summary>
         public HorizontalAlignment HorizontalAlignment
         {
-            get => (HorizontalAlignment) GetInternalFlag(InternalFlags.AlignH_Mask);
+            get => (HorizontalAlignment) GetInternalFlag(InternalFlags.AlignMaskH);
             set
             {
-                if (CheckAndChangeInternalFlag(InternalFlags.AlignH_Mask, (InternalFlags) value))
+                if (CheckAndChangeInternalFlag(InternalFlags.AlignMaskH, (InternalFlags) value))
                 {
                     Invalidate();
                 }
@@ -863,7 +862,6 @@ namespace Gwen.Net.Control
 
             DragAndDrop.ControlDeleted(this);
             Net.ToolTip.ControlDeleted(this);
-            Animation.Cancel(this);
 
             foreach (ControlBase child in children)
             {
@@ -884,7 +882,7 @@ namespace Gwen.Net.Control
 #if DEBUG
         ~ControlBase()
         {
-            throw new InvalidOperationException(String.Format("IDisposable object {{{0}}} finalized.", this));
+            throw new InvalidOperationException($"IDisposable object {{{this}}} finalized.");
         }
 #endif
 
@@ -901,19 +899,19 @@ namespace Gwen.Net.Control
             var type = GetType().ToString();
             string name = string.IsNullOrWhiteSpace(Name) ? "" : " Name: " + Name;
 
-            if (this is MenuItem)
+            if (this is MenuItem menuItem)
             {
-                return type + name + " [MenuItem: " + (this as MenuItem).Text + "]";
+                return type + name + " [MenuItem: " + menuItem.Text + "]";
             }
 
-            if (this is Label)
+            if (this is Label label)
             {
-                return type + name + " [Label: " + (this as Label).Text + "]";
+                return type + name + " [Label: " + label.Text + "]";
             }
 
-            if (this is Text)
+            if (this is Text text)
             {
-                return type + name + " [Text: " + (this as Text).String + "]";
+                return type + name + " [Text: " + text.String + "]";
             }
 
             return type + name;
@@ -955,6 +953,7 @@ namespace Gwen.Net.Control
         ///     Default accelerator handler.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         private void DefaultAcceleratorHandler(ControlBase control, EventArgs args)
         {
             OnAccelerator();
@@ -1010,7 +1009,7 @@ namespace Gwen.Net.Control
                 Parent = null,
                 skin = Skin,
                 Text = text,
-                TextColorOverride = Skin.Colors.TooltipText,
+                TextColorOverride = Skin.colors.tooltipText,
                 Padding = new Padding(left: 5, top: 3, right: 5, bottom: 3)
             };
             // ToolTip doesn't have a parent
@@ -1240,24 +1239,24 @@ namespace Gwen.Net.Control
         {
             if (RestrictToParent && Parent != null)
             {
-                ControlBase parent = Parent;
+                ControlBase localParent = Parent;
 
                 if (x < Padding.Left)
                 {
                     x = Padding.Left;
                 }
-                else if (x + ActualWidth > parent.ActualWidth - Padding.Right)
+                else if (x + ActualWidth > localParent.ActualWidth - Padding.Right)
                 {
-                    x = parent.ActualWidth - ActualWidth - Padding.Right;
+                    x = localParent.ActualWidth - ActualWidth - Padding.Right;
                 }
 
                 if (y < Padding.Top)
                 {
                     y = Padding.Top;
                 }
-                else if (y + ActualHeight > parent.ActualHeight - Padding.Bottom)
+                else if (y + ActualHeight > localParent.ActualHeight - Padding.Bottom)
                 {
-                    y = parent.ActualHeight - ActualHeight - Padding.Bottom;
+                    y = localParent.ActualHeight - ActualHeight - Padding.Bottom;
                 }
             }
 
@@ -1304,12 +1303,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sets the control bounds.
         /// </summary>
-        /// <param name="bounds">New bounds.</param>
+        /// <param name="newBounds">New bounds.</param>
         /// <returns>True if bounds changed.</returns>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual bool SetBounds(Rectangle bounds)
+        public virtual bool SetBounds(Rectangle newBounds)
         {
-            return SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+            return SetBounds(newBounds.X, newBounds.Y, newBounds.Width, newBounds.Height);
         }
 
         /// <summary>
@@ -1378,17 +1377,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected virtual void Render(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected virtual void Render(SkinBase currentSkin) {}
 
         /// <summary>
         ///     Renders the control to a cache using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
+        /// <param name="currentSkin">Skin to use.</param>
         /// <param name="master">Root parent.</param>
-        protected virtual void DoCacheRender(SkinBase skin, ControlBase master)
+        protected virtual void DoCacheRender(SkinBase currentSkin, ControlBase master)
         {
-            RendererBase render = skin.Renderer;
+            RendererBase render = currentSkin.Renderer;
             ICacheToTexture cache = render.CTT;
 
             if (cache == null)
@@ -1424,7 +1423,7 @@ namespace Gwen.Net.Control
                 //render.ClipRegion = Bounds;
                 //var old = render.RenderOffset;
                 //render.RenderOffset = new Point(Bounds.X, Bounds.Y);
-                Render(skin);
+                Render(currentSkin);
                 //render.RenderOffset = old;
                 //render.ClipRegion = old;
 
@@ -1438,7 +1437,7 @@ namespace Gwen.Net.Control
                             continue;
                         }
 
-                        child.DoCacheRender(skin, master);
+                        child.DoCacheRender(currentSkin, master);
                     }
                 }
 
@@ -1462,49 +1461,49 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Rendering logic implementation.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        internal virtual void DoRender(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        internal virtual void DoRender(SkinBase currentSkin)
         {
             // If this control has a different skin,
             // then so does its children.
-            if (this.skin != null)
+            if (skin != null)
             {
-                skin = this.skin;
+                currentSkin = skin;
             }
 
             // Do think
             Think();
 
-            RendererBase render = skin.Renderer;
+            RendererBase render = currentSkin.Renderer;
 
             if (render.CTT != null && ShouldCacheToTexture)
             {
-                DoCacheRender(skin, this);
+                DoCacheRender(currentSkin, this);
 
                 return;
             }
 
-            RenderRecursive(skin, Bounds);
+            RenderRecursive(currentSkin, Bounds);
 
             if (DrawDebugOutlines)
             {
-                skin.DrawDebugOutlines(this);
+                currentSkin.DrawDebugOutlines(this);
             }
         }
 
         /// <summary>
         ///     Recursive rendering logic.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
+        /// <param name="currentSkin">Skin to use.</param>
         /// <param name="clipRect">Clipping rectangle.</param>
-        protected virtual void RenderRecursive(SkinBase skin, Rectangle clipRect)
+        protected virtual void RenderRecursive(SkinBase currentSkin, Rectangle clipRect)
         {
-            RendererBase render = skin.Renderer;
+            RendererBase render = currentSkin.Renderer;
             Point oldRenderOffset = render.RenderOffset;
 
             render.AddRenderOffset(clipRect);
 
-            RenderUnder(skin);
+            RenderUnder(currentSkin);
 
             Rectangle oldRegion = render.ClipRegion;
 
@@ -1524,7 +1523,7 @@ namespace Gwen.Net.Control
             }
 
             //Render myself first
-            Render(skin);
+            Render(currentSkin);
 
             if (children.Count > 0)
             {
@@ -1536,15 +1535,15 @@ namespace Gwen.Net.Control
                         continue;
                     }
 
-                    child.DoRender(skin);
+                    child.DoRender(currentSkin);
                 }
             }
 
             render.ClipRegion = oldRegion;
             render.StartClip();
-            RenderOver(skin);
+            RenderOver(currentSkin);
 
-            RenderFocus(skin);
+            RenderFocus(currentSkin);
 
             render.RenderOffset = oldRenderOffset;
         }
@@ -1552,25 +1551,25 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sets the control's skin.
         /// </summary>
-        /// <param name="skin">New skin.</param>
-        /// <param name="doChildren">Deterines whether to change children skin.</param>
-        public virtual void SetSkin(SkinBase skin, bool doChildren = false)
+        /// <param name="currentSkin">New skin.</param>
+        /// <param name="doChildren">Determines whether to change children skin.</param>
+        public virtual void SetSkin(SkinBase currentSkin, bool doChildren = false)
         {
-            if (this.skin == skin)
+            if (skin == currentSkin)
             {
                 return;
             }
 
-            this.skin = skin;
-            //Invalidate();
+            skin = currentSkin;
+
             Redraw();
-            OnSkinChanged(skin);
+            OnSkinChanged(currentSkin);
 
             if (doChildren)
             {
                 foreach (ControlBase child in children)
                 {
-                    child.SetSkin(skin, doChildren: true);
+                    child.SetSkin(currentSkin, doChildren: true);
                 }
             }
         }
@@ -1630,7 +1629,7 @@ namespace Gwen.Net.Control
         {
             if (down && Clicked != null)
             {
-                Clicked(this, new ClickedEventArgs(x, y, down));
+                Clicked(this, new ClickedEventArgs(x, y, true));
             }
         }
 
@@ -1652,7 +1651,7 @@ namespace Gwen.Net.Control
         {
             if (down && RightClicked != null)
             {
-                RightClicked(this, new ClickedEventArgs(x, y, down));
+                RightClicked(this, new ClickedEventArgs(x, y, true));
             }
         }
 
@@ -2067,7 +2066,7 @@ namespace Gwen.Net.Control
 
                 Size childSize = child.MeasuredSize;
 
-                Rectangle bounds =
+                Rectangle localBounds =
                     new(
                         childrenLeft,
                         childrenTop,
@@ -2078,29 +2077,29 @@ namespace Gwen.Net.Control
                 {
                     case Dock.Left:
                         childrenLeft += childSize.Width;
-                        bounds.Width = childSize.Width;
+                        localBounds.Width = childSize.Width;
 
                         break;
                     case Dock.Right:
                         childrenRight += childSize.Width;
-                        bounds.X = Math.Max(val1: 0, finalSize.Width - childrenRight);
-                        bounds.Width = childSize.Width;
+                        localBounds.X = Math.Max(val1: 0, finalSize.Width - childrenRight);
+                        localBounds.Width = childSize.Width;
 
                         break;
                     case Dock.Top:
                         childrenTop += childSize.Height;
-                        bounds.Height = childSize.Height;
+                        localBounds.Height = childSize.Height;
 
                         break;
                     case Dock.Bottom:
                         childrenBottom += childSize.Height;
-                        bounds.Y = Math.Max(val1: 0, finalSize.Height - childrenBottom);
-                        bounds.Height = childSize.Height;
+                        localBounds.Y = Math.Max(val1: 0, finalSize.Height - childrenBottom);
+                        localBounds.Height = childSize.Height;
 
                         break;
                 }
 
-                child.DoArrange(bounds);
+                child.DoArrange(localBounds);
             }
 
             foreach (ControlBase child in children)
@@ -2117,16 +2116,16 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                Rectangle bounds =
+                Rectangle localBounds =
                     new(
                         childrenLeft,
                         childrenTop,
                         Math.Max(val1: 0, finalSize.Width - (childrenLeft + childrenRight)),
                         Math.Max(val1: 0, finalSize.Height - (childrenTop + childrenBottom)));
 
-                InnerBounds = bounds;
+                InnerBounds = localBounds;
 
-                child.DoArrange(bounds);
+                child.DoArrange(localBounds);
             }
 
             foreach (ControlBase child in children)
@@ -2143,12 +2142,10 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                Size childSize = child.MeasuredSize;
-
-                Rectangle bounds =
+                Rectangle localBounds =
                     new(child.Left, child.Top, finalSize.Width - child.Left, finalSize.Height - child.Top);
 
-                child.DoArrange(bounds);
+                child.DoArrange(localBounds);
             }
 
             return finalSize;
@@ -2294,20 +2291,20 @@ namespace Gwen.Net.Control
 
             if (IsTabable)
             {
-                if (GetCanvas().FirstTab == null)
+                if (GetCanvas().firstTab == null)
                 {
-                    GetCanvas().FirstTab = this;
+                    GetCanvas().firstTab = this;
                 }
 
-                if (GetCanvas().NextTab == null)
+                if (GetCanvas().nextTab == null)
                 {
-                    GetCanvas().NextTab = this;
+                    GetCanvas().nextTab = this;
                 }
             }
 
             if (InputHandler.KeyboardFocus == this)
             {
-                GetCanvas().NextTab = null;
+                GetCanvas().nextTab = null;
             }
         }
 
@@ -2618,9 +2615,9 @@ namespace Gwen.Net.Control
                 return true;
             }
 
-            if (GetCanvas().NextTab != null)
+            if (GetCanvas().nextTab != null)
             {
-                GetCanvas().NextTab.Focus();
+                GetCanvas().nextTab.Focus();
                 Redraw();
             }
 
@@ -2741,24 +2738,28 @@ namespace Gwen.Net.Control
         ///     Handler for Paste event.
         /// </summary>
         /// <param name="from">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnPaste(ControlBase from, EventArgs args) {}
 
         /// <summary>
         ///     Handler for Copy event.
         /// </summary>
         /// <param name="from">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnCopy(ControlBase from, EventArgs args) {}
 
         /// <summary>
         ///     Handler for Cut event.
         /// </summary>
         /// <param name="from">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnCut(ControlBase from, EventArgs args) {}
 
         /// <summary>
         ///     Handler for Select All event.
         /// </summary>
         /// <param name="from">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnSelectAll(ControlBase from, EventArgs args) {}
 
         internal void InputCopy(ControlBase from)
@@ -2784,8 +2785,8 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected virtual void RenderFocus(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected virtual void RenderFocus(SkinBase currentSkin)
         {
             if (InputHandler.KeyboardFocus != this)
             {
@@ -2797,20 +2798,20 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            skin.DrawKeyboardHighlight(this, RenderBounds, offset: 3);
+            currentSkin.DrawKeyboardHighlight(this, RenderBounds, offset: 3);
         }
 
         /// <summary>
         ///     Renders under the actual control (shadows etc).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected virtual void RenderUnder(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected virtual void RenderUnder(SkinBase currentSkin) {}
 
         /// <summary>
         ///     Renders over the actual control (overlays).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected virtual void RenderOver(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected virtual void RenderOver(SkinBase currentSkin) {}
 
         /// <summary>
         ///     Called during rendering.
@@ -2842,57 +2843,33 @@ namespace Gwen.Net.Control
             return OnChar(chr);
         }
 
-#if false
-		public virtual void Anim_WidthIn(float length, float delay = 0.0f, float ease = 1.0f)
-		{
-			Animation.Add(this, new Anim.Size.Width(0, ActualWidth, length, false, delay, ease));
-			ActualWidth = 0;
-		}
-
-		public virtual void Anim_HeightIn(float length, float delay, float ease)
-		{
-			Animation.Add(this, new Anim.Size.Height(0, ActualHeight, length, false, delay, ease));
-			ActualHeight = 0;
-		}
-
-		public virtual void Anim_WidthOut(float length, bool hide, float delay, float ease)
-		{
-			Animation.Add(this, new Anim.Size.Width(ActualWidth, 0, length, hide, delay, ease));
-		}
-
-		public virtual void Anim_HeightOut(float length, bool hide, float delay, float ease)
-		{
-			Animation.Add(this, new Anim.Size.Height(ActualHeight, 0, length, hide, delay, ease));
-		}
-#endif
-
-        private InternalFlags m_InternalFlags;
+        private InternalFlags internalFlags;
 
         private bool IsSetInternalFlag(InternalFlags flag)
         {
-            return (m_InternalFlags & flag) != 0;
+            return (internalFlags & flag) != 0;
         }
 
         private InternalFlags GetInternalFlag(InternalFlags mask)
         {
-            return m_InternalFlags & mask;
+            return internalFlags & mask;
         }
 
         private void SetInternalFlag(InternalFlags flag, bool value)
         {
             if (value)
             {
-                m_InternalFlags |= flag;
+                internalFlags |= flag;
             }
             else
             {
-                m_InternalFlags &= ~flag;
+                internalFlags &= ~flag;
             }
         }
 
         private bool CheckAndChangeInternalFlag(InternalFlags flag, bool value)
         {
-            bool oldValue = (m_InternalFlags & flag) != 0;
+            bool oldValue = (internalFlags & flag) != 0;
 
             if (oldValue == value)
             {
@@ -2901,29 +2878,24 @@ namespace Gwen.Net.Control
 
             if (value)
             {
-                m_InternalFlags |= flag;
+                internalFlags |= flag;
             }
             else
             {
-                m_InternalFlags &= ~flag;
+                internalFlags &= ~flag;
             }
 
             return true;
         }
 
-        private void SetInternalFlag(InternalFlags mask, InternalFlags flag)
-        {
-            m_InternalFlags = (m_InternalFlags & ~mask) | flag;
-        }
-
         private bool CheckAndChangeInternalFlag(InternalFlags mask, InternalFlags flag)
         {
-            if ((m_InternalFlags & mask) == flag)
+            if ((internalFlags & mask) == flag)
             {
                 return false;
             }
 
-            m_InternalFlags = (m_InternalFlags & ~mask) | flag;
+            internalFlags = (internalFlags & ~mask) | flag;
 
             return true;
         }
@@ -2936,14 +2908,14 @@ namespace Gwen.Net.Control
             AlignHCenter = 1 << 1,
             AlignHRight = 1 << 2,
             AlignHStretch = 1 << 3,
-            AlignH_Mask = AlignHLeft | AlignHCenter | AlignHRight | AlignHStretch,
+            AlignMaskH = AlignHLeft | AlignHCenter | AlignHRight | AlignHStretch,
 
             // AlignV
             AlignVTop = 1 << 4,
             AlignVCenter = 1 << 5,
             AlignVBottom = 1 << 6,
             AlignVStretch = 1 << 7,
-            AlignV_Mask = AlignVTop | AlignVCenter | AlignVBottom | AlignVStretch,
+            AlignMaskV = AlignVTop | AlignVCenter | AlignVBottom | AlignVStretch,
 
             // Dock
             DockNone = 1 << 8,
@@ -2952,7 +2924,7 @@ namespace Gwen.Net.Control
             DockRight = 1 << 11,
             DockBottom = 1 << 12,
             DockFill = 1 << 13,
-            Dock_Mask = DockNone | DockLeft | DockTop | DockRight | DockBottom | DockFill,
+            DockMask = DockNone | DockLeft | DockTop | DockRight | DockBottom | DockFill,
 
             // Flags
             VirtualControl = 1 << 14,

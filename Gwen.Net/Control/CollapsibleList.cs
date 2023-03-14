@@ -9,7 +9,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class CollapsibleList : ScrollControl
     {
-        private readonly VerticalLayout m_Items;
+        private readonly VerticalLayout items;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CollapsibleList" /> class.
@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
             EnableScroll(horizontal: false, vertical: true);
             AutoHideBars = true;
 
-            m_Items = new VerticalLayout(this);
+            items = new VerticalLayout(this);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Gwen.Net.Control
         /// <param name="category">Category control to add.</param>
         protected virtual void Add(CollapsibleCategory category)
         {
-            category.Parent = m_Items;
+            category.Parent = items;
             category.Margin = new Margin(left: 1, top: 1, right: 1, bottom: 0);
             category.Selected += OnCategorySelected;
             category.Collapsed += OnCategoryCollapsed;
@@ -82,6 +82,8 @@ namespace Gwen.Net.Control
         ///     Adds a new category to the list.
         /// </summary>
         /// <param name="categoryName">Name of the category.</param>
+        /// <param name="name">Name of the control.</param>
+        /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
         public virtual CollapsibleCategory Add(string categoryName, string name = null, object userData = null)
         {
@@ -97,10 +99,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawCategoryHolder(this);
+            currentSkin.DrawCategoryHolder(this);
         }
 
         /// <summary>
@@ -108,7 +110,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual void UnselectAll()
         {
-            foreach (ControlBase child in m_Items.Children)
+            foreach (ControlBase child in items.Children)
             {
                 var cat = child as CollapsibleCategory;
 
@@ -125,6 +127,7 @@ namespace Gwen.Net.Control
         ///     Handler for ItemSelected event.
         /// </summary>
         /// <param name="control">Event source: <see cref="CollapsibleList" />.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnCategorySelected(ControlBase control, EventArgs args)
         {
             var cat = control as CollapsibleCategory;
@@ -144,6 +147,7 @@ namespace Gwen.Net.Control
         ///     Handler for category collapsed event.
         /// </summary>
         /// <param name="control">Event source: <see cref="CollapsibleCategory" />.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnCategoryCollapsed(ControlBase control, EventArgs args)
         {
             var cat = control as CollapsibleCategory;

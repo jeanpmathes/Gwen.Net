@@ -17,15 +17,23 @@ namespace Gwen.Net.Tests.Components
             font = Skin.DefaultFont.Copy();
             font.Size *= 2;
 
-            Label inner1, inner2, inner3, inner4, inner5;
-
-            HorizontalLayout hlayout = new(this);
+            HorizontalLayout horizontalLayout = new(this);
 
             {
-                VerticalLayout vlayout = new(hlayout);
+                VerticalLayout verticalLayout = new(horizontalLayout);
+
+                Label inner1;
+
+                Label inner2;
+
+                Label inner3;
+
+                Label inner4;
+
+                Label inner5;
 
                 {
-                    outer = new DockLayout(vlayout);
+                    outer = new DockLayout(verticalLayout);
                     outer.Size = new Size(width: 400, height: 400);
 
                     {
@@ -67,22 +75,22 @@ namespace Gwen.Net.Tests.Components
 
                     outer.DrawDebugOutlines = true;
 
-                    HorizontalLayout hlayout2 = new(vlayout);
+                    HorizontalLayout layout = new(verticalLayout);
 
                     {
-                        Label l_padding = new(hlayout2);
-                        l_padding.Text = "Padding:";
+                        Label paddingLabel = new(layout);
+                        paddingLabel.Text = "Padding:";
 
-                        HorizontalSlider padding = new(hlayout2);
-                        padding.Min = 0;
-                        padding.Max = 200;
-                        padding.Value = 10;
-                        padding.Width = 100;
-                        padding.ValueChanged += PaddingChanged;
+                        HorizontalSlider horizontalSlider = new(layout);
+                        horizontalSlider.Min = 0;
+                        horizontalSlider.Max = 200;
+                        horizontalSlider.Value = 10;
+                        horizontalSlider.Width = 100;
+                        horizontalSlider.ValueChanged += PaddingChanged;
                     }
                 }
 
-                GridLayout controlsLayout = new(hlayout);
+                GridLayout controlsLayout = new(horizontalLayout);
                 controlsLayout.ColumnCount = 2;
 
                 {
@@ -93,7 +101,6 @@ namespace Gwen.Net.Tests.Components
                     inner5.UserData = CreateControls(inner5, Dock.Fill, "Control 5", controlsLayout);
                 }
             }
-            //DrawDebugOutlines = true;
         }
 
         private ControlBase CreateControls(ControlBase subject, Dock docking, string name, ControlBase container)
@@ -102,10 +109,10 @@ namespace Gwen.Net.Tests.Components
             gb.Text = name;
 
             {
-                HorizontalLayout hlayout = new(gb);
+                HorizontalLayout horizontalLayout = new(gb);
 
                 {
-                    GroupBox dgb = new(hlayout);
+                    GroupBox dgb = new(horizontalLayout);
                     dgb.Text = "Dock";
 
                     {
@@ -120,13 +127,13 @@ namespace Gwen.Net.Tests.Components
                         dock.SelectionChanged += DockChanged;
                     }
 
-                    VerticalLayout vlayout = new(hlayout);
+                    VerticalLayout verticalLayout = new(horizontalLayout);
 
                     {
-                        HorizontalLayout hlayout2 = new(vlayout);
+                        HorizontalLayout horizontalLayout2 = new(verticalLayout);
 
                         {
-                            GroupBox hgb = new(hlayout2);
+                            GroupBox hgb = new(horizontalLayout2);
                             hgb.Text = "H. Align";
 
                             {
@@ -140,7 +147,7 @@ namespace Gwen.Net.Tests.Components
                                 halign.SelectionChanged += HAlignChanged;
                             }
 
-                            GroupBox vgb = new(hlayout2);
+                            GroupBox vgb = new(horizontalLayout2);
                             vgb.Text = "V. Align";
 
                             {
@@ -155,14 +162,14 @@ namespace Gwen.Net.Tests.Components
                             }
                         }
 
-                        GridLayout glayout = new(vlayout);
-                        glayout.SetColumnWidths(GridLayout.AutoSize, GridLayout.Fill);
+                        GridLayout gridLayout = new(verticalLayout);
+                        gridLayout.SetColumnWidths(GridLayout.AutoSize, GridLayout.Fill);
 
                         {
-                            Label l_width = new(glayout);
-                            l_width.Text = "Width:";
+                            Label widthLabel = new(gridLayout);
+                            widthLabel.Text = "Width:";
 
-                            HorizontalSlider width = new(glayout);
+                            HorizontalSlider width = new(gridLayout);
                             width.Name = "Width";
                             width.UserData = subject;
                             width.Min = 50;
@@ -170,10 +177,10 @@ namespace Gwen.Net.Tests.Components
                             width.Value = 100;
                             width.ValueChanged += WidthChanged;
 
-                            Label l_height = new(glayout);
-                            l_height.Text = "Height:";
+                            Label heightLabel = new(gridLayout);
+                            heightLabel.Text = "Height:";
 
-                            HorizontalSlider height = new(glayout);
+                            HorizontalSlider height = new(gridLayout);
                             height.Name = "Height";
                             height.UserData = subject;
                             height.Min = 50;
@@ -181,10 +188,10 @@ namespace Gwen.Net.Tests.Components
                             height.Value = 100;
                             height.ValueChanged += HeightChanged;
 
-                            Label l_margin = new(glayout);
-                            l_margin.Text = "Margin:";
+                            Label marginLabel = new(gridLayout);
+                            marginLabel.Text = "Margin:";
 
-                            HorizontalSlider margin = new(glayout);
+                            HorizontalSlider margin = new(gridLayout);
                             margin.Name = "Margin";
                             margin.UserData = subject;
                             margin.Min = 0;
@@ -201,23 +208,23 @@ namespace Gwen.Net.Tests.Components
 
         private void PaddingChanged(ControlBase control, EventArgs args)
         {
-            var val = control as Slider;
+            var val = (Slider) control;
             var i = (int) val.Value;
             outer.Padding = new Padding(i, i, i, i);
         }
 
         private void MarginChanged(ControlBase control, EventArgs args)
         {
-            var inner = control.UserData as ControlBase;
-            var val = control as Slider;
+            var inner = (ControlBase) control.UserData;
+            var val = (Slider) control;
             var i = (int) val.Value;
             inner.Margin = new Margin(i, i, i, i);
         }
 
         private void WidthChanged(ControlBase control, EventArgs args)
         {
-            var inner = control.UserData as ControlBase;
-            var val = control as Slider;
+            var inner = (ControlBase) control.UserData;
+            var val = (Slider) control;
 
             if (inner.HorizontalAlignment != HorizontalAlignment.Stretch)
             {
@@ -227,8 +234,8 @@ namespace Gwen.Net.Tests.Components
 
         private void HeightChanged(ControlBase control, EventArgs args)
         {
-            var inner = control.UserData as ControlBase;
-            var val = control as Slider;
+            var inner = (ControlBase) control.UserData;
+            var val = (Slider) control;
 
             if (inner.VerticalAlignment != VerticalAlignment.Stretch)
             {
@@ -238,7 +245,7 @@ namespace Gwen.Net.Tests.Components
 
         private void HAlignChanged(ControlBase control, EventArgs args)
         {
-            var inner = control.UserData as ControlBase;
+            var inner = (ControlBase) control.UserData;
             var rbg = (RadioButtonGroup) control;
             inner.HorizontalAlignment = (HorizontalAlignment) rbg.Selected.UserData;
 
@@ -250,7 +257,7 @@ namespace Gwen.Net.Tests.Components
 
         private void VAlignChanged(ControlBase control, EventArgs args)
         {
-            var inner = control.UserData as ControlBase;
+            var inner = (ControlBase) control.UserData;
             var rbg = (RadioButtonGroup) control;
             inner.VerticalAlignment = (VerticalAlignment) rbg.Selected.UserData;
 
@@ -264,9 +271,9 @@ namespace Gwen.Net.Tests.Components
         {
             var inner = (ControlBase) control.UserData;
             var rbg = (RadioButtonGroup) control;
-            var gb = inner.UserData as ControlBase;
-            var w = (int) (gb.FindChildByName("Width", recursive: true) as Slider).Value;
-            var h = (int) (gb.FindChildByName("Height", recursive: true) as Slider).Value;
+            var gb = (ControlBase) inner.UserData;
+            var w = (int) ((Slider) gb.FindChildByName("Width", recursive: true)).Value;
+            var h = (int) ((Slider) gb.FindChildByName("Height", recursive: true)).Value;
             inner.Dock = (Dock) rbg.Selected.UserData;
 
             switch (inner.Dock)

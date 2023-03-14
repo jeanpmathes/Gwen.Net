@@ -27,11 +27,11 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Button : ButtonBase
     {
-        private Alignment m_Align;
-        private ImagePanel m_Image;
-        private ImageAlign m_ImageAlign;
-        private Text m_Text;
-        private Padding m_TextPadding;
+        private Alignment align;
+        private ImagePanel image;
+        private ImageAlign imageAlign;
+        private Text text;
+        private Padding textPadding;
 
         /// <summary>
         ///     Control constructor.
@@ -49,11 +49,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual string Text
         {
-            get => m_Text.String;
+            get => text.String;
             set
             {
                 EnsureText();
-                m_Text.String = value;
+                text.String = value;
             }
         }
 
@@ -62,11 +62,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public Font Font
         {
-            get => m_Text.Font;
+            get => text.Font;
             set
             {
                 EnsureText();
-                m_Text.Font = value;
+                text.Font = value;
             }
         }
 
@@ -75,11 +75,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color TextColor
         {
-            get => m_Text.TextColor;
+            get => text.TextColor;
             set
             {
                 EnsureText();
-                m_Text.TextColor = value;
+                text.TextColor = value;
             }
         }
 
@@ -88,11 +88,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color TextColorOverride
         {
-            get => m_Text.TextColorOverride;
+            get => text.TextColorOverride;
             set
             {
                 EnsureText();
-                m_Text.TextColorOverride = value;
+                text.TextColorOverride = value;
             }
         }
 
@@ -101,15 +101,15 @@ namespace Gwen.Net.Control
         /// </summary>
         public Padding TextPadding
         {
-            get => m_TextPadding;
+            get => textPadding;
             set
             {
-                if (value == m_TextPadding)
+                if (value == textPadding)
                 {
                     return;
                 }
 
-                m_TextPadding = value;
+                textPadding = value;
                 Invalidate();
             }
         }
@@ -119,15 +119,15 @@ namespace Gwen.Net.Control
         /// </summary>
         public Alignment Alignment
         {
-            get => m_Align;
+            get => align;
             set
             {
-                if (value == m_Align)
+                if (value == align)
                 {
                     return;
                 }
 
-                m_Align = value;
+                align = value;
                 Invalidate();
             }
         }
@@ -137,15 +137,15 @@ namespace Gwen.Net.Control
         /// </summary>
         public ImageAlign ImageAlign
         {
-            get => m_ImageAlign;
+            get => imageAlign;
             set
             {
-                if (m_ImageAlign == value)
+                if (imageAlign == value)
                 {
                     return;
                 }
 
-                m_ImageAlign = value;
+                imageAlign = value;
                 Invalidate();
             }
         }
@@ -157,21 +157,21 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Image != null)
+                if (image != null)
                 {
-                    return m_Image.ImageName;
+                    return image.ImageName;
                 }
 
                 return null;
             }
             set
             {
-                if (m_Image != null && m_Image.ImageName == value)
+                if (image != null && image.ImageName == value)
                 {
                     return;
                 }
 
-                SetImage(value, m_ImageAlign);
+                SetImage(value, imageAlign);
             }
         }
 
@@ -182,21 +182,21 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Image != null)
+                if (image != null)
                 {
-                    return m_Image.ImageSize;
+                    return image.ImageSize;
                 }
 
                 return Size.Zero;
             }
             set
             {
-                if (m_Image == null)
+                if (image == null)
                 {
                     return;
                 }
 
-                m_Image.ImageSize = value;
+                image.ImageSize = value;
             }
         }
 
@@ -207,21 +207,21 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Image != null)
+                if (image != null)
                 {
-                    return m_Image.TextureRect;
+                    return image.TextureRect;
                 }
 
                 return Rectangle.Empty;
             }
             set
             {
-                if (m_Image == null)
+                if (image == null)
                 {
                     return;
                 }
 
-                m_Image.TextureRect = value;
+                image.TextureRect = value;
             }
         }
 
@@ -232,39 +232,39 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Image != null)
+                if (image != null)
                 {
-                    return m_Image.ImageColor;
+                    return image.ImageColor;
                 }
 
                 return Color.White;
             }
             set
             {
-                if (m_Image == null)
+                if (image == null)
                 {
                     return;
                 }
 
-                m_Image.ImageColor = value;
+                image.ImageColor = value;
             }
         }
 
         private void EnsureText()
         {
-            if (m_Text == null)
+            if (text == null)
             {
-                m_Text = new Text(this);
+                text = new Text(this);
             }
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            base.Render(skin);
+            base.Render(currentSkin);
 
             if (ShouldDrawBackground)
             {
@@ -277,7 +277,7 @@ namespace Gwen.Net.Control
 
                 bool bDrawHovered = IsHovered && ShouldDrawHover;
 
-                skin.DrawButton(this, drawDepressed, bDrawHovered, IsDisabled);
+                currentSkin.DrawButton(this, drawDepressed, bDrawHovered, IsDisabled);
             }
         }
 
@@ -285,56 +285,56 @@ namespace Gwen.Net.Control
         ///     Sets the button's image.
         /// </summary>
         /// <param name="textureName">Texture name. Null to remove.</param>
-        /// <param name="imageAlign">Determines how the image should be aligned.</param>
-        public virtual void SetImage(string textureName, ImageAlign imageAlign = ImageAlign.LeftSide)
+        /// <param name="newImageAlign">Determines how the image should be aligned.</param>
+        public virtual void SetImage(string textureName, ImageAlign newImageAlign = ImageAlign.LeftSide)
         {
             if (string.IsNullOrEmpty(textureName))
             {
-                if (m_Image != null)
+                if (image != null)
                 {
-                    m_Image.Dispose();
+                    image.Dispose();
                 }
 
-                m_Image = null;
+                image = null;
 
                 return;
             }
 
-            if (m_Image == null)
+            if (image == null)
             {
-                m_Image = new ImagePanel(this);
+                image = new ImagePanel(this);
             }
 
-            m_Image.ImageName = textureName;
-            m_Image.MouseInputEnabled = false;
-            m_ImageAlign = imageAlign;
-            m_Image.SendToBack();
+            image.ImageName = textureName;
+            image.MouseInputEnabled = false;
+            imageAlign = newImageAlign;
+            image.SendToBack();
 
             Invalidate();
         }
 
         protected override Size Measure(Size availableSize)
         {
-            if (m_Image == null)
+            if (image == null)
             {
                 Size size = Size.Zero;
 
-                if (m_Text != null)
+                if (text != null)
                 {
-                    size = m_Text.DoMeasure(availableSize);
+                    size = text.DoMeasure(availableSize);
                 }
 
-                size += m_TextPadding + Padding;
+                size += textPadding + Padding;
 
                 return size;
             }
 
-            Size imageSize = m_Image.DoMeasure(availableSize);
-            Size textSize = m_Text != null ? m_Text.DoMeasure(availableSize) + m_TextPadding : Size.Zero;
+            Size imageSize = image.DoMeasure(availableSize);
+            Size textSize = text != null ? text.DoMeasure(availableSize) + textPadding : Size.Zero;
 
             Size totalSize;
 
-            switch (m_ImageAlign)
+            switch (imageAlign)
             {
                 case ImageAlign.LeftSide:
                     totalSize = new Size(textSize.Width + imageSize.Width, Math.Max(imageSize.Height, textSize.Height));
@@ -357,47 +357,47 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            if (m_Image == null)
+            if (image == null)
             {
-                if (m_Text != null)
+                if (text != null)
                 {
                     Size innerSize = finalSize - Padding;
-                    Size textSize = m_Text.MeasuredSize + m_TextPadding;
+                    Size textSize = text.MeasuredSize + textPadding;
                     Rectangle rect = new(Point.Zero, textSize);
 
-                    if ((m_Align & Alignment.CenterH) != 0)
+                    if ((align & Alignment.CenterH) != 0)
                     {
                         rect.X = (innerSize.Width - rect.Width) / 2;
                     }
-                    else if ((m_Align & Alignment.Right) != 0)
+                    else if ((align & Alignment.Right) != 0)
                     {
                         rect.X = innerSize.Width - rect.Width;
                     }
 
-                    if ((m_Align & Alignment.CenterV) != 0)
+                    if ((align & Alignment.CenterV) != 0)
                     {
                         rect.Y = (innerSize.Height - rect.Height) / 2;
                     }
-                    else if ((m_Align & Alignment.Bottom) != 0)
+                    else if ((align & Alignment.Bottom) != 0)
                     {
                         rect.Y = innerSize.Height - rect.Height;
                     }
 
-                    rect.Offset(m_TextPadding + Padding);
+                    rect.Offset(textPadding + Padding);
 
-                    m_Text.DoArrange(rect);
+                    text.DoArrange(rect);
                 }
             }
             else
             {
                 Size innerSize = finalSize - Padding;
 
-                Size imageSize = m_Image.MeasuredSize;
-                Size textSize = m_Text != null ? m_Text.MeasuredSize + m_TextPadding : Size.Zero;
+                Size imageSize = image.MeasuredSize;
+                Size textSize = text != null ? text.MeasuredSize + textPadding : Size.Zero;
 
                 Rectangle rect;
 
-                switch (m_ImageAlign)
+                switch (imageAlign)
                 {
                     case ImageAlign.LeftSide:
                         rect = new Rectangle(
@@ -419,28 +419,28 @@ namespace Gwen.Net.Control
                         break;
                 }
 
-                if ((m_Align & Alignment.Right) != 0)
+                if ((align & Alignment.Right) != 0)
                 {
                     rect.X = innerSize.Width - rect.Width;
                 }
-                else if ((m_Align & Alignment.CenterH) != 0)
+                else if ((align & Alignment.CenterH) != 0)
                 {
                     rect.X = (innerSize.Width - rect.Width) / 2;
                 }
 
-                if ((m_Align & Alignment.Bottom) != 0)
+                if ((align & Alignment.Bottom) != 0)
                 {
                     rect.Y = innerSize.Height - rect.Height;
                 }
-                else if ((m_Align & Alignment.CenterV) != 0)
+                else if ((align & Alignment.CenterV) != 0)
                 {
                     rect.Y = (innerSize.Height - rect.Height) / 2;
                 }
 
                 Rectangle imageRect = new(Point.Zero, imageSize);
-                Rectangle textRect = new(rect.Location, m_Text != null ? m_Text.MeasuredSize : Size.Zero);
+                Rectangle textRect = new(rect.Location, text?.MeasuredSize ?? Size.Zero);
 
-                switch (m_ImageAlign)
+                switch (imageAlign)
                 {
                     case ImageAlign.LeftSide:
                         imageRect.Location = new Point(rect.X, rect.Y + ((rect.Height - imageSize.Height) / 2));
@@ -463,20 +463,20 @@ namespace Gwen.Net.Control
 
                         break;
                     default:
-                        if ((m_ImageAlign & ImageAlign.Right) != 0)
+                        if ((imageAlign & ImageAlign.Right) != 0)
                         {
                             imageRect.X = innerSize.Width - imageRect.Width;
                         }
-                        else if ((m_ImageAlign & ImageAlign.CenterH) != 0)
+                        else if ((imageAlign & ImageAlign.CenterH) != 0)
                         {
                             imageRect.X = (innerSize.Width - imageRect.Width) / 2;
                         }
 
-                        if ((m_ImageAlign & ImageAlign.Bottom) != 0)
+                        if ((imageAlign & ImageAlign.Bottom) != 0)
                         {
                             imageRect.Y = innerSize.Height - imageRect.Height;
                         }
-                        else if ((m_ImageAlign & ImageAlign.CenterV) != 0)
+                        else if ((imageAlign & ImageAlign.CenterV) != 0)
                         {
                             imageRect.Y = (innerSize.Height - imageRect.Height) / 2;
                         }
@@ -485,12 +485,12 @@ namespace Gwen.Net.Control
                 }
 
                 imageRect.Offset(Padding);
-                m_Image.DoArrange(imageRect);
+                image.DoArrange(imageRect);
 
-                if (m_Text != null)
+                if (text != null)
                 {
-                    textRect.Offset(Padding + m_TextPadding);
-                    m_Text.DoArrange(textRect);
+                    textRect.Offset(Padding + textPadding);
+                    text.DoArrange(textRect);
                 }
             }
 
@@ -502,33 +502,33 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void UpdateColors()
         {
-            if (m_Text == null)
+            if (text == null)
             {
                 return;
             }
 
             if (IsDisabled)
             {
-                TextColor = Skin.Colors.Button.Disabled;
+                TextColor = Skin.colors.buttonColors.disabled;
 
                 return;
             }
 
             if (IsDepressed || ToggleState)
             {
-                TextColor = Skin.Colors.Button.Down;
+                TextColor = Skin.colors.buttonColors.down;
 
                 return;
             }
 
             if (IsHovered)
             {
-                TextColor = Skin.Colors.Button.Hover;
+                TextColor = Skin.colors.buttonColors.hover;
 
                 return;
             }
 
-            TextColor = Skin.Colors.Button.Normal;
+            TextColor = Skin.colors.buttonColors.normal;
         }
     }
 }

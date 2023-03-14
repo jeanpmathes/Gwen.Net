@@ -12,22 +12,22 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Standard", Order = 201)]
     public class TextBoxTest : GUnit
     {
-        private readonly Font m_Font1;
-        private readonly Font m_Font2;
-        private readonly Font m_Font3;
+        private readonly Font font1;
+        private readonly Font font2;
+        private readonly Font font3;
 
         public TextBoxTest(ControlBase parent)
             : base(parent)
         {
-            m_Font1 = Skin.DefaultFont.Copy();
-            m_Font1.FaceName = "Courier New"; // fixed width font!
+            font1 = Skin.DefaultFont.Copy();
+            font1.FaceName = "Courier New"; // fixed width font!
 
-            m_Font2 = Skin.DefaultFont.Copy();
-            m_Font2.FaceName = "Times New Roman";
-            m_Font2.Size *= 3;
+            font2 = Skin.DefaultFont.Copy();
+            font2.FaceName = "Times New Roman";
+            font2.Size *= 3;
 
-            m_Font3 = Skin.DefaultFont.Copy();
-            m_Font3.Size += 5;
+            font3 = Skin.DefaultFont.Copy();
+            font3.Size += 5;
 
             VerticalLayout vlayout = new(this);
 
@@ -84,7 +84,7 @@ namespace Gwen.Net.Tests.Components
                         MultilineTextBox textbox = new(dockLayout);
                         textbox.Dock = Dock.Fill;
                         textbox.Margin = Margin.Five;
-                        textbox.Font = m_Font1;
+                        textbox.Font = font1;
                         textbox.AcceptTabs = true;
 
                         textbox.SetText(
@@ -96,7 +96,7 @@ namespace Gwen.Net.Tests.Components
                         pad.Dock = Dock.Right;
                         pad.Margin = Margin.Five;
                         pad.Text = "Pad";
-                        pad.Clicked += (s, a) => new TextPad(this);
+                        pad.Clicked += (_, _) => new TextPad(this);
                     }
                 }
 
@@ -108,7 +108,7 @@ namespace Gwen.Net.Tests.Components
                         "In olden times when wishing still helped one, there lived a king whose daughters were all beautiful, but the youngest was so beautiful that the sun itself, which has seen so much, was astonished whenever it shone in her face. Close by the king's castle lay a great dark forest, and under an old lime-tree in the forest was a well, and when the day was very warm, the king's child went out into the forest and sat down by the side of the cool fountain, and when she was bored she took a golden ball, and threw it up on high and caught it, and this ball was her favorite plaything.");
 
                     textbox.TextColor = Color.Black;
-                    textbox.Font = m_Font3;
+                    textbox.Font = font3;
                 }
 
                 {
@@ -118,7 +118,7 @@ namespace Gwen.Net.Tests.Components
                     textbox.HorizontalAlignment = HorizontalAlignment.Right;
                     textbox.SetText("あおい　うみから　やってきた");
                     textbox.TextColor = Color.Black;
-                    textbox.Font = m_Font3;
+                    textbox.Font = font3;
                 }
 
                 {
@@ -128,7 +128,7 @@ namespace Gwen.Net.Tests.Components
                     textbox.FitToText = "Fit the text";
                     textbox.SetText("FitToText");
                     textbox.TextColor = Color.Black;
-                    textbox.Font = m_Font3;
+                    textbox.Font = font3;
                 }
 
                 {
@@ -138,44 +138,44 @@ namespace Gwen.Net.Tests.Components
                     textbox.Width = 200;
                     textbox.SetText("Width = 200");
                     textbox.TextColor = Color.Black;
-                    textbox.Font = m_Font3;
+                    textbox.Font = font3;
                 }
 
                 {
                     TextBox textbox = new(vlayout);
                     textbox.Margin = Margin.Five;
                     textbox.SetText("Different Font");
-                    textbox.Font = m_Font2;
+                    textbox.Font = font2;
                 }
             }
         }
 
         public override void Dispose()
         {
-            m_Font1.Dispose();
-            m_Font2.Dispose();
-            m_Font3.Dispose();
+            font1.Dispose();
+            font2.Dispose();
+            font3.Dispose();
             base.Dispose();
         }
 
         private void OnEdit(ControlBase control, EventArgs args)
         {
-            var box = control as TextBox;
-            UnitPrint(string.Format("TextBox: OnEdit: {0}", box.Text));
+            var box = (TextBox) control;
+            UnitPrint($"TextBox: OnEdit: {box.Text}");
         }
 
         private void OnSubmit(ControlBase control, EventArgs args)
         {
-            var box = control as TextBox;
-            UnitPrint(string.Format("TextBox: OnSubmit: {0}", box.Text));
+            var box = (TextBox) control;
+            UnitPrint($"TextBox: OnSubmit: {box.Text}");
         }
 
         private class TextPad : Window
         {
-            private readonly Font m_Font;
-            private readonly MultilineTextBox m_TextBox;
+            private readonly Font font;
+            private readonly MultilineTextBox textBox;
 
-            private string m_Path;
+            private string path;
 
             public TextPad(ControlBase parent)
                 : base(parent)
@@ -191,13 +191,13 @@ namespace Gwen.Net.Tests.Components
                 MenuStrip menuStrip = new(layout);
                 menuStrip.Dock = Dock.Top;
                 MenuItem fileMenu = menuStrip.AddItem("File");
-                fileMenu.Menu.AddItem("Open...", string.Empty, "Ctrl+O").SetAction((s, a) => OnOpen(s, a));
-                fileMenu.Menu.AddItem("Save", string.Empty, "Ctrl+S").SetAction((s, a) => OnSave(s, a));
-                fileMenu.Menu.AddItem("Save As...").SetAction((s, a) => OnSaveAs(s, a));
-                fileMenu.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((s, a) => Close());
+                fileMenu.Menu.AddItem("Open...", string.Empty, "Ctrl+O").SetAction(OnOpen);
+                fileMenu.Menu.AddItem("Save", string.Empty, "Ctrl+S").SetAction(OnSave);
+                fileMenu.Menu.AddItem("Save As...").SetAction(OnSaveAs);
+                fileMenu.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((_, _) => Close());
 
-                m_Font = Skin.DefaultFont.Copy();
-                m_Font.FaceName = "Courier New";
+                font = Skin.DefaultFont.Copy();
+                font.FaceName = "Courier New";
 
                 StatusBar statusBar = new(layout);
                 statusBar.Dock = Dock.Bottom;
@@ -216,25 +216,25 @@ namespace Gwen.Net.Tests.Components
                 label.Margin = new Margin(left: 5, top: 0, right: 5, bottom: 0);
                 label.Text = "Lines:";
 
-                m_TextBox = new MultilineTextBox(layout);
-                m_TextBox.Dock = Dock.Fill;
-                m_TextBox.ShouldDrawBackground = false;
-                m_TextBox.Font = m_Font;
+                textBox = new MultilineTextBox(layout);
+                textBox.Dock = Dock.Fill;
+                textBox.ShouldDrawBackground = false;
+                textBox.Font = font;
 
-                m_TextBox.TextChanged += (sender, arguments) =>
+                textBox.TextChanged += (_, _) =>
                 {
-                    lines.Text = m_TextBox.TotalLines.ToString();
-                    length.Text = m_TextBox.Text.Length.ToString();
+                    lines.Text = textBox.TotalLines.ToString();
+                    length.Text = textBox.Text.Length.ToString();
                 };
 
-                m_TextBox.Text = "";
+                textBox.Text = "";
 
-                m_Path = null;
+                path = null;
             }
 
             public override void Dispose()
             {
-                m_Font.Dispose();
+                font.Dispose();
                 base.Dispose();
             }
 
@@ -246,36 +246,41 @@ namespace Gwen.Net.Tests.Components
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
 
                 dialog.InitialFolder =
-                    m_Path == null ? GwenPlatform.CurrentDirectory : GwenPlatform.GetDirectoryName(m_Path);
+                    path == null ? GwenPlatform.CurrentDirectory : GwenPlatform.GetDirectoryName(path);
 
-                dialog.Callback = path =>
+                dialog.Callback = newPath =>
                 {
-                    if (!string.IsNullOrWhiteSpace(path))
-                    {
-                        try
-                        {
-                            StreamReader reader =
-                                new(GwenPlatform.GetFileStream(path, isWritable: false), Encoding.UTF8);
+                    if (string.IsNullOrWhiteSpace(newPath)) return;
 
-                            m_TextBox.Text = reader.ReadToEnd();
-                            m_Path = path;
-                            Title = GwenPlatform.GetFileName(m_Path) + " - TextPad";
-                        }
-                        catch (Exception) {}
+                    try
+                    {
+                        StreamReader reader =
+                            new(GwenPlatform.GetFileStream(newPath, isWritable: false), Encoding.UTF8);
+
+                        textBox.Text = reader.ReadToEnd();
+                        path = newPath;
+                        Title = GwenPlatform.GetFileName(path) + " - TextPad";
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
                     }
                 };
             }
 
             private void OnSave(ControlBase sender, EventArgs args)
             {
-                if (m_Path != null)
+                if (path != null)
                 {
                     try
                     {
-                        StreamWriter writer = new(GwenPlatform.GetFileStream(m_Path, isWritable: true), Encoding.UTF8);
-                        writer.Write(m_TextBox.Text);
+                        StreamWriter writer = new(GwenPlatform.GetFileStream(path, isWritable: true), Encoding.UTF8);
+                        writer.Write(textBox.Text);
                     }
-                    catch (Exception) {}
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
                 else
                 {
@@ -290,29 +295,32 @@ namespace Gwen.Net.Tests.Components
                 dialog.OkButtonText = "Save";
                 dialog.Filters = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
 
-                if (m_Path == null)
+                if (path == null)
                 {
                     dialog.InitialFolder = GwenPlatform.CurrentDirectory;
                 }
                 else
                 {
-                    dialog.CurrentItem = m_Path;
+                    dialog.CurrentItem = path;
                 }
 
-                dialog.Callback = path =>
+                dialog.Callback = newPath =>
                 {
-                    if (!string.IsNullOrWhiteSpace(path))
+                    if (!string.IsNullOrWhiteSpace(newPath))
                     {
                         try
                         {
                             StreamWriter writer =
-                                new(GwenPlatform.GetFileStream(path, isWritable: true), Encoding.UTF8);
+                                new(GwenPlatform.GetFileStream(newPath, isWritable: true), Encoding.UTF8);
 
-                            writer.Write(m_TextBox.Text);
-                            m_Path = path;
-                            Title = GwenPlatform.GetFileName(m_Path) + " - TextPad";
+                            writer.Write(textBox.Text);
+                            path = newPath;
+                            Title = GwenPlatform.GetFileName(path) + " - TextPad";
                         }
-                        catch (Exception) {}
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
                     }
                 };
             }

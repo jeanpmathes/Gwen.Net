@@ -13,7 +13,7 @@ namespace Gwen.Net.Tests.Components
             grid.Dock = Dock.Fill;
         }
 
-        private GridLayout CreateGrid(ControlBase parent)
+        private static GridLayout CreateGrid(ControlBase parent)
         {
             GridLayout grid = new(parent);
 
@@ -43,7 +43,7 @@ namespace Gwen.Net.Tests.Components
             return grid;
         }
 
-        private void CreateControl(ControlBase parent, string text)
+        private static void CreateControl(ControlBase parent, string text)
         {
             Button button = new(parent);
             button.Text = text;

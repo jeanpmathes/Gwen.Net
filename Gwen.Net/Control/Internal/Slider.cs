@@ -9,12 +9,12 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Slider : ControlBase
     {
-        protected readonly SliderBar m_SliderBar;
-        protected float m_Max;
-        protected float m_Min;
-        protected int m_NotchCount;
-        protected bool m_SnapToNotches;
-        protected float m_Value;
+        protected readonly SliderBar sliderBar;
+        protected float max;
+        protected float min;
+        protected int notchCount;
+        protected bool snapToNotches;
+        protected float value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Slider" /> class.
@@ -23,15 +23,15 @@ namespace Gwen.Net.Control.Internal
         protected Slider(ControlBase parent)
             : base(parent)
         {
-            m_SliderBar = new SliderBar(this);
-            m_SliderBar.Dragged += OnMoved;
+            sliderBar = new SliderBar(this);
+            sliderBar.Dragged += OnMoved;
 
-            m_Min = 0.0f;
-            m_Max = 1.0f;
+            min = 0.0f;
+            max = 1.0f;
 
-            m_SnapToNotches = false;
-            m_NotchCount = 5;
-            m_Value = 0.0f;
+            snapToNotches = false;
+            notchCount = 5;
+            value = 0.0f;
 
             KeyboardInputEnabled = true;
             IsTabable = true;
@@ -42,8 +42,8 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public int NotchCount
         {
-            get => m_NotchCount;
-            set => m_NotchCount = value;
+            get => notchCount;
+            set => notchCount = value;
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public bool SnapToNotches
         {
-            get => m_SnapToNotches;
-            set => m_SnapToNotches = value;
+            get => snapToNotches;
+            set => snapToNotches = value;
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public float Min
         {
-            get => m_Min;
-            set => SetRange(value, m_Max);
+            get => min;
+            set => SetRange(value, max);
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public float Max
         {
-            get => m_Max;
-            set => SetRange(m_Min, value);
+            get => max;
+            set => SetRange(min, value);
         }
 
         /// <summary>
@@ -78,21 +78,21 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public float Value
         {
-            get => m_Min + (m_Value * (m_Max - m_Min));
+            get => min + (value * (max - min));
             set
             {
-                if (value < m_Min)
+                if (value < min)
                 {
-                    value = m_Min;
+                    value = min;
                 }
 
-                if (value > m_Max)
+                if (value > max)
                 {
-                    value = m_Max;
+                    value = max;
                 }
 
                 // Normalize Value
-                value = (value - m_Min) / (m_Max - m_Min);
+                value = (value - min) / (max - min);
                 SetValueInternal(value);
                 Redraw();
             }
@@ -182,7 +182,7 @@ namespace Gwen.Net.Control.Internal
         {
             if (down)
             {
-                Value = m_Min;
+                Value = min;
             }
 
             return true;
@@ -199,7 +199,7 @@ namespace Gwen.Net.Control.Internal
         {
             if (down)
             {
-                Value = m_Max;
+                Value = max;
             }
 
             return true;
@@ -227,15 +227,15 @@ namespace Gwen.Net.Control.Internal
 
         protected virtual void SetValueInternal(float val)
         {
-            if (m_SnapToNotches)
+            if (snapToNotches)
             {
-                val = (float)Math.Floor((val * m_NotchCount) + 0.5f);
-                val /= m_NotchCount;
+                val = (float)Math.Floor((val * notchCount) + 0.5f);
+                val /= notchCount;
             }
 
-            if (m_Value != val)
+            if (value != val)
             {
-                m_Value = val;
+                value = val;
 
                 if (ValueChanged != null)
                 {
@@ -249,19 +249,19 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Sets the value range.
         /// </summary>
-        /// <param name="min">Minimum value.</param>
-        /// <param name="max">Maximum value.</param>
-        public void SetRange(float min, float max)
+        /// <param name="newMin">Minimum value.</param>
+        /// <param name="newMax">Maximum value.</param>
+        public void SetRange(float newMin, float newMax)
         {
-            m_Min = min;
-            m_Max = max;
+            min = newMin;
+            max = newMax;
         }
 
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin)
         {
             if (InputHandler.KeyboardFocus != this)
             {
@@ -273,19 +273,19 @@ namespace Gwen.Net.Control.Internal
                 return;
             }
 
-            skin.DrawKeyboardHighlight(this, RenderBounds, offset: 0);
+            currentSkin.DrawKeyboardHighlight(this, RenderBounds, offset: 0);
         }
 
         protected override Size Measure(Size availableSize)
         {
-            m_SliderBar.DoMeasure(availableSize);
+            sliderBar.DoMeasure(availableSize);
 
-            return m_SliderBar.MeasuredSize;
+            return sliderBar.MeasuredSize;
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            m_SliderBar.DoArrange(new Rectangle(Point.Zero, m_SliderBar.MeasuredSize));
+            sliderBar.DoArrange(new Rectangle(Point.Zero, sliderBar.MeasuredSize));
 
             UpdateBarFromValue();
 

@@ -9,7 +9,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class GroupBox : ContentControl
     {
-        private readonly Text m_Text;
+        private readonly Text text;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GroupBox" /> class.
@@ -18,9 +18,9 @@ namespace Gwen.Net.Control
         public GroupBox(ControlBase parent)
             : base(parent)
         {
-            m_Text = new Text(this);
+            text = new Text(this);
 
-            m_InnerPanel = new InnerContentControl(this);
+            innerPanel = new InnerContentControl(this);
         }
 
         /// <summary>
@@ -28,25 +28,25 @@ namespace Gwen.Net.Control
         /// </summary>
         public virtual string Text
         {
-            get => m_Text.String;
-            set => m_Text.String = value;
+            get => text.String;
+            set => text.String = value;
         }
 
         public override Padding Padding
         {
-            get => m_InnerPanel.Padding;
-            set => m_InnerPanel.Padding = value;
+            get => innerPanel.Padding;
+            set => innerPanel.Padding = value;
         }
 
         protected override Size Measure(Size availableSize)
         {
-            Size titleSize = m_Text.DoMeasure(availableSize);
+            Size titleSize = text.DoMeasure(availableSize);
 
             Size innerSize = Size.Zero;
 
-            if (m_InnerPanel != null)
+            if (innerPanel != null)
             {
-                innerSize = m_InnerPanel.DoMeasure(
+                innerSize = innerPanel.DoMeasure(
                     new Size(availableSize.Width - 5 - 5, availableSize.Height - titleSize.Height - 5));
             }
 
@@ -59,16 +59,16 @@ namespace Gwen.Net.Control
         {
             Size size = finalSize;
 
-            m_Text.DoArrange(new Rectangle(x: 10, y: 0, m_Text.MeasuredSize.Width, m_Text.MeasuredSize.Height));
+            text.DoArrange(new Rectangle(x: 10, y: 0, text.MeasuredSize.Width, text.MeasuredSize.Height));
 
-            if (m_InnerPanel != null)
+            if (innerPanel != null)
             {
-                m_InnerPanel.DoArrange(
+                innerPanel.DoArrange(
                     new Rectangle(
                         x: 5,
-                        m_Text.MeasuredSize.Height,
+                        text.MeasuredSize.Height,
                         finalSize.Width - 5 - 5,
-                        finalSize.Height - m_Text.MeasuredSize.Height - 5));
+                        finalSize.Height - text.MeasuredSize.Height - 5));
             }
 
             return size;
@@ -77,10 +77,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawGroupBox(this, textStart: 10, m_Text.ActualHeight, m_Text.ActualWidth);
+            currentSkin.DrawGroupBox(this, textStart: 10, text.ActualHeight, text.ActualWidth);
         }
     }
 }

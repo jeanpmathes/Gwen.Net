@@ -9,8 +9,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class CollapsibleCategory : ControlBase
     {
-        private readonly CategoryHeaderButton m_HeaderButton;
-        private readonly CollapsibleList m_List;
+        private readonly CategoryHeaderButton headerButton;
+        private readonly CollapsibleList list;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CollapsibleCategory" /> class.
@@ -18,11 +18,11 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public CollapsibleCategory(CollapsibleList parent) : base(parent)
         {
-            m_HeaderButton = new CategoryHeaderButton(this);
-            m_HeaderButton.Text = "Category Title";
-            m_HeaderButton.Toggled += OnHeaderToggle;
+            headerButton = new CategoryHeaderButton(this);
+            headerButton.Text = "Category Title";
+            headerButton.Toggled += OnHeaderToggle;
 
-            m_List = parent;
+            list = parent;
 
             Padding = new Padding(left: 1, top: 0, right: 1, bottom: 2);
         }
@@ -32,8 +32,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public string Text
         {
-            get => m_HeaderButton.Text;
-            set => m_HeaderButton.Text = value;
+            get => headerButton.Text;
+            set => headerButton.Text = value;
         }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool IsCategoryCollapsed
         {
-            get => m_HeaderButton.ToggleState;
-            set => m_HeaderButton.ToggleState = value;
+            get => headerButton.ToggleState;
+            set => headerButton.ToggleState = value;
         }
 
         /// <summary>
@@ -82,6 +82,7 @@ namespace Gwen.Net.Control
         ///     Handler for header button toggle event.
         /// </summary>
         /// <param name="control">Source control.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnHeaderToggle(ControlBase control, EventArgs args)
         {
             Invalidate();
@@ -96,6 +97,7 @@ namespace Gwen.Net.Control
         ///     Handler for Selected event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnSelected(ControlBase control, EventArgs args)
         {
             var child = control as CategoryButton;
@@ -105,9 +107,9 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            if (m_List != null)
+            if (list != null)
             {
-                m_List.UnselectAll();
+                list.UnselectAll();
             }
             else
             {
@@ -142,11 +144,11 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawCategoryInner(this, m_HeaderButton.ActualHeight, m_HeaderButton.ToggleState);
-            base.Render(skin);
+            currentSkin.DrawCategoryInner(this, headerButton.ActualHeight, headerButton.ToggleState);
+            base.Render(currentSkin);
         }
 
         /// <summary>
@@ -169,7 +171,7 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            Size headerSize = m_HeaderButton.DoMeasure(availableSize);
+            Size headerSize = headerButton.DoMeasure(availableSize);
 
             if (IsCategoryCollapsed)
             {
@@ -205,14 +207,14 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            m_HeaderButton.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, m_HeaderButton.MeasuredSize.Height));
+            headerButton.DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, headerButton.MeasuredSize.Height));
 
             if (IsCategoryCollapsed)
             {
-                return new Size(finalSize.Width, m_HeaderButton.MeasuredSize.Height);
+                return new Size(finalSize.Width, headerButton.MeasuredSize.Height);
             }
 
-            int y = m_HeaderButton.MeasuredSize.Height + Padding.Top;
+            int y = headerButton.MeasuredSize.Height + Padding.Top;
             int width = finalSize.Width - Padding.Left - Padding.Right;
             var b = true;
 
@@ -225,7 +227,7 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                button.m_Alt = b;
+                button.alt = b;
                 button.UpdateColors();
                 b = !b;
 

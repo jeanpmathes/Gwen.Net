@@ -24,26 +24,26 @@
         {
             if (IsDisabled)
             {
-                TextColor = Skin.Colors.Button.Disabled;
+                TextColor = Skin.colors.buttonColors.disabled;
 
                 return;
             }
 
             if (ToggleState)
             {
-                TextColor = Skin.Colors.Tree.Selected;
+                TextColor = Skin.colors.treeColors.selected;
 
                 return;
             }
 
             if (IsHovered)
             {
-                TextColor = Skin.Colors.Tree.Hover;
+                TextColor = Skin.colors.treeColors.hover;
 
                 return;
             }
 
-            TextColor = Skin.Colors.Tree.Normal;
+            TextColor = Skin.colors.treeColors.normal;
         }
     }
 }

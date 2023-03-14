@@ -2,8 +2,8 @@
 {
     public abstract class ComboBoxBase : ControlBase
     {
-        private readonly Menu m_Menu;
-        private MenuItem m_SelectedItem;
+        private readonly Menu menu;
+        private MenuItem selectedItem;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ComboBoxBase" /> class.
@@ -12,10 +12,10 @@
         public ComboBoxBase(ControlBase parent)
             : base(parent)
         {
-            m_Menu = new Menu(GetCanvas());
-            m_Menu.IconMarginDisabled = true;
-            m_Menu.IsTabable = false;
-            m_Menu.HorizontalAlignment = HorizontalAlignment.Stretch;
+            menu = new Menu(GetCanvas());
+            menu.IconMarginDisabled = true;
+            menu.IsTabable = false;
+            menu.HorizontalAlignment = HorizontalAlignment.Stretch;
 
             IsTabable = true;
             KeyboardInputEnabled = true;
@@ -26,7 +26,7 @@
         /// </summary>
         public int SelectedIndex
         {
-            get => Children.IndexOf(m_SelectedItem);
+            get => Children.IndexOf(selectedItem);
             set => SetSelection(value);
         }
 
@@ -36,13 +36,13 @@
         /// <remarks>Not just String property, because items also have internal names.</remarks>
         public MenuItem SelectedItem
         {
-            get => m_SelectedItem;
+            get => selectedItem;
             set
             {
-                if (value != null && value.Parent == m_Menu)
+                if (value != null && value.Parent == menu)
                 {
-                    m_SelectedItem = value;
-                    OnItemSelected(m_SelectedItem, new ItemSelectedEventArgs(value));
+                    selectedItem = value;
+                    OnItemSelected(selectedItem, new ItemSelectedEventArgs(value));
                 }
             }
         }
@@ -50,7 +50,7 @@
         /// <summary>
         ///     Indicates whether the combo menu is open.
         /// </summary>
-        public bool IsOpen => m_Menu != null && !m_Menu.IsCollapsed;
+        public bool IsOpen => menu != null && !menu.IsCollapsed;
 
         internal override bool IsMenuComponent => true;
 
@@ -64,17 +64,18 @@
         /// </summary>
         /// <param name="label">Item label (displayed).</param>
         /// <param name="name">Item name.</param>
+        /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
-        public virtual MenuItem AddItem(string label, string name = null, object UserData = null)
+        public virtual MenuItem AddItem(string label, string name = null, object userData = null)
         {
-            MenuItem item = m_Menu.AddItem(label, string.Empty);
+            MenuItem item = menu.AddItem(label, string.Empty);
             item.Name = name;
             item.Selected += OnItemSelected;
-            item.UserData = UserData;
+            item.UserData = userData;
 
-            if (m_SelectedItem == null)
+            if (selectedItem == null)
             {
-                OnItemSelected(item, new ItemSelectedEventArgs(selecteditem: null));
+                OnItemSelected(item, new ItemSelectedEventArgs(selectedItem: null));
             }
 
             return item;
@@ -86,14 +87,14 @@
         /// <param name="item">Item.</param>
         public virtual void AddItem(MenuItem item)
         {
-            item.Parent = m_Menu;
+            item.Parent = menu;
 
-            m_Menu.AddItem(item);
+            menu.AddItem(item);
             item.Selected += OnItemSelected;
 
-            if (m_SelectedItem == null)
+            if (selectedItem == null)
             {
-                OnItemSelected(item, new ItemSelectedEventArgs(selecteditem: null));
+                OnItemSelected(item, new ItemSelectedEventArgs(selectedItem: null));
             }
         }
 
@@ -108,18 +109,19 @@
         /// </summary>
         public virtual void RemoveAll()
         {
-            if (m_Menu != null)
+            if (menu != null)
             {
-                m_Menu.RemoveAll();
+                menu.RemoveAll();
             }
 
-            m_SelectedItem = null;
+            selectedItem = null;
         }
 
         /// <summary>
         ///     Internal handler for item selected event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnItemSelected(ControlBase control, ItemSelectedEventArgs args)
         {
             if (!IsDisabled)
@@ -132,8 +134,8 @@
                     return;
                 }
 
-                m_SelectedItem = item;
-                m_Menu.IsCollapsed = true;
+                selectedItem = item;
+                menu.IsCollapsed = true;
 
                 if (ItemSelected != null)
                 {
@@ -153,30 +155,30 @@
             {
                 GetCanvas().CloseMenus();
 
-                if (null == m_Menu)
+                if (null == menu)
                 {
                     return;
                 }
 
                 Point p = LocalPosToCanvas(Point.Zero);
 
-                m_Menu.Width = ActualWidth;
+                menu.Width = ActualWidth;
 
                 int canvasHeight = GetCanvas().ActualHeight;
 
                 if (p.Y > canvasHeight - 100)
                 {
                     // We need to do layout for the menu here to know the height of it.
-                    m_Menu.DoArrange(new Rectangle(Point.Zero, m_Menu.DoMeasure(Size.Infinity)));
-                    m_Menu.Position = new Point(p.X, p.Y - m_Menu.ActualHeight);
+                    menu.DoArrange(new Rectangle(Point.Zero, menu.DoMeasure(Size.Infinity)));
+                    menu.Position = new Point(p.X, p.Y - menu.ActualHeight);
                 }
                 else
                 {
-                    m_Menu.Position = new Point(p.X, p.Y + ActualHeight);
+                    menu.Position = new Point(p.X, p.Y + ActualHeight);
                 }
 
-                m_Menu.Show();
-                m_Menu.BringToFront();
+                menu.Show();
+                menu.BringToFront();
             }
         }
 
@@ -185,12 +187,12 @@
         /// </summary>
         public virtual void Close()
         {
-            if (m_Menu == null)
+            if (menu == null)
             {
                 return;
             }
 
-            m_Menu.Collapse();
+            menu.Collapse();
         }
 
         /// <summary>
@@ -204,11 +206,11 @@
         {
             if (down)
             {
-                int it = m_Menu.Children.IndexOf(m_SelectedItem);
+                int it = menu.Children.IndexOf(selectedItem);
 
-                if (it + 1 < m_Menu.Children.Count)
+                if (it + 1 < menu.Children.Count)
                 {
-                    OnItemSelected(this, new ItemSelectedEventArgs(m_Menu.Children[it + 1]));
+                    OnItemSelected(this, new ItemSelectedEventArgs(menu.Children[it + 1]));
                 }
             }
 
@@ -226,11 +228,11 @@
         {
             if (down)
             {
-                int it = m_Menu.Children.LastIndexOf(m_SelectedItem);
+                int it = menu.Children.LastIndexOf(selectedItem);
 
                 if (it - 1 >= 0)
                 {
-                    OnItemSelected(this, new ItemSelectedEventArgs(m_Menu.Children[it - 1]));
+                    OnItemSelected(this, new ItemSelectedEventArgs(menu.Children[it - 1]));
                 }
             }
 
@@ -258,7 +260,7 @@
         /// <param name="text">The label to look for, this is what is shown to the user.</param>
         public void SelectByText(string text)
         {
-            foreach (MenuItem item in m_Menu.Children)
+            foreach (MenuItem item in menu.Children)
             {
                 if (item.Text == text)
                 {
@@ -276,7 +278,7 @@
         /// <param name="name">The internal name to look for. To select by what is displayed to the user, use "SelectByText".</param>
         public void SelectByName(string name)
         {
-            foreach (MenuItem item in m_Menu.Children)
+            foreach (MenuItem item in menu.Children)
             {
                 if (item.Name == name)
                 {
@@ -297,7 +299,7 @@
         /// </param>
         public void SelectByUserData(object userdata)
         {
-            foreach (MenuItem item in m_Menu.Children)
+            foreach (MenuItem item in menu.Children)
             {
                 if (userdata == null)
                 {

@@ -7,23 +7,23 @@ namespace Gwen.Net
     /// </summary>
     public struct Margin : IEquatable<Margin>
     {
-        public int Top;
-        public int Bottom;
-        public int Left;
-        public int Right;
+        public int Top { get; set; }
+        public int Bottom { get; set; }
+        public int Left { get; set; }
+        public int Right { get; set; }
 
         // common values
-        public static Margin Zero = new(margin: 0);
-        public static Margin One = new(margin: 1);
-        public static Margin Two = new(margin: 2);
-        public static Margin Three = new(margin: 3);
-        public static Margin Four = new(margin: 4);
-        public static Margin Five = new(margin: 5);
-        public static Margin Six = new(margin: 6);
-        public static Margin Seven = new(margin: 7);
-        public static Margin Eight = new(margin: 8);
-        public static Margin Nine = new(margin: 9);
-        public static Margin Ten = new(margin: 10);
+        public static Margin Zero { get; } = new(margin: 0);
+        public static Margin One { get; } = new(margin: 1);
+        public static Margin Two { get; } = new(margin: 2);
+        public static Margin Three { get; } = new(margin: 3);
+        public static Margin Four { get; } = new(margin: 4);
+        public static Margin Five { get; } = new(margin: 5);
+        public static Margin Six { get; } = new(margin: 6);
+        public static Margin Seven { get; } = new(margin: 7);
+        public static Margin Eight { get; } = new(margin: 8);
+        public static Margin Nine { get; } = new(margin: 9);
+        public static Margin Ten { get; } = new(margin: 10);
 
         public Margin(int left, int top, int right, int bottom)
         {
@@ -109,7 +109,7 @@ namespace Gwen.Net
 
         public override string ToString()
         {
-            return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
+            return $"Left = {Left} Top = {Top} Right = {Right} Bottom = {Bottom}";
         }
     }
 }

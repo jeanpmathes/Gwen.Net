@@ -20,21 +20,21 @@ namespace Gwen.Net.CommonDialog
             EnableNewFolder = false;
         }
 
-        protected override void OnItemSelected(string path)
+        protected override void OnItemSelected(string selectedPath)
         {
-            if (FileExists(path))
+            if (FileExists(selectedPath))
             {
-                SetCurrentItem(GetFileName(path));
+                SetCurrentItem(GetFileName(selectedPath));
             }
         }
 
-        protected override bool IsSubmittedNameOk(string path)
+        protected override bool IsSubmittedNameOk(string submittedPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(submittedPath))
             {
-                SetPath(path);
+                SetPath(submittedPath);
             }
-            else if (FileExists(path))
+            else if (FileExists(submittedPath))
             {
                 return true;
             }
@@ -42,9 +42,9 @@ namespace Gwen.Net.CommonDialog
             return false;
         }
 
-        protected override bool ValidateFileName(string path)
+        protected override bool ValidateFileName(string pathToValidate)
         {
-            return FileExists(path);
+            return FileExists(pathToValidate);
         }
     }
 }

@@ -20,17 +20,17 @@ namespace Gwen.Net.Input
         /// <summary>
         ///     Control that currently has keyboard focus.
         /// </summary>
-        public static ControlBase KeyboardFocus;
+        public static ControlBase KeyboardFocus { get; set; }
 
         /// <summary>
         ///     Control that currently has mouse focus.
         /// </summary>
-        public static ControlBase MouseFocus;
+        public static ControlBase MouseFocus { get; set; }
 
         /// <summary>
         ///     Current mouse position.
         /// </summary>
-        public static Point MousePosition; // not property to allow modification of Point fields
+        public static Point MousePosition { get; set; } // not property to allow modification of Point fields
 
         /// <summary>
         ///     Control currently hovered by mouse.
@@ -265,8 +265,7 @@ namespace Gwen.Net.Input
         public static bool OnMouseMoved(ControlBase canvas, int x, int y, int dx, int dy)
         {
             // Send input to canvas for study
-            MousePosition.X = x;
-            MousePosition.Y = y;
+            MousePosition = new Point(x, y);
 
             UpdateHoveredControl(canvas);
 

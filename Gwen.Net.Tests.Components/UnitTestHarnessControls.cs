@@ -10,20 +10,20 @@ namespace Gwen.Net.Tests.Components
 {
     public class UnitTestHarnessControls : ControlBase
     {
-        private readonly ControlBase m_Center;
-        private readonly LabeledCheckBox m_DebugCheck;
-        private readonly Button m_DecScale;
-        private readonly Button m_IncScale;
-        private readonly CollapsibleList m_List;
-        private readonly StatusBar m_StatusBar;
-        private readonly ListBox m_TextOutput;
-        private readonly TextBoxNumeric m_UIScale;
-        private readonly Label m_UIScaleText;
-        private ControlBase m_LastControl;
-        public string Note;
+        private readonly ControlBase center;
+        private readonly LabeledCheckBox debugCheck;
+        private readonly Button decScale;
+        private readonly Button incScale;
+        private readonly CollapsibleList list;
+        private readonly StatusBar statusBar;
+        private readonly ListBox textOutput;
+        private readonly TextBoxNumeric uIScale;
+        private readonly Label uIScaleText;
+        private ControlBase lastControl;
+        public string Note { get; set; }
 
-        public double RenderFps;
-        public double UpdateFps;
+        public double RenderFps { get; set; }
+        public double UpdateFps { get; set; }
 
         public UnitTestHarnessControls(ControlBase parent) : base(parent)
         {
@@ -32,63 +32,63 @@ namespace Gwen.Net.Tests.Components
             DockBase dock = new(this);
             dock.Dock = Dock.Fill;
 
-            m_List = new CollapsibleList(this);
+            list = new CollapsibleList(this);
 
-            dock.LeftDock.TabControl.AddPage("Unit tests", m_List);
+            dock.LeftDock.TabControl.AddPage("Unit tests", list);
             dock.LeftDock.Width = 150;
 
-            m_TextOutput = new ListBox(this);
-            m_TextOutput.AlternateColor = false;
+            textOutput = new ListBox(this);
+            textOutput.AlternateColor = false;
 
-            dock.BottomDock.TabControl.AddPage("Output", m_TextOutput);
+            dock.BottomDock.TabControl.AddPage("Output", textOutput);
             dock.BottomDock.Height = 200;
 
-            m_StatusBar = new StatusBar(this);
-            m_StatusBar.Dock = Dock.Bottom;
+            statusBar = new StatusBar(this);
+            statusBar.Dock = Dock.Bottom;
 
-            m_DebugCheck = new LabeledCheckBox(m_StatusBar);
-            m_DebugCheck.Text = "Debug outlines";
-            m_DebugCheck.CheckChanged += DebugCheckChanged;
+            debugCheck = new LabeledCheckBox(statusBar);
+            debugCheck.Text = "Debug outlines";
+            debugCheck.CheckChanged += DebugCheckChanged;
 
-            m_IncScale = new Button(m_StatusBar);
-            m_IncScale.HorizontalAlignment = HorizontalAlignment.Left;
-            m_IncScale.VerticalAlignment = VerticalAlignment.Stretch;
-            m_IncScale.Width = 30;
-            m_IncScale.Margin = new Margin(left: 0, top: 0, right: 8, bottom: 0);
-            m_IncScale.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
-            m_IncScale.Text = "+";
+            incScale = new Button(statusBar);
+            incScale.HorizontalAlignment = HorizontalAlignment.Left;
+            incScale.VerticalAlignment = VerticalAlignment.Stretch;
+            incScale.Width = 30;
+            incScale.Margin = new Margin(left: 0, top: 0, right: 8, bottom: 0);
+            incScale.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
+            incScale.Text = "+";
+            
+            uIScale = new TextBoxNumeric(statusBar);
+            uIScale.VerticalAlignment = VerticalAlignment.Stretch;
+            uIScale.Width = 70;
+            uIScale.Value = GetCanvas().Scale;
+            uIScale.TextChanged += (_, _) => { GetCanvas().Scale = uIScale.Value; };
 
-            m_IncScale.Clicked += (sender, arguments) =>
+            incScale.Clicked += (_, _) =>
             {
-                m_UIScale.Value = Math.Min(m_UIScale.Value + 0.25f, val2: 3.0f);
+                uIScale.Value = Math.Min(uIScale.Value + 0.25f, val2: 3.0f);
             };
 
-            m_UIScale = new TextBoxNumeric(m_StatusBar);
-            m_UIScale.VerticalAlignment = VerticalAlignment.Stretch;
-            m_UIScale.Width = 70;
-            m_UIScale.Value = GetCanvas().Scale;
-            m_UIScale.TextChanged += (sender, arguments) => { GetCanvas().Scale = m_UIScale.Value; };
+            decScale = new Button(statusBar);
+            decScale.HorizontalAlignment = HorizontalAlignment.Left;
+            decScale.VerticalAlignment = VerticalAlignment.Stretch;
+            decScale.Width = 30;
+            decScale.Margin = new Margin(left: 4, top: 0, right: 0, bottom: 0);
+            decScale.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
+            decScale.Text = "-";
 
-            m_DecScale = new Button(m_StatusBar);
-            m_DecScale.HorizontalAlignment = HorizontalAlignment.Left;
-            m_DecScale.VerticalAlignment = VerticalAlignment.Stretch;
-            m_DecScale.Width = 30;
-            m_DecScale.Margin = new Margin(left: 4, top: 0, right: 0, bottom: 0);
-            m_DecScale.TextPadding = new Padding(left: 5, top: 0, right: 5, bottom: 0);
-            m_DecScale.Text = "-";
-
-            m_DecScale.Clicked += (sender, arguments) =>
+            decScale.Clicked += (_, _) =>
             {
-                m_UIScale.Value = Math.Max(m_UIScale.Value - 0.25f, val2: 1.0f);
+                uIScale.Value = Math.Max(uIScale.Value - 0.25f, val2: 1.0f);
             };
 
-            m_UIScaleText = new Label(m_StatusBar);
-            m_UIScaleText.VerticalAlignment = VerticalAlignment.Stretch;
-            m_UIScaleText.Alignment = Alignment.Left | Alignment.CenterV;
-            m_UIScaleText.Text = "Scale:";
+            uIScaleText = new Label(statusBar);
+            uIScaleText.VerticalAlignment = VerticalAlignment.Stretch;
+            uIScaleText.Alignment = Alignment.Left | Alignment.CenterV;
+            uIScaleText.Text = "Scale:";
 
-            m_Center = new DockLayout(dock);
-            m_Center.Dock = Dock.Fill;
+            center = new DockLayout(dock);
+            center.Dock = Dock.Fill;
 
             List<Type> tests = typeof(UnitTestHarnessControls).Assembly.GetTypes()
                 .Where(t => t.IsDefined(typeof(UnitTestAttribute), inherit: false)).ToList();
@@ -96,21 +96,21 @@ namespace Gwen.Net.Tests.Components
             tests.Sort(
                 (t1, t2) =>
                 {
-                    object[] a1s = t1.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
-                    object[] a2s = t2.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
+                    object[] a1S = t1.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
+                    object[] a2S = t2.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
 
-                    if (a1s.Length > 0 && a2s.Length > 0)
+                    if (a1S.Length > 0 && a2S.Length > 0)
                     {
-                        var a1 = a1s[0] as UnitTestAttribute;
-                        var a2 = a2s[0] as UnitTestAttribute;
+                        var a1 = a1S[0] as UnitTestAttribute;
+                        var a2 = a2S[0] as UnitTestAttribute;
 
                         if (a1.Order == a2.Order)
                         {
                             if (a1.Category == a2.Category)
                             {
                                 return string.Compare(
-                                    a1.Name != null ? a1.Name : t1.Name,
-                                    a2.Name != null ? a2.Name : t2.Name,
+                                    a1.Name ?? t1.Name,
+                                    a2.Name ?? t2.Name,
                                     StringComparison.OrdinalIgnoreCase);
                             }
 
@@ -133,20 +133,20 @@ namespace Gwen.Net.Tests.Components
 
                     if (attrib != null)
                     {
-                        var cat = m_List.FindChildByName(attrib.Category) as CollapsibleCategory;
+                        var cat = list.FindChildByName(attrib.Category) as CollapsibleCategory;
 
                         if (cat == null)
                         {
-                            cat = m_List.Add(attrib.Category, attrib.Category);
+                            cat = list.Add(attrib.Category, attrib.Category);
                         }
 
-                        var test = Activator.CreateInstance(type, m_Center) as GUnit;
-                        RegisterUnitTest(attrib.Name != null ? attrib.Name : type.Name, cat, test);
+                        var test = Activator.CreateInstance(type, center) as GUnit;
+                        RegisterUnitTest(attrib.Name ?? type.Name, cat, test);
                     }
                 }
             }
 
-            m_StatusBar.SendToBack();
+            statusBar.SendToBack();
             PrintText("Unit Test started!");
         }
 
@@ -162,7 +162,7 @@ namespace Gwen.Net.Tests.Components
 
         private void DebugCheckChanged(ControlBase control, EventArgs args)
         {
-            m_Center.DrawDebugOutlines = m_DebugCheck.IsChecked;
+            center.DrawDebugOutlines = debugCheck.IsChecked;
 
             foreach (ControlBase c in GetCanvas().Children.Where(x => x is WindowBase))
             {
@@ -170,38 +170,38 @@ namespace Gwen.Net.Tests.Components
 
                 if (win != null)
                 {
-                    win.Content.DrawDebugOutlines = m_DebugCheck.IsChecked;
+                    win.Content.DrawDebugOutlines = debugCheck.IsChecked;
                 }
             }
         }
 
         private void OnCategorySelect(ControlBase control, EventArgs args)
         {
-            if (m_LastControl != null)
+            if (lastControl != null)
             {
-                m_LastControl.Collapse();
+                lastControl.Collapse();
             }
 
             var test = control.UserData as ControlBase;
             test.Show();
-            m_LastControl = test;
+            lastControl = test;
         }
 
         public void PrintText(string str)
         {
-            m_TextOutput.AddRow(str);
-            m_TextOutput.ScrollToBottom();
+            textOutput.AddRow(str);
+            textOutput.ScrollToBottom();
         }
 
-        protected override void Render(SkinBase skin)
+        protected override void Render(SkinBase currentSkin)
         {
-            m_StatusBar.Text = string.Format(
+            statusBar.Text = string.Format(
                 "GWEN.Net Unit Test - {0} Render Frames, {1} Update Frames. {2}",
                 RenderFps,
                 UpdateFps,
                 Note);
 
-            base.Render(skin);
+            base.Render(currentSkin);
         }
     }
 }

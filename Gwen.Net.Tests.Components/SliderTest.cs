@@ -19,7 +19,7 @@ namespace Gwen.Net.Tests.Components
                 HorizontalSlider slider = new(vlayout);
                 slider.Margin = Margin.Ten;
                 slider.Width = 150;
-                slider.SetRange(min: 0, max: 100);
+                slider.SetRange(newMin: 0, newMax: 100);
                 slider.Value = 25;
                 slider.ValueChanged += SliderMoved;
             }
@@ -28,7 +28,7 @@ namespace Gwen.Net.Tests.Components
                 HorizontalSlider slider = new(vlayout);
                 slider.Margin = Margin.Ten;
                 slider.Width = 150;
-                slider.SetRange(min: 0, max: 100);
+                slider.SetRange(newMin: 0, newMax: 100);
                 slider.Value = 20;
                 slider.NotchCount = 10;
                 slider.SnapToNotches = true;
@@ -39,7 +39,7 @@ namespace Gwen.Net.Tests.Components
                 VerticalSlider slider = new(hlayout);
                 slider.Margin = Margin.Ten;
                 slider.Height = 200;
-                slider.SetRange(min: 0, max: 100);
+                slider.SetRange(newMin: 0, newMax: 100);
                 slider.Value = 25;
                 slider.ValueChanged += SliderMoved;
             }
@@ -48,7 +48,7 @@ namespace Gwen.Net.Tests.Components
                 VerticalSlider slider = new(hlayout);
                 slider.Margin = Margin.Ten;
                 slider.Height = 200;
-                slider.SetRange(min: 0, max: 100);
+                slider.SetRange(newMin: 0, newMax: 100);
                 slider.Value = 20;
                 slider.NotchCount = 10;
                 slider.SnapToNotches = true;
@@ -59,7 +59,7 @@ namespace Gwen.Net.Tests.Components
         private void SliderMoved(ControlBase control, EventArgs args)
         {
             var slider = control as Slider;
-            UnitPrint(String.Format("Slider moved: ValueChanged: {0}", slider.Value));
+            UnitPrint($"Slider moved: ValueChanged: {slider.Value}");
         }
     }
 }

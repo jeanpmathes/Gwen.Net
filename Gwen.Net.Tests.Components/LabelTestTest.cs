@@ -143,11 +143,6 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-        protected override Size Measure(Size availableSize)
-        {
-            return base.Measure(availableSize);
-        }
-
         public override void Dispose()
         {
             font1.Dispose();

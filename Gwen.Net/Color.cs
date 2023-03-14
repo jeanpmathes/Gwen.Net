@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Gwen.Net
 {
@@ -86,7 +85,7 @@ namespace Gwen.Net
         {
             Color color;
 
-            if (m_NamedColors.TryGetValue(name, out color))
+            if (namedColors.TryGetValue(name, out color))
             {
                 return color;
             }
@@ -96,7 +95,7 @@ namespace Gwen.Net
 
         public override string ToString()
         {
-            return String.Format("R = {0} G = {1} B = {2} A = {3}", R, G, B, A);
+            return $"R = {R} G = {G} B = {B} A = {A}";
         }
 
         public static readonly Color AliceBlue = new(value: 0xF0F8FF);
@@ -250,7 +249,7 @@ namespace Gwen.Net
         public static readonly Color GwenPink = new(r: 255, g: 65, b: 199);
         public static readonly Color Transparent = new(a: 0, r: 255, g: 255, b: 255);
 
-        private static readonly Dictionary<string, Color> m_NamedColors = new()
+        private static readonly Dictionary<string, Color> namedColors = new()
         {
             {"AliceBlue", new Color(value: 0xF0F8FF)},
             {"AntiqueWhite", new Color(value: 0xFAEBD7)},

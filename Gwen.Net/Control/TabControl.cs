@@ -9,9 +9,9 @@ namespace Gwen.Net.Control
     /// </summary>
     public class TabControl : ContentControl
     {
-        private readonly ScrollBarButton[] m_Scroll;
+        private readonly ScrollBarButton[] scroll;
 
-        private Padding m_ActualPadding;
+        private Padding actualPadding;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TabControl" /> class.
@@ -26,25 +26,25 @@ namespace Gwen.Net.Control
             // Actually these should be inside the TabStrip but it would make things complicated
             // because TabStrip contains only TabButtons. ScrollButtons being here we don't need
             // an inner panel for TabButtons on the TabStrip.
-            m_Scroll = new ScrollBarButton[2];
+            scroll = new ScrollBarButton[2];
 
-            m_Scroll[0] = new ScrollBarButton(this);
-            m_Scroll[0].SetDirectionLeft();
-            m_Scroll[0].Clicked += ScrollPressedLeft;
-            m_Scroll[0].Size = new Size(BaseUnit);
+            scroll[0] = new ScrollBarButton(this);
+            scroll[0].SetDirectionLeft();
+            scroll[0].Clicked += ScrollPressedLeft;
+            scroll[0].Size = new Size(BaseUnit);
 
-            m_Scroll[1] = new ScrollBarButton(this);
-            m_Scroll[1].SetDirectionRight();
-            m_Scroll[1].Clicked += ScrollPressedRight;
-            m_Scroll[1].Size = new Size(BaseUnit);
+            scroll[1] = new ScrollBarButton(this);
+            scroll[1].SetDirectionRight();
+            scroll[1].Clicked += ScrollPressedRight;
+            scroll[1].Size = new Size(BaseUnit);
 
-            m_InnerPanel = new TabControlInner(this);
-            m_InnerPanel.Dock = Dock.Fill;
-            m_InnerPanel.SendToBack();
+            innerPanel = new TabControlInner(this);
+            innerPanel.Dock = Dock.Fill;
+            innerPanel.SendToBack();
 
             IsTabable = false;
 
-            m_ActualPadding = new Padding(left: 6, top: 6, right: 6, bottom: 6);
+            actualPadding = new Padding(left: 6, top: 6, right: 6, bottom: 6);
         }
 
         /// <summary>
@@ -83,10 +83,10 @@ namespace Gwen.Net.Control
         // Ugly way to implement padding but other ways would be more complicated
         public override Padding Padding
         {
-            get => m_ActualPadding;
+            get => actualPadding;
             set
             {
-                m_ActualPadding = value;
+                actualPadding = value;
 
                 foreach (ControlBase tab in TabStrip.Children)
                 {
@@ -97,8 +97,8 @@ namespace Gwen.Net.Control
 
         protected override void AdaptToScaleChange()
         {
-            m_Scroll[0].Size = new Size(BaseUnit);
-            m_Scroll[1].Size = new Size(BaseUnit);
+            scroll[0].Size = new Size(BaseUnit);
+            scroll[1].Size = new Size(BaseUnit);
         }
 
         /// <summary>
@@ -182,6 +182,7 @@ namespace Gwen.Net.Control
         ///     Handler for tab selection.
         /// </summary>
         /// <param name="control">Event source (TabButton).</param>
+        /// <param name="args">Event arguments.</param>
         internal virtual void OnTabPressed(ControlBase control, EventArgs args)
         {
             var button = control as TabButton;
@@ -226,51 +227,51 @@ namespace Gwen.Net.Control
             Size size = base.Arrange(finalSize);
 
             // At this point we know TabStrip location so lets move ScrollButtons
-            int buttonSize = m_Scroll[0].Size.Width;
+            int buttonSize = scroll[0].Size.Width;
 
             switch (TabStrip.StripPosition)
             {
                 case Dock.Top:
-                    m_Scroll[0].SetPosition(TabStrip.ActualRight - 5 - buttonSize - buttonSize, TabStrip.ActualTop + 5);
-                    m_Scroll[1].SetPosition(TabStrip.ActualRight - 5 - buttonSize, TabStrip.ActualTop + 5);
-                    m_Scroll[0].SetDirectionLeft();
-                    m_Scroll[1].SetDirectionRight();
+                    scroll[0].SetPosition(TabStrip.ActualRight - 5 - buttonSize - buttonSize, TabStrip.ActualTop + 5);
+                    scroll[1].SetPosition(TabStrip.ActualRight - 5 - buttonSize, TabStrip.ActualTop + 5);
+                    scroll[0].SetDirectionLeft();
+                    scroll[1].SetDirectionRight();
 
                     break;
                 case Dock.Bottom:
-                    m_Scroll[0].SetPosition(
+                    scroll[0].SetPosition(
                         TabStrip.ActualRight - 5 - buttonSize - buttonSize,
                         TabStrip.ActualBottom - 5 - buttonSize);
 
-                    m_Scroll[1].SetPosition(
+                    scroll[1].SetPosition(
                         TabStrip.ActualRight - 5 - buttonSize,
                         TabStrip.ActualBottom - 5 - buttonSize);
 
-                    m_Scroll[0].SetDirectionLeft();
-                    m_Scroll[1].SetDirectionRight();
+                    scroll[0].SetDirectionLeft();
+                    scroll[1].SetDirectionRight();
 
                     break;
                 case Dock.Left:
-                    m_Scroll[0].SetPosition(
+                    scroll[0].SetPosition(
                         TabStrip.ActualLeft + 5,
                         TabStrip.ActualBottom - 5 - buttonSize - buttonSize);
 
-                    m_Scroll[1].SetPosition(TabStrip.ActualLeft + 5, TabStrip.ActualBottom - 5 - buttonSize);
-                    m_Scroll[0].SetDirectionUp();
-                    m_Scroll[1].SetDirectionDown();
+                    scroll[1].SetPosition(TabStrip.ActualLeft + 5, TabStrip.ActualBottom - 5 - buttonSize);
+                    scroll[0].SetDirectionUp();
+                    scroll[1].SetDirectionDown();
 
                     break;
                 case Dock.Right:
-                    m_Scroll[0].SetPosition(
+                    scroll[0].SetPosition(
                         TabStrip.ActualRight - 5 - buttonSize,
                         TabStrip.ActualBottom - 5 - buttonSize - buttonSize);
 
-                    m_Scroll[1].SetPosition(
+                    scroll[1].SetPosition(
                         TabStrip.ActualRight - 5 - buttonSize,
                         TabStrip.ActualBottom - 5 - buttonSize);
 
-                    m_Scroll[0].SetDirectionUp();
-                    m_Scroll[1].SetDirectionDown();
+                    scroll[0].SetDirectionUp();
+                    scroll[1].SetDirectionDown();
 
                     break;
             }
@@ -317,8 +318,8 @@ namespace Gwen.Net.Control
                     break;
             }
 
-            m_Scroll[0].IsHidden = !needed;
-            m_Scroll[1].IsHidden = !needed;
+            scroll[0].IsHidden = !needed;
+            scroll[1].IsHidden = !needed;
 
             base.OnBoundsChanged(oldBounds);
         }

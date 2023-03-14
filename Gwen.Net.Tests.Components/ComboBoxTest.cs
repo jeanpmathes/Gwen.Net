@@ -41,7 +41,7 @@ namespace Gwen.Net.Tests.Components
 
                 for (var i = 0; i < 500; i++)
                 {
-                    combo.AddItem(String.Format("Option {0}", i));
+                    combo.AddItem($"Option {i}");
                 }
 
                 combo.ItemSelected += OnComboSelect;
@@ -59,13 +59,11 @@ namespace Gwen.Net.Tests.Components
                 combo.AddItem("Four Legs", "four");
                 combo.AddItem("Five Birds", "five");
 
-                combo.ItemSelected += (s, a) =>
-                    UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text));
+                combo.ItemSelected += (_, _) =>
+                    UnitPrint($"ComboBox: OnComboSelect: {combo.SelectedItem.Text}");
 
-                ;
-
-                combo.TextChanged += (s, a) => UnitPrint(String.Format("ComboBox: OnTextChanged: {0}", combo.Text));
-                combo.SubmitPressed += (s, a) => UnitPrint(String.Format("ComboBox: OnSubmitPressed: {0}", combo.Text));
+                combo.TextChanged += (_, _) => UnitPrint($"ComboBox: OnTextChanged: {combo.Text}");
+                combo.SubmitPressed += (_, _) => UnitPrint($"ComboBox: OnSubmitPressed: {combo.Text}");
             }
 
             {
@@ -77,47 +75,47 @@ namespace Gwen.Net.Tests.Components
                     combo.Margin = Margin.Five;
                     combo.Width = 200;
 
-                    MenuItem Triangle = combo.AddItem("Triangle");
+                    MenuItem triangle = combo.AddItem("Triangle");
                     combo.AddItem("Red", "color");
                     combo.AddItem("Apple", "fruit");
                     combo.AddItem("Blue", "color");
-                    combo.AddItem("Green", "color", UserData: 12);
+                    combo.AddItem("Green", "color", userData: 12);
                     combo.ItemSelected += OnComboSelect;
 
                     //Select by Menu Item
                     {
-                        Button TriangleButton = new(hlayout);
-                        TriangleButton.Text = "Triangle";
-                        TriangleButton.Width = 100;
+                        Button triangleButton = new(hlayout);
+                        triangleButton.Text = "Triangle";
+                        triangleButton.Width = 100;
 
-                        TriangleButton.Clicked += delegate { combo.SelectedItem = Triangle; };
+                        triangleButton.Clicked += delegate { combo.SelectedItem = triangle; };
                     }
 
                     //Select by Text
                     {
-                        Button TestBtn = new(hlayout);
-                        TestBtn.Text = "Red";
-                        TestBtn.Width = 100;
+                        Button testButton = new(hlayout);
+                        testButton.Text = "Red";
+                        testButton.Width = 100;
 
-                        TestBtn.Clicked += delegate { combo.SelectByText("Red"); };
+                        testButton.Clicked += delegate { combo.SelectByText("Red"); };
                     }
 
                     //Select by Name
                     {
-                        Button TestBtn = new(hlayout);
-                        TestBtn.Text = "Apple";
-                        TestBtn.Width = 100;
+                        Button testButton = new(hlayout);
+                        testButton.Text = "Apple";
+                        testButton.Width = 100;
 
-                        TestBtn.Clicked += delegate { combo.SelectByName("fruit"); };
+                        testButton.Clicked += delegate { combo.SelectByName("fruit"); };
                     }
 
                     //Select by UserData
                     {
-                        Button TestBtn = new(hlayout);
-                        TestBtn.Text = "Green";
-                        TestBtn.Width = 100;
+                        Button testButton = new(hlayout);
+                        testButton.Text = "Green";
+                        testButton.Width = 100;
 
-                        TestBtn.Clicked += delegate { combo.SelectByUserData(userdata: 12); };
+                        testButton.Clicked += delegate { combo.SelectByUserData(userdata: 12); };
                     }
                 }
             }
@@ -125,8 +123,8 @@ namespace Gwen.Net.Tests.Components
 
         private void OnComboSelect(ControlBase control, EventArgs args)
         {
-            var combo = control as ComboBox;
-            UnitPrint(String.Format("ComboBox: OnComboSelect: {0}", combo.SelectedItem.Text));
+            var combo = (ComboBox) control;
+            UnitPrint($"ComboBox: OnComboSelect: {combo.SelectedItem.Text}");
         }
     }
 }

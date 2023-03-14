@@ -3,128 +3,128 @@
     /// <summary>
     ///     UI colors used by skins.
     /// </summary>
-    public struct SkinColors
+    internal struct SkinColors
     {
-        public struct _Window
+        public struct WindowColors
         {
-            public Color TitleActive;
-            public Color TitleInactive;
+            public Color titleActive;
+            public Color titleInactive;
         }
 
-        public struct _Button
+        public struct ButtonColors
         {
-            public Color Normal;
-            public Color Hover;
-            public Color Down;
-            public Color Disabled;
+            public Color normal;
+            public Color hover;
+            public Color down;
+            public Color disabled;
         }
 
-        public struct _Tab
+        public struct TabColors
         {
-            public struct _Inactive
+            public struct InactiveColors
             {
-                public Color Normal;
-                public Color Hover;
-                public Color Down;
-                public Color Disabled;
+                public Color normal;
+                public Color hover;
+                public Color down;
+                public Color disabled;
             }
 
-            public struct _Active
+            public struct ActiveColors
             {
-                public Color Normal;
-                public Color Hover;
-                public Color Down;
-                public Color Disabled;
+                public Color normal;
+                public Color hover;
+                public Color down;
+                public Color disabled;
             }
 
-            public _Inactive Inactive;
-            public _Active Active;
+            public InactiveColors inactiveColors;
+            public ActiveColors activeColors;
         }
 
-        public struct _Label
+        public struct LabelColors
         {
-            public Color Default;
-            public Color Bright;
-            public Color Dark;
-            public Color Highlight;
+            public Color @default;
+            public Color bright;
+            public Color dark;
+            public Color highlight;
         }
 
-        public struct _TextBox
+        public struct TextBoxColors
         {
-            public Color Text;
-            public Color Background_Selected;
-            public Color Caret;
+            public Color text;
+            public Color backgroundSelected;
+            public Color caret;
         }
 
-        public struct _ListBox
+        public struct ListBoxColors
         {
-            public Color Text_Normal;
-            public Color Text_Selected;
+            public Color textNormal;
+            public Color textSelected;
         }
 
-        public struct _Tree
+        public struct TreeColors
         {
-            public Color Lines;
-            public Color Normal;
-            public Color Hover;
-            public Color Selected;
+            public Color lines;
+            public Color normal;
+            public Color hover;
+            public Color selected;
         }
 
-        public struct _Properties
+        public struct PropertiesColors
         {
-            public Color Line_Normal;
-            public Color Line_Selected;
-            public Color Line_Hover;
-            public Color Column_Normal;
-            public Color Column_Selected;
-            public Color Column_Hover;
-            public Color Label_Normal;
-            public Color Label_Selected;
-            public Color Label_Hover;
-            public Color Border;
-            public Color Title;
+            public Color lineNormal;
+            public Color lineSelected;
+            public Color lineHover;
+            public Color columnNormal;
+            public Color columnSelected;
+            public Color columnHover;
+            public Color labelNormal;
+            public Color labelSelected;
+            public Color labelHover;
+            public Color border;
+            public Color title;
         }
 
-        public struct _Category
+        public struct CategoryColors
         {
-            public Color Header;
-            public Color Header_Closed;
+            public Color header;
+            public Color headerClosed;
 
-            public struct _Line
+            public struct LineColors
             {
-                public Color Text;
-                public Color Text_Hover;
-                public Color Text_Selected;
-                public Color Button;
-                public Color Button_Hover;
-                public Color Button_Selected;
+                public Color text;
+                public Color textHover;
+                public Color textSelected;
+                public Color button;
+                public Color buttonHover;
+                public Color buttonSelected;
             }
 
-            public struct _LineAlt
+            public struct LineAltColors
             {
-                public Color Text;
-                public Color Text_Hover;
-                public Color Text_Selected;
-                public Color Button;
-                public Color Button_Hover;
-                public Color Button_Selected;
+                public Color text;
+                public Color textHover;
+                public Color textSelected;
+                public Color button;
+                public Color buttonHover;
+                public Color buttonSelected;
             }
 
-            public _Line Line;
-            public _LineAlt LineAlt;
+            public LineColors lineColors;
+            public LineAltColors lineAltColors;
         }
 
-        public Color ModalBackground;
-        public Color TooltipText;
+        public Color modalBackground;
+        public Color tooltipText;
 
-        public _Window Window;
-        public _Button Button;
-        public _Tab Tab;
-        public _Label Label;
-        public _TextBox TextBox;
-        public _ListBox ListBox;
-        public _Tree Tree;
-        public _Properties Properties;
-        public _Category Category;
+        public WindowColors windowColors;
+        public ButtonColors buttonColors;
+        public TabColors tabColors;
+        public LabelColors labelColors;
+        public TextBoxColors textBoxColors;
+        public ListBoxColors listBoxColors;
+        public TreeColors treeColors;
+        public PropertiesColors propertiesColors;
+        public CategoryColors categoryColors;
     }
 }

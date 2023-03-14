@@ -1,19 +1,21 @@
-﻿namespace Gwen.Net.RichText
+﻿using System;
+
+namespace Gwen.Net.RichText
 {
     public class FontPart : Part
     {
-        private readonly Font m_Font;
+        private readonly Font font;
 
         public FontPart(Font font = null)
         {
-            m_Font = font;
+            this.font = font;
         }
 
-        public override string[] Split(ref Font font)
+        public override string[] Split(ref Font splitFont)
         {
-            font = m_Font;
+            splitFont = font;
 
-            return new string[0];
+            return Array.Empty<string>();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control
+﻿using System.Globalization;
+
+namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Numeric text box - accepts only float numbers.
@@ -8,7 +10,7 @@
         /// <summary>
         ///     Current numeric value.
         /// </summary>
-        protected float m_Value;
+        protected float value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextBoxNumeric" /> class.
@@ -18,19 +20,26 @@
         {
             SetText("0", doEvents: false);
         }
+        
+        /// <summary>
+        /// Sets the number of decimal places to display.
+        /// </summary>
+        public int DecimalPlaces { get; set; }
 
         /// <summary>
         ///     Current numerical value.
         /// </summary>
         public virtual float Value
         {
-            get => m_Value;
+            get => value;
             set
             {
-                m_Value = value;
-                Text = value.ToString();
+                this.value = value;
+                Text = FormattedText;
             }
         }
+        
+        private string FormattedText => value.ToString($"F{DecimalPlaces}");
 
         protected virtual bool IsTextAllowed(string str)
         {
@@ -39,20 +48,18 @@
                 return true; // annoying if single - is not allowed
             }
 
-            float d;
-
-            return float.TryParse(str, out d);
+            return float.TryParse(str, out _);
         }
 
         /// <summary>
         ///     Determines whether the control can insert text at a given cursor position.
         /// </summary>
-        /// <param name="text">Text to check.</param>
+        /// <param name="textToCheck">Text to check.</param>
         /// <param name="position">Cursor position.</param>
         /// <returns>True if allowed.</returns>
-        protected override bool IsTextAllowed(string text, int position)
+        protected override bool IsTextAllowed(string textToCheck, int position)
         {
-            string newText = Text.Insert(position, text);
+            string newText = Text.Insert(position, textToCheck);
 
             return IsTextAllowed(newText);
         }
@@ -65,12 +72,11 @@
         {
             if (string.IsNullOrEmpty(Text) || Text == "-")
             {
-                m_Value = 0;
-                //SetText("0");
+                value = 0;
             }
             else
             {
-                m_Value = float.Parse(Text);
+                value = float.Parse(Text);
             }
 
             base.OnTextChanged();
@@ -92,12 +98,12 @@
         /// <summary>
         ///     Sets the control value.
         /// </summary>
-        /// <param name="value">Value to set.</param>
+        /// <param name="newValue">Value to set.</param>
         /// <param name="doEvents">Determines whether to invoke "text changed" event.</param>
-        public virtual void SetValue(float value, bool doEvents = true)
+        public virtual void SetValue(float newValue, bool doEvents = true)
         {
-            m_Value = value;
-            base.SetText(value.ToString(), doEvents);
+            value = newValue;
+            base.SetText(FormattedText, doEvents);
         }
     }
 }

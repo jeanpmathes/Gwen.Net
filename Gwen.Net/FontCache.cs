@@ -6,41 +6,41 @@ namespace Gwen.Net
 {
     public class FontCache : IDisposable
     {
-        private static FontCache m_Instance;
+        private static FontCache instance;
 
-        private readonly Dictionary<string, Font> m_FontCache = new();
+        private readonly Dictionary<string, Font> fontCache = new();
 
         public void Dispose()
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-            m_Instance = null;
+            instance = null;
         }
 
         public static Font GetFont(RendererBase renderer, string faceName, int size = 10, FontStyle style = 0)
         {
-            if (m_Instance == null)
+            if (instance == null)
             {
-                m_Instance = new FontCache();
+                instance = new FontCache();
             }
 
-            return m_Instance.InternalGetFont(renderer, faceName, size, style);
+            return instance.InternalGetFont(renderer, faceName, size, style);
         }
 
         public static void FreeCache()
         {
-            if (m_Instance != null)
+            if (instance != null)
             {
-                m_Instance.Dispose();
+                instance.Dispose();
             }
         }
 
         private Font InternalGetFont(RendererBase renderer, string faceName, int size, FontStyle style)
         {
-            string id = String.Format("{0};{1};{2}", faceName, size, (int)style);
+            string id = $"{faceName};{size};{(int) style}";
             Font font;
 
-            if (!m_FontCache.TryGetValue(id, out font))
+            if (!fontCache.TryGetValue(id, out font))
             {
                 font = new Font(renderer, faceName, size);
 
@@ -64,7 +64,7 @@ namespace Gwen.Net
                     font.Strikeout = true;
                 }
 
-                m_FontCache[id] = font;
+                fontCache[id] = font;
             }
 
             return font;
@@ -74,12 +74,12 @@ namespace Gwen.Net
         {
             if (disposing)
             {
-                foreach (KeyValuePair<string, Font> font in m_FontCache)
+                foreach (KeyValuePair<string, Font> font in fontCache)
                 {
                     font.Value.Dispose();
                 }
 
-                m_FontCache.Clear();
+                fontCache.Clear();
             }
         }
     }

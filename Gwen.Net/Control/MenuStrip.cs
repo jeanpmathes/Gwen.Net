@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Skin;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -24,9 +23,9 @@ namespace Gwen.Net.Control
             HorizontalAlignment = HorizontalAlignment.Stretch;
             VerticalAlignment = VerticalAlignment.Top;
 
-            m_Layout.Horizontal = true;
-            m_Layout.HorizontalAlignment = HorizontalAlignment.Left;
-            m_Layout.VerticalAlignment = VerticalAlignment.Stretch;
+            layout.Horizontal = true;
+            layout.HorizontalAlignment = HorizontalAlignment.Left;
+            layout.VerticalAlignment = VerticalAlignment.Stretch;
         }
 
         /// <summary>
@@ -42,16 +41,16 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders under the actual control (shadows etc).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderUnder(SkinBase currentSkin) {}
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawMenuStrip(this);
+            currentSkin.DrawMenuStrip(this);
         }
 
         /// <summary>

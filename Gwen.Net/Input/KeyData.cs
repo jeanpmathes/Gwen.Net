@@ -7,11 +7,11 @@ namespace Gwen.Net.Input
     /// </summary>
     public class KeyData
     {
-        public readonly bool[] KeyState;
-        public readonly float[] NextRepeat;
-        public bool LeftMouseDown;
-        public bool RightMouseDown;
-        public ControlBase Target;
+        public bool[] KeyState { get; }
+        public float[] NextRepeat { get; }
+        public bool LeftMouseDown { get; set; }
+        public bool RightMouseDown { get; set; }
+        public ControlBase Target { get; set; }
 
         public KeyData()
         {

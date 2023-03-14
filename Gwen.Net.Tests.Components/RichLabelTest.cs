@@ -29,7 +29,7 @@ namespace Gwen.Net.Tests.Components
 
             f5 = new Font(Skin.Renderer, "Courier New");
 
-            RichLabel label = CreateLabel(this);
+            CreateLabel(this);
 
             Button button = new(this);
             button.Dock = Dock.Bottom;
@@ -113,7 +113,7 @@ namespace Gwen.Net.Tests.Components
             UnitPrint("Link Clicked: " + args.Link);
         }
 
-        private Document LongDocument()
+        private static Document LongDocument()
         {
             Document document = new();
 

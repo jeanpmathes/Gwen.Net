@@ -21,8 +21,8 @@ namespace Gwen.Net
     /// </summary>
     public class Font : IDisposable
     {
-        private readonly RendererBase m_Renderer;
-        private FontMetrics? m_FontMetrics;
+        private readonly RendererBase renderer;
+        private FontMetrics? fontMetrics;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Font" /> class.
@@ -38,8 +38,8 @@ namespace Gwen.Net
         /// <param name="size">Font size.</param>
         public Font(RendererBase renderer, string faceName, int size = 10)
         {
-            m_Renderer = renderer;
-            m_FontMetrics = null;
+            this.renderer = renderer;
+            fontMetrics = null;
             FaceName = faceName;
             Size = size;
             Smooth = false;
@@ -89,12 +89,12 @@ namespace Gwen.Net
         {
             get
             {
-                if (m_FontMetrics == null)
+                if (fontMetrics == null)
                 {
-                    m_FontMetrics = m_Renderer.GetFontMetrics(this);
+                    fontMetrics = renderer.GetFontMetrics(this);
                 }
 
-                return (FontMetrics)m_FontMetrics;
+                return (FontMetrics)fontMetrics;
             }
         }
 
@@ -103,14 +103,14 @@ namespace Gwen.Net
         /// </summary>
         public void Dispose()
         {
-            m_Renderer.FreeFont(this);
+            renderer.FreeFont(this);
             GC.SuppressFinalize(this);
         }
 
 #if DEBUG
         ~Font()
         {
-            throw new InvalidOperationException(String.Format("IDisposable object finalized: {0}", GetType()));
+            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
             //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
         }
 #endif
@@ -121,7 +121,7 @@ namespace Gwen.Net
         /// <returns></returns>
         public Font Copy()
         {
-            Font f = new(m_Renderer, FaceName, Size);
+            Font f = new(renderer, FaceName, Size);
             f.RealSize = RealSize;
             f.RendererData = null; // must be reinitialized
             f.Bold = Bold;

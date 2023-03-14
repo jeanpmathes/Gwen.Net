@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gwen.Net.Anim;
 using Gwen.Net.DragDrop;
 using Gwen.Net.Input;
 using Gwen.Net.Renderer;
@@ -19,10 +18,10 @@ namespace Gwen.Net.Control
         private readonly HashSet<ControlBase> measureQueue = new();
 
         // [omeg] these are not created by us, so no disposing
-        internal ControlBase FirstTab;
+        internal ControlBase firstTab;
 
-        private float m_Scale;
-        internal ControlBase NextTab;
+        private float scale;
+        internal ControlBase nextTab;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Canvas" /> class.
@@ -45,19 +44,19 @@ namespace Gwen.Net.Control
         /// </summary>
         public override float Scale
         {
-            get => m_Scale;
+            get => scale;
             set
             {
-                if (m_Scale == value)
+                if (scale == value)
                 {
                     return;
                 }
 
-                m_Scale = value;
+                scale = value;
 
                 if (Skin != null && Skin.Renderer != null)
                 {
-                    Skin.Renderer.Scale = m_Scale;
+                    Skin.Renderer.Scale = scale;
                 }
 
                 OnScaleChanged();
@@ -139,10 +138,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            base.Render(skin);
+            base.Render(currentSkin);
             NeedsRedraw = false;
         }
 
@@ -166,11 +165,9 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            Animation.GlobalThink();
-
             // Reset tabbing
-            NextTab = null;
-            FirstTab = null;
+            nextTab = null;
+            firstTab = null;
 
             ProcessDelayedDeletes();
 
@@ -178,9 +175,9 @@ namespace Gwen.Net.Control
             RecurseControls();
 
             // If we didn't have a next tab, cycle to the start.
-            if (NextTab == null)
+            if (nextTab == null)
             {
-                NextTab = FirstTab;
+                nextTab = firstTab;
             }
 
             InputHandler.OnCanvasThink(this);

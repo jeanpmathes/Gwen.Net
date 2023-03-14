@@ -9,10 +9,10 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ColorLerpBox : ControlBase
     {
-        private Point m_CursorPos;
-        private bool m_Depressed;
-        private float m_Hue;
-        private Texture m_Texture;
+        private Point cursorPos;
+        private bool depressed;
+        private float hue;
+        private Texture texture;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorLerpBox" /> class.
@@ -22,7 +22,7 @@ namespace Gwen.Net.Control
         {
             SetColor(new Color(a: 255, r: 255, g: 128, b: 0));
             MouseInputEnabled = true;
-            m_Depressed = false;
+            depressed = false;
 
             // texture is initialized in Render() if null
         }
@@ -30,7 +30,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Selected color.
         /// </summary>
-        public Color SelectedColor => GetColorAt(m_CursorPos.X, m_CursorPos.Y);
+        public Color SelectedColor => GetColorAt(cursorPos.X, cursorPos.Y);
 
         /// <summary>
         ///     Invoked when the selected color has been changed.
@@ -42,9 +42,9 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void Dispose()
         {
-            if (m_Texture != null)
+            if (texture != null)
             {
-                m_Texture.Dispose();
+                texture.Dispose();
             }
 
             base.Dispose();
@@ -65,16 +65,17 @@ namespace Gwen.Net.Control
         ///     Sets the selected color.
         /// </summary>
         /// <param name="value">Value to set.</param>
-        /// <param name="onlyHue">Deetrmines whether to only set H value (not SV).</param>
+        /// <param name="onlyHue">Determines whether to only set H value (not SV).</param>
+        /// <param name="doEvents">Determines whether to invoke the ColorChanged event.</param>
         public void SetColor(Color value, bool onlyHue = true, bool doEvents = true)
         {
             var hsv = value.ToHSV();
-            m_Hue = hsv.H;
+            hue = hsv.H;
 
             if (!onlyHue)
             {
-                m_CursorPos.X = (int) (hsv.S * ActualWidth);
-                m_CursorPos.Y = (int) ((1 - hsv.V) * ActualHeight);
+                cursorPos.X = (int) (hsv.S * ActualWidth);
+                cursorPos.Y = (int) ((1 - hsv.V) * ActualHeight);
             }
 
             InvalidateTexture();
@@ -94,29 +95,29 @@ namespace Gwen.Net.Control
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (m_Depressed)
+            if (depressed)
             {
-                m_CursorPos = CanvasPosToLocal(new Point(x, y));
+                cursorPos = CanvasPosToLocal(new Point(x, y));
 
                 //Do we have clamp?
-                if (m_CursorPos.X < 0)
+                if (cursorPos.X < 0)
                 {
-                    m_CursorPos.X = 0;
+                    cursorPos.X = 0;
                 }
 
-                if (m_CursorPos.X > ActualWidth)
+                if (cursorPos.X > ActualWidth)
                 {
-                    m_CursorPos.X = ActualWidth;
+                    cursorPos.X = ActualWidth;
                 }
 
-                if (m_CursorPos.Y < 0)
+                if (cursorPos.Y < 0)
                 {
-                    m_CursorPos.Y = 0;
+                    cursorPos.Y = 0;
                 }
 
-                if (m_CursorPos.Y > ActualHeight)
+                if (cursorPos.Y > ActualHeight)
                 {
-                    m_CursorPos.Y = ActualHeight;
+                    cursorPos.Y = ActualHeight;
                 }
 
                 if (ColorChanged != null)
@@ -135,7 +136,7 @@ namespace Gwen.Net.Control
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
             base.OnMouseClickedLeft(x, y, down);
-            m_Depressed = down;
+            depressed = down;
 
             if (down)
             {
@@ -160,7 +161,7 @@ namespace Gwen.Net.Control
             float xPercent = x / (float) ActualWidth;
             float yPercent = 1 - (y / (float) ActualHeight);
 
-            Color result = Util.HSVToColor(m_Hue, xPercent, yPercent);
+            Color result = Util.HSVToColor(hue, xPercent, yPercent);
 
             return result;
         }
@@ -170,20 +171,20 @@ namespace Gwen.Net.Control
         /// </summary>
         private void InvalidateTexture()
         {
-            if (m_Texture != null)
+            if (texture != null)
             {
-                m_Texture.Dispose();
-                m_Texture = null;
+                texture.Dispose();
+                texture = null;
             }
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            if (m_Texture == null)
+            if (texture == null)
             {
                 var pixelData = new byte[ActualWidth * ActualHeight * 4];
 
@@ -199,40 +200,40 @@ namespace Gwen.Net.Control
                     }
                 }
 
-                m_Texture = new Texture(skin.Renderer);
-                m_Texture.Width = ActualWidth;
-                m_Texture.Height = ActualHeight;
-                m_Texture.LoadRaw(ActualWidth, ActualHeight, pixelData);
+                texture = new Texture(currentSkin.Renderer);
+                texture.Width = ActualWidth;
+                texture.Height = ActualHeight;
+                texture.LoadRaw(ActualWidth, ActualHeight, pixelData);
             }
 
-            skin.Renderer.DrawColor = Color.White;
-            skin.Renderer.DrawTexturedRect(m_Texture, RenderBounds);
+            currentSkin.Renderer.DrawColor = Color.White;
+            currentSkin.Renderer.DrawTexturedRect(texture, RenderBounds);
 
-            skin.Renderer.DrawColor = Color.Black;
-            skin.Renderer.DrawLinedRect(RenderBounds);
+            currentSkin.Renderer.DrawColor = Color.Black;
+            currentSkin.Renderer.DrawLinedRect(RenderBounds);
 
             Color selected = SelectedColor;
 
             if ((selected.R + selected.G + selected.B) / 3 < 170)
             {
-                skin.Renderer.DrawColor = Color.White;
+                currentSkin.Renderer.DrawColor = Color.White;
             }
             else
             {
-                skin.Renderer.DrawColor = Color.Black;
+                currentSkin.Renderer.DrawColor = Color.Black;
             }
 
-            Rectangle testRect = new(m_CursorPos.X - 3, m_CursorPos.Y - 3, width: 6, height: 6);
+            Rectangle testRect = new(cursorPos.X - 3, cursorPos.Y - 3, width: 6, height: 6);
 
-            skin.Renderer.DrawShavedCornerRect(testRect);
+            currentSkin.Renderer.DrawShavedCornerRect(testRect);
         }
 
         protected override void OnBoundsChanged(Rectangle oldBounds)
         {
-            if (m_Texture != null)
+            if (texture != null)
             {
-                m_Texture.Dispose();
-                m_Texture = null;
+                texture.Dispose();
+                texture = null;
             }
 
             base.OnBoundsChanged(oldBounds);
@@ -240,7 +241,7 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            m_CursorPos = new Point(x: 0, y: 0);
+            cursorPos = new Point(x: 0, y: 0);
 
             return new Size(width: 128, height: 128);
         }

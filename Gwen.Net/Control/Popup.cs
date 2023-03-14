@@ -31,20 +31,20 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawMenu(this, paddingDisabled: true);
+            currentSkin.DrawMenu(this, paddingDisabled: true);
         }
 
         /// <summary>
         ///     Renders under the actual control (shadows etc).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderUnder(SkinBase currentSkin)
         {
-            base.RenderUnder(skin);
-            skin.DrawShadow(this);
+            base.RenderUnder(currentSkin);
+            currentSkin.DrawShadow(this);
         }
 
         /// <summary>

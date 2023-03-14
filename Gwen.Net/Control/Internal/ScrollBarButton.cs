@@ -12,7 +12,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class ScrollBarButton : ButtonBase
     {
-        private ScrollBarButtonDirection m_Direction;
+        private ScrollBarButtonDirection direction;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ScrollBarButton" /> class.
@@ -26,31 +26,31 @@ namespace Gwen.Net.Control.Internal
 
         public virtual void SetDirectionUp()
         {
-            m_Direction = ScrollBarButtonDirection.Top;
+            direction = ScrollBarButtonDirection.Top;
         }
 
         public virtual void SetDirectionDown()
         {
-            m_Direction = ScrollBarButtonDirection.Bottom;
+            direction = ScrollBarButtonDirection.Bottom;
         }
 
         public virtual void SetDirectionLeft()
         {
-            m_Direction = ScrollBarButtonDirection.Left;
+            direction = ScrollBarButtonDirection.Left;
         }
 
         public virtual void SetDirectionRight()
         {
-            m_Direction = ScrollBarButtonDirection.Right;
+            direction = ScrollBarButtonDirection.Right;
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawScrollButton(this, m_Direction, IsDepressed, IsHovered, IsDisabled);
+            currentSkin.DrawScrollButton(this, direction, IsDepressed, IsHovered, IsDisabled);
         }
     }
 }

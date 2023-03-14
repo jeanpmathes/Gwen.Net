@@ -74,27 +74,27 @@ namespace Gwen.Net.Control.Internal
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (null == m_Target)
+            if (null == target)
             {
                 return;
             }
 
-            if (!m_Held)
+            if (!held)
             {
                 return;
             }
 
-            Rectangle oldBounds = m_Target.Bounds;
-            Rectangle bounds = m_Target.Bounds;
+            Rectangle oldBounds = target.Bounds;
+            Rectangle bounds = target.Bounds;
             
             // If the desired bounds are not set to the current bounds, setting the bounds below can cause one of the dimensions to be set to 0.
             // This will cause the control to jump around when resizing.
             // Maybe there is a better way to fix this, but this works for now.
-            m_Target.DesiredBounds = bounds;
+            target.DesiredBounds = bounds;
 
-            Size min = m_Target.MinimumSize;
+            Size min = target.MinimumSize;
 
-            Point delta = m_Target.LocalPosToCanvas(m_HoldPos);
+            Point delta = target.LocalPosToCanvas(holdPos);
             delta.X -= x;
             delta.Y -= y;
 
@@ -118,8 +118,8 @@ namespace Gwen.Net.Control.Internal
                     bounds.X -= diff;
                 }
 
-                m_Target.Left = bounds.Left;
-                m_Target.Width = bounds.Width;
+                target.Left = bounds.Left;
+                target.Width = bounds.Width;
             }
 
             if (0 != (resizeDir & Dock.Top))
@@ -142,8 +142,8 @@ namespace Gwen.Net.Control.Internal
                     bounds.Y -= diff;
                 }
 
-                m_Target.Top = bounds.Top;
-                m_Target.Height = bounds.Height;
+                target.Top = bounds.Top;
+                target.Height = bounds.Height;
             }
 
             if (0 != (resizeDir & Dock.Right))
@@ -155,10 +155,10 @@ namespace Gwen.Net.Control.Internal
                     bounds.Width = min.Width;
                 }
 
-                m_HoldPos.X += bounds.Width - oldBounds.Width;
+                holdPos.X += bounds.Width - oldBounds.Width;
 
-                m_Target.Left = bounds.Left;
-                m_Target.Width = bounds.Width;
+                target.Left = bounds.Left;
+                target.Width = bounds.Width;
             }
 
             if (0 != (resizeDir & Dock.Bottom))
@@ -170,27 +170,27 @@ namespace Gwen.Net.Control.Internal
                     bounds.Height = min.Height;
                 }
 
-                m_HoldPos.Y += bounds.Height - oldBounds.Height;
+                holdPos.Y += bounds.Height - oldBounds.Height;
 
-                m_Target.Top = bounds.Top;
-                m_Target.Height = bounds.Height;
+                target.Top = bounds.Top;
+                target.Height = bounds.Height;
             }
 
             // Lets set quickly new bounds and let the layout measure and arrange child controls later.
-            m_Target.SetBounds(bounds);
+            target.SetBounds(bounds);
 
             // Set bounds that are checked by SetBounds() implementations.
-            if (!Util.IsIgnore(m_Target.Width))
+            if (!Util.IsIgnore(target.Width))
             {
-                m_Target.Width = m_Target.Bounds.Width;
+                target.Width = target.Bounds.Width;
             }
 
-            if (!Util.IsIgnore(m_Target.Height))
+            if (!Util.IsIgnore(target.Height))
             {
-                m_Target.Height = m_Target.Bounds.Height;
+                target.Height = target.Bounds.Height;
             }
 
-            m_Target.Invalidate();
+            target.Invalidate();
 
             if (Resized != null)
             {

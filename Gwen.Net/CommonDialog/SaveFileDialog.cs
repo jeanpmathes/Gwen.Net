@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.CommonDialog
@@ -20,21 +19,21 @@ namespace Gwen.Net.CommonDialog
             OkButtonText = "Save";
         }
 
-        protected override void OnItemSelected(string path)
+        protected override void OnItemSelected(string selectedPath)
         {
-            if (FileExists(path))
+            if (FileExists(selectedPath))
             {
-                SetCurrentItem(GetFileName(path));
+                SetCurrentItem(GetFileName(selectedPath));
             }
         }
 
-        protected override bool IsSubmittedNameOk(string path)
+        protected override bool IsSubmittedNameOk(string submittedPath)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(submittedPath))
             {
-                SetPath(path);
+                SetPath(submittedPath);
             }
-            else if (FileExists(path))
+            else if (FileExists(submittedPath))
             {
                 return true;
             }
@@ -42,23 +41,23 @@ namespace Gwen.Net.CommonDialog
             return false;
         }
 
-        protected override bool ValidateFileName(string path)
+        protected override bool ValidateFileName(string pathToValidate)
         {
-            if (DirectoryExists(path))
+            if (DirectoryExists(pathToValidate))
             {
                 return false;
             }
 
-            if (FileExists(path))
+            if (FileExists(pathToValidate))
             {
                 MessageBox win = MessageBox.Show(
                     View,
-                    String.Format("File '{0}' already exists. Do you want to replace it?", GetFileName(path)),
+                    $"File '{GetFileName(pathToValidate)}' already exists. Do you want to replace it?",
                     Title,
                     buttons: MessageBoxButtons.YesNo);
 
                 win.Dismissed += OnMessageBoxDismissed;
-                win.UserData = path;
+                win.UserData = pathToValidate;
 
                 return false;
             }

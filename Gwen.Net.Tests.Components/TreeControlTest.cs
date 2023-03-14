@@ -143,32 +143,32 @@ namespace Gwen.Net.Tests.Components
 
         private void NodeCollapsed(ControlBase control, EventArgs args)
         {
-            var node = control as TreeNode;
-            UnitPrint(String.Format("Node collapsed: {0}", node.Text));
+            var node = (TreeNode) control;
+            UnitPrint($"Node collapsed: {node.Text}");
         }
 
         private void NodeExpanded(ControlBase control, EventArgs args)
         {
-            var node = control as TreeNode;
-            UnitPrint(String.Format("Node expanded: {0}", node.Text));
+            var node = (TreeNode) control;
+            UnitPrint($"Node expanded: {node.Text}");
         }
 
         private void NodeSelected(ControlBase control, EventArgs args)
         {
-            var node = control as TreeNode;
-            UnitPrint(String.Format("Node selected: {0}", node.Text));
+            var node = (TreeNode) control;
+            UnitPrint($"Node selected: {node.Text}");
         }
 
         private void NodeClicked(ControlBase control, ClickedEventArgs args)
         {
-            var node = control as TreeNode;
-            UnitPrint(String.Format("Node clicked: {0} @({1}, {2})", node.Text, args.X, args.Y));
+            var node = (TreeNode) control;
+            UnitPrint($"Node clicked: {node.Text} @({args.X}, {args.Y})");
         }
 
         private void NodeDoubleClicked(ControlBase control, ClickedEventArgs args)
         {
-            var node = control as TreeNode;
-            UnitPrint(String.Format("Node double clicked: {0}", node.Text));
+            var node = (TreeNode) control;
+            UnitPrint($"Node double clicked: {node.Text}");
         }
     }
 }

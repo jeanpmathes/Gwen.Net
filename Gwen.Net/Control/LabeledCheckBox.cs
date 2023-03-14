@@ -7,8 +7,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class LabeledCheckBox : ControlBase
     {
-        private readonly CheckBox m_CheckBox;
-        private readonly Label m_Label;
+        private readonly CheckBox checkBox;
+        private readonly Label label;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LabeledCheckBox" /> class.
@@ -17,13 +17,13 @@ namespace Gwen.Net.Control
         public LabeledCheckBox(ControlBase parent)
             : base(parent)
         {
-            m_CheckBox = new CheckBox(this);
-            m_CheckBox.IsTabable = false;
-            m_CheckBox.CheckChanged += OnCheckChanged;
+            checkBox = new CheckBox(this);
+            checkBox.IsTabable = false;
+            checkBox.CheckChanged += OnCheckChanged;
 
-            m_Label = new Label(this);
-            m_Label.Clicked += delegate(ControlBase Control, ClickedEventArgs args) { m_CheckBox.Press(Control); };
-            m_Label.IsTabable = false;
+            label = new Label(this);
+            label.Clicked += delegate(ControlBase control, ClickedEventArgs _) { checkBox.Press(control); };
+            label.IsTabable = false;
 
             IsTabable = false;
         }
@@ -33,8 +33,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool IsChecked
         {
-            get => m_CheckBox.IsChecked;
-            set => m_CheckBox.IsChecked = value;
+            get => checkBox.IsChecked;
+            set => checkBox.IsChecked = value;
         }
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public string Text
         {
-            get => m_Label.Text;
-            set => m_Label.Text = value;
+            get => label.Text;
+            set => label.Text = value;
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            Size labelSize = m_Label.DoMeasure(availableSize);
-            Size radioButtonSize = m_CheckBox.DoMeasure(availableSize);
+            Size labelSize = label.DoMeasure(availableSize);
+            Size radioButtonSize = checkBox.DoMeasure(availableSize);
 
             return new Size(
                 labelSize.Width + 4 + radioButtonSize.Width,
@@ -73,33 +73,33 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            if (m_CheckBox.MeasuredSize.Height > m_Label.MeasuredSize.Height)
+            if (checkBox.MeasuredSize.Height > label.MeasuredSize.Height)
             {
-                m_CheckBox.DoArrange(
-                    new Rectangle(x: 0, y: 0, m_CheckBox.MeasuredSize.Width, m_CheckBox.MeasuredSize.Height));
+                checkBox.DoArrange(
+                    new Rectangle(x: 0, y: 0, checkBox.MeasuredSize.Width, checkBox.MeasuredSize.Height));
 
-                m_Label.DoArrange(
+                label.DoArrange(
                     new Rectangle(
-                        m_CheckBox.MeasuredSize.Width + 4,
-                        (m_CheckBox.MeasuredSize.Height - m_Label.MeasuredSize.Height) / 2,
-                        m_Label.MeasuredSize.Width,
-                        m_Label.MeasuredSize.Height));
+                        checkBox.MeasuredSize.Width + 4,
+                        (checkBox.MeasuredSize.Height - label.MeasuredSize.Height) / 2,
+                        label.MeasuredSize.Width,
+                        label.MeasuredSize.Height));
             }
             else
             {
-                m_CheckBox.DoArrange(
+                checkBox.DoArrange(
                     new Rectangle(
                         x: 0,
-                        (m_Label.MeasuredSize.Height - m_CheckBox.MeasuredSize.Height) / 2,
-                        m_CheckBox.MeasuredSize.Width,
-                        m_CheckBox.MeasuredSize.Height));
+                        (label.MeasuredSize.Height - checkBox.MeasuredSize.Height) / 2,
+                        checkBox.MeasuredSize.Width,
+                        checkBox.MeasuredSize.Height));
 
-                m_Label.DoArrange(
+                label.DoArrange(
                     new Rectangle(
-                        m_CheckBox.MeasuredSize.Width + 4,
+                        checkBox.MeasuredSize.Width + 4,
                         y: 0,
-                        m_Label.MeasuredSize.Width,
-                        m_Label.MeasuredSize.Height));
+                        label.MeasuredSize.Width,
+                        label.MeasuredSize.Height));
             }
 
             return MeasuredSize;
@@ -108,9 +108,9 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Handler for CheckChanged event.
         /// </summary>
-        protected virtual void OnCheckChanged(ControlBase control, EventArgs Args)
+        protected virtual void OnCheckChanged(ControlBase control, EventArgs args)
         {
-            if (m_CheckBox.IsChecked)
+            if (checkBox.IsChecked)
             {
                 if (Checked != null)
                 {
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
 
             if (!down)
             {
-                m_CheckBox.IsChecked = !m_CheckBox.IsChecked;
+                checkBox.IsChecked = !checkBox.IsChecked;
             }
 
             return true;

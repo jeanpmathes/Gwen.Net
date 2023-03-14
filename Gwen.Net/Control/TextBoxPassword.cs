@@ -4,11 +4,11 @@
     ///     Text box with masked text.
     /// </summary>
     /// <remarks>
-    ///     This class doesn't prevent programatic access to the text in any way.
+    ///     This class doesn't prevent programmatic access to the text in any way.
     /// </remarks>
     public class TextBoxPassword : TextBox
     {
-        private string m_Mask;
+        private string mask;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextBoxPassword" /> class.
@@ -30,8 +30,8 @@
         /// </summary>
         protected override void OnTextChanged()
         {
-            m_Mask = new string(MaskCharacter, Text.Length);
-            TextOverride = m_Mask;
+            mask = new string(MaskCharacter, Text.Length);
+            TextOverride = mask;
             base.OnTextChanged();
         }
     }

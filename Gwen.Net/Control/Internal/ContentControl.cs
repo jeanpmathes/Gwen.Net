@@ -5,9 +5,9 @@ namespace Gwen.Net.Control.Internal
     public class ContentControl : ControlBase
     {
         /// <summary>
-        ///     If the innerpanel exists our children will automatically become children of that instead of us.
+        ///     If the inner panel exists our children will automatically become children of that instead of us.
         /// </summary>
-        protected ControlBase m_InnerPanel;
+        protected ControlBase innerPanel;
 
         public ContentControl(ControlBase parent)
             : base(parent) {}
@@ -19,9 +19,9 @@ namespace Gwen.Net.Control.Internal
         {
             get
             {
-                if (m_InnerPanel != null)
+                if (innerPanel != null)
                 {
-                    return m_InnerPanel.Children;
+                    return innerPanel.Children;
                 }
 
                 return base.Children;
@@ -31,7 +31,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Get the content of the control.
         /// </summary>
-        public virtual ControlBase Content => m_InnerPanel;
+        public virtual ControlBase Content => innerPanel;
 
         /// <summary>
         ///     Attaches specified control as a child of this one.
@@ -42,9 +42,9 @@ namespace Gwen.Net.Control.Internal
         /// <param name="child">Control to be added as a child.</param>
         public override void AddChild(ControlBase child)
         {
-            if (m_InnerPanel != null)
+            if (innerPanel != null)
             {
-                m_InnerPanel.AddChild(child);
+                innerPanel.AddChild(child);
             }
             else
             {
@@ -63,17 +63,17 @@ namespace Gwen.Net.Control.Internal
         {
             // If we removed our innerpanel
             // remove our pointer to it
-            if (m_InnerPanel == child)
+            if (innerPanel == child)
             {
                 base.RemoveChild(child, dispose);
-                m_InnerPanel = null;
+                innerPanel = null;
 
                 return;
             }
 
-            if (m_InnerPanel != null && m_InnerPanel.Children.Contains(child))
+            if (innerPanel != null && innerPanel.Children.Contains(child))
             {
-                m_InnerPanel.RemoveChild(child, dispose);
+                innerPanel.RemoveChild(child, dispose);
 
                 return;
             }
@@ -89,9 +89,9 @@ namespace Gwen.Net.Control.Internal
         /// <returns>Found control or null.</returns>
         public override ControlBase FindChildByName(string name, bool recursive = false)
         {
-            if (m_InnerPanel != null && m_InnerPanel is InnerContentControl)
+            if (innerPanel != null && innerPanel is InnerContentControl)
             {
-                return m_InnerPanel.FindChildByName(name, recursive);
+                return innerPanel.FindChildByName(name, recursive);
             }
 
             return base.FindChildByName(name, recursive);

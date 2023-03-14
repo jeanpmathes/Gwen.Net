@@ -4,7 +4,7 @@ namespace Gwen.Net.Tests.Components
 {
     public class GUnit : ControlBase
     {
-        public UnitTestHarnessControls UnitTest;
+        public UnitTestHarnessControls UnitTest { get; set; }
 
         public GUnit(ControlBase parent) : base(parent)
         {
@@ -13,10 +13,7 @@ namespace Gwen.Net.Tests.Components
 
         public void UnitPrint(string str)
         {
-            if (UnitTest != null)
-            {
-                UnitTest.PrintText(str);
-            }
+            UnitTest?.PrintText(str);
         }
     }
 }

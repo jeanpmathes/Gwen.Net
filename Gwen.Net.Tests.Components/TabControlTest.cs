@@ -7,20 +7,19 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Containers", Order = 304)]
     public class TabControlTest : GUnit
     {
-        private readonly TabControl m_DockControl;
+        private readonly TabControl dockControl;
 
         public TabControlTest(ControlBase parent)
             : base(parent)
         {
             {
-                m_DockControl = new TabControl(this);
-                m_DockControl.Margin = Margin.Zero;
-                m_DockControl.Width = 200;
-                //m_DockControl.Height = 150;
-                m_DockControl.Dock = Dock.Top;
+                dockControl = new TabControl(this);
+                dockControl.Margin = Margin.Zero;
+                dockControl.Width = 200;
+                dockControl.Dock = Dock.Top;
 
                 {
-                    TabButton button = m_DockControl.AddPage("Controls");
+                    TabButton button = dockControl.AddPage("Controls");
                     ControlBase page = button.Page;
 
                     {
@@ -37,11 +36,11 @@ namespace Gwen.Net.Tests.Components
                     }
                 }
 
-                m_DockControl.AddPage("Red");
-                m_DockControl.AddPage("Green");
-                m_DockControl.AddPage("Blue");
-                m_DockControl.AddPage("Blue");
-                m_DockControl.AddPage("Blue");
+                dockControl.AddPage("Red");
+                dockControl.AddPage("Green");
+                dockControl.AddPage("Blue");
+                dockControl.AddPage("Blue");
+                dockControl.AddPage("Blue");
             }
 
             {
@@ -66,22 +65,22 @@ namespace Gwen.Net.Tests.Components
 
             if (rc.SelectedLabel == "Top")
             {
-                m_DockControl.TabStripPosition = Dock.Top;
+                dockControl.TabStripPosition = Dock.Top;
             }
 
             if (rc.SelectedLabel == "Bottom")
             {
-                m_DockControl.TabStripPosition = Dock.Bottom;
+                dockControl.TabStripPosition = Dock.Bottom;
             }
 
             if (rc.SelectedLabel == "Left")
             {
-                m_DockControl.TabStripPosition = Dock.Left;
+                dockControl.TabStripPosition = Dock.Left;
             }
 
             if (rc.SelectedLabel == "Right")
             {
-                m_DockControl.TabStripPosition = Dock.Right;
+                dockControl.TabStripPosition = Dock.Right;
             }
         }
     }

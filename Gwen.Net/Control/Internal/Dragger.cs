@@ -9,9 +9,9 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Dragger : ControlBase
     {
-        protected bool m_Held;
-        protected Point m_HoldPos;
-        protected ControlBase m_Target;
+        protected bool held;
+        protected Point holdPos;
+        protected ControlBase target;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Dragger" /> class.
@@ -20,19 +20,19 @@ namespace Gwen.Net.Control.Internal
         public Dragger(ControlBase parent) : base(parent)
         {
             MouseInputEnabled = true;
-            m_Held = false;
+            held = false;
         }
 
         internal ControlBase Target
         {
-            get => m_Target;
-            set => m_Target = value;
+            get => target;
+            set => target = value;
         }
 
         /// <summary>
         ///     Indicates if the control is being dragged.
         /// </summary>
-        public bool IsHeld => m_Held;
+        public bool IsHeld => held;
 
         /// <summary>
         ///     Event invoked when the control position has been changed.
@@ -47,20 +47,20 @@ namespace Gwen.Net.Control.Internal
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
-            if (null == m_Target)
+            if (null == target)
             {
                 return;
             }
 
             if (down)
             {
-                m_Held = true;
-                m_HoldPos = m_Target.CanvasPosToLocal(new Point(x, y));
+                held = true;
+                holdPos = target.CanvasPosToLocal(new Point(x, y));
                 InputHandler.MouseFocus = this;
             }
             else
             {
-                m_Held = false;
+                held = false;
 
                 InputHandler.MouseFocus = null;
             }
@@ -75,26 +75,25 @@ namespace Gwen.Net.Control.Internal
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (null == m_Target)
+            if (null == target)
             {
                 return;
             }
 
-            if (!m_Held)
+            if (!held)
             {
                 return;
             }
 
-            Point p = new(x - m_HoldPos.X, y - m_HoldPos.Y);
+            Point p = new(x - holdPos.X, y - holdPos.Y);
 
             // Translate to parent
-            if (m_Target.Parent != null)
+            if (target.Parent != null)
             {
-                p = m_Target.Parent.CanvasPosToLocal(p);
+                p = target.Parent.CanvasPosToLocal(p);
             }
-
-            //m_Target->SetPosition( p.x, p.y );
-            m_Target.MoveTo(p.X, p.Y);
+            
+            target.MoveTo(p.X, p.Y);
 
             if (Dragged != null)
             {
@@ -115,7 +114,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin) {}
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin) {}
     }
 }

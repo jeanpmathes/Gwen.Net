@@ -40,10 +40,10 @@
                 Anchor anchor = child.Anchor;
                 Rectangle anchorBounds = child.AnchorBounds;
 
-                int left = anchorBounds.Left + ((size.Width - initialSize.Width) * anchor.Left / 100);
-                int top = anchorBounds.Top + ((size.Height - initialSize.Height) * anchor.Top / 100);
-                int right = anchorBounds.Right + ((size.Width - initialSize.Width) * anchor.Right / 100);
-                int bottom = anchorBounds.Bottom + ((size.Height - initialSize.Height) * anchor.Bottom / 100);
+                int left = anchorBounds.Left + ((size.Width - initialSize.Width) * anchor.left / 100);
+                int top = anchorBounds.Top + ((size.Height - initialSize.Height) * anchor.top / 100);
+                int right = anchorBounds.Right + ((size.Width - initialSize.Width) * anchor.right / 100);
+                int bottom = anchorBounds.Bottom + ((size.Height - initialSize.Height) * anchor.bottom / 100);
 
                 child.DoArrange(new Rectangle(left, top, right - left + 1, bottom - top + 1));
             }

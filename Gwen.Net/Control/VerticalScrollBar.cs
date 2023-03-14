@@ -18,29 +18,29 @@ namespace Gwen.Net.Control
         {
             Width = BaseUnit;
 
-            m_Bar.IsVertical = true;
+            bar.IsVertical = true;
 
-            m_ScrollButton[0].Dock = Dock.Top;
-            m_ScrollButton[0].SetDirectionUp();
-            m_ScrollButton[0].Clicked += NudgeUp;
+            scrollButton[0].Dock = Dock.Top;
+            scrollButton[0].SetDirectionUp();
+            scrollButton[0].Clicked += NudgeUp;
 
-            m_ScrollButton[1].Dock = Dock.Bottom;
-            m_ScrollButton[1].SetDirectionDown();
-            m_ScrollButton[1].Clicked += NudgeDown;
+            scrollButton[1].Dock = Dock.Bottom;
+            scrollButton[1].SetDirectionDown();
+            scrollButton[1].Clicked += NudgeDown;
 
-            m_Bar.Dock = Dock.Fill;
-            m_Bar.Dragged += OnBarMoved;
+            bar.Dock = Dock.Fill;
+            bar.Dragged += OnBarMoved;
         }
 
         /// <summary>
         ///     Bar size (in pixels).
         /// </summary>
-        public override int BarSize => m_Bar.ActualHeight;
+        public override int BarSize => bar.ActualHeight;
 
         /// <summary>
         ///     Bar position (in pixels).
         /// </summary>
-        public override int BarPos => m_Bar.ActualTop - ActualWidth;
+        public override int BarPos => bar.ActualTop - ActualWidth;
 
         /// <summary>
         ///     Button size (in pixels).
@@ -55,8 +55,8 @@ namespace Gwen.Net.Control
             {
                 base.Width = value;
 
-                m_ScrollButton[0].Height = Width;
-                m_ScrollButton[1].Height = Width;
+                scrollButton[0].Height = Width;
+                scrollButton[1].Height = Width;
             }
         }
 
@@ -64,9 +64,9 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Depressed)
+                if (depressed)
                 {
-                    return m_ViewableContentSize / m_ContentSize;
+                    return viewableContentSize / contentSize;
                 }
 
                 return base.NudgeAmount;
@@ -92,9 +92,9 @@ namespace Gwen.Net.Control
         {
             var barHeight = 0.0f;
 
-            if (m_ContentSize > 0.0f)
+            if (contentSize > 0.0f)
             {
-                barHeight = m_ViewableContentSize / m_ContentSize * (ActualHeight - (ButtonSize * 2));
+                barHeight = viewableContentSize / contentSize * (ActualHeight - (ButtonSize * 2));
             }
 
             if (barHeight < ButtonSize * 0.5f)
@@ -102,11 +102,11 @@ namespace Gwen.Net.Control
                 barHeight = (int) (ButtonSize * 0.5f);
             }
 
-            m_Bar.SetSize(m_Bar.ActualWidth, (int) barHeight);
-            m_Bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
+            bar.SetSize(bar.ActualWidth, (int) barHeight);
+            bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
 
             //Based on our last scroll amount, produce a position for the bar
-            if (!m_Bar.IsHeld)
+            if (!bar.IsHeld)
             {
                 SetScrollAmount(ScrollAmount, forceUpdate: true);
             }
@@ -150,31 +150,31 @@ namespace Gwen.Net.Control
 
             if (down)
             {
-                m_Depressed = true;
+                depressed = true;
                 InputHandler.MouseFocus = this;
             }
             else
             {
                 Point clickPos = CanvasPosToLocal(new Point(x, y));
 
-                if (clickPos.Y < m_Bar.ActualTop)
+                if (clickPos.Y < bar.ActualTop)
                 {
                     NudgeUp(this, EventArgs.Empty);
                 }
-                else if (clickPos.Y > m_Bar.ActualTop + m_Bar.ActualHeight)
+                else if (clickPos.Y > bar.ActualTop + bar.ActualHeight)
                 {
                     NudgeDown(this, EventArgs.Empty);
                 }
 
-                m_Depressed = false;
+                depressed = false;
                 InputHandler.MouseFocus = null;
             }
         }
 
         protected override float CalculateScrolledAmount()
         {
-            float value = (float) (m_Bar.ActualTop - ButtonSize) /
-                          (ActualHeight - m_Bar.ActualHeight - (ButtonSize * 2));
+            float value = (float) (bar.ActualTop - ButtonSize) /
+                          (ActualHeight - bar.ActualHeight - (ButtonSize * 2));
 
             if (float.IsNaN(value))
             {
@@ -201,8 +201,8 @@ namespace Gwen.Net.Control
 
             if (forceUpdate)
             {
-                var newY = (int) (ButtonSize + value * (ActualHeight - m_Bar.ActualHeight - ButtonSize * 2));
-                m_Bar.MoveTo(m_Bar.ActualLeft, newY);
+                var newY = (int) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
+                bar.MoveTo(bar.ActualLeft, newY);
             }
 
             return true;
@@ -212,9 +212,10 @@ namespace Gwen.Net.Control
         ///     Handler for the BarMoved event.
         /// </summary>
         /// <param name="control">The control.</param>
+        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         protected override void OnBarMoved(ControlBase control, EventArgs args)
         {
-            if (m_Bar.IsHeld)
+            if (bar.IsHeld)
             {
                 SetScrollAmount(CalculateScrolledAmount());
             }

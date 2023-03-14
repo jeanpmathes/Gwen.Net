@@ -7,18 +7,18 @@ namespace Gwen.Net
     /// </summary>
     public struct Padding : IEquatable<Padding>
     {
-        public readonly int Top;
-        public readonly int Bottom;
-        public readonly int Left;
-        public readonly int Right;
+        public int Top { get; }
+        public int Bottom { get; }
+        public int Left{ get; }
+        public int Right { get; }
 
         // common values
-        public static Padding Zero = new(padding: 0);
-        public static Padding One = new(padding: 1);
-        public static Padding Two = new(padding: 2);
-        public static Padding Three = new(padding: 3);
-        public static Padding Four = new(padding: 4);
-        public static Padding Five = new(padding: 5);
+        public static Padding Zero { get; } = new(padding: 0);
+        public static Padding One { get; } = new(padding: 1);
+        public static Padding Two { get; } = new(padding: 2);
+        public static Padding Three { get; } = new(padding: 3);
+        public static Padding Four { get; } = new(padding: 4);
+        public static Padding Five { get; } = new(padding: 5);
 
         public Padding(int left, int top, int right, int bottom)
         {
@@ -104,7 +104,7 @@ namespace Gwen.Net
 
         public override string ToString()
         {
-            return String.Format("Left = {0} Top = {1} Right = {2} Bottom = {3}", Left, Top, Right, Bottom);
+            return $"Left = {Left} Top = {Top} Right = {Right} Bottom = {Bottom}";
         }
     }
 }

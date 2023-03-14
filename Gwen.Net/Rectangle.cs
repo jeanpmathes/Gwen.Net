@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Gwen.Net
+﻿namespace Gwen.Net
 {
     public struct Rectangle
     {
@@ -139,7 +137,7 @@ namespace Gwen.Net
 
         public override string ToString()
         {
-            return String.Format("X = {0} Y = {1} Width = {2} Height = {3}", X, Y, Width, Height);
+            return $"X = {X} Y = {Y} Width = {Width} Height = {Height}";
         }
 
         public static readonly Rectangle Empty = new(x: 0, y: 0, width: 0, height: 0);

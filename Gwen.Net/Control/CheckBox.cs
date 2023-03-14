@@ -113,11 +113,11 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            base.Render(skin);
-            skin.DrawCheckBox(this, @checked, IsDepressed);
+            base.Render(currentSkin);
+            currentSkin.DrawCheckBox(this, @checked, IsDepressed);
         }
 
         /// <summary>

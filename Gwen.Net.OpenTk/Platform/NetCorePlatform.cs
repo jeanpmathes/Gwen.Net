@@ -339,20 +339,20 @@ namespace Gwen.Net.OpenTk.Platform
             {
                 if (length > 1024 * 1024 * 1024)
                 {
-                    return string.Format("{0:0.0} GB", (double) length / (1024 * 1024 * 1024));
+                    return $"{(double) length / (1024 * 1024 * 1024):0.0} GB";
                 }
 
                 if (length > 1024 * 1024)
                 {
-                    return string.Format("{0:0.0} MB", (double) length / (1024 * 1024));
+                    return $"{(double) length / (1024 * 1024):0.0} MB";
                 }
 
                 if (length > 1024)
                 {
-                    return string.Format("{0:0.0} kB", (double) length / 1024);
+                    return $"{(double) length / 1024:0.0} kB";
                 }
 
-                return string.Format("{0} B", length);
+                return $"{length} B";
             }
         }
     }

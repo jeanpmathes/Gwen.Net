@@ -9,8 +9,8 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class TabStrip : StackLayout
     {
-        private int m_ScrollOffset;
-        private ControlBase m_TabDragControl;
+        private int scrollOffset;
+        private ControlBase tabDragControl;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TabStrip" /> class.
@@ -20,7 +20,7 @@ namespace Gwen.Net.Control.Internal
             : base(parent)
         {
             AllowReorder = false;
-            m_ScrollOffset = 0;
+            scrollOffset = 0;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Gwen.Net.Control.Internal
 
         internal int ScrollOffset
         {
-            get => m_ScrollOffset;
+            get => scrollOffset;
             set => SetScrollOffset(value);
         }
 
@@ -91,9 +91,9 @@ namespace Gwen.Net.Control.Internal
                 }
             }
 
-            m_ScrollOffset = value;
-            m_ScrollOffset = Math.Min(m_ScrollOffset, Children.Count - 1);
-            m_ScrollOffset = Math.Max(m_ScrollOffset, val2: 0);
+            scrollOffset = value;
+            scrollOffset = Math.Min(scrollOffset, Children.Count - 1);
+            scrollOffset = Math.Max(scrollOffset, val2: 0);
 
             Invalidate();
         }
@@ -139,29 +139,29 @@ namespace Gwen.Net.Control.Internal
 
         public override void DragAndDrop_HoverEnter(Package p, int x, int y)
         {
-            if (m_TabDragControl != null)
+            if (tabDragControl != null)
             {
                 throw new InvalidOperationException("ERROR! TabStrip::DragAndDrop_HoverEnter");
             }
 
-            m_TabDragControl = new Highlight(GetCanvas());
-            m_TabDragControl.MouseInputEnabled = false;
-            m_TabDragControl.Size = new Size(width: 3, ActualHeight);
+            tabDragControl = new Highlight(GetCanvas());
+            tabDragControl.MouseInputEnabled = false;
+            tabDragControl.Size = new Size(width: 3, ActualHeight);
             Invalidate();
         }
 
         public override void DragAndDrop_HoverLeave(Package p)
         {
-            if (m_TabDragControl != null)
+            if (tabDragControl != null)
             {
-                m_TabDragControl.Parent.RemoveChild(
-                    m_TabDragControl,
+                tabDragControl.Parent.RemoveChild(
+                    tabDragControl,
                     dispose: false); // [omeg] need to do that explicitely
 
-                m_TabDragControl.Dispose();
+                tabDragControl.Dispose();
             }
 
-            m_TabDragControl = null;
+            tabDragControl = null;
         }
 
         public override void DragAndDrop_Hover(Package p, int x, int y)
@@ -173,7 +173,7 @@ namespace Gwen.Net.Control.Internal
             if (droppedOn != null && droppedOn != this)
             {
                 Point dropPos = droppedOn.CanvasPosToLocal(new Point(x, y));
-                m_TabDragControl.BringToFront();
+                tabDragControl.BringToFront();
                 int pos = droppedOn.ActualLeft - 1;
 
                 if (dropPos.X > droppedOn.ActualWidth / 2)
@@ -182,22 +182,19 @@ namespace Gwen.Net.Control.Internal
                 }
 
                 Point canvasPos = LocalPosToCanvas(new Point(pos, y: 0));
-                m_TabDragControl.MoveTo(canvasPos.X, canvasPos.Y);
+                tabDragControl.MoveTo(canvasPos.X, canvasPos.Y);
             }
             else
             {
-                m_TabDragControl.BringToFront();
+                tabDragControl.BringToFront();
             }
         }
 
         public override bool DragAndDrop_HandleDrop(Package p, int x, int y)
         {
-            Point LocalPos = CanvasPosToLocal(new Point(x, y));
+            Point localPos = CanvasPosToLocal(new Point(x, y));
 
-            var button = DragAndDrop.SourceControl as TabButton;
-            var tabControl = Parent as TabControl;
-
-            if (tabControl != null && button != null)
+            if (Parent is TabControl tabControl && DragAndDrop.SourceControl is TabButton button)
             {
                 if (button.TabControl != tabControl)
                 {
@@ -206,7 +203,7 @@ namespace Gwen.Net.Control.Internal
                 }
             }
 
-            ControlBase droppedOn = GetControlAt(LocalPos.X, LocalPos.Y);
+            ControlBase droppedOn = GetControlAt(localPos.X, localPos.Y);
 
             if (droppedOn != null && droppedOn != this)
             {

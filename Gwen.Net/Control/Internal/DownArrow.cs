@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class DownArrow : ControlBase
     {
-        private readonly ComboBox m_ComboBox;
+        private readonly ComboBox comboBox;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DownArrow" /> class.
@@ -20,7 +20,7 @@ namespace Gwen.Net.Control.Internal
 
             Size = new Size(BaseUnit);
 
-            m_ComboBox = parent;
+            comboBox = parent;
         }
 
         protected override void AdaptToScaleChange()
@@ -31,15 +31,15 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawComboBoxArrow(
+            currentSkin.DrawComboBoxArrow(
                 this,
-                m_ComboBox.IsHovered,
-                m_ComboBox.IsDepressed,
-                m_ComboBox.IsOpen,
-                m_ComboBox.IsDisabled);
+                comboBox.IsHovered,
+                comboBox.IsDepressed,
+                comboBox.IsOpen,
+                comboBox.IsDisabled);
         }
     }
 }

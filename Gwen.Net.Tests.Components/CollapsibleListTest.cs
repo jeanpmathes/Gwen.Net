@@ -53,14 +53,14 @@ namespace Gwen.Net.Tests.Components
 
         private void OnSelection(ControlBase control, EventArgs args)
         {
-            var list = control as CollapsibleList;
-            UnitPrint(String.Format("CollapsibleList: Selected: {0}", list.GetSelectedButton().Text));
+            var list = (CollapsibleList) control;
+            UnitPrint($"CollapsibleList: Selected: {list.GetSelectedButton().Text}");
         }
 
         private void OnCollapsed(ControlBase control, EventArgs args)
         {
-            var cat = control as CollapsibleCategory;
-            UnitPrint(String.Format("CollapsibleCategory: CategoryCollapsed: {0} {1}", cat.Text, cat.IsCollapsed));
+            var cat = (CollapsibleCategory) control;
+            UnitPrint($"CollapsibleCategory: CategoryCollapsed: {cat.Text} {cat.IsCollapsed}");
         }
     }
 }

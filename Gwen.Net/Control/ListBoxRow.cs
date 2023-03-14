@@ -1,5 +1,4 @@
-﻿using System;
-using Gwen.Net.Skin;
+﻿using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -70,17 +69,17 @@ namespace Gwen.Net.Control
         private void UpdateTextColor()
         {
             SetTextColor(IsSelected 
-                ? selectedColorOverride ?? Skin.Colors.ListBox.Text_Selected 
-                : normalColorOverride ?? Skin.Colors.ListBox.Text_Normal);
+                ? selectedColorOverride ?? Skin.colors.listBoxColors.textSelected 
+                : normalColorOverride ?? Skin.colors.listBoxColors.textNormal);
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawListBoxLine(this, IsSelected, EvenRow);
+            currentSkin.DrawListBoxLine(this, IsSelected, EvenRow);
         }
 
         /// <summary>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using Gwen.Net.Renderer;
 using OpenTK.Graphics.OpenGL;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
@@ -161,9 +161,8 @@ namespace Gwen.Net.OpenTk.Renderers
         public override bool LoadFont(Font font)
         {
             font.RealSize = (float) Math.Ceiling(font.Size * Scale);
-            var sysFont = font.RendererData as System.Drawing.Font;
 
-            if (sysFont != null)
+            if (font.RendererData is System.Drawing.Font sysFont)
             {
                 sysFont.Dispose();
             }
@@ -281,9 +280,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override Size MeasureText(Font font, string text)
         {
-            var sysFont = font.RendererData as System.Drawing.Font;
-
-            if (sysFont == null || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
+            if (font.RendererData is not System.Drawing.Font sysFont || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
             {
                 FreeFont(font);
                 LoadFont(font);
@@ -299,7 +296,9 @@ namespace Gwen.Net.OpenTk.Renderers
                 return new Size(tex.Width, tex.Height);
             }
 
-            SizeF TabSize = graphics.MeasureString(
+            Debug.Assert(sysFont != null);
+            
+            SizeF tabSize = graphics.MeasureString(
                 "....",
                 sysFont); //Spaces are not being picked up, let's just use .'s.
 
@@ -307,7 +306,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 firstTabOffset: 0f,
                 new[]
                 {
-                    TabSize.Width
+                    tabSize.Width
                 });
 
             SizeF size = graphics.MeasureString(text, sysFont, System.Drawing.Point.Empty, stringFormat);
@@ -355,16 +354,16 @@ namespace Gwen.Net.OpenTk.Renderers
 
         internal static void LoadTextureInternal(Texture t, Bitmap bmp)
         {
-            PixelFormat lock_format;
+            PixelFormat lockFormat;
 
             switch (bmp.PixelFormat)
             {
                 case PixelFormat.Format32bppArgb:
-                    lock_format = PixelFormat.Format32bppArgb;
+                    lockFormat = PixelFormat.Format32bppArgb;
 
                     break;
                 case PixelFormat.Format24bppRgb:
-                    lock_format = PixelFormat.Format32bppArgb;
+                    lockFormat = PixelFormat.Format32bppArgb;
 
                     break;
                 default:
@@ -397,7 +396,7 @@ namespace Gwen.Net.OpenTk.Renderers
             BitmapData data = bmp.LockBits(
                 new System.Drawing.Rectangle(x: 0, y: 0, bmp.Width, bmp.Height),
                 ImageLockMode.ReadOnly,
-                lock_format);
+                lockFormat);
 
             GL.TexImage2D(
                 TextureTarget.Texture2D,

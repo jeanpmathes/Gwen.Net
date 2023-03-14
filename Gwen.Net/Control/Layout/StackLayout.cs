@@ -5,7 +5,7 @@
     /// </summary>
     public class StackLayout : ControlBase
     {
-        private bool m_Horizontal;
+        private bool horizontal;
 
         public StackLayout(ControlBase parent)
             : base(parent) {}
@@ -15,15 +15,15 @@
         /// </summary>
         public bool Horizontal
         {
-            get => m_Horizontal;
+            get => horizontal;
             set
             {
-                if (m_Horizontal == value)
+                if (horizontal == value)
                 {
                     return;
                 }
 
-                m_Horizontal = value;
+                horizontal = value;
                 Invalidate();
             }
         }
@@ -35,7 +35,7 @@
             var width = 0;
             var height = 0;
 
-            if (m_Horizontal)
+            if (horizontal)
             {
                 foreach (ControlBase child in Children)
                 {
@@ -83,7 +83,7 @@
         {
             finalSize -= Padding;
 
-            if (m_Horizontal)
+            if (horizontal)
             {
                 int height = finalSize.Height;
                 int x = Padding.Left;

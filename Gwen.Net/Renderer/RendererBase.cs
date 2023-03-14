@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Gwen.Net.Renderer
 {
@@ -8,20 +7,18 @@ namespace Gwen.Net.Renderer
     /// </summary>
     public class RendererBase : IDisposable
     {
-        private Rectangle m_ClipRegion;
-
-        //public Random rnd;
-        private Point m_RenderOffset;
-        private float m_Scale;
+        private Rectangle clipRegion;
+        
+        private Point renderOffset;
+        private float scale;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RendererBase" /> class.
         /// </summary>
         protected RendererBase()
         {
-            //rnd = new Random();
-            m_RenderOffset = Point.Zero;
-            m_Scale = 1.0f;
+            renderOffset = Point.Zero;
+            scale = 1.0f;
 
             if (CTT != null)
             {
@@ -32,11 +29,11 @@ namespace Gwen.Net.Renderer
 
         public float Scale
         {
-            get => m_Scale;
+            get => scale;
             set
             {
-                float oldScale = m_Scale;
-                m_Scale = value;
+                float oldScale = scale;
+                scale = value;
                 OnScaleChanged(oldScale);
             }
         }
@@ -51,8 +48,8 @@ namespace Gwen.Net.Renderer
         /// </summary>
         public Point RenderOffset
         {
-            get => m_RenderOffset;
-            set => m_RenderOffset = value;
+            get => renderOffset;
+            set => renderOffset = value;
         }
 
         /// <summary>
@@ -60,8 +57,8 @@ namespace Gwen.Net.Renderer
         /// </summary>
         public Rectangle ClipRegion
         {
-            get => m_ClipRegion;
-            set => m_ClipRegion = value;
+            get => clipRegion;
+            set => clipRegion = value;
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace Gwen.Net.Renderer
         {
             get
             {
-                if (m_ClipRegion.Width <= 0 || m_ClipRegion.Height <= 0)
+                if (clipRegion.Width <= 0 || clipRegion.Height <= 0)
                 {
                     return false;
                 }
@@ -104,7 +101,7 @@ namespace Gwen.Net.Renderer
 #if DEBUG
         ~RendererBase()
         {
-            throw new InvalidOperationException(String.Format("IDisposable object finalized: {0}", GetType()));
+            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
             //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
         }
 #endif
@@ -374,14 +371,14 @@ namespace Gwen.Net.Renderer
 
         private int TranslateX(int x)
         {
-            int x1 = x + m_RenderOffset.X;
+            int x1 = x + renderOffset.X;
 
             return x1;
         }
 
         private int TranslateY(int y)
         {
-            int y1 = y + m_RenderOffset.Y;
+            int y1 = y + renderOffset.Y;
 
             return y1;
         }
@@ -393,8 +390,8 @@ namespace Gwen.Net.Renderer
         /// <param name="y"></param>
         public void Translate(ref int x, ref int y)
         {
-            x += m_RenderOffset.X;
-            y += m_RenderOffset.Y;
+            x += renderOffset.X;
+            y += renderOffset.Y;
         }
 
         /// <summary>
@@ -423,7 +420,7 @@ namespace Gwen.Net.Renderer
         /// <param name="offset">Point to add.</param>
         public void AddRenderOffset(Rectangle offset)
         {
-            m_RenderOffset = new Point(m_RenderOffset.X + offset.X, m_RenderOffset.Y + offset.Y);
+            renderOffset = new Point(renderOffset.X + offset.X, renderOffset.Y + offset.Y);
         }
 
         /// <summary>
@@ -432,34 +429,34 @@ namespace Gwen.Net.Renderer
         /// <param name="rect">Rectangle to add.</param>
         public void AddClipRegion(Rectangle rect)
         {
-            rect.X = m_RenderOffset.X;
-            rect.Y = m_RenderOffset.Y;
+            rect.X = renderOffset.X;
+            rect.Y = renderOffset.Y;
 
             Rectangle r = rect;
 
-            if (rect.X < m_ClipRegion.X)
+            if (rect.X < clipRegion.X)
             {
-                r.Width -= m_ClipRegion.X - r.X;
-                r.X = m_ClipRegion.X;
+                r.Width -= clipRegion.X - r.X;
+                r.X = clipRegion.X;
             }
 
-            if (rect.Y < m_ClipRegion.Y)
+            if (rect.Y < clipRegion.Y)
             {
-                r.Height -= m_ClipRegion.Y - r.Y;
-                r.Y = m_ClipRegion.Y;
+                r.Height -= clipRegion.Y - r.Y;
+                r.Y = clipRegion.Y;
             }
 
-            if (rect.Right > m_ClipRegion.Right)
+            if (rect.Right > clipRegion.Right)
             {
-                r.Width = m_ClipRegion.Right - r.X + 1;
+                r.Width = clipRegion.Right - r.X + 1;
             }
 
-            if (rect.Bottom > m_ClipRegion.Bottom)
+            if (rect.Bottom > clipRegion.Bottom)
             {
-                r.Height = m_ClipRegion.Bottom - r.Y + 1;
+                r.Height = clipRegion.Bottom - r.Y + 1;
             }
 
-            m_ClipRegion = r;
+            clipRegion = r;
         }
 
         /// <summary>
@@ -468,34 +465,34 @@ namespace Gwen.Net.Renderer
         /// <param name="rect">Rectangle to set.</param>
         public void SetClipRegion(Rectangle rect)
         {
-            rect.X += m_RenderOffset.X;
-            rect.Y += m_RenderOffset.Y;
+            rect.X += renderOffset.X;
+            rect.Y += renderOffset.Y;
 
             Rectangle r = rect;
 
-            if (rect.X < m_ClipRegion.X)
+            if (rect.X < clipRegion.X)
             {
-                r.Width -= m_ClipRegion.X - r.X;
-                r.X = m_ClipRegion.X;
+                r.Width -= clipRegion.X - r.X;
+                r.X = clipRegion.X;
             }
 
-            if (rect.Y < m_ClipRegion.Y)
+            if (rect.Y < clipRegion.Y)
             {
-                r.Height -= m_ClipRegion.Y - r.Y;
-                r.Y = m_ClipRegion.Y;
+                r.Height -= clipRegion.Y - r.Y;
+                r.Y = clipRegion.Y;
             }
 
-            if (rect.Right > m_ClipRegion.Right)
+            if (rect.Right > clipRegion.Right)
             {
-                r.Width = m_ClipRegion.Right - r.X + 1;
+                r.Width = clipRegion.Right - r.X + 1;
             }
 
-            if (rect.Bottom > m_ClipRegion.Bottom)
+            if (rect.Bottom > clipRegion.Bottom)
             {
-                r.Height = m_ClipRegion.Bottom - r.Y + 1;
+                r.Height = clipRegion.Bottom - r.Y + 1;
             }
 
-            m_ClipRegion = r;
+            clipRegion = r;
         }
     }
 }

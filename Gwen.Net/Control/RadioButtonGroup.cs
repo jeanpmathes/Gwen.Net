@@ -81,6 +81,7 @@ namespace Gwen.Net.Control
         ///     Handler for the option change.
         /// </summary>
         /// <param name="fromPanel">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnRadioClicked(ControlBase fromPanel, EventArgs args)
         {
             var @checked = fromPanel as RadioButton;
@@ -100,11 +101,11 @@ namespace Gwen.Net.Control
             OnChanged(Selected);
         }
 
-        protected virtual void OnChanged(ControlBase NewTarget)
+        protected virtual void OnChanged(ControlBase newTarget)
         {
             if (SelectionChanged != null)
             {
-                SelectionChanged.Invoke(this, new ItemSelectedEventArgs(NewTarget));
+                SelectionChanged.Invoke(this, new ItemSelectedEventArgs(newTarget));
             }
         }
 

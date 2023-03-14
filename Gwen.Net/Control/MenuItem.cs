@@ -9,10 +9,10 @@ namespace Gwen.Net.Control
     /// </summary>
     public class MenuItem : Button
     {
-        private Label m_Accelerator;
-        private bool m_Checked;
-        private Menu m_Menu;
-        private ControlBase m_SubmenuArrow;
+        private Label accelerator;
+        private bool @checked;
+        private Menu menu;
+        private ControlBase submenuArrow;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MenuItem" /> class.
@@ -43,12 +43,12 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (m_Menu == null)
+                if (menu == null)
                 {
                     return false;
                 }
 
-                return !m_Menu.IsCollapsed;
+                return !menu.IsCollapsed;
             }
         }
 
@@ -57,15 +57,15 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool IsChecked
         {
-            get => m_Checked;
+            get => @checked;
             set
             {
-                if (value == m_Checked)
+                if (value == @checked)
                 {
                     return;
                 }
 
-                m_Checked = value;
+                @checked = value;
 
                 if (CheckChanged != null)
                 {
@@ -96,23 +96,23 @@ namespace Gwen.Net.Control
         {
             get
             {
-                if (null == m_Menu)
+                if (null == menu)
                 {
-                    m_Menu = new Menu(GetCanvas());
-                    m_Menu.ParentMenuItem = this;
+                    menu = new Menu(GetCanvas());
+                    menu.ParentMenuItem = this;
 
                     if (!IsOnStrip)
                     {
-                        if (m_SubmenuArrow != null)
+                        if (submenuArrow != null)
                         {
-                            m_SubmenuArrow.Dispose();
+                            submenuArrow.Dispose();
                         }
 
-                        m_SubmenuArrow = new RightArrow(this);
+                        submenuArrow = new RightArrow(this);
                     }
                 }
 
-                return m_Menu;
+                return menu;
             }
         }
 
@@ -139,25 +139,25 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawMenuItem(this, IsMenuOpen, IsCheckable ? m_Checked : false);
+            currentSkin.DrawMenuItem(this, IsMenuOpen, IsCheckable ? @checked : false);
         }
 
         protected override Size Measure(Size availableSize)
         {
             Size size = base.Measure(availableSize);
 
-            if (m_Accelerator != null)
+            if (accelerator != null)
             {
-                Size accSize = m_Accelerator.DoMeasure(availableSize);
+                Size accSize = accelerator.DoMeasure(availableSize);
                 size.Width += accSize.Width;
             }
 
-            if (m_SubmenuArrow != null)
+            if (submenuArrow != null)
             {
-                m_SubmenuArrow.DoMeasure(availableSize);
+                submenuArrow.DoMeasure(availableSize);
             }
 
             return size;
@@ -165,24 +165,24 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            if (m_SubmenuArrow != null)
+            if (submenuArrow != null)
             {
-                m_SubmenuArrow.DoArrange(
+                submenuArrow.DoArrange(
                     new Rectangle(
-                        finalSize.Width - Padding.Right - m_SubmenuArrow.MeasuredSize.Width,
-                        (finalSize.Height - m_SubmenuArrow.MeasuredSize.Height) / 2,
-                        m_SubmenuArrow.MeasuredSize.Width,
-                        m_SubmenuArrow.MeasuredSize.Height));
+                        finalSize.Width - Padding.Right - submenuArrow.MeasuredSize.Width,
+                        (finalSize.Height - submenuArrow.MeasuredSize.Height) / 2,
+                        submenuArrow.MeasuredSize.Width,
+                        submenuArrow.MeasuredSize.Height));
             }
 
-            if (m_Accelerator != null)
+            if (accelerator != null)
             {
-                m_Accelerator.DoArrange(
+                accelerator.DoArrange(
                     new Rectangle(
-                        finalSize.Width - Padding.Right - m_Accelerator.MeasuredSize.Width,
-                        (finalSize.Height - m_Accelerator.MeasuredSize.Height) / 2,
-                        m_Accelerator.MeasuredSize.Width,
-                        m_Accelerator.MeasuredSize.Height));
+                        finalSize.Width - Padding.Right - accelerator.MeasuredSize.Width,
+                        (finalSize.Height - accelerator.MeasuredSize.Height) / 2,
+                        accelerator.MeasuredSize.Width,
+                        accelerator.MeasuredSize.Height));
             }
 
             return base.Arrange(finalSize);
@@ -193,7 +193,7 @@ namespace Gwen.Net.Control
         /// </summary>
         protected override void OnClicked(int x, int y)
         {
-            if (m_Menu != null)
+            if (menu != null)
             {
                 if (!IsMenuOpen)
                 {
@@ -235,25 +235,25 @@ namespace Gwen.Net.Control
         /// </summary>
         public void OpenMenu()
         {
-            if (null == m_Menu)
+            if (null == menu)
             {
                 return;
             }
 
-            m_Menu.Show();
-            m_Menu.BringToFront();
+            menu.Show();
+            menu.BringToFront();
 
             Point p = LocalPosToCanvas(Point.Zero);
 
             // Strip menus open downwards
             if (IsOnStrip)
             {
-                m_Menu.Position = new Point(p.X, p.Y + ActualHeight - 2);
+                menu.Position = new Point(p.X, p.Y + ActualHeight - 2);
             }
             // Submenus open sidewards
             else
             {
-                m_Menu.Position = new Point(p.X + ActualWidth, p.Y);
+                menu.Position = new Point(p.X + ActualWidth, p.Y);
             }
 
             // TODO: Option this.
@@ -266,20 +266,20 @@ namespace Gwen.Net.Control
         /// </summary>
         public void CloseMenu()
         {
-            if (null == m_Menu)
+            if (null == menu)
             {
                 return;
             }
 
-            m_Menu.Close();
-            m_Menu.CloseAll();
+            menu.Close();
+            menu.CloseAll();
         }
 
         public MenuItem SetAction(GwenEventHandler<EventArgs> handler)
         {
-            if (m_Accelerator != null)
+            if (accelerator != null)
             {
-                AddAccelerator(m_Accelerator.Text, handler);
+                AddAccelerator(accelerator.Text, handler);
             }
 
             Selected += handler;
@@ -289,28 +289,25 @@ namespace Gwen.Net.Control
 
         public void SetAccelerator(string acc)
         {
-            if (m_Accelerator != null)
-            {
-                m_Accelerator = null;
-            }
+            accelerator = null;
 
             if (acc == string.Empty)
             {
                 return;
             }
 
-            m_Accelerator = new Label(this);
-            m_Accelerator.Text = acc;
-            m_Accelerator.Margin = new Margin(left: 0, top: 0, right: 16, bottom: 0);
+            accelerator = new Label(this);
+            accelerator.Text = acc;
+            accelerator.Margin = new Margin(left: 0, top: 0, right: 16, bottom: 0);
         }
 
         public override ControlBase FindChildByName(string name, bool recursive = false)
         {
             ControlBase item = base.FindChildByName(name, recursive);
 
-            if (item == null && m_Menu != null)
+            if (item == null && menu != null)
             {
-                item = m_Menu.FindChildByName(name, recursive);
+                item = menu.FindChildByName(name, recursive);
             }
 
             return item;

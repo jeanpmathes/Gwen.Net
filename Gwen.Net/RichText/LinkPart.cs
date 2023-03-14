@@ -30,9 +30,9 @@
 
         public Font HoverFont { get; }
 
-        public override string[] Split(ref Font font)
+        public override string[] Split(ref Font splitFont)
         {
-            Font = font;
+            Font = splitFont;
 
             return new[]
             {

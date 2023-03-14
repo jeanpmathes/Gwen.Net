@@ -9,11 +9,11 @@ namespace Gwen.Net.Control.Internal
     public class PropertyTreeNode : ContentControl
     {
         public const int TreeIndentation = 14;
-        protected readonly Properties m_Properties;
+        protected readonly Properties properties;
 
-        protected readonly PropertyTree m_PropertyTree;
-        protected readonly TreeNodeLabel m_Title;
-        protected readonly TreeToggleButton m_ToggleButton;
+        protected readonly PropertyTree propertyTree;
+        protected readonly TreeNodeLabel title;
+        protected readonly TreeToggleButton toggleButton;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyTreeNode" /> class.
@@ -22,43 +22,43 @@ namespace Gwen.Net.Control.Internal
         public PropertyTreeNode(ControlBase parent)
             : base(parent)
         {
-            m_PropertyTree = parent as PropertyTree;
+            propertyTree = parent as PropertyTree;
 
-            m_ToggleButton = new TreeToggleButton(this);
-            m_ToggleButton.Toggled += OnToggleButtonPress;
+            toggleButton = new TreeToggleButton(this);
+            toggleButton.Toggled += OnToggleButtonPress;
 
-            m_Title = new TreeNodeLabel(this);
-            m_Title.DoubleClicked += OnDoubleClickName;
+            title = new TreeNodeLabel(this);
+            title.DoubleClicked += OnDoubleClickName;
 
-            m_Properties = new Properties(this);
+            properties = new Properties(this);
 
-            m_InnerPanel = m_Properties;
+            innerPanel = properties;
 
-            m_Title.TextColorOverride = Skin.Colors.Properties.Title;
+            title.TextColorOverride = Skin.colors.propertiesColors.title;
         }
 
-        public PropertyTree PropertyTree => m_PropertyTree;
+        public PropertyTree PropertyTree => propertyTree;
 
-        public Properties Properties => m_Properties;
+        public Properties Properties => properties;
 
         /// <summary>
         ///     Node's label.
         /// </summary>
         public string Text
         {
-            get => m_Title.Text;
-            set => m_Title.Text = value;
+            get => title.Text;
+            set => title.Text = value;
         }
 
         protected override Size Measure(Size availableSize)
         {
-            Size buttonSize = m_ToggleButton.DoMeasure(availableSize);
-            Size labelSize = m_Title.DoMeasure(availableSize);
+            Size buttonSize = toggleButton.DoMeasure(availableSize);
+            Size labelSize = title.DoMeasure(availableSize);
             Size innerSize = Size.Zero;
 
-            if (!m_InnerPanel.IsCollapsed)
+            if (!innerPanel.IsCollapsed)
             {
-                innerSize = m_InnerPanel.DoMeasure(availableSize);
+                innerSize = innerPanel.DoMeasure(availableSize);
             }
 
             return new Size(
@@ -68,28 +68,28 @@ namespace Gwen.Net.Control.Internal
 
         protected override Size Arrange(Size finalSize)
         {
-            m_ToggleButton.DoArrange(
+            toggleButton.DoArrange(
                 new Rectangle(
                     x: 0,
-                    (m_Title.MeasuredSize.Height - m_ToggleButton.MeasuredSize.Height) / 2,
-                    m_ToggleButton.MeasuredSize.Width,
-                    m_ToggleButton.MeasuredSize.Height));
+                    (title.MeasuredSize.Height - toggleButton.MeasuredSize.Height) / 2,
+                    toggleButton.MeasuredSize.Width,
+                    toggleButton.MeasuredSize.Height));
 
-            m_Title.DoArrange(
+            title.DoArrange(
                 new Rectangle(
-                    m_ToggleButton.MeasuredSize.Width,
+                    toggleButton.MeasuredSize.Width,
                     y: 0,
-                    finalSize.Width - m_ToggleButton.MeasuredSize.Width,
-                    m_Title.MeasuredSize.Height));
+                    finalSize.Width - toggleButton.MeasuredSize.Width,
+                    title.MeasuredSize.Height));
 
-            if (!m_InnerPanel.IsCollapsed)
+            if (!innerPanel.IsCollapsed)
             {
-                m_InnerPanel.DoArrange(
+                innerPanel.DoArrange(
                     new Rectangle(
                         TreeIndentation,
-                        Math.Max(m_ToggleButton.MeasuredSize.Height, m_Title.MeasuredSize.Height),
+                        Math.Max(toggleButton.MeasuredSize.Height, title.MeasuredSize.Height),
                         finalSize.Width - TreeIndentation,
-                        m_InnerPanel.MeasuredSize.Height));
+                        innerPanel.MeasuredSize.Height));
             }
 
             return new Size(finalSize.Width, MeasuredSize.Height);
@@ -98,10 +98,10 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawPropertyTreeNode(this, m_InnerPanel.ActualLeft, m_InnerPanel.ActualTop);
+            currentSkin.DrawPropertyTreeNode(this, innerPanel.ActualLeft, innerPanel.ActualTop);
         }
 
         /// <summary>
@@ -109,11 +109,11 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public void Open()
         {
-            m_InnerPanel.Show();
+            innerPanel.Show();
 
-            if (m_ToggleButton != null)
+            if (toggleButton != null)
             {
-                m_ToggleButton.ToggleState = true;
+                toggleButton.ToggleState = true;
             }
 
             Invalidate();
@@ -124,11 +124,11 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public void Close()
         {
-            m_InnerPanel.Collapse();
+            innerPanel.Collapse();
 
-            if (m_ToggleButton != null)
+            if (toggleButton != null)
             {
-                m_ToggleButton.ToggleState = false;
+                toggleButton.ToggleState = false;
             }
 
             Invalidate();
@@ -158,9 +158,10 @@ namespace Gwen.Net.Control.Internal
         ///     Handler for the toggle button.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnToggleButtonPress(ControlBase control, EventArgs args)
         {
-            if (m_ToggleButton.ToggleState)
+            if (toggleButton.ToggleState)
             {
                 Open();
             }
@@ -174,14 +175,15 @@ namespace Gwen.Net.Control.Internal
         ///     Handler for label double click.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnDoubleClickName(ControlBase control, EventArgs args)
         {
-            if (!m_ToggleButton.IsVisible)
+            if (!toggleButton.IsVisible)
             {
                 return;
             }
 
-            m_ToggleButton.Toggle();
+            toggleButton.Toggle();
         }
     }
 }

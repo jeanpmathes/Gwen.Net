@@ -9,7 +9,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class LabeledRadioButton : ControlBase
     {
-        private readonly Label m_Label;
+        private readonly Label label;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LabeledRadioButton" /> class.
@@ -24,12 +24,12 @@ namespace Gwen.Net.Control
             RadioButton.IsTabable = false;
             RadioButton.KeyboardInputEnabled = false;
 
-            m_Label = new Label(this);
-            m_Label.Alignment = Alignment.CenterV | Alignment.Left;
-            m_Label.Text = "Radio Button";
-            m_Label.Clicked += delegate(ControlBase control, ClickedEventArgs args) { RadioButton.Press(control); };
-            m_Label.IsTabable = false;
-            m_Label.KeyboardInputEnabled = false;
+            label = new Label(this);
+            label.Alignment = Alignment.CenterV | Alignment.Left;
+            label.Text = "Radio Button";
+            label.Clicked += delegate(ControlBase control, ClickedEventArgs _) { RadioButton.Press(control); };
+            label.IsTabable = false;
+            label.KeyboardInputEnabled = false;
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public string Text
         {
-            get => m_Label.Text;
-            set => m_Label.Text = value;
+            get => label.Text;
+            set => label.Text = value;
         }
 
         // todo: would be nice to remove that
@@ -55,7 +55,7 @@ namespace Gwen.Net.Control
 
         protected override Size Measure(Size availableSize)
         {
-            Size labelSize = m_Label.DoMeasure(availableSize);
+            Size labelSize = label.DoMeasure(availableSize);
             Size radioButtonSize = RadioButton.DoMeasure(availableSize);
 
             return new Size(
@@ -65,33 +65,33 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            if (RadioButton.MeasuredSize.Height > m_Label.MeasuredSize.Height)
+            if (RadioButton.MeasuredSize.Height > label.MeasuredSize.Height)
             {
                 RadioButton.DoArrange(
                     new Rectangle(x: 0, y: 0, RadioButton.MeasuredSize.Width, RadioButton.MeasuredSize.Height));
 
-                m_Label.DoArrange(
+                label.DoArrange(
                     new Rectangle(
                         RadioButton.MeasuredSize.Width + 4,
-                        (RadioButton.MeasuredSize.Height - m_Label.MeasuredSize.Height) / 2,
-                        m_Label.MeasuredSize.Width,
-                        m_Label.MeasuredSize.Height));
+                        (RadioButton.MeasuredSize.Height - label.MeasuredSize.Height) / 2,
+                        label.MeasuredSize.Width,
+                        label.MeasuredSize.Height));
             }
             else
             {
                 RadioButton.DoArrange(
                     new Rectangle(
                         x: 0,
-                        (m_Label.MeasuredSize.Height - RadioButton.MeasuredSize.Height) / 2,
+                        (label.MeasuredSize.Height - RadioButton.MeasuredSize.Height) / 2,
                         RadioButton.MeasuredSize.Width,
                         RadioButton.MeasuredSize.Height));
 
-                m_Label.DoArrange(
+                label.DoArrange(
                     new Rectangle(
                         RadioButton.MeasuredSize.Width + 4,
                         y: 0,
-                        m_Label.MeasuredSize.Width,
-                        m_Label.MeasuredSize.Height));
+                        label.MeasuredSize.Width,
+                        label.MeasuredSize.Height));
             }
 
             return finalSize;
@@ -100,8 +100,8 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the focus overlay.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderFocus(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderFocus(SkinBase currentSkin)
         {
             if (InputHandler.KeyboardFocus != this)
             {
@@ -113,7 +113,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            skin.DrawKeyboardHighlight(this, RenderBounds, offset: 0);
+            currentSkin.DrawKeyboardHighlight(this, RenderBounds, offset: 0);
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 {
     public class LineBreakPart : Part
     {
-        public override string[] Split(ref Font font)
+        public override string[] Split(ref Font splitFont)
         {
             return new[]
             {

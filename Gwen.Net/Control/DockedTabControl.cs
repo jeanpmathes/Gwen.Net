@@ -8,7 +8,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class DockedTabControl : TabControl
     {
-        private readonly TabTitleBar m_TitleBar;
+        private readonly TabTitleBar titleBar;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DockedTabControl" /> class.
@@ -19,9 +19,9 @@ namespace Gwen.Net.Control
         {
             Dock = Dock.Fill;
 
-            m_TitleBar = new TabTitleBar(this);
-            m_TitleBar.Dock = Dock.Top;
-            m_TitleBar.IsCollapsed = true;
+            titleBar = new TabTitleBar(this);
+            titleBar.Dock = Dock.Top;
+            titleBar.IsCollapsed = true;
 
             AllowReorder = true;
         }
@@ -31,8 +31,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool TitleBarVisible
         {
-            get => !m_TitleBar.IsCollapsed;
-            set => m_TitleBar.IsCollapsed = !value;
+            get => !titleBar.IsCollapsed;
+            set => titleBar.IsCollapsed = !value;
         }
 
         protected override Size Measure(Size availableSize)
@@ -50,7 +50,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            m_TitleBar.UpdateFromTab(CurrentButton);
+            titleBar.UpdateFromTab(CurrentButton);
         }
 
         public override void DragAndDrop_StartDragging(Package package, int x, int y)

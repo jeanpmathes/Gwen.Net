@@ -3,15 +3,15 @@
 namespace Gwen.Net.Control.Internal
 {
     /// <summary>
-    ///     Numeric down arrow.
+    ///     Numeric up arrow.
     /// </summary>
-    internal class UpDownButton_Down : ButtonBase
+    public class UpDownButtonUpKind : ButtonBase
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="UpDownButton_Down" /> class.
+        ///     Initializes a new instance of the <see cref="UpDownButtonUpKind" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
-        public UpDownButton_Down(ControlBase parent)
+        public UpDownButtonUpKind(ControlBase parent)
             : base(parent)
         {
             Width = BaseUnit / 2;
@@ -25,10 +25,10 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawNumericUpDownButton(this, IsDepressed, up: false);
+            currentSkin.DrawNumericUpDownButton(this, IsDepressed, up: true);
         }
     }
 }

@@ -4,10 +4,10 @@ namespace Gwen.Net.DragDrop
 {
     public class Package
     {
-        public ControlBase DrawControl;
-        public Point HoldOffset;
-        public bool IsDraggable;
-        public string Name;
-        public object UserData;
+        public ControlBase DrawControl { get; set; }
+        public Point HoldOffset { get; set; }
+        public bool IsDraggable { get; set; }
+        public string Name { get; set; }
+        public object UserData { get; set; }
     }
 }

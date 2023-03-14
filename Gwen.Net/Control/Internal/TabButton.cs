@@ -10,7 +10,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class TabButton : Button
     {
-        private TabControl m_Control;
+        private TabControl control;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TabButton" /> class.
@@ -34,20 +34,20 @@ namespace Gwen.Net.Control.Internal
         // todo: remove public access
         public TabControl TabControl
         {
-            get => m_Control;
+            get => control;
             set
             {
-                if (value == m_Control)
+                if (value == control)
                 {
                     return;
                 }
 
-                if (m_Control != null)
+                if (control != null)
                 {
-                    m_Control.OnLoseTab(this);
+                    control.OnLoseTab(this);
                 }
 
-                m_Control = value;
+                control = value;
             }
         }
 
@@ -74,16 +74,16 @@ namespace Gwen.Net.Control.Internal
 
         public override bool DragAndDrop_ShouldStartDrag()
         {
-            return m_Control.AllowReorder;
+            return control.AllowReorder;
         }
 
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawTabButton(this, IsActive, m_Control.TabStrip.Dock);
+            currentSkin.DrawTabButton(this, IsActive, control.TabStrip.Dock);
         }
 
         /// <summary>
@@ -150,7 +150,6 @@ namespace Gwen.Net.Control.Internal
         {
             if (down)
             {
-                int count = Parent.Children.Count;
                 int me = Parent.Children.IndexOf(this);
 
                 if (me - 1 >= 0)
@@ -173,50 +172,50 @@ namespace Gwen.Net.Control.Internal
             {
                 if (IsDisabled)
                 {
-                    TextColor = Skin.Colors.Tab.Active.Disabled;
+                    TextColor = Skin.colors.tabColors.activeColors.disabled;
 
                     return;
                 }
 
                 if (IsDepressed)
                 {
-                    TextColor = Skin.Colors.Tab.Active.Down;
+                    TextColor = Skin.colors.tabColors.activeColors.down;
 
                     return;
                 }
 
                 if (IsHovered)
                 {
-                    TextColor = Skin.Colors.Tab.Active.Hover;
+                    TextColor = Skin.colors.tabColors.activeColors.hover;
 
                     return;
                 }
 
-                TextColor = Skin.Colors.Tab.Active.Normal;
+                TextColor = Skin.colors.tabColors.activeColors.normal;
             }
 
             if (IsDisabled)
             {
-                TextColor = Skin.Colors.Tab.Inactive.Disabled;
+                TextColor = Skin.colors.tabColors.inactiveColors.disabled;
 
                 return;
             }
 
             if (IsDepressed)
             {
-                TextColor = Skin.Colors.Tab.Inactive.Down;
+                TextColor = Skin.colors.tabColors.inactiveColors.down;
 
                 return;
             }
 
             if (IsHovered)
             {
-                TextColor = Skin.Colors.Tab.Inactive.Hover;
+                TextColor = Skin.colors.tabColors.inactiveColors.hover;
 
                 return;
             }
 
-            TextColor = Skin.Colors.Tab.Inactive.Normal;
+            TextColor = Skin.colors.tabColors.inactiveColors.normal;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
@@ -12,37 +13,38 @@ namespace Gwen.Net.Control
     /// </summary>
     public class TreeNode : ContentControl
     {
-        private bool m_Selected;
-        protected TreeNodeLabel m_Title;
-        protected TreeToggleButton m_ToggleButton;
+        private bool selected;
+        protected readonly TreeNodeLabel title;
+        protected readonly TreeToggleButton toggleButton;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TreeNode" /> class.
         /// </summary>
         /// <param name="parent">Parent control.</param>
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse", Justification = "False positive. Value is set by virtual call in base constructor.")]
         public TreeNode(ControlBase parent)
             : base(parent)
         {
             // Make sure that the tree control has only one root node.
-            if (TreeControl == null && parent is TreeControl)
+            if (TreeControl == null && parent is TreeControl control)
             {
-                TreeControl = parent as TreeControl;
+                TreeControl = control;
                 IsRoot = true;
             }
             else
             {
-                m_ToggleButton = new TreeToggleButton(this);
-                m_ToggleButton.Toggled += OnToggleButtonPress;
+                toggleButton = new TreeToggleButton(this);
+                toggleButton.Toggled += OnToggleButtonPress;
 
-                m_Title = new TreeNodeLabel(this);
-                m_Title.DoubleClicked += OnDoubleClickName;
-                m_Title.Clicked += OnClickName;
+                title = new TreeNodeLabel(this);
+                title.DoubleClicked += OnDoubleClickName;
+                title.Clicked += OnClickName;
             }
 
-            m_InnerPanel = new VerticalLayout(this);
-            m_InnerPanel.Collapse(!IsRoot, measure: false); // Root node is always expanded
+            innerPanel = new VerticalLayout(this);
+            innerPanel.Collapse(!IsRoot, measure: false); // Root node is always expanded
 
-            m_Selected = false;
+            selected = false;
             IsSelectable = true;
         }
 
@@ -73,7 +75,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool IsSelected
         {
-            get => m_Selected;
+            get => selected;
             set
             {
                 if (!IsSelectable)
@@ -91,11 +93,11 @@ namespace Gwen.Net.Control
                     RootNode.UnselectAll();
                 }
 
-                m_Selected = value;
+                selected = value;
 
-                if (m_Title != null)
+                if (title != null)
                 {
-                    m_Title.ToggleState = value;
+                    title.ToggleState = value;
                 }
 
                 if (SelectionChanged != null)
@@ -141,8 +143,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public string Text
         {
-            get => m_Title.Text;
-            set => m_Title.Text = value;
+            get => title.Text;
+            set => title.Text = value;
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace Gwen.Net.Control
         {
             get
             {
-                List<TreeNode> Trees = new();
+                List<TreeNode> trees = new();
 
                 foreach (ControlBase child in Children)
                 {
@@ -163,15 +165,15 @@ namespace Gwen.Net.Control
                         continue;
                     }
 
-                    Trees.AddRange(node.SelectedChildren);
+                    trees.AddRange(node.SelectedChildren);
                 }
 
                 if (IsSelected)
                 {
-                    Trees.Add(this);
+                    trees.Add(this);
                 }
 
-                return Trees;
+                return trees;
             }
         }
 
@@ -213,28 +215,28 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             if (!IsRoot)
             {
                 var bottom = 0;
 
-                if (m_InnerPanel.Children.Count > 0)
+                if (innerPanel.Children.Count > 0)
                 {
-                    bottom = m_InnerPanel.Children.Last().ActualTop + m_InnerPanel.ActualTop;
+                    bottom = innerPanel.Children.Last().ActualTop + innerPanel.ActualTop;
                 }
 
-                skin.DrawTreeNode(
+                currentSkin.DrawTreeNode(
                     this,
-                    m_InnerPanel.IsVisible,
+                    innerPanel.IsVisible,
                     IsSelected,
-                    m_Title.ActualHeight,
-                    m_Title.ActualWidth,
-                    (int) (m_ToggleButton.ActualTop + (m_ToggleButton.ActualHeight * 0.5f)),
+                    title.ActualHeight,
+                    title.ActualWidth,
+                    (int) (toggleButton.ActualTop + (toggleButton.ActualHeight * 0.5f)),
                     bottom,
                     RootNode == Parent,
-                    m_ToggleButton.ActualWidth);
+                    toggleButton.ActualWidth);
             }
         }
 
@@ -242,70 +244,70 @@ namespace Gwen.Net.Control
         {
             if (!IsRoot)
             {
-                Size buttonSize = m_ToggleButton.DoMeasure(availableSize);
-                Size labelSize = m_Title.DoMeasure(availableSize);
+                Size buttonSize = toggleButton.DoMeasure(availableSize);
+                Size labelSize = title.DoMeasure(availableSize);
                 Size innerSize = Size.Zero;
 
-                if (m_InnerPanel.Children.Count == 0)
+                if (innerPanel.Children.Count == 0)
                 {
-                    m_ToggleButton.Hide();
-                    m_ToggleButton.ToggleState = false;
-                    m_InnerPanel.Collapse(collapsed: true, measure: false);
+                    toggleButton.Hide();
+                    toggleButton.ToggleState = false;
+                    innerPanel.Collapse(collapsed: true, measure: false);
                 }
                 else
                 {
-                    m_ToggleButton.Show();
+                    toggleButton.Show();
 
-                    if (!m_InnerPanel.IsCollapsed)
+                    if (!innerPanel.IsCollapsed)
                     {
-                        innerSize = m_InnerPanel.DoMeasure(availableSize);
+                        innerSize = innerPanel.DoMeasure(availableSize);
                     }
                 }
 
                 return new Size(
-                    Math.Max(buttonSize.Width + labelSize.Width, m_ToggleButton.MeasuredSize.Width + innerSize.Width),
+                    Math.Max(buttonSize.Width + labelSize.Width, toggleButton.MeasuredSize.Width + innerSize.Width),
                     Math.Max(buttonSize.Height, labelSize.Height) + innerSize.Height) + Padding;
             }
 
-            return m_InnerPanel.DoMeasure(availableSize) + Padding;
+            return innerPanel.DoMeasure(availableSize) + Padding;
         }
 
         protected override Size Arrange(Size finalSize)
         {
             if (!IsRoot)
             {
-                m_ToggleButton.DoArrange(
+                toggleButton.DoArrange(
                     new Rectangle(
                         Padding.Left,
-                        Padding.Top + ((m_Title.MeasuredSize.Height - m_ToggleButton.MeasuredSize.Height) / 2),
-                        m_ToggleButton.MeasuredSize.Width,
-                        m_ToggleButton.MeasuredSize.Height));
+                        Padding.Top + ((title.MeasuredSize.Height - toggleButton.MeasuredSize.Height) / 2),
+                        toggleButton.MeasuredSize.Width,
+                        toggleButton.MeasuredSize.Height));
 
-                m_Title.DoArrange(
+                title.DoArrange(
                     new Rectangle(
-                        Padding.Left + m_ToggleButton.MeasuredSize.Width,
+                        Padding.Left + toggleButton.MeasuredSize.Width,
                         Padding.Top,
-                        m_Title.MeasuredSize.Width,
-                        m_Title.MeasuredSize.Height));
+                        title.MeasuredSize.Width,
+                        title.MeasuredSize.Height));
 
-                if (!m_InnerPanel.IsCollapsed)
+                if (!innerPanel.IsCollapsed)
                 {
-                    m_InnerPanel.DoArrange(
+                    innerPanel.DoArrange(
                         new Rectangle(
-                            Padding.Left + m_ToggleButton.MeasuredSize.Width,
-                            Padding.Top + Math.Max(m_ToggleButton.MeasuredSize.Height, m_Title.MeasuredSize.Height),
-                            m_InnerPanel.MeasuredSize.Width,
-                            m_InnerPanel.MeasuredSize.Height));
+                            Padding.Left + toggleButton.MeasuredSize.Width,
+                            Padding.Top + Math.Max(toggleButton.MeasuredSize.Height, title.MeasuredSize.Height),
+                            innerPanel.MeasuredSize.Width,
+                            innerPanel.MeasuredSize.Height));
                 }
             }
             else
             {
-                m_InnerPanel.DoArrange(
+                innerPanel.DoArrange(
                     new Rectangle(
                         Padding.Left,
                         Padding.Top,
-                        m_InnerPanel.MeasuredSize.Width,
-                        m_InnerPanel.MeasuredSize.Height));
+                        innerPanel.MeasuredSize.Width,
+                        innerPanel.MeasuredSize.Height));
             }
 
             return MeasuredSize;
@@ -315,6 +317,8 @@ namespace Gwen.Net.Control
         ///     Adds a new child node.
         /// </summary>
         /// <param name="label">Node's label.</param>
+        /// <param name="name">Node's name.</param>
+        /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
         public TreeNode AddNode(string label, string name = null, object userData = null)
         {
@@ -385,11 +389,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public void Open()
         {
-            m_InnerPanel.Show();
+            innerPanel.Show();
 
-            if (m_ToggleButton != null)
+            if (toggleButton != null)
             {
-                m_ToggleButton.ToggleState = true;
+                toggleButton.ToggleState = true;
             }
 
             if (Expanded != null)
@@ -410,11 +414,11 @@ namespace Gwen.Net.Control
         /// </summary>
         public void Close()
         {
-            m_InnerPanel.Collapse();
+            innerPanel.Collapse();
 
-            if (m_ToggleButton != null)
+            if (toggleButton != null)
             {
-                m_ToggleButton.ToggleState = false;
+                toggleButton.ToggleState = false;
             }
 
             if (Collapsed != null)
@@ -457,9 +461,9 @@ namespace Gwen.Net.Control
         {
             IsSelected = false;
 
-            if (m_Title != null)
+            if (title != null)
             {
-                m_Title.ToggleState = false;
+                title.ToggleState = false;
             }
 
             foreach (ControlBase child in Children)
@@ -483,9 +487,7 @@ namespace Gwen.Net.Control
         /// <returns>Found node or null.</returns>
         public TreeNode FindNodeByUserData(object userData, bool recursive = true)
         {
-            var node = Children.Where(x => x is TreeNode && x.UserData == userData).FirstOrDefault() as TreeNode;
-
-            if (node != null)
+            if (Children.FirstOrDefault(x => x is TreeNode && x.UserData == userData) is TreeNode node)
             {
                 return node;
             }
@@ -526,9 +528,10 @@ namespace Gwen.Net.Control
         ///     Handler for the toggle button.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnToggleButtonPress(ControlBase control, EventArgs args)
         {
-            if (m_ToggleButton.ToggleState)
+            if (toggleButton.ToggleState)
             {
                 Open();
             }
@@ -542,9 +545,10 @@ namespace Gwen.Net.Control
         ///     Handler for label double click.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnDoubleClickName(ControlBase control, EventArgs args)
         {
-            if (!m_ToggleButton.IsVisible)
+            if (!toggleButton.IsVisible)
             {
                 // Invoke double click events only if node hasn't child nodes.
                 // Otherwise toggle expand/collapse.
@@ -561,13 +565,14 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            m_ToggleButton.Toggle();
+            toggleButton.Toggle();
         }
 
         /// <summary>
         ///     Handler for label click.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnClickName(ControlBase control, EventArgs args)
         {
             if (LabelPressed != null)
@@ -580,14 +585,12 @@ namespace Gwen.Net.Control
 
         public void SetImage(string textureName)
         {
-            m_Title.SetImage(textureName);
+            title.SetImage(textureName);
         }
 
         protected override void OnChildAdded(ControlBase child)
         {
-            var node = child as TreeNode;
-
-            if (node != null)
+            if (child is TreeNode node)
             {
                 node.TreeControl = TreeControl;
 
@@ -597,10 +600,42 @@ namespace Gwen.Net.Control
             base.OnChildAdded(child);
         }
 
+        private readonly Dictionary<GwenEventHandler<ClickedEventArgs>, GwenEventHandler<ClickedEventArgs>> clickedHandlers = new();
+
+        private GwenEventHandler<ClickedEventArgs> CreateClickedHandler(GwenEventHandler<ClickedEventArgs> handler)
+        {
+            if (clickedHandlers.ContainsKey(handler))
+            {
+                return clickedHandlers[handler];
+            }
+            
+            GwenEventHandler<ClickedEventArgs> clicked = delegate(ControlBase _, ClickedEventArgs args)
+            {
+                handler(this, args);
+            };
+            
+            clickedHandlers.Add(handler, clicked);
+            
+            return clicked;
+        }
+        
+        private GwenEventHandler<ClickedEventArgs> RemoveClickedHandler(GwenEventHandler<ClickedEventArgs> handler)
+        {
+            GwenEventHandler<ClickedEventArgs> clicked = clickedHandlers[handler];
+            clickedHandlers.Remove(handler);
+            return clicked;
+        }
+
         public override event GwenEventHandler<ClickedEventArgs> Clicked
         {
-            add => m_Title.Clicked += delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
-            remove => m_Title.Clicked -= delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
+            add
+            {
+                if (value != null)
+                {
+                    title.Clicked += CreateClickedHandler(value);
+                }
+            }
+            remove => title.Clicked -= RemoveClickedHandler(value);
         }
 
         public override event GwenEventHandler<ClickedEventArgs> DoubleClicked
@@ -609,20 +644,22 @@ namespace Gwen.Net.Control
             {
                 if (value != null)
                 {
-                    m_Title.DoubleClicked += delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
+                    title.DoubleClicked += CreateClickedHandler(value);
                 }
             }
-            remove => m_Title.DoubleClicked -= delegate(ControlBase sender, ClickedEventArgs args)
-            {
-                value(this, args);
-            };
+            remove => title.DoubleClicked -= RemoveClickedHandler(value);
         }
 
         public override event GwenEventHandler<ClickedEventArgs> RightClicked
         {
-            add => m_Title.RightClicked += delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
-            remove =>
-                m_Title.RightClicked -= delegate(ControlBase sender, ClickedEventArgs args) { value(this, args); };
+            add
+            {
+                if (value != null)
+                {
+                    title.RightClicked += CreateClickedHandler(value);
+                }
+            }
+            remove => title.RightClicked -= RemoveClickedHandler(value);
         }
 
         public override event GwenEventHandler<ClickedEventArgs> DoubleRightClicked
@@ -631,16 +668,10 @@ namespace Gwen.Net.Control
             {
                 if (value != null)
                 {
-                    m_Title.DoubleRightClicked += delegate(ControlBase sender, ClickedEventArgs args)
-                    {
-                        value(this, args);
-                    };
+                    title.DoubleRightClicked += CreateClickedHandler(value);
                 }
             }
-            remove => m_Title.DoubleRightClicked -= delegate(ControlBase sender, ClickedEventArgs args)
-            {
-                value(this, args);
-            };
+            remove => title.DoubleRightClicked -= RemoveClickedHandler(value);
         }
     }
 }

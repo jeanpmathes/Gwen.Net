@@ -27,13 +27,13 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                PropertyTree ptree = new(this);
-                ptree.Dock = Dock.Top;
-                ptree.Width = 300;
-                ptree.AutoSizeToContent = true;
+                PropertyTree propertyTree = new(this);
+                propertyTree.Dock = Dock.Top;
+                propertyTree.Width = 300;
+                propertyTree.AutoSizeToContent = true;
 
                 {
-                    Properties props = ptree.Add("Item One");
+                    Properties props = propertyTree.Add("Item One");
                     props.ValueChanged += OnChanged;
 
                     props.Add("Middle Name");
@@ -42,7 +42,7 @@ namespace Gwen.Net.Tests.Components
                 }
 
                 {
-                    Properties props = ptree.Add("Item Two");
+                    Properties props = propertyTree.Add("Item Two");
                     props.ValueChanged += OnChanged;
 
                     props.Add("More Items");
@@ -52,14 +52,14 @@ namespace Gwen.Net.Tests.Components
                     props.Add("Out Here");
                 }
 
-                ptree.ExpandAll();
+                propertyTree.ExpandAll();
             }
         }
 
         private void OnChanged(ControlBase control, EventArgs args)
         {
-            var row = control as PropertyRow;
-            UnitPrint(String.Format("Property changed: {0}", row.Value));
+            var row = (PropertyRow) control;
+            UnitPrint($"Property changed: {row.Value}");
         }
     }
 }

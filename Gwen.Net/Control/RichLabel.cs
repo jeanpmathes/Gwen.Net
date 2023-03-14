@@ -12,11 +12,11 @@ namespace Gwen.Net.Control
     /// </summary>
     public class RichLabel : ControlBase
     {
-        private int m_BuildWidth;
-        private Document m_Document;
-        private bool m_NeedsRebuild;
-        private Size m_TextSize;
-        private bool m_Updating;
+        private int buildWidth;
+        private Document document;
+        private bool needsRebuild;
+        private Size textSize;
+        private bool updating;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RichLabel" /> class.
@@ -25,18 +25,18 @@ namespace Gwen.Net.Control
         public RichLabel(ControlBase parent)
             : base(parent)
         {
-            m_BuildWidth = 0;
-            m_TextSize = Size.Zero;
-            m_Updating = false;
+            buildWidth = 0;
+            textSize = Size.Zero;
+            updating = false;
         }
 
         public Document Document
         {
-            get => m_Document;
+            get => document;
             set
             {
-                m_Document = value;
-                m_NeedsRebuild = true;
+                document = value;
+                needsRebuild = true;
                 Invalidate();
             }
         }
@@ -45,13 +45,13 @@ namespace Gwen.Net.Control
 
         protected void Rebuild()
         {
-            m_Updating = true;
+            updating = true;
 
             DeleteAllChildren();
 
             Size size = Size.Zero;
 
-            if (m_Document != null && m_Document.Paragraphs.Count > 0)
+            if (document != null && document.Paragraphs.Count > 0)
             {
 #if USE_KNUTH_PLASS_LINE_BREAKING
 				LineBreaker lineBreaker = new RichText.KnuthPlass.LineBreaker(Skin.Renderer, Skin.DefaultFont);
@@ -64,7 +64,7 @@ namespace Gwen.Net.Control
                 int width;
                 int height;
 
-                foreach (Paragraph paragraph in m_Document.Paragraphs)
+                foreach (Paragraph paragraph in document.Paragraphs)
                 {
                     if (paragraph is ImageParagraph)
                     {
@@ -104,7 +104,7 @@ namespace Gwen.Net.Control
                     }
                     else
                     {
-                        List<TextBlock> textBlocks = lineBreaker.LineBreak(paragraph, m_BuildWidth);
+                        List<TextBlock> textBlocks = lineBreaker.LineBreak(paragraph, buildWidth);
 
                         if (textBlocks != null)
                         {
@@ -189,33 +189,33 @@ namespace Gwen.Net.Control
                 size.Height = y;
             }
 
-            m_TextSize = size;
+            textSize = size;
 
-            m_NeedsRebuild = false;
+            needsRebuild = false;
 
-            m_Updating = false;
+            updating = false;
         }
 
         protected override Size Measure(Size availableSize)
         {
-            if (m_NeedsRebuild || availableSize.Width != m_BuildWidth)
+            if (needsRebuild || availableSize.Width != buildWidth)
             {
-                m_BuildWidth = availableSize.Width;
+                buildWidth = availableSize.Width;
                 Rebuild();
             }
 
-            return m_TextSize;
+            return textSize;
         }
 
         protected override Size Arrange(Size finalSize)
         {
-            if (m_NeedsRebuild || finalSize.Width != m_BuildWidth)
+            if (needsRebuild || finalSize.Width != buildWidth)
             {
-                m_BuildWidth = finalSize.Width;
+                buildWidth = finalSize.Width;
                 Rebuild();
             }
 
-            return m_TextSize;
+            return textSize;
         }
 
         private void OnLinkClicked(ControlBase control, LinkClickedEventArgs args)
@@ -229,7 +229,7 @@ namespace Gwen.Net.Control
         public override void Invalidate()
         {
             // We don't want to cause the re-layout when creating text objects in the layout
-            if (m_Updating)
+            if (updating)
             {
                 return;
             }

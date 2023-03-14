@@ -10,11 +10,11 @@ namespace Gwen.Net.RichText.Simple
         public LineBreaker(RendererBase renderer, Font defaultFont)
             : base(renderer, defaultFont) {}
 
-        public override List<TextBlock> LineBreak(Paragraph paragraph, int totalWidth)
+        public override List<TextBlock> LineBreak(Paragraph currentParagraph, int totalWidth)
         {
-            List<Node> nodes = Split(paragraph);
+            List<Node> nodes = Split(currentParagraph);
 
-            int lineWidth = totalWidth - paragraph.Margin.Left - paragraph.Margin.Right - paragraph.FirstIndent;
+            int lineWidth = totalWidth - currentParagraph.Margin.Left - currentParagraph.Margin.Right - currentParagraph.FirstIndent;
 
             List<TextBlock> textBlocks = new();
 
@@ -22,7 +22,7 @@ namespace Gwen.Net.RichText.Simple
             int lineStop;
             var w = 0;
             var y = 0;
-            int x = paragraph.FirstIndent;
+            int x = currentParagraph.FirstIndent;
             var index = 0;
 
             while (index < nodes.Count)
@@ -125,10 +125,10 @@ namespace Gwen.Net.RichText.Simple
 
                     lineStart = index;
                     y += height;
-                    x = paragraph.RemainigIndent;
+                    x = currentParagraph.RemainigIndent;
                     w = 0;
 
-                    lineWidth = totalWidth - paragraph.Margin.Left - paragraph.Margin.Right - paragraph.RemainigIndent;
+                    lineWidth = totalWidth - currentParagraph.Margin.Left - currentParagraph.Margin.Right - currentParagraph.RemainigIndent;
                 }
                 else
                 {
@@ -186,11 +186,11 @@ namespace Gwen.Net.RichText.Simple
             return nodes;
         }
 
-        private class Node
+        private sealed class Node
         {
-            public readonly Part Part;
-            public readonly Size Size;
-            public readonly string Text;
+            public Part Part { get; }
+            public Size Size { get; }
+            public string Text { get; }
 
             public Node(string text, Size size, Part part)
             {
@@ -227,10 +227,10 @@ namespace Gwen.Net.RichText.Simple
 
                 if (Text == null)
                 {
-                    return String.Format("Node: Width = {0} Value = Space", Size.Width);
+                    return $"Node: Width = {Size.Width} Value = Space";
                 }
 
-                return String.Format("Node: Width = {0} Value = \"{1}\"", Size.Width, Text);
+                return $"Node: Width = {Size.Width} Value = \"{Text}\"";
             }
 #endif
         }

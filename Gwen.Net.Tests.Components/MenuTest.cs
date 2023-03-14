@@ -6,7 +6,7 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Standard", Order = 208)]
     public class MenuTest : GUnit
     {
-        private readonly Menu m_ContextMenu;
+        private readonly Menu contextMenu;
 
         public MenuTest(ControlBase parent)
             : base(parent)
@@ -38,7 +38,7 @@ namespace Gwen.Net.Tests.Components
                     MenuItem sRoot = menu.AddItemPath("File/s/d/s/s/d/f");
                 }
 
-                /* Embdedded Menu Items */
+                /* Embedded Menu Items */
                 {
                     MenuItem pRoot = menu.AddItem("Submenu");
 
@@ -118,26 +118,26 @@ namespace Gwen.Net.Tests.Components
                 lblClickMe.VerticalAlignment = VerticalAlignment.Center;
                 lblClickMe.Text = "Right Click Me";
 
-                m_ContextMenu = new Menu(this);
-                m_ContextMenu.AddItem("Test");
+                contextMenu = new Menu(this);
+                contextMenu.AddItem("Test");
 
-                m_ContextMenu.AddItem("Clickable").Clicked += (sender2, args2) =>
+                contextMenu.AddItem("Clickable").Clicked += (_, _) =>
                 {
                     UnitPrint("Clickable item was clicked");
                 };
 
-                lblClickMe.RightClicked += (sender, args) =>
+                lblClickMe.RightClicked += (_, args) =>
                 {
-                    m_ContextMenu.Position = CanvasPosToLocal(new Point(args.X, args.Y));
-                    m_ContextMenu.Show();
+                    contextMenu.Position = CanvasPosToLocal(new Point(args.X, args.Y));
+                    contextMenu.Show();
                 };
             }
         }
 
         private void MenuItemSelect(ControlBase control, EventArgs args)
         {
-            var item = control as MenuItem;
-            UnitPrint(string.Format("Menu item selected: {0}", item.Text));
+            var item = (MenuItem) control;
+            UnitPrint($"Menu item selected: {item.Text}");
         }
     }
 }

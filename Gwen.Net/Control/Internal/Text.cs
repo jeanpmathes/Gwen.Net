@@ -25,7 +25,7 @@ namespace Gwen.Net.Control.Internal
             font = Skin.DefaultFont;
             @string = string.Empty;
             fitToText = null;
-            TextColor = Skin.Colors.Label.Default;
+            TextColor = Skin.colors.labelColors.@default;
             MouseInputEnabled = false;
             TextColorOverride = new Color(a: 0, r: 255, g: 255, b: 255); // A==0, override disabled
         }
@@ -114,8 +114,8 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             if (Length == 0 || Font == null)
             {
@@ -124,14 +124,14 @@ namespace Gwen.Net.Control.Internal
 
             if (TextColorOverride.A == 0)
             {
-                skin.Renderer.DrawColor = TextColor;
+                currentSkin.Renderer.DrawColor = TextColor;
             }
             else
             {
-                skin.Renderer.DrawColor = TextColorOverride;
+                currentSkin.Renderer.DrawColor = TextColorOverride;
             }
 
-            skin.Renderer.RenderText(Font, Point.Zero, TextOverride ?? String);
+            currentSkin.Renderer.RenderText(Font, Point.Zero, TextOverride ?? String);
 
 #if DEBUG_TEXT_MEASURE
 			{

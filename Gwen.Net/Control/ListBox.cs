@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gwen.Net.Skin;
@@ -273,7 +272,7 @@ namespace Gwen.Net.Control
         /// <returns>Newly created control.</returns>
         public ListBoxRow AddRow(string label, string name)
         {
-            return AddRow(label, name, UserData: null);
+            return AddRow(label, name, userData: null);
         }
 
         /// <summary>
@@ -281,16 +280,16 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="label">Row text.</param>
         /// <param name="name">Internal control name.</param>
-        /// <param name="UserData">User data for newly created row</param>
+        /// <param name="userData">User data for newly created row</param>
         /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name, object UserData)
+        public ListBoxRow AddRow(string label, string name, object userData)
         {
             ListBoxRow row = new(this);
             table.AddRow(row);
 
             row.SetCellText(columnIndex: 0, label);
             row.Name = name;
-            row.UserData = UserData;
+            row.UserData = userData;
 
             row.Selected += OnRowSelected;
             row.DoubleClicked += OnRowDoubleClicked;
@@ -329,10 +328,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawListBox(this);
+            currentSkin.DrawListBox(this);
         }
 
         /// <summary>
@@ -372,13 +371,13 @@ namespace Gwen.Net.Control
         ///     Handler for the row selection event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
         {
             // [omeg] changed default behavior
             var clear = false; // !InputHandler.InputHandler.IsShiftDown;
-            var row = args.SelectedItem as ListBoxRow;
 
-            if (row == null)
+            if (args.SelectedItem is not ListBoxRow row)
             {
                 return;
             }
@@ -400,6 +399,7 @@ namespace Gwen.Net.Control
         ///     Handler for the row double click event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnRowDoubleClicked(ControlBase control, ClickedEventArgs args)
         {
             var row = control as ListBoxRow;

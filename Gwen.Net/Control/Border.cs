@@ -27,9 +27,9 @@ namespace Gwen.Net.Control
 
         public BorderType BorderType { get; set; }
 
-        protected override void Render(SkinBase skin)
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawBorder(this, BorderType);
+            currentSkin.DrawBorder(this, BorderType);
         }
     }
 }

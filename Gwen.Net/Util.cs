@@ -213,11 +213,11 @@ namespace Gwen.Net
         /// <returns>Split strings.</returns>
         public static string[] SplitAndKeep(string text, string separators)
         {
-            List<string> strs = new();
+            List<string> strings = new();
             var offset = 0;
             int length = text.Length;
             int sepLen = separators.Length;
-            int i = text.IndexOf(separators);
+            int i = text.IndexOf(separators, StringComparison.Ordinal);
             string word;
 
             while (i != -1)
@@ -226,17 +226,17 @@ namespace Gwen.Net
 
                 if (!string.IsNullOrWhiteSpace(word))
                 {
-                    strs.Add(word);
+                    strings.Add(word);
                 }
 
                 offset = i + sepLen;
-                i = text.IndexOf(separators, offset);
+                i = text.IndexOf(separators, offset, StringComparison.Ordinal);
                 offset -= sepLen;
             }
 
-            strs.Add(text.Substring(offset, length - offset));
+            strings.Add(text.Substring(offset, length - offset));
 
-            return strs.ToArray();
+            return strings.ToArray();
         }
 
         public static bool IsIgnore(int value)

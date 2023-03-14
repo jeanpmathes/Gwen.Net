@@ -14,12 +14,12 @@ namespace Gwen.Net
     /// </remarks>
     public class Timer : IDisposable
     {
-        private static readonly List<Timer> m_Timers = new();
-        private static float m_LastTime;
-        private static bool m_Started;
-        private bool m_Enabled;
+        private static readonly List<Timer> timers = new();
+        private static float lastTime;
+        private static bool started;
+        private bool enabled;
 
-        private int m_TimerValue;
+        private int timerValue;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Timer" /> class.
@@ -28,9 +28,9 @@ namespace Gwen.Net
         {
             Interval = 0;
             IsOneTime = false;
-            m_Enabled = false;
+            enabled = false;
 
-            m_Timers.Add(this);
+            timers.Add(this);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Gwen.Net
         /// </summary>
         public bool IsEnabled
         {
-            get => m_Enabled;
+            get => enabled;
             set
             {
                 if (value)
@@ -78,8 +78,8 @@ namespace Gwen.Net
         /// </summary>
         public void Start()
         {
-            m_Enabled = true;
-            m_TimerValue = Interval;
+            enabled = true;
+            timerValue = Interval;
         }
 
         /// <summary>
@@ -87,43 +87,43 @@ namespace Gwen.Net
         /// </summary>
         public void Stop()
         {
-            m_Enabled = false;
+            enabled = false;
         }
 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
-                m_Timers.Remove(this);
+                timers.Remove(this);
             }
         }
 
         internal static void Tick()
         {
-            if (m_Timers.Count == 0)
+            if (timers.Count == 0)
             {
                 return;
             }
 
             float currentTime = GwenPlatform.GetTimeInSeconds();
 
-            if (!m_Started)
+            if (!started)
             {
-                m_LastTime = currentTime;
-                m_Started = true;
+                lastTime = currentTime;
+                started = true;
 
                 return;
             }
 
-            var diff = (int) ((currentTime - m_LastTime) * 1000.0f);
+            var diff = (int) ((currentTime - lastTime) * 1000.0f);
 
-            foreach (Timer timer in m_Timers)
+            foreach (Timer timer in timers)
             {
-                if (timer.m_Enabled)
+                if (timer.enabled)
                 {
-                    timer.m_TimerValue -= diff;
+                    timer.timerValue -= diff;
 
-                    if (timer.m_TimerValue <= 0)
+                    if (timer.timerValue <= 0)
                     {
                         if (timer.Elapsed != null)
                         {
@@ -132,17 +132,17 @@ namespace Gwen.Net
 
                         if (!timer.IsOneTime)
                         {
-                            timer.m_TimerValue = timer.Interval + timer.m_TimerValue;
+                            timer.timerValue = timer.Interval + timer.timerValue;
                         }
                         else
                         {
-                            timer.m_Enabled = false;
+                            timer.enabled = false;
                         }
                     }
                 }
             }
 
-            m_LastTime = currentTime;
+            lastTime = currentTime;
         }
     }
 }

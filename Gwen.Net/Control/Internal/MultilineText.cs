@@ -9,10 +9,10 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class MultilineText : ControlBase
     {
-        private readonly List<Text> m_TextLines = new();
-        private Font m_Font;
+        private readonly List<Text> textLines = new();
+        private Font font;
 
-        private int m_LineHeight;
+        private int lineHeight;
 
         public MultilineText(ControlBase parent)
             : base(parent) {}
@@ -26,21 +26,21 @@ namespace Gwen.Net.Control.Internal
         {
             get
             {
-                if (index < 0 && index >= m_TextLines.Count)
+                if (index < 0 && index >= textLines.Count)
                 {
                     throw new ArgumentOutOfRangeException("index");
                 }
 
-                return m_TextLines[index].String;
+                return textLines[index].String;
             }
             set
             {
-                if (index < 0 && index >= m_TextLines.Count)
+                if (index < 0 && index >= textLines.Count)
                 {
                     throw new ArgumentOutOfRangeException("index");
                 }
 
-                m_TextLines[index].String = value;
+                textLines[index].String = value;
 
                 Invalidate();
             }
@@ -49,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Returns the number of lines that are in the Multiline Text Box.
         /// </summary>
-        public int TotalLines => m_TextLines.Count;
+        public int TotalLines => textLines.Count;
 
         /// <summary>
         ///     Height of the text line in pixels.
@@ -58,12 +58,12 @@ namespace Gwen.Net.Control.Internal
         {
             get
             {
-                if (m_LineHeight == 0)
+                if (lineHeight == 0)
                 {
-                    m_LineHeight = Util.Ceil(Font.FontMetrics.LineSpacingPixels);
+                    lineHeight = Util.Ceil(Font.FontMetrics.LineSpacingPixels);
                 }
 
-                return m_LineHeight;
+                return lineHeight;
             }
         }
 
@@ -73,7 +73,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public string Text
         {
-            get => string.Join(Environment.NewLine, m_TextLines.Select(t => t.String));
+            get => string.Join(Environment.NewLine, textLines.Select(t => t.String));
             set => SetText(value);
         }
 
@@ -82,17 +82,17 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public Font Font
         {
-            get => m_Font;
+            get => font;
             set
             {
-                m_Font = value;
+                font = value;
 
-                foreach (Text textCtrl in m_TextLines)
+                foreach (Text textCtrl in textLines)
                 {
                     textCtrl.Font = value;
                 }
 
-                m_LineHeight = 0;
+                lineHeight = 0;
                 Invalidate();
             }
         }
@@ -108,9 +108,9 @@ namespace Gwen.Net.Control.Internal
 
             for (index = 0; index < lines.Length; index++)
             {
-                if (m_TextLines.Count > index)
+                if (textLines.Count > index)
                 {
-                    m_TextLines[index].String = lines[index];
+                    textLines[index].String = lines[index];
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace Gwen.Net.Control.Internal
                 }
             }
 
-            for (; index < m_TextLines.Count; index++)
+            for (; index < textLines.Count; index++)
             {
                 RemoveLine(lines.Length);
             }
@@ -133,12 +133,12 @@ namespace Gwen.Net.Control.Internal
         /// <param name="position">Position where to insert.</param>
         public Point InsertText(string text, Point position)
         {
-            if (position.Y < 0 || position.Y >= m_TextLines.Count)
+            if (position.Y < 0 || position.Y >= textLines.Count)
             {
                 throw new ArgumentOutOfRangeException("position");
             }
 
-            if (position.X < 0 || position.X > m_TextLines[position.Y].String.Length)
+            if (position.X < 0 || position.X > textLines[position.Y].String.Length)
             {
                 throw new ArgumentOutOfRangeException("position");
             }
@@ -147,10 +147,10 @@ namespace Gwen.Net.Control.Internal
             {
                 string[] newLines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(separator: '\n');
 
-                string oldLineStart = m_TextLines[position.Y].String.Substring(startIndex: 0, position.X);
-                string oldLineEnd = m_TextLines[position.Y].String.Substring(position.X);
+                string oldLineStart = textLines[position.Y].String.Substring(startIndex: 0, position.X);
+                string oldLineEnd = textLines[position.Y].String.Substring(position.X);
 
-                m_TextLines[position.Y].String = oldLineStart + newLines[0]; // First line
+                textLines[position.Y].String = oldLineStart + newLines[0]; // First line
 
                 for (var i = 1; i < newLines.Length - 1; i++)
                 {
@@ -164,9 +164,9 @@ namespace Gwen.Net.Control.Internal
                 return new Point(newLines[newLines.Length - 1].Length, position.Y + newLines.Length - 1);
             }
 
-            string str = m_TextLines[position.Y].String;
+            string str = textLines[position.Y].String;
             str = str.Insert(position.X, text);
-            m_TextLines[position.Y].String = str;
+            textLines[position.Y].String = str;
 
             Invalidate();
 
@@ -179,7 +179,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="text">Text to add.</param>
         public void AddLine(string text)
         {
-            InsertLine(m_TextLines.Count, text);
+            InsertLine(textLines.Count, text);
         }
 
         /// <summary>
@@ -189,18 +189,18 @@ namespace Gwen.Net.Control.Internal
         /// <param name="text">Text to insert.</param>
         public void InsertLine(int index, string text)
         {
-            if (index < 0 || index > m_TextLines.Count)
+            if (index < 0 || index > textLines.Count)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
 
             Text textCtrl = new(this);
-            textCtrl.Font = m_Font;
+            textCtrl.Font = font;
             textCtrl.AutoSizeToContents = false;
-            textCtrl.TextColor = Skin.Colors.TextBox.Text;
+            textCtrl.TextColor = Skin.colors.textBoxColors.text;
             textCtrl.String = text;
 
-            m_TextLines.Insert(index, textCtrl);
+            textLines.Insert(index, textCtrl);
             Invalidate();
         }
 
@@ -211,12 +211,12 @@ namespace Gwen.Net.Control.Internal
         /// <param name="text">New text.</param>
         public void ReplaceLine(int index, string text)
         {
-            if (index < 0 || index >= m_TextLines.Count)
+            if (index < 0 || index >= textLines.Count)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            m_TextLines[index].String = text;
+            textLines[index].String = text;
 
             Invalidate();
         }
@@ -227,13 +227,13 @@ namespace Gwen.Net.Control.Internal
         /// <param name="index">Index to remove.</param>
         public void RemoveLine(int index)
         {
-            if (index < 0 || index >= m_TextLines.Count)
+            if (index < 0 || index >= textLines.Count)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            RemoveChild(m_TextLines[index], dispose: true);
-            m_TextLines.RemoveAt(index);
+            RemoveChild(textLines[index], dispose: true);
+            textLines.RemoveAt(index);
 
             Invalidate();
         }
@@ -243,12 +243,12 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public void Clear()
         {
-            foreach (Text textCtrl in m_TextLines)
+            foreach (Text textCtrl in textLines)
             {
                 RemoveChild(textCtrl, dispose: true);
             }
 
-            m_TextLines.Clear();
+            textLines.Clear();
 
             Invalidate();
         }
@@ -260,19 +260,19 @@ namespace Gwen.Net.Control.Internal
         /// <returns>Character position in local coordinates.</returns>
         public Point GetCharacterPosition(Point position)
         {
-            if (position.Y < 0 || position.Y >= m_TextLines.Count)
+            if (position.Y < 0 || position.Y >= textLines.Count)
             {
                 throw new ArgumentOutOfRangeException("position");
             }
 
-            if (position.X < 0 || position.X > m_TextLines[position.Y].String.Length)
+            if (position.X < 0 || position.X > textLines[position.Y].String.Length)
             {
                 throw new ArgumentOutOfRangeException("position");
             }
 
-            string currLine = m_TextLines[position.Y].String.Substring(
+            string currLine = textLines[position.Y].String.Substring(
                 startIndex: 0,
-                Math.Min(position.X, m_TextLines[position.Y].Length));
+                Math.Min(position.X, textLines[position.Y].Length));
 
             Point p = new(Skin.Renderer.MeasureText(Font, currLine).Width, position.Y * LineHeight);
 
@@ -292,10 +292,10 @@ namespace Gwen.Net.Control.Internal
             Point best = new(x: 0, y: 0);
 
             /* Find the appropriate Y (always pick a row whichever the mouse currently is on) */
-            best.Y = Util.Clamp(p.Y / LineHeight, min: 0, m_TextLines.Count - 1);
+            best.Y = Util.Clamp(p.Y / LineHeight, min: 0, textLines.Count - 1);
 
             /* Find the best X, closest char */
-            best.X = m_TextLines[best.Y].GetClosestCharacter(p);
+            best.X = textLines[best.Y].GetClosestCharacter(p);
 
             return best;
         }
@@ -306,19 +306,19 @@ namespace Gwen.Net.Control.Internal
 
             var width = 0;
             var height = 0;
-            int lineHeight = LineHeight;
+            int currentLineHeight = LineHeight;
 
-            foreach (Text line in m_TextLines)
+            foreach (Text line in textLines)
             {
                 Size size = line.DoMeasure(availableSize);
-                availableSize.Height -= lineHeight;
+                availableSize.Height -= currentLineHeight;
 
                 if (size.Width > width)
                 {
                     width = size.Width;
                 }
 
-                height += lineHeight;
+                height += currentLineHeight;
             }
 
             return new Size(width + 2, height) + Padding;
@@ -330,12 +330,12 @@ namespace Gwen.Net.Control.Internal
 
             int width = finalSize.Width;
             int y = Padding.Top;
-            int lineHeight = LineHeight;
+            int currentLineHeight = LineHeight;
 
-            foreach (Text line in m_TextLines)
+            foreach (Text line in textLines)
             {
                 line.DoArrange(new Rectangle(Padding.Left, y, width, line.MeasuredSize.Height));
-                y += lineHeight;
+                y += currentLineHeight;
             }
 
             y += Padding.Bottom;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Gwen.Net.RichText.KnuthPlass
+﻿namespace Gwen.Net.RichText.KnuthPlass
 {
     internal enum NodeType { Box, Glue, Penalty }
 
@@ -36,7 +34,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 #if DEBUG
         public override string ToString()
         {
-            return String.Format("Box: Width = {0} Value = {1}", Width, Value);
+            return $"Box: Width = {Width} Value = {Value}";
         }
 #endif
     }
@@ -57,7 +55,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 #if DEBUG
         public override string ToString()
         {
-            return String.Format("Glue: Width = {0} Stretch = {1} Shrink = {2}", Width, Stretch, Shrink);
+            return $"Glue: Width = {Width} Stretch = {Stretch} Shrink = {Shrink}";
         }
 #endif
     }
@@ -78,7 +76,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 #if DEBUG
         public override string ToString()
         {
-            return String.Format("Penalty: Width = {0} Penalty = {1} Flagged = {2}", Width, Penalty, Flagged);
+            return $"Penalty: Width = {Width} Penalty = {Penalty} Flagged = {Flagged}";
         }
 #endif
     }

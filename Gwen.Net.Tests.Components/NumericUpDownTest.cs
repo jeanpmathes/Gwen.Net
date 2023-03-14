@@ -49,7 +49,7 @@ namespace Gwen.Net.Tests.Components
 
         private void OnValueChanged(ControlBase control, EventArgs args)
         {
-            UnitPrint(string.Format("NumericUpDown: ValueChanged: {0}", ((NumericUpDown) control).Value));
+            UnitPrint($"NumericUpDown: ValueChanged: {((NumericUpDown) control).Value}");
         }
     }
 }

@@ -50,6 +50,7 @@ namespace Gwen.Net.OpenTk
         ///     The location of the text on the backing store, in 2d pixel coordinates.
         ///     The origin (0, 0) lies at the top-left corner of the backing store.
         /// </param>
+        /// <param name="format">The <see cref="StringFormat" /> that will be used.</param>
         public void DrawString(string text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
         {
             graphics.DrawString(
@@ -80,7 +81,7 @@ namespace Gwen.Net.OpenTk
 #if DEBUG
         ~TextRenderer()
         {
-            throw new InvalidOperationException(String.Format("[Warning] Resource leaked: {0}", typeof(TextRenderer)));
+            throw new InvalidOperationException($"[Warning] Resource leaked: {typeof(TextRenderer)}");
         }
 #endif
     }

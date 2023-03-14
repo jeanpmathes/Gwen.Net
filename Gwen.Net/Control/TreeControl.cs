@@ -138,12 +138,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             if (ShouldDrawBackground)
             {
-                skin.DrawTreeControl(this);
+                currentSkin.DrawTreeControl(this);
             }
         }
 
@@ -151,6 +151,8 @@ namespace Gwen.Net.Control
         ///     Adds a new child node.
         /// </summary>
         /// <param name="label">Node's label.</param>
+        /// <param name="name">Node's name.</param>
+        /// <param name="userData">Node's user data.</param>
         /// <returns>Newly created control.</returns>
         public TreeNode AddNode(string label, string name = null, object userData = null)
         {
@@ -237,8 +239,9 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Handler for node selected event.
         /// </summary>
-        /// <param name="Control">Node selected.</param>
-        protected virtual void OnNodeSelected(ControlBase Control, EventArgs args)
+        /// <param name="control">Node selected.</param>
+        /// <param name="args">Event arguments.</param>
+        protected virtual void OnNodeSelected(ControlBase control, EventArgs args)
         {
             if (!AllowMultiSelect /*|| InputHandler.InputHandler.IsKeyDown(Key.Control)*/)
             {

@@ -36,9 +36,9 @@ namespace Gwen.Net.Tests.Components
 
         private void OnChange(ControlBase control, EventArgs args)
         {
-            var rbc = control as RadioButtonGroup;
+            var rbc = (RadioButtonGroup) control;
             LabeledRadioButton rb = rbc.Selected;
-            UnitPrint(String.Format("RadioButton: SelectionChanged: {0}", rb.Text));
+            UnitPrint($"RadioButton: SelectionChanged: {rb.Text}");
         }
 
         private enum Choices

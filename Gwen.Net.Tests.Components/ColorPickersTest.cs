@@ -38,29 +38,22 @@ namespace Gwen.Net.Tests.Components
                 hsvPicker.Dock = Dock.Fill;
                 hsvPicker.ColorChanged += ColorChanged;
 
-                Button OpenWindow = new(this);
-                OpenWindow.Dock = Dock.Bottom;
-                OpenWindow.HorizontalAlignment = HorizontalAlignment.Left;
-                OpenWindow.Text = "Open Window";
+                Button openWindow = new(this);
+                openWindow.Dock = Dock.Bottom;
+                openWindow.HorizontalAlignment = HorizontalAlignment.Left;
+                openWindow.Text = "Open Window";
 
-                OpenWindow.Clicked += delegate { window.Show(); };
+                openWindow.Clicked += delegate { window.Show(); };
             }
         }
 
         private void ColorChanged(ControlBase control, EventArgs args)
         {
-            var picker = control as IColorPicker;
+            var picker = (IColorPicker) control;
             Color c = picker.SelectedColor;
             var hsv = c.ToHSV();
 
-            string text = string.Format(
-                "Color changed: RGB: {0:X2}{1:X2}{2:X2} HSV: {3:F1} {4:F2} {5:F2}",
-                c.R,
-                c.G,
-                c.B,
-                hsv.H,
-                hsv.S,
-                hsv.V);
+            var text = $"Color changed: RGB: {c.R:X2}{c.G:X2}{c.B:X2} HSV: {hsv.H:F1} {hsv.S:F2} {hsv.V:F2}";
 
             UnitPrint(text);
         }

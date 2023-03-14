@@ -9,16 +9,16 @@ namespace Gwen.Net.Control
     /// </summary>
     public class CrossSplitter : ControlBase
     {
-        private readonly SplitterBar m_CSplitter;
-        private readonly SplitterBar m_HSplitter;
+        private readonly SplitterBar cSplitter;
+        private readonly SplitterBar hSplitter;
 
-        private readonly ControlBase[] m_Sections;
-        private readonly SplitterBar m_VSplitter;
+        private readonly ControlBase[] sections;
+        private readonly SplitterBar vSplitter;
 
-        private float m_HVal; // 0-1
-        private float m_VVal; // 0-1
+        private float hVal; // 0-1
+        private float vVal; // 0-1
 
-        private int m_ZoomedSection; // 0-3
+        private int zoomedSection; // 0-3
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CrossSplitter" /> class.
@@ -27,22 +27,22 @@ namespace Gwen.Net.Control
         public CrossSplitter(ControlBase parent)
             : base(parent)
         {
-            m_Sections = new ControlBase[4];
+            sections = new ControlBase[4];
 
-            m_VSplitter = new SplitterBar(this);
-            m_VSplitter.Dragged += OnVerticalMoved;
-            m_VSplitter.Cursor = Cursor.SizeNS;
+            vSplitter = new SplitterBar(this);
+            vSplitter.Dragged += OnVerticalMoved;
+            vSplitter.Cursor = Cursor.SizeNS;
 
-            m_HSplitter = new SplitterBar(this);
-            m_HSplitter.Dragged += OnHorizontalMoved;
-            m_HSplitter.Cursor = Cursor.SizeWE;
+            hSplitter = new SplitterBar(this);
+            hSplitter.Dragged += OnHorizontalMoved;
+            hSplitter.Cursor = Cursor.SizeWE;
 
-            m_CSplitter = new SplitterBar(this);
-            m_CSplitter.Dragged += OnCenterMoved;
-            m_CSplitter.Cursor = Cursor.SizeAll;
+            cSplitter = new SplitterBar(this);
+            cSplitter.Dragged += OnCenterMoved;
+            cSplitter.Cursor = Cursor.SizeAll;
 
-            m_HVal = 0.5f;
-            m_VVal = 0.5f;
+            hVal = 0.5f;
+            vVal = 0.5f;
 
             SetPanel(index: 0, panel: null);
             SetPanel(index: 1, panel: null);
@@ -52,25 +52,25 @@ namespace Gwen.Net.Control
             SplitterSize = 5;
             SplittersVisible = false;
 
-            m_ZoomedSection = -1;
+            zoomedSection = -1;
         }
 
         /// <summary>
         ///     Indicates whether any of the panels is zoomed.
         /// </summary>
-        public bool IsZoomed => m_ZoomedSection != -1;
+        public bool IsZoomed => zoomedSection != -1;
 
         /// <summary>
         ///     Gets or sets a value indicating whether splitters should be visible.
         /// </summary>
         public bool SplittersVisible
         {
-            get => m_CSplitter.ShouldDrawBackground;
+            get => cSplitter.ShouldDrawBackground;
             set
             {
-                m_CSplitter.ShouldDrawBackground = value;
-                m_VSplitter.ShouldDrawBackground = value;
-                m_HSplitter.ShouldDrawBackground = value;
+                cSplitter.ShouldDrawBackground = value;
+                vSplitter.ShouldDrawBackground = value;
+                hSplitter.ShouldDrawBackground = value;
             }
         }
 
@@ -99,8 +99,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public void CenterPanels()
         {
-            m_HVal = 0.5f;
-            m_VVal = 0.5f;
+            hVal = 0.5f;
+            vVal = 0.5f;
             Invalidate();
         }
 
@@ -112,76 +112,76 @@ namespace Gwen.Net.Control
 
         protected void OnVerticalMoved(ControlBase control, EventArgs args)
         {
-            m_VVal = CalculateValueVertical();
+            vVal = CalculateValueVertical();
             Invalidate();
         }
 
         protected void OnHorizontalMoved(ControlBase control, EventArgs args)
         {
-            m_HVal = CalculateValueHorizontal();
+            hVal = CalculateValueHorizontal();
             Invalidate();
         }
 
         private void CalculateValueCenter()
         {
-            m_HVal = m_CSplitter.ActualLeft / (float) (ActualWidth - m_CSplitter.ActualWidth);
-            m_VVal = m_CSplitter.ActualTop / (float) (ActualHeight - m_CSplitter.ActualHeight);
+            hVal = cSplitter.ActualLeft / (float) (ActualWidth - cSplitter.ActualWidth);
+            vVal = cSplitter.ActualTop / (float) (ActualHeight - cSplitter.ActualHeight);
         }
 
         private float CalculateValueVertical()
         {
-            return m_VSplitter.ActualTop / (float) (ActualHeight - m_VSplitter.ActualHeight);
+            return vSplitter.ActualTop / (float) (ActualHeight - vSplitter.ActualHeight);
         }
 
         private float CalculateValueHorizontal()
         {
-            return m_HSplitter.ActualLeft / (float) (ActualWidth - m_HSplitter.ActualWidth);
+            return hSplitter.ActualLeft / (float) (ActualWidth - hSplitter.ActualWidth);
         }
 
         protected override Size Measure(Size availableSize)
         {
             Size size = Size.Zero;
 
-            m_VSplitter.DoMeasure(new Size(availableSize.Width, SplitterSize));
-            m_HSplitter.DoMeasure(new Size(SplitterSize, availableSize.Height));
-            m_CSplitter.DoMeasure(new Size(SplitterSize, SplitterSize));
-            size = new Size(m_HSplitter.Width, m_VSplitter.Height);
+            vSplitter.DoMeasure(new Size(availableSize.Width, SplitterSize));
+            hSplitter.DoMeasure(new Size(SplitterSize, availableSize.Height));
+            cSplitter.DoMeasure(new Size(SplitterSize, SplitterSize));
+            size = new Size(hSplitter.Width, vSplitter.Height);
 
-            var h = (int) ((availableSize.Width - SplitterSize) * m_HVal);
-            var v = (int) ((availableSize.Height - SplitterSize) * m_VVal);
+            var h = (int) ((availableSize.Width - SplitterSize) * hVal);
+            var v = (int) ((availableSize.Height - SplitterSize) * vVal);
 
-            if (m_ZoomedSection == -1)
+            if (zoomedSection == -1)
             {
-                if (m_Sections[0] != null)
+                if (sections[0] != null)
                 {
-                    m_Sections[0].DoMeasure(new Size(h, v));
-                    size += m_Sections[0].MeasuredSize;
+                    sections[0].DoMeasure(new Size(h, v));
+                    size += sections[0].MeasuredSize;
                 }
 
-                if (m_Sections[1] != null)
+                if (sections[1] != null)
                 {
-                    m_Sections[1].DoMeasure(new Size(availableSize.Width - SplitterSize - h, v));
-                    size += m_Sections[1].MeasuredSize;
+                    sections[1].DoMeasure(new Size(availableSize.Width - SplitterSize - h, v));
+                    size += sections[1].MeasuredSize;
                 }
 
-                if (m_Sections[2] != null)
+                if (sections[2] != null)
                 {
-                    m_Sections[2].DoMeasure(new Size(h, availableSize.Height - SplitterSize - v));
-                    size += m_Sections[2].MeasuredSize;
+                    sections[2].DoMeasure(new Size(h, availableSize.Height - SplitterSize - v));
+                    size += sections[2].MeasuredSize;
                 }
 
-                if (m_Sections[3] != null)
+                if (sections[3] != null)
                 {
-                    m_Sections[3].DoMeasure(
+                    sections[3].DoMeasure(
                         new Size(availableSize.Width - SplitterSize - h, availableSize.Height - SplitterSize - v));
 
-                    size += m_Sections[3].MeasuredSize;
+                    size += sections[3].MeasuredSize;
                 }
             }
             else
             {
-                m_Sections[m_ZoomedSection].DoMeasure(availableSize);
-                size = m_Sections[m_ZoomedSection].MeasuredSize;
+                sections[zoomedSection].DoMeasure(availableSize);
+                size = sections[zoomedSection].MeasuredSize;
             }
 
             return size;
@@ -189,39 +189,39 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            var h = (int) ((finalSize.Width - SplitterSize) * m_HVal);
-            var v = (int) ((finalSize.Height - SplitterSize) * m_VVal);
+            var h = (int) ((finalSize.Width - SplitterSize) * hVal);
+            var v = (int) ((finalSize.Height - SplitterSize) * vVal);
 
-            m_VSplitter.DoArrange(
-                new Rectangle(x: 0, v, m_VSplitter.MeasuredSize.Width, m_VSplitter.MeasuredSize.Height));
+            vSplitter.DoArrange(
+                new Rectangle(x: 0, v, vSplitter.MeasuredSize.Width, vSplitter.MeasuredSize.Height));
 
-            m_HSplitter.DoArrange(
-                new Rectangle(h, y: 0, m_HSplitter.MeasuredSize.Width, m_HSplitter.MeasuredSize.Height));
+            hSplitter.DoArrange(
+                new Rectangle(h, y: 0, hSplitter.MeasuredSize.Width, hSplitter.MeasuredSize.Height));
 
-            m_CSplitter.DoArrange(new Rectangle(h, v, m_CSplitter.MeasuredSize.Width, m_CSplitter.MeasuredSize.Height));
+            cSplitter.DoArrange(new Rectangle(h, v, cSplitter.MeasuredSize.Width, cSplitter.MeasuredSize.Height));
 
-            if (m_ZoomedSection == -1)
+            if (zoomedSection == -1)
             {
-                if (m_Sections[0] != null)
+                if (sections[0] != null)
                 {
-                    m_Sections[0].DoArrange(new Rectangle(x: 0, y: 0, h, v));
+                    sections[0].DoArrange(new Rectangle(x: 0, y: 0, h, v));
                 }
 
-                if (m_Sections[1] != null)
+                if (sections[1] != null)
                 {
-                    m_Sections[1].DoArrange(
+                    sections[1].DoArrange(
                         new Rectangle(h + SplitterSize, y: 0, finalSize.Width - SplitterSize - h, v));
                 }
 
-                if (m_Sections[2] != null)
+                if (sections[2] != null)
                 {
-                    m_Sections[2].DoArrange(
+                    sections[2].DoArrange(
                         new Rectangle(x: 0, v + SplitterSize, h, finalSize.Height - SplitterSize - v));
                 }
 
-                if (m_Sections[3] != null)
+                if (sections[3] != null)
                 {
-                    m_Sections[3].DoArrange(
+                    sections[3].DoArrange(
                         new Rectangle(
                             h + SplitterSize,
                             v + SplitterSize,
@@ -231,7 +231,7 @@ namespace Gwen.Net.Control
             }
             else
             {
-                m_Sections[m_ZoomedSection].DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, finalSize.Height));
+                sections[zoomedSection].DoArrange(new Rectangle(x: 0, y: 0, finalSize.Width, finalSize.Height));
             }
 
             return finalSize;
@@ -244,7 +244,7 @@ namespace Gwen.Net.Control
         /// <param name="panel">Control to assign.</param>
         public void SetPanel(int index, ControlBase panel)
         {
-            m_Sections[index] = panel;
+            sections[index] = panel;
 
             if (panel != null)
             {
@@ -261,26 +261,26 @@ namespace Gwen.Net.Control
         /// <returns>Specified section.</returns>
         public ControlBase GetPanel(int index)
         {
-            return m_Sections[index];
+            return sections[index];
         }
 
         protected override void OnChildAdded(ControlBase child)
         {
             if (!(child is SplitterBar))
             {
-                if (m_Sections[0] == null)
+                if (sections[0] == null)
                 {
                     SetPanel(index: 0, child);
                 }
-                else if (m_Sections[1] == null)
+                else if (sections[1] == null)
                 {
                     SetPanel(index: 1, child);
                 }
-                else if (m_Sections[2] == null)
+                else if (sections[2] == null)
                 {
                     SetPanel(index: 2, child);
                 }
-                else if (m_Sections[3] == null)
+                else if (sections[3] == null)
                 {
                     SetPanel(index: 3, child);
                 }
@@ -303,7 +303,7 @@ namespace Gwen.Net.Control
                 ZoomChanged.Invoke(this, EventArgs.Empty);
             }
 
-            if (m_ZoomedSection == -1)
+            if (zoomedSection == -1)
             {
                 if (PanelUnZoomed != null)
                 {
@@ -327,17 +327,17 @@ namespace Gwen.Net.Control
         {
             UnZoom();
 
-            if (m_Sections[section] != null)
+            if (sections[section] != null)
             {
                 for (var i = 0; i < 4; i++)
                 {
-                    if (i != section && m_Sections[i] != null)
+                    if (i != section && sections[i] != null)
                     {
-                        m_Sections[i].IsHidden = true;
+                        sections[i].IsHidden = true;
                     }
                 }
 
-                m_ZoomedSection = section;
+                zoomedSection = section;
 
                 Invalidate();
             }
@@ -350,13 +350,13 @@ namespace Gwen.Net.Control
         /// </summary>
         public void UnZoom()
         {
-            m_ZoomedSection = -1;
+            zoomedSection = -1;
 
             for (var i = 0; i < 4; i++)
             {
-                if (m_Sections[i] != null)
+                if (sections[i] != null)
                 {
-                    m_Sections[i].IsHidden = false;
+                    sections[i].IsHidden = false;
                 }
             }
 
@@ -364,9 +364,9 @@ namespace Gwen.Net.Control
             OnZoomChanged();
         }
 
-        protected override void Render(SkinBase skin)
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawBorder(this, BorderType.TreeControl);
+            currentSkin.DrawBorder(this, BorderType.TreeControl);
         }
     }
 }

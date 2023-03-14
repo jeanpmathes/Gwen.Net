@@ -12,8 +12,8 @@ namespace Gwen.Net.Control
     public class Properties : ContentControl
     {
         internal const int DefaultLabelWidth = 80;
-        private readonly SplitterBar m_SplitterBar;
-        private int m_LabelWidth;
+        private readonly SplitterBar splitterBar;
+        private int labelWidth;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Properties" /> class.
@@ -22,15 +22,15 @@ namespace Gwen.Net.Control
         public Properties(ControlBase parent)
             : base(parent)
         {
-            m_SplitterBar = new SplitterBar(this);
-            m_SplitterBar.Width = 3;
-            m_SplitterBar.Cursor = Cursor.SizeWE;
-            m_SplitterBar.Dragged += OnSplitterMoved;
-            m_SplitterBar.ShouldDrawBackground = false;
+            splitterBar = new SplitterBar(this);
+            splitterBar.Width = 3;
+            splitterBar.Cursor = Cursor.SizeWE;
+            splitterBar.Dragged += OnSplitterMoved;
+            splitterBar.ShouldDrawBackground = false;
 
-            m_LabelWidth = DefaultLabelWidth;
+            labelWidth = DefaultLabelWidth;
 
-            m_InnerPanel = new VerticalLayout(this);
+            innerPanel = new VerticalLayout(this);
         }
 
         /// <summary>
@@ -38,15 +38,15 @@ namespace Gwen.Net.Control
         /// </summary>
         internal int LabelWidth
         {
-            get => m_LabelWidth;
+            get => labelWidth;
             set
             {
-                if (value == m_LabelWidth)
+                if (value == labelWidth)
                 {
                     return;
                 }
 
-                m_LabelWidth = value;
+                labelWidth = value;
                 Invalidate();
             }
         }
@@ -60,9 +60,9 @@ namespace Gwen.Net.Control
         {
             availableSize -= Padding;
 
-            Size size = m_InnerPanel.DoMeasure(availableSize);
+            Size size = innerPanel.DoMeasure(availableSize);
 
-            m_SplitterBar.DoMeasure(new Size(availableSize.Width, size.Height));
+            splitterBar.DoMeasure(new Size(availableSize.Width, size.Height));
 
             return size + Padding;
         }
@@ -71,24 +71,25 @@ namespace Gwen.Net.Control
         {
             finalSize -= Padding;
 
-            m_InnerPanel.DoArrange(Padding.Left, Padding.Top, finalSize.Width, finalSize.Height);
+            innerPanel.DoArrange(Padding.Left, Padding.Top, finalSize.Width, finalSize.Height);
 
-            m_SplitterBar.DoArrange(
-                Padding.Left + m_LabelWidth - 2,
+            splitterBar.DoArrange(
+                Padding.Left + labelWidth - 2,
                 Padding.Top,
-                m_SplitterBar.MeasuredSize.Width,
-                m_InnerPanel.MeasuredSize.Height);
+                splitterBar.MeasuredSize.Width,
+                innerPanel.MeasuredSize.Height);
 
-            return new Size(finalSize.Width, m_InnerPanel.MeasuredSize.Height) + Padding;
+            return new Size(finalSize.Width, innerPanel.MeasuredSize.Height) + Padding;
         }
 
         /// <summary>
         ///     Handles the splitter moved event.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnSplitterMoved(ControlBase control, EventArgs args)
         {
-            LabelWidth = m_SplitterBar.ActualLeft - Padding.Left;
+            LabelWidth = splitterBar.ActualLeft - Padding.Left;
 
             var node = Parent as PropertyTreeNode;
 
@@ -124,7 +125,7 @@ namespace Gwen.Net.Control
 
             prop.SetValue(value, fireEvents: true);
 
-            m_SplitterBar.BringToFront();
+            splitterBar.BringToFront();
 
             return row;
         }
@@ -142,7 +143,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public void DeleteAll()
         {
-            m_InnerPanel.DeleteAllChildren();
+            innerPanel.DeleteAllChildren();
         }
     }
 }

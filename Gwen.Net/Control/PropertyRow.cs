@@ -10,10 +10,10 @@ namespace Gwen.Net.Control
     /// </summary>
     public class PropertyRow : ControlBase
     {
-        private readonly Label m_Label;
-        private readonly PropertyBase m_Property;
-        private bool m_LastEditing;
-        private bool m_LastHover;
+        private readonly Label label;
+        private readonly PropertyBase property;
+        private bool lastEditing;
+        private bool lastHover;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyRow" /> class.
@@ -25,40 +25,40 @@ namespace Gwen.Net.Control
         {
             Padding = new Padding(left: 2, top: 2, right: 2, bottom: 2);
 
-            m_Label = new PropertyRowLabel(this);
-            m_Label.Alignment = Alignment.Left | Alignment.Top;
+            label = new PropertyRowLabel(this);
+            label.Alignment = Alignment.Left | Alignment.Top;
 
-            m_Property = prop;
-            m_Property.Parent = this;
-            m_Property.ValueChanged += OnValueChanged;
+            property = prop;
+            property.Parent = this;
+            property.ValueChanged += OnValueChanged;
         }
 
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public bool IsEditing => m_Property != null && m_Property.IsEditing;
+        public bool IsEditing => property != null && property.IsEditing;
 
         /// <summary>
         ///     Property value.
         /// </summary>
         public string Value
         {
-            get => m_Property.Value;
-            set => m_Property.Value = value;
+            get => property.Value;
+            set => property.Value = value;
         }
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public override bool IsHovered => base.IsHovered || (m_Property != null && m_Property.IsHovered);
+        public override bool IsHovered => base.IsHovered || (property != null && property.IsHovered);
 
         /// <summary>
         ///     Property name.
         /// </summary>
         public string Label
         {
-            get => m_Label.Text;
-            set => m_Label.Text = value;
+            get => label.Text;
+            set => label.Text = value;
         }
 
         /// <summary>
@@ -69,24 +69,24 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             /* SORRY */
-            if (IsEditing != m_LastEditing)
+            if (IsEditing != lastEditing)
             {
                 OnEditingChanged();
-                m_LastEditing = IsEditing;
+                lastEditing = IsEditing;
             }
 
-            if (IsHovered != m_LastHover)
+            if (IsHovered != lastHover)
             {
                 OnHoverChanged();
-                m_LastHover = IsHovered;
+                lastHover = IsHovered;
             }
             /* SORRY */
 
-            skin.DrawPropertyRow(this, m_Label.ActualRight, IsEditing, IsHovered | m_Property.IsHovered);
+            currentSkin.DrawPropertyRow(this, label.ActualRight, IsEditing, IsHovered | property.IsHovered);
         }
 
         protected override Size Measure(Size availableSize)
@@ -95,11 +95,11 @@ namespace Gwen.Net.Control
 
             if (parent != null)
             {
-                Size labelSize = m_Label.DoMeasure(
+                Size labelSize = label.DoMeasure(
                     new Size(parent.LabelWidth - Padding.Left - Padding.Right, availableSize.Height)) + Padding;
 
                 Size propertySize =
-                    m_Property.DoMeasure(new Size(availableSize.Width - parent.LabelWidth, availableSize.Height)) +
+                    property.DoMeasure(new Size(availableSize.Width - parent.LabelWidth, availableSize.Height)) +
                     Padding;
 
                 return new Size(labelSize.Width + propertySize.Width, Math.Max(labelSize.Height, propertySize.Height));
@@ -114,23 +114,23 @@ namespace Gwen.Net.Control
 
             if (parent != null)
             {
-                m_Label.DoArrange(
+                label.DoArrange(
                     new Rectangle(
                         Padding.Left,
                         Padding.Top,
                         parent.LabelWidth - Padding.Left - Padding.Right,
-                        m_Label.MeasuredSize.Height));
+                        label.MeasuredSize.Height));
 
-                m_Property.DoArrange(
+                property.DoArrange(
                     new Rectangle(
                         parent.LabelWidth + Padding.Left,
                         Padding.Top,
                         finalSize.Width - parent.LabelWidth - Padding.Left - Padding.Right,
-                        m_Property.MeasuredSize.Height));
+                        property.MeasuredSize.Height));
 
                 return new Size(
                     finalSize.Width,
-                    Math.Max(m_Label.MeasuredSize.Height, m_Property.MeasuredSize.Height) + Padding.Top +
+                    Math.Max(label.MeasuredSize.Height, property.MeasuredSize.Height) + Padding.Top +
                     Padding.Bottom);
             }
 
@@ -147,12 +147,12 @@ namespace Gwen.Net.Control
 
         private void OnEditingChanged()
         {
-            m_Label.Redraw();
+            label.Redraw();
         }
 
         private void OnHoverChanged()
         {
-            m_Label.Redraw();
+            label.Redraw();
         }
     }
 }

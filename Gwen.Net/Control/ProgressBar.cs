@@ -7,7 +7,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ProgressBar : Label
     {
-        private float m_Progress;
+        private float progress;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProgressBar" /> class.
@@ -22,7 +22,7 @@ namespace Gwen.Net.Control
 
             AutoSizeToContents = false;
             Alignment = Alignment.Center;
-            m_Progress = 0;
+            progress = 0;
             AutoLabel = true;
         }
 
@@ -36,7 +36,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public float Value
         {
-            get => m_Progress;
+            get => progress;
             set
             {
                 if (value < 0)
@@ -49,11 +49,11 @@ namespace Gwen.Net.Control
                     value = 1;
                 }
 
-                m_Progress = value;
+                progress = value;
 
                 if (AutoLabel)
                 {
-                    var displayVal = (int) (m_Progress * 100);
+                    var displayVal = (int) (progress * 100);
                     Text = displayVal + "%";
                 }
             }
@@ -67,10 +67,10 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawProgressBar(this, IsHorizontal, m_Progress);
+            currentSkin.DrawProgressBar(this, IsHorizontal, progress);
         }
     }
 }

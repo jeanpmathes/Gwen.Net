@@ -7,7 +7,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class CategoryButton : Button
     {
-        internal bool m_Alt; // for alternate coloring
+        internal bool alt; // for alternate coloring
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CategoryButton" /> class.
@@ -16,7 +16,7 @@ namespace Gwen.Net.Control.Internal
         public CategoryButton(ControlBase parent) : base(parent)
         {
             Alignment = Alignment.Left | Alignment.CenterV;
-            m_Alt = false;
+            alt = false;
             IsToggle = true;
             TextPadding = new Padding(left: 3, top: 0, right: 3, bottom: 0);
         }
@@ -24,41 +24,41 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            if (m_Alt)
+            if (alt)
             {
                 if (IsDepressed || ToggleState)
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button_Selected;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineAltColors.buttonSelected;
                 }
                 else if (IsHovered)
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button_Hover;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineAltColors.buttonHover;
                 }
                 else
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.LineAlt.Button;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineAltColors.button;
                 }
             }
             else
             {
                 if (IsDepressed || ToggleState)
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button_Selected;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineColors.buttonSelected;
                 }
                 else if (IsHovered)
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button_Hover;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineColors.buttonHover;
                 }
                 else
                 {
-                    Skin.Renderer.DrawColor = skin.Colors.Category.Line.Button;
+                    Skin.Renderer.DrawColor = currentSkin.colors.categoryColors.lineColors.button;
                 }
             }
 
-            skin.Renderer.DrawFilledRect(RenderBounds);
+            currentSkin.Renderer.DrawFilledRect(RenderBounds);
         }
 
         /// <summary>
@@ -66,42 +66,42 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public override void UpdateColors()
         {
-            if (m_Alt)
+            if (alt)
             {
                 if (IsDepressed || ToggleState)
                 {
-                    TextColor = Skin.Colors.Category.LineAlt.Text_Selected;
+                    TextColor = Skin.colors.categoryColors.lineAltColors.textSelected;
 
                     return;
                 }
 
                 if (IsHovered)
                 {
-                    TextColor = Skin.Colors.Category.LineAlt.Text_Hover;
+                    TextColor = Skin.colors.categoryColors.lineAltColors.textHover;
 
                     return;
                 }
 
-                TextColor = Skin.Colors.Category.LineAlt.Text;
+                TextColor = Skin.colors.categoryColors.lineAltColors.text;
 
                 return;
             }
 
             if (IsDepressed || ToggleState)
             {
-                TextColor = Skin.Colors.Category.Line.Text_Selected;
+                TextColor = Skin.colors.categoryColors.lineColors.textSelected;
 
                 return;
             }
 
             if (IsHovered)
             {
-                TextColor = Skin.Colors.Category.Line.Text_Hover;
+                TextColor = Skin.colors.categoryColors.lineColors.textHover;
 
                 return;
             }
 
-            TextColor = Skin.Colors.Category.Line.Text;
+            TextColor = Skin.colors.categoryColors.lineColors.text;
         }
     }
 }

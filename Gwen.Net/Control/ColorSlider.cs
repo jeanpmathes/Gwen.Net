@@ -9,9 +9,9 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ColorSlider : ControlBase
     {
-        private bool m_Depressed;
-        private int m_SelectedDist;
-        private Texture m_Texture;
+        private bool depressed;
+        private int selectedDist;
+        private Texture texture;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ColorSlider" /> class.
@@ -23,7 +23,7 @@ namespace Gwen.Net.Control
             Width = BaseUnit * 2;
 
             MouseInputEnabled = true;
-            m_Depressed = false;
+            depressed = false;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color SelectedColor
         {
-            get => GetColorAtHeight(m_SelectedDist);
+            get => GetColorAtHeight(selectedDist);
             set => SetColor(value);
         }
 
@@ -50,9 +50,9 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void Dispose()
         {
-            if (m_Texture != null)
+            if (texture != null)
             {
-                m_Texture.Dispose();
+                texture.Dispose();
             }
 
             base.Dispose();
@@ -61,12 +61,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
             //Is there any way to move this into skin? Not for now, no idea how we'll "actually" render these
 
-            if (m_Texture == null)
+            if (texture == null)
             {
                 var pixelData = new byte[ActualWidth * ActualHeight * 4];
 
@@ -83,27 +83,27 @@ namespace Gwen.Net.Control
                     }
                 }
 
-                m_Texture = new Texture(skin.Renderer);
-                m_Texture.Width = ActualWidth;
-                m_Texture.Height = ActualHeight;
-                m_Texture.LoadRaw(ActualWidth, ActualHeight, pixelData);
+                texture = new Texture(currentSkin.Renderer);
+                texture.Width = ActualWidth;
+                texture.Height = ActualHeight;
+                texture.LoadRaw(ActualWidth, ActualHeight, pixelData);
             }
 
-            skin.Renderer.DrawColor = Color.White;
-            skin.Renderer.DrawTexturedRect(m_Texture, new Rectangle(x: 5, y: 0, ActualWidth - 10, ActualHeight));
+            currentSkin.Renderer.DrawColor = Color.White;
+            currentSkin.Renderer.DrawTexturedRect(texture, new Rectangle(x: 5, y: 0, ActualWidth - 10, ActualHeight));
 
-            int drawHeight = m_SelectedDist - 3;
+            int drawHeight = selectedDist - 3;
 
             //Draw our selectors
-            skin.Renderer.DrawColor = Color.Black;
-            skin.Renderer.DrawFilledRect(new Rectangle(x: 0, drawHeight + 2, ActualWidth, height: 1));
-            skin.Renderer.DrawFilledRect(new Rectangle(x: 0, drawHeight, width: 5, height: 5));
-            skin.Renderer.DrawFilledRect(new Rectangle(ActualWidth - 5, drawHeight, width: 5, height: 5));
-            skin.Renderer.DrawColor = Color.White;
-            skin.Renderer.DrawFilledRect(new Rectangle(x: 1, drawHeight + 1, width: 3, height: 3));
-            skin.Renderer.DrawFilledRect(new Rectangle(ActualWidth - 4, drawHeight + 1, width: 3, height: 3));
+            currentSkin.Renderer.DrawColor = Color.Black;
+            currentSkin.Renderer.DrawFilledRect(new Rectangle(x: 0, drawHeight + 2, ActualWidth, height: 1));
+            currentSkin.Renderer.DrawFilledRect(new Rectangle(x: 0, drawHeight, width: 5, height: 5));
+            currentSkin.Renderer.DrawFilledRect(new Rectangle(ActualWidth - 5, drawHeight, width: 5, height: 5));
+            currentSkin.Renderer.DrawColor = Color.White;
+            currentSkin.Renderer.DrawFilledRect(new Rectangle(x: 1, drawHeight + 1, width: 3, height: 3));
+            currentSkin.Renderer.DrawFilledRect(new Rectangle(ActualWidth - 4, drawHeight + 1, width: 3, height: 3));
 
-            base.Render(skin);
+            base.Render(currentSkin);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Gwen.Net.Control
         protected override void OnMouseClickedLeft(int x, int y, bool down)
         {
             base.OnMouseClickedLeft(x, y, down);
-            m_Depressed = down;
+            depressed = down;
 
             if (down)
             {
@@ -138,7 +138,7 @@ namespace Gwen.Net.Control
         /// <param name="dy">Y change.</param>
         protected override void OnMouseMoved(int x, int y, int dx, int dy)
         {
-            if (m_Depressed)
+            if (depressed)
             {
                 Point cursorPos = CanvasPosToLocal(new Point(x, y));
 
@@ -152,7 +152,7 @@ namespace Gwen.Net.Control
                     cursorPos.Y = ActualHeight;
                 }
 
-                m_SelectedDist = cursorPos.Y;
+                selectedDist = cursorPos.Y;
 
                 if (ColorChanged != null)
                 {
@@ -172,7 +172,7 @@ namespace Gwen.Net.Control
         {
             var hsv = color.ToHSV();
 
-            m_SelectedDist = (int) (hsv.H / 360 * ActualHeight);
+            selectedDist = (int) (hsv.H / 360 * ActualHeight);
 
             if (doEvents && ColorChanged != null)
             {

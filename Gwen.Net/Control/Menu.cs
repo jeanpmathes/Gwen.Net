@@ -13,7 +13,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Menu : ScrollControl
     {
-        protected StackLayout m_Layout;
+        protected StackLayout layout;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Menu" /> class.
@@ -35,7 +35,7 @@ namespace Gwen.Net.Control
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
 
-            m_Layout = new StackLayout(this);
+            layout = new StackLayout(this);
         }
 
         internal override bool IsMenuComponent => true;
@@ -61,20 +61,20 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawMenu(this, IconMarginDisabled);
+            currentSkin.DrawMenu(this, IconMarginDisabled);
         }
 
         /// <summary>
         ///     Renders under the actual control (shadows etc).
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void RenderUnder(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void RenderUnder(SkinBase currentSkin)
         {
-            base.RenderUnder(skin);
-            skin.DrawShadow(this);
+            base.RenderUnder(currentSkin);
+            currentSkin.DrawShadow(this);
         }
 
         /// <summary>
@@ -258,6 +258,7 @@ namespace Gwen.Net.Control
         ///     Mouse hover handler.
         /// </summary>
         /// <param name="control">Event source.</param>
+        /// <param name="args">Event arguments.</param>
         protected virtual void OnHoverItem(ControlBase control, EventArgs args)
         {
             if (!ShouldHoverOpenMenu)
@@ -339,7 +340,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public void RemoveAll()
         {
-            m_Layout.DeleteAllChildren();
+            layout.DeleteAllChildren();
         }
     }
 }

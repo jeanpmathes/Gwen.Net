@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net
@@ -9,7 +8,7 @@ namespace Gwen.Net
     /// </summary>
     public class Texture : IDisposable
     {
-        private readonly RendererBase m_Renderer;
+        private readonly RendererBase renderer;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Texture" /> class.
@@ -17,7 +16,7 @@ namespace Gwen.Net
         /// <param name="renderer">Renderer to use.</param>
         public Texture(RendererBase renderer)
         {
-            m_Renderer = renderer;
+            this.renderer = renderer;
             Width = 4;
             Height = 4;
             Failed = false;
@@ -53,7 +52,7 @@ namespace Gwen.Net
         /// </summary>
         public void Dispose()
         {
-            m_Renderer.FreeTexture(this);
+            renderer.FreeTexture(this);
             GC.SuppressFinalize(this);
         }
 
@@ -65,7 +64,7 @@ namespace Gwen.Net
         public void Load(string name, Action<Exception> errorCallback)
         {
             Name = name;
-            m_Renderer.LoadTexture(this, errorCallback);
+            renderer.LoadTexture(this, errorCallback);
         }
 
         /// <summary>
@@ -78,13 +77,13 @@ namespace Gwen.Net
         {
             Width = width;
             Height = height;
-            m_Renderer.LoadTextureRaw(this, pixelData);
+            renderer.LoadTextureRaw(this, pixelData);
         }
 
 #if DEBUG
         ~Texture()
         {
-            throw new InvalidOperationException(String.Format("IDisposable object finalized: {0}", GetType()));
+            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
             //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
         }
 #endif

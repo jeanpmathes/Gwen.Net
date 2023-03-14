@@ -9,15 +9,15 @@ namespace Gwen.Net.Control
     /// </summary>
     public class HSVColorPicker : ControlBase, IColorPicker
     {
-        private readonly ColorDisplay m_After;
-        private readonly ColorDisplay m_Before;
-        private readonly NumericUpDown m_Blue;
-        private readonly ColorSlider m_ColorSlider;
-        private readonly NumericUpDown m_Green;
-        private readonly ColorLerpBox m_LerpBox;
-        private readonly NumericUpDown m_Red;
+        private readonly ColorDisplay after;
+        private readonly ColorDisplay before;
+        private readonly NumericUpDown blue;
+        private readonly ColorSlider colorSlider;
+        private readonly NumericUpDown green;
+        private readonly ColorLerpBox lerpBox;
+        private readonly NumericUpDown red;
 
-        private bool m_enableDefaultColor;
+        private bool enableDefaultColor;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="HSVColorPicker" /> class.
@@ -30,21 +30,21 @@ namespace Gwen.Net.Control
 
             int baseSize = BaseUnit;
 
-            m_LerpBox = new ColorLerpBox(this);
-            m_LerpBox.Margin = Margin.Two;
-            m_LerpBox.ColorChanged += ColorBoxChanged;
-            m_LerpBox.Dock = Dock.Fill;
+            lerpBox = new ColorLerpBox(this);
+            lerpBox.Margin = Margin.Two;
+            lerpBox.ColorChanged += ColorBoxChanged;
+            lerpBox.Dock = Dock.Fill;
 
             ControlBase values = new VerticalLayout(this);
             values.Dock = Dock.Right;
 
             {
-                m_After = new ColorDisplay(values);
-                m_After.Size = new Size(baseSize * 5, baseSize * 2);
+                after = new ColorDisplay(values);
+                after.Size = new Size(baseSize * 5, baseSize * 2);
 
-                m_Before = new ColorDisplay(values);
-                m_Before.Margin = new Margin(left: 2, top: 0, right: 2, bottom: 2);
-                m_Before.Size = new Size(baseSize * 5, baseSize * 2);
+                before = new ColorDisplay(values);
+                before.Margin = new Margin(left: 2, top: 0, right: 2, bottom: 2);
+                before.Size = new Size(baseSize * 5, baseSize * 2);
 
                 GridLayout grid = new(values);
                 grid.Margin = new Margin(left: 2, top: 0, right: 2, bottom: 2);
@@ -56,11 +56,11 @@ namespace Gwen.Net.Control
                         label.Text = "R: ";
                         label.Alignment = Alignment.Left | Alignment.CenterV;
 
-                        m_Red = new NumericUpDown(grid);
-                        m_Red.Min = 0;
-                        m_Red.Max = 255;
-                        m_Red.SelectAllOnFocus = true;
-                        m_Red.ValueChanged += NumericTyped;
+                        red = new NumericUpDown(grid);
+                        red.Min = 0;
+                        red.Max = 255;
+                        red.SelectAllOnFocus = true;
+                        red.ValueChanged += NumericTyped;
                     }
 
                     {
@@ -68,11 +68,11 @@ namespace Gwen.Net.Control
                         label.Text = "G: ";
                         label.Alignment = Alignment.Left | Alignment.CenterV;
 
-                        m_Green = new NumericUpDown(grid);
-                        m_Green.Min = 0;
-                        m_Green.Max = 255;
-                        m_Green.SelectAllOnFocus = true;
-                        m_Green.ValueChanged += NumericTyped;
+                        green = new NumericUpDown(grid);
+                        green.Min = 0;
+                        green.Max = 255;
+                        green.SelectAllOnFocus = true;
+                        green.ValueChanged += NumericTyped;
                     }
 
                     {
@@ -80,19 +80,19 @@ namespace Gwen.Net.Control
                         label.Text = "B: ";
                         label.Alignment = Alignment.Left | Alignment.CenterV;
 
-                        m_Blue = new NumericUpDown(grid);
-                        m_Blue.Min = 0;
-                        m_Blue.Max = 255;
-                        m_Blue.SelectAllOnFocus = true;
-                        m_Blue.ValueChanged += NumericTyped;
+                        blue = new NumericUpDown(grid);
+                        blue.Min = 0;
+                        blue.Max = 255;
+                        blue.SelectAllOnFocus = true;
+                        blue.ValueChanged += NumericTyped;
                     }
                 }
             }
 
-            m_ColorSlider = new ColorSlider(this);
-            m_ColorSlider.Margin = Margin.Two;
-            m_ColorSlider.ColorChanged += ColorSliderChanged;
-            m_ColorSlider.Dock = Dock.Right;
+            colorSlider = new ColorSlider(this);
+            colorSlider.Margin = Margin.Two;
+            colorSlider.ColorChanged += ColorSliderChanged;
+            colorSlider.Dock = Dock.Right;
 
             EnableDefaultColor = false;
 
@@ -104,8 +104,8 @@ namespace Gwen.Net.Control
         /// </summary>
         public Color DefaultColor
         {
-            get => m_Before.Color;
-            set => m_Before.Color = value;
+            get => before.Color;
+            set => before.Color = value;
         }
 
         /// <summary>
@@ -113,10 +113,10 @@ namespace Gwen.Net.Control
         /// </summary>
         public bool EnableDefaultColor
         {
-            get => m_enableDefaultColor;
+            get => enableDefaultColor;
             set
             {
-                m_enableDefaultColor = value;
+                enableDefaultColor = value;
                 UpdateChildControlVisibility();
             }
         }
@@ -124,14 +124,14 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Selected color.
         /// </summary>
-        public Color SelectedColor => m_LerpBox.SelectedColor;
+        public Color SelectedColor => lerpBox.SelectedColor;
 
         protected override void AdaptToScaleChange()
         {
             int baseSize = BaseUnit;
 
-            m_After.Size = new Size(baseSize * 5, baseSize * 2);
-            m_Before.Size = new Size(baseSize * 5, baseSize * 2);
+            after.Size = new Size(baseSize * 5, baseSize * 2);
+            before.Size = new Size(baseSize * 5, baseSize * 2);
         }
 
         /// <summary>
@@ -162,24 +162,24 @@ namespace Gwen.Net.Control
 
             Color newColor = SelectedColor;
 
-            if (box == m_Red)
+            if (box == red)
             {
                 newColor = new Color(SelectedColor.A, value, SelectedColor.G, SelectedColor.B);
             }
-            else if (box == m_Green)
+            else if (box == green)
             {
                 newColor = new Color(SelectedColor.A, SelectedColor.R, value, SelectedColor.B);
             }
-            else if (box == m_Blue)
+            else if (box == blue)
             {
                 newColor = new Color(SelectedColor.A, SelectedColor.R, SelectedColor.G, value);
             }
             //else if (box.Name.Contains("Alpha"))
             //    newColor = Color.FromArgb(textValue, SelectedColor.R, SelectedColor.G, SelectedColor.B);
 
-            m_ColorSlider.SetColor(newColor, doEvents: false);
-            m_LerpBox.SetColor(newColor, onlyHue: false, doEvents: false);
-            m_After.Color = newColor;
+            colorSlider.SetColor(newColor, doEvents: false);
+            lerpBox.SetColor(newColor, onlyHue: false, doEvents: false);
+            after.Color = newColor;
 
             if (ColorChanged != null)
             {
@@ -189,10 +189,10 @@ namespace Gwen.Net.Control
 
         private void UpdateControls(Color color)
         {
-            m_Red.SetValue(color.R, doEvents: false);
-            m_Green.SetValue(color.G, doEvents: false);
-            m_Blue.SetValue(color.B, doEvents: false);
-            m_After.Color = color;
+            red.SetValue(color.R, doEvents: false);
+            green.SetValue(color.G, doEvents: false);
+            blue.SetValue(color.B, doEvents: false);
+            after.Color = color;
         }
 
         /// <summary>
@@ -207,12 +207,12 @@ namespace Gwen.Net.Control
 
             if (reset)
             {
-                m_Before.Color = color;
+                before.Color = color;
             }
 
-            m_ColorSlider.SetColor(color, doEvents: false);
-            m_LerpBox.SetColor(color, onlyHue, doEvents: false);
-            m_After.Color = color;
+            colorSlider.SetColor(color, doEvents: false);
+            lerpBox.SetColor(color, onlyHue, doEvents: false);
+            after.Color = color;
 
             if (ColorChanged != null)
             {
@@ -233,7 +233,7 @@ namespace Gwen.Net.Control
 
         private void ColorSliderChanged(ControlBase control, EventArgs args)
         {
-            m_LerpBox.SetColor(m_ColorSlider.SelectedColor, onlyHue: true, doEvents: false);
+            lerpBox.SetColor(colorSlider.SelectedColor, onlyHue: true, doEvents: false);
             UpdateControls(SelectedColor);
             //Invalidate();
 
@@ -245,18 +245,18 @@ namespace Gwen.Net.Control
 
         private void UpdateChildControlVisibility()
         {
-            if (m_enableDefaultColor)
+            if (enableDefaultColor)
             {
-                m_After.Margin = new Margin(left: 2, top: 2, right: 2, bottom: 0);
-                m_Before.Margin = new Margin(left: 2, top: 0, right: 2, bottom: 2);
-                m_After.Height = BaseUnit * 2;
-                m_Before.Show();
+                after.Margin = new Margin(left: 2, top: 2, right: 2, bottom: 0);
+                before.Margin = new Margin(left: 2, top: 0, right: 2, bottom: 2);
+                after.Height = BaseUnit * 2;
+                before.Show();
             }
             else
             {
-                m_After.Margin = Margin.Two;
-                m_Before.Collapse();
-                m_After.Height = BaseUnit * 4;
+                after.Margin = Margin.Two;
+                before.Collapse();
+                after.Height = BaseUnit * 4;
             }
         }
     }

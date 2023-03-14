@@ -137,10 +137,10 @@ namespace Gwen.Net.Tests.Components
                 ListBox ctrl = new(hlayout);
                 ctrl.AutoSizeToContent = true;
 
-                ListBoxRow Row = ctrl.AddRow("Row");
+                ListBoxRow row = ctrl.AddRow("Row");
                 ctrl.AddRow("Text");
                 ctrl.AddRow("InternalName", "Name");
-                ctrl.AddRow("UserData", "Internal", UserData: 12);
+                ctrl.AddRow("UserData", "Internal", userData: 12);
 
                 LabeledCheckBox multiline = new(this);
                 multiline.Dock = Dock.Top;
@@ -152,58 +152,54 @@ namespace Gwen.Net.Tests.Components
 
                 //Select by Menu Item
                 {
-                    Button TriangleButton = new(vlayout);
-                    TriangleButton.Text = "Row";
-                    TriangleButton.Width = 100;
+                    Button triangleButton = new(vlayout);
+                    triangleButton.Text = "Row";
+                    triangleButton.Width = 100;
 
-                    TriangleButton.Clicked += delegate { ctrl.SelectedRow = Row; };
+                    triangleButton.Clicked += delegate { ctrl.SelectedRow = row; };
                 }
 
                 //Select by Text
                 {
-                    Button TestBtn = new(vlayout);
-                    TestBtn.Text = "Text";
-                    TestBtn.Width = 100;
+                    Button testButton = new(vlayout);
+                    testButton.Text = "Text";
+                    testButton.Width = 100;
 
-                    TestBtn.Clicked += delegate { ctrl.SelectByText("Text"); };
+                    testButton.Clicked += delegate { ctrl.SelectByText("Text"); };
                 }
 
                 //Select by Name
                 {
-                    Button TestBtn = new(vlayout);
-                    TestBtn.Text = "Name";
-                    TestBtn.Width = 100;
+                    Button testButton = new(vlayout);
+                    testButton.Text = "Name";
+                    testButton.Width = 100;
 
-                    TestBtn.Clicked += delegate { ctrl.SelectByName("Name"); };
+                    testButton.Clicked += delegate { ctrl.SelectByName("Name"); };
                 }
 
                 //Select by UserData
                 {
-                    Button TestBtn = new(vlayout);
-                    TestBtn.Text = "UserData";
-                    TestBtn.Width = 100;
+                    Button testButton = new(vlayout);
+                    testButton.Text = "UserData";
+                    testButton.Width = 100;
 
-                    TestBtn.Clicked += delegate { ctrl.SelectByUserData(userdata: 12); };
+                    testButton.Clicked += delegate { ctrl.SelectByUserData(userdata: 12); };
                 }
             }
         }
 
         private void RowSelected(ControlBase control, EventArgs args)
         {
-            var list = control as ListBox;
+            var list = (ListBox) control;
 
             UnitPrint(
-                String.Format(
-                    "ListBox: RowSelected: {0} [{1}]",
-                    list.SelectedRows.Last().Text,
-                    list[list.SelectedRowIndex].Text));
+                $"ListBox: RowSelected: {list.SelectedRows.Last().Text} [{list[list.SelectedRowIndex].Text}]");
         }
 
         private void RowUnSelected(ControlBase control, EventArgs args)
         {
             // todo: how to determine which one was unselected (store somewhere)
             // or pass row as the event param?
-            var list = control as ListBox;
             UnitPrint("ListBox: OnRowUnselected");
         }
     }

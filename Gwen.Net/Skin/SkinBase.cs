@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Gwen.Net.Control;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Renderer;
@@ -10,15 +11,17 @@ namespace Gwen.Net.Skin
     /// </summary>
     public class SkinBase : IDisposable
     {
-        protected readonly RendererBase m_Renderer;
+        protected readonly RendererBase renderer;
 
         /// <summary>
         ///     Colors of various UI elements.
         /// </summary>
-        public SkinColors Colors;
+        internal SkinColors colors;
 
-        protected int m_BaseUnit;
-        protected Font m_DefaultFont;
+        protected int baseUnit;
+        protected Font defaultFont;
+
+        public Color ModalBackground => colors.modalBackground;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SkinBase" /> class.
@@ -26,7 +29,7 @@ namespace Gwen.Net.Skin
         /// <param name="renderer">Renderer to use.</param>
         protected SkinBase(RendererBase renderer)
         {
-            m_Renderer = renderer;
+            this.renderer = renderer;
 
             DefaultFont = new Font(renderer);
         }
@@ -36,46 +39,43 @@ namespace Gwen.Net.Skin
         /// </summary>
         public Font DefaultFont
         {
-            get => m_DefaultFont;
+            get => defaultFont;
             set
             {
-                if (m_DefaultFont != null)
+                if (defaultFont != null)
                 {
-                    m_DefaultFont.Dispose();
+                    defaultFont.Dispose();
                 }
 
-                m_DefaultFont = value;
+                defaultFont = value;
 
-                m_BaseUnit = Util.Ceil(m_DefaultFont.FontMetrics.EmHeightPixels) + 1;
+                baseUnit = Util.Ceil(defaultFont.FontMetrics.EmHeightPixels) + 1;
             }
         }
 
         /// <summary>
         ///     Base measurement unit based on default font size used in various controls where absolute scale is necessary.
         /// </summary>
-        public int BaseUnit => m_BaseUnit;
+        public int BaseUnit => baseUnit;
 
         /// <summary>
         ///     Renderer used.
         /// </summary>
-        public RendererBase Renderer => m_Renderer;
+        public RendererBase Renderer => renderer;
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public virtual void Dispose()
         {
-            m_DefaultFont.Dispose();
+            defaultFont.Dispose();
             GC.SuppressFinalize(this);
         }
-
-#if DEBUG
+        
         ~SkinBase()
         {
-            throw new InvalidOperationException(String.Format("IDisposable object finalized: {0}", GetType()));
-            //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
+            Debug.Print($"IDisposable object finalized: {GetType()}");
         }
-#endif
 
         /// <summary>
         ///     Releases the specified font.
@@ -88,12 +88,12 @@ namespace Gwen.Net.Skin
                 return;
             }
 
-            if (m_Renderer == null)
+            if (renderer == null)
             {
                 return;
             }
 
-            m_Renderer.FreeFont(font);
+            renderer.FreeFont(font);
         }
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Gwen.Net.Skin
         /// <param name="size">Font size.</param>
         public virtual void SetDefaultFont(string faceName, int size = 10)
         {
-            m_DefaultFont.FaceName = faceName;
-            m_DefaultFont.Size = size;
+            defaultFont.FaceName = faceName;
+            defaultFont.Size = size;
         }
 
         #region UI elements
@@ -152,24 +152,24 @@ namespace Gwen.Net.Skin
 
         public virtual void DrawDebugOutlines(ControlBase control)
         {
-            m_Renderer.DrawColor = control.PaddingOutlineColor;
+            renderer.DrawColor = control.PaddingOutlineColor;
             Rectangle inner = control.Bounds;
             inner.Deflate(control.Padding);
-            m_Renderer.DrawLinedRect(inner);
+            renderer.DrawLinedRect(inner);
 
-            m_Renderer.DrawColor = control.MarginOutlineColor;
+            renderer.DrawColor = control.MarginOutlineColor;
             Rectangle outer = control.Bounds;
             outer.Inflate(control.Margin);
-            m_Renderer.DrawLinedRect(outer);
+            renderer.DrawLinedRect(outer);
 
-            m_Renderer.DrawColor = control.BoundsOutlineColor;
-            m_Renderer.DrawLinedRect(control.Bounds);
+            renderer.DrawColor = control.BoundsOutlineColor;
+            renderer.DrawLinedRect(control.Bounds);
         }
 
         public virtual void DrawTreeNode(ControlBase ctrl, bool open, bool selected, int labelHeight, int labelWidth,
             int halfWay, int lastBranch, bool isRoot, int indent)
         {
-            Renderer.DrawColor = Colors.Tree.Lines;
+            Renderer.DrawColor = colors.treeColors.lines;
 
             if (!isRoot)
             {
@@ -191,38 +191,38 @@ namespace Gwen.Net.Skin
 
             if (bBeingEdited)
             {
-                m_Renderer.DrawColor = Colors.Properties.Column_Selected;
+                renderer.DrawColor = colors.propertiesColors.columnSelected;
             }
             else if (hovered)
             {
-                m_Renderer.DrawColor = Colors.Properties.Column_Hover;
+                renderer.DrawColor = colors.propertiesColors.columnHover;
             }
             else
             {
-                m_Renderer.DrawColor = Colors.Properties.Column_Normal;
+                renderer.DrawColor = colors.propertiesColors.columnNormal;
             }
 
-            m_Renderer.DrawFilledRect(new Rectangle(x: 0, rect.Y, iWidth, rect.Height));
+            renderer.DrawFilledRect(new Rectangle(x: 0, rect.Y, iWidth, rect.Height));
 
             if (bBeingEdited)
             {
-                m_Renderer.DrawColor = Colors.Properties.Line_Selected;
+                renderer.DrawColor = colors.propertiesColors.lineSelected;
             }
             else if (hovered)
             {
-                m_Renderer.DrawColor = Colors.Properties.Line_Hover;
+                renderer.DrawColor = colors.propertiesColors.lineHover;
             }
             else
             {
-                m_Renderer.DrawColor = Colors.Properties.Line_Normal;
+                renderer.DrawColor = colors.propertiesColors.lineNormal;
             }
 
-            m_Renderer.DrawFilledRect(new Rectangle(iWidth, rect.Y, width: 1, rect.Height));
+            renderer.DrawFilledRect(new Rectangle(iWidth, rect.Y, width: 1, rect.Height));
 
             rect.Y += rect.Height - 1;
             rect.Height = 1;
 
-            m_Renderer.DrawFilledRect(rect);
+            renderer.DrawFilledRect(rect);
         }
 
         public virtual void DrawColorDisplay(ControlBase control, Color color) {}
@@ -231,14 +231,14 @@ namespace Gwen.Net.Skin
         public virtual void DrawCategoryHolder(ControlBase control) {}
         public virtual void DrawCategoryInner(ControlBase control, int headerHeight, bool collapsed) {}
 
-        public virtual void DrawPropertyTreeNode(ControlBase control, int BorderLeft, int BorderTop)
+        public virtual void DrawPropertyTreeNode(ControlBase control, int borderLeft, int borderTop)
         {
             Rectangle rect = control.RenderBounds;
 
-            m_Renderer.DrawColor = Colors.Properties.Border;
+            renderer.DrawColor = colors.propertiesColors.border;
 
-            m_Renderer.DrawFilledRect(new Rectangle(rect.X, rect.Y, BorderLeft, rect.Height));
-            m_Renderer.DrawFilledRect(new Rectangle(rect.X + BorderLeft, rect.Y, rect.Width - BorderLeft, BorderTop));
+            renderer.DrawFilledRect(new Rectangle(rect.X, rect.Y, borderLeft, rect.Height));
+            renderer.DrawFilledRect(new Rectangle(rect.X + borderLeft, rect.Y, rect.Width - borderLeft, borderTop));
         }
 
         #endregion
@@ -258,11 +258,11 @@ namespace Gwen.Net.Skin
             float x = rect.Width / 5.0f;
             float y = rect.Height / 5.0f;
 
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 1.0f), x, y * 1.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 1.0f), x, y * 2.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x, y * 3.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 1.0f), x, y * 2.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 1.0f), x, y * 1.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 1.0f), x, y * 1.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 1.0f), x, y * 2.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x, y * 3.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 1.0f), x, y * 2.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 1.0f), x, y * 1.0f));
         }
 
         public virtual void DrawArrowUp(Rectangle rect)
@@ -270,11 +270,11 @@ namespace Gwen.Net.Skin
             float x = rect.Width / 5.0f;
             float y = rect.Height / 5.0f;
 
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 3.0f), x, y * 1.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x, y * 2.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x, y * 3.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 2.0f), x, y * 2.0f));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 3.0f), x, y * 1.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 3.0f), x, y * 1.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x, y * 2.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x, y * 3.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 2.0f), x, y * 2.0f));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 3.0f), x, y * 1.0f));
         }
 
         public virtual void DrawArrowLeft(Rectangle rect)
@@ -282,11 +282,11 @@ namespace Gwen.Net.Skin
             float x = rect.Width / 5.0f;
             float y = rect.Height / 5.0f;
 
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 0.0f), x * 1.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x * 2.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x * 3.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 3.0f), x * 2.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 4.0f), x * 1.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 0.0f), x * 1.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 1.0f), x * 2.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x * 3.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 3.0f), x * 2.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 4.0f), x * 1.0f, y));
         }
 
         public virtual void DrawArrowRight(Rectangle rect)
@@ -294,11 +294,11 @@ namespace Gwen.Net.Skin
             float x = rect.Width / 5.0f;
             float y = rect.Height / 5.0f;
 
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 0.0f), x * 1.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 1.0f), x * 2.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x * 3.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 3.0f), x * 2.0f, y));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 4.0f), x * 1.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 0.0f), x * 1.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 1.0f), x * 2.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 2.0f), x * 3.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 3.0f), x * 2.0f, y));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 4.0f), x * 1.0f, y));
         }
 
         public virtual void DrawCheck(Rectangle rect)
@@ -306,11 +306,11 @@ namespace Gwen.Net.Skin
             float x = rect.Width / 5.0f;
             float y = rect.Height / 5.0f;
 
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 3.0f), x * 2, y * 2));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 4.0f), x * 2, y * 2));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 3.0f), x * 2, y * 2));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 1.0f), x * 2, y * 2));
-            m_Renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 0.0f), x * 2, y * 2));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 0.0f), rect.Y + (y * 3.0f), x * 2, y * 2));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 1.0f), rect.Y + (y * 4.0f), x * 2, y * 2));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 2.0f), rect.Y + (y * 3.0f), x * 2, y * 2));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 3.0f), rect.Y + (y * 1.0f), x * 2, y * 2));
+            renderer.DrawFilledRect(Util.FloatRect(rect.X + (x * 4.0f), rect.Y + (y * 0.0f), x * 2, y * 2));
         }
 
         #endregion

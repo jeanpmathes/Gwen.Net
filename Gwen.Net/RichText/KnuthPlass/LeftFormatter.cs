@@ -12,7 +12,7 @@ namespace Gwen.Net.RichText.KnuthPlass
         {
             List<Node> nodes = new();
 
-            Font font = m_DefaultFont;
+            Font font = defaultFont;
             int width, height;
 
             for (var partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
@@ -23,7 +23,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                 if (font == null)
                 {
-                    font = m_DefaultFont;
+                    font = defaultFont;
                 }
 
                 for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)

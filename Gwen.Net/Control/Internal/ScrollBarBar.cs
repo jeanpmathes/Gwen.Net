@@ -35,11 +35,11 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Renders the control using specified skin.
         /// </summary>
-        /// <param name="skin">Skin to use.</param>
-        protected override void Render(SkinBase skin)
+        /// <param name="currentSkin">Skin to use.</param>
+        protected override void Render(SkinBase currentSkin)
         {
-            skin.DrawScrollBarBar(this, m_Held, IsHovered, IsHorizontal);
-            base.Render(skin);
+            currentSkin.DrawScrollBarBar(this, held, IsHovered, IsHorizontal);
+            base.Render(currentSkin);
         }
 
         /// <summary>
@@ -77,17 +77,6 @@ namespace Gwen.Net.Control.Internal
                     MoveTo(ActualLeft, Parent.ActualHeight - ActualHeight - buttonSize);
                 }
             }
-        }
-
-        /// <summary>
-        ///     Handler invoked on mouse click (left) event.
-        /// </summary>
-        /// <param name="x">X coordinate.</param>
-        /// <param name="y">Y coordinate.</param>
-        /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
-        {
-            base.OnMouseClickedLeft(x, y, down);
         }
     }
 }
