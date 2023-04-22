@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Gwen.Net.Renderer
 {
@@ -19,13 +20,7 @@ namespace Gwen.Net.Renderer
         {
             renderOffset = Point.Zero;
             scale = 1.0f;
-
-            if (CTT != null)
-            {
-                CTT.Initialize();
-            }
         }
-        //protected ICacheToTexture m_RTT;
 
         public float Scale
         {
@@ -78,33 +73,20 @@ namespace Gwen.Net.Renderer
         }
 
         /// <summary>
-        ///     Cache to texture provider.
-        /// </summary>
-        public virtual ICacheToTexture CTT => null;
-
-        /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
         {
-            if (CTT != null)
-            {
-                CTT.ShutDown();
-            }
-
             GC.SuppressFinalize(this);
         }
 
         protected virtual void OnScaleChanged(float oldScale) {}
-
-#if DEBUG
+        
         ~RendererBase()
         {
-            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
-            //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
+            Debug.Fail("RendererBase was not disposed!");
         }
-#endif
 
         /// <summary>
         ///     Starts rendering.
@@ -144,31 +126,31 @@ namespace Gwen.Net.Renderer
         /// <summary>
         ///     Loads the specified texture.
         /// </summary>
-        public virtual void LoadTexture(Texture t, Action<Exception> errorCallback) {}
+        public virtual void LoadTexture(Texture texture, Action<Exception> errorCallback) {}
 
         /// <summary>
         ///     Initializes texture from raw pixel data.
         /// </summary>
-        /// <param name="t">Texture to initialize. Dimensions need to be set.</param>
+        /// <param name="texture">Texture to initialize. Dimensions need to be set.</param>
         /// <param name="pixelData">Pixel data in RGBA format.</param>
-        public virtual void LoadTextureRaw(Texture t, byte[] pixelData) {}
+        public virtual void LoadTextureRaw(Texture texture, byte[] pixelData) {}
 
         /// <summary>
         ///     Frees the specified texture.
         /// </summary>
-        /// <param name="t">Texture to free.</param>
-        public virtual void FreeTexture(Texture t) {}
+        /// <param name="texture">Texture to free.</param>
+        public virtual void FreeTexture(Texture texture) {}
 
         /// <summary>
         ///     Draws textured rectangle.
         /// </summary>
-        /// <param name="t">Texture to use.</param>
+        /// <param name="texture">Texture to use.</param>
         /// <param name="targetRect">Rectangle bounds.</param>
         /// <param name="u1">Texture coordinate u1.</param>
         /// <param name="v1">Texture coordinate v1.</param>
         /// <param name="u2">Texture coordinate u2.</param>
         /// <param name="v2">Texture coordinate v2.</param>
-        public virtual void DrawTexturedRect(Texture t, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1,
+        public virtual void DrawTexturedRect(Texture texture, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1,
             float v2 = 1) {}
 
         /// <summary>
@@ -177,7 +159,6 @@ namespace Gwen.Net.Renderer
         /// <param name="rect">Target rectangle.</param>
         public virtual void DrawMissingImage(Rectangle rect)
         {
-            //DrawColor = Color.FromArgb(255, rnd.Next(0,255), rnd.Next(0,255), rnd.Next(0, 255));
             DrawColor = Color.Red;
             DrawFilledRect(rect);
         }
@@ -397,10 +378,10 @@ namespace Gwen.Net.Renderer
         /// <summary>
         ///     Translates a panel's local drawing coordinate into view space, taking offsets into account.
         /// </summary>
-        public Point Translate(Point p)
+        public Point Translate(Point point)
         {
-            int x = p.X;
-            int y = p.Y;
+            int x = point.X;
+            int y = point.Y;
             Translate(ref x, ref y);
 
             return new Point(x, y);

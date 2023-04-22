@@ -54,8 +54,6 @@ namespace Gwen.Net.Control
         protected Padding padding;
         private Margin margin;
 
-        private bool cacheTextureDirty;
-
         private Package dragAndDropPackage;
 
         /// <summary>
@@ -462,11 +460,6 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        ///     Indicates whether the renderer should cache drawing to a texture to improve performance (at the cost of memory).
-        /// </summary>
-        public bool ShouldCacheToTexture { get; set; }
-
-        /// <summary>
         ///     Gets or sets the control's internal name.
         /// </summary>
         public string Name { get; set; }
@@ -824,8 +817,6 @@ namespace Gwen.Net.Control
             toolTip = null;
             IsTabable = false;
             ShouldDrawBackground = true;
-            cacheTextureDirty = true;
-            ShouldCacheToTexture = false;
 
             BoundsOutlineColor = Color.Red;
             MarginOutlineColor = Color.Green;
@@ -839,9 +830,7 @@ namespace Gwen.Net.Control
         {
             if (disposed)
             {
-#if DEBUG
-                Debug.WriteLine("Control {{{0}}} disposed twice.", this);
-#endif
+                Debug.Fail($"Control {this} disposed twice.");
                 return;
             }
 
@@ -878,13 +867,11 @@ namespace Gwen.Net.Control
             disposed = true;
             GC.SuppressFinalize(this);
         }
-
-#if DEBUG
+        
         ~ControlBase()
         {
-            throw new InvalidOperationException($"IDisposable object {{{this}}} finalized.");
+            Debug.Fail($"Control {this} not disposed.");
         }
-#endif
 
         /// <summary>
         ///     Detaches the control from canvas and adds to the deletion queue (processed in Canvas.DoThink).
@@ -1381,84 +1368,6 @@ namespace Gwen.Net.Control
         protected virtual void Render(SkinBase currentSkin) {}
 
         /// <summary>
-        ///     Renders the control to a cache using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        /// <param name="master">Root parent.</param>
-        protected virtual void DoCacheRender(SkinBase currentSkin, ControlBase master)
-        {
-            RendererBase render = currentSkin.Renderer;
-            ICacheToTexture cache = render.CTT;
-
-            if (cache == null)
-            {
-                return;
-            }
-
-            Point oldRenderOffset = render.RenderOffset;
-            Rectangle oldRegion = render.ClipRegion;
-
-            if (this != master)
-            {
-                render.AddRenderOffset(Bounds);
-                render.AddClipRegion(Bounds);
-            }
-            else
-            {
-                render.RenderOffset = Point.Zero;
-                render.ClipRegion = new Rectangle(x: 0, y: 0, ActualWidth, ActualHeight);
-            }
-
-            if (cacheTextureDirty && render.ClipRegionVisible)
-            {
-                render.StartClip();
-
-                if (ShouldCacheToTexture)
-                {
-                    cache.SetupCacheTexture(this);
-                }
-
-                //Render myself first
-                //var old = render.ClipRegion;
-                //render.ClipRegion = Bounds;
-                //var old = render.RenderOffset;
-                //render.RenderOffset = new Point(Bounds.X, Bounds.Y);
-                Render(currentSkin);
-                //render.RenderOffset = old;
-                //render.ClipRegion = old;
-
-                if (children.Count > 0)
-                {
-                    //Now render my kids
-                    foreach (ControlBase child in children)
-                    {
-                        if (child.IsHidden || child.IsCollapsed)
-                        {
-                            continue;
-                        }
-
-                        child.DoCacheRender(currentSkin, master);
-                    }
-                }
-
-                if (ShouldCacheToTexture)
-                {
-                    cache.FinishCacheTexture(this);
-                    cacheTextureDirty = false;
-                }
-            }
-
-            render.ClipRegion = oldRegion;
-            render.StartClip();
-            render.RenderOffset = oldRenderOffset;
-
-            if (ShouldCacheToTexture)
-            {
-                cache.DrawCachedControlTexture(this);
-            }
-        }
-
-        /// <summary>
         ///     Rendering logic implementation.
         /// </summary>
         /// <param name="currentSkin">Skin to use.</param>
@@ -1473,15 +1382,6 @@ namespace Gwen.Net.Control
 
             // Do think
             Think();
-
-            RendererBase render = currentSkin.Renderer;
-
-            if (render.CTT != null && ShouldCacheToTexture)
-            {
-                DoCacheRender(currentSkin, this);
-
-                return;
-            }
 
             RenderRecursive(currentSkin, Bounds);
 
@@ -2499,7 +2399,6 @@ namespace Gwen.Net.Control
         public virtual void Redraw()
         {
             UpdateColors();
-            cacheTextureDirty = true;
 
             if (parent != null)
             {

@@ -30,13 +30,6 @@
         public int Height { get; }
 
         public Part Part { get; }
-
-#if DEBUG
-        public override string ToString()
-        {
-            return $"Box: Width = {Width} Value = {Value}";
-        }
-#endif
     }
 
     internal class GlueNode : Node
@@ -51,13 +44,6 @@
         public int Stretch { get; }
 
         public int Shrink { get; }
-
-#if DEBUG
-        public override string ToString()
-        {
-            return $"Glue: Width = {Width} Stretch = {Stretch} Shrink = {Shrink}";
-        }
-#endif
     }
 
     internal class PenaltyNode : Node
@@ -72,12 +58,5 @@
         public int Penalty { get; }
 
         public int Flagged { get; }
-
-#if DEBUG
-        public override string ToString()
-        {
-            return $"Penalty: Width = {Width} Penalty = {Penalty} Flagged = {Flagged}";
-        }
-#endif
     }
 }

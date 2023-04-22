@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net
@@ -106,14 +107,12 @@ namespace Gwen.Net
             renderer.FreeFont(this);
             GC.SuppressFinalize(this);
         }
-
-#if DEBUG
+        
         ~Font()
         {
-            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
-            //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
+            
+            Debug.Fail($"IDisposable object finalized: {GetType()}");
         }
-#endif
 
         /// <summary>
         ///     Duplicates font data (except renderer data which must be reinitialized).

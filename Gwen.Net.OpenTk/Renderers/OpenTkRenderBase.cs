@@ -413,24 +413,24 @@ namespace Gwen.Net.OpenTk.Renderers
             bmp.UnlockBits(data);
         }
 
-        public override void LoadTexture(Texture t, Action<Exception> errorCallback)
+        public override void LoadTexture(Texture texture, Action<Exception> errorCallback)
         {
-            bool preloaded = preloadedTextures.TryGetValue(t.Name, out Bitmap bitmap);
+            bool preloaded = preloadedTextures.TryGetValue(texture.Name, out Bitmap bitmap);
 
             if (!preloaded)
             {
                 try
                 {
-                    bitmap = ImageLoader.Load(t.Name);
+                    bitmap = ImageLoader.Load(texture.Name);
                 }
                 catch (Exception)
                 {
-                    t.Failed = true;
+                    texture.Failed = true;
                     return;
                 }
             }
             
-            LoadTextureInternal(t, bitmap);
+            LoadTextureInternal(texture, bitmap);
             
             if (!preloaded)
                 bitmap.Dispose();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
@@ -77,12 +78,10 @@ namespace Gwen.Net.OpenTk
                 disposed = true;
             }
         }
-
-#if DEBUG
+        
         ~TextRenderer()
         {
-            throw new InvalidOperationException($"[Warning] Resource leaked: {typeof(TextRenderer)}");
+            Debug.Fail("TextRenderer was not disposed!");
         }
-#endif
     }
 }

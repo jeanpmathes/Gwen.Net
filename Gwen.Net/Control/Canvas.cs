@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Gwen.Net.DragDrop;
 using Gwen.Net.Input;
@@ -216,12 +217,10 @@ namespace Gwen.Net.Control
                 disposeQueue.Add(control);
                 RemoveChild(control, dispose: false);
             }
-#if DEBUG
             else
             {
-                throw new InvalidOperationException("Control deleted twice");
+                Debug.Fail("Control deleted twice!");
             }
-#endif
         }
 
         private void ProcessDelayedDeletes()

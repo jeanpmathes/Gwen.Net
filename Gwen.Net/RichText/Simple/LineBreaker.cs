@@ -216,23 +216,6 @@ namespace Gwen.Net.RichText.Simple
             public bool IsSpace => Text == null && Part != null;
 
             public bool IsLineBreak => Part == null;
-
-#if DEBUG
-            public override string ToString()
-            {
-                if (Part == null)
-                {
-                    return "Node: LineBreak";
-                }
-
-                if (Text == null)
-                {
-                    return $"Node: Width = {Size.Width} Value = Space";
-                }
-
-                return $"Node: Width = {Size.Width} Value = \"{Text}\"";
-            }
-#endif
         }
     }
 }

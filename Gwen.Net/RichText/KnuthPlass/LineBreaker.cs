@@ -455,13 +455,6 @@ namespace Gwen.Net.RichText.KnuthPlass
                 Stretch = stretch;
                 Shrink = shrink;
             }
-
-#if DEBUG
-            public override string ToString()
-            {
-                return $"Sum: Width = {Width} Stretch = {Stretch} Shrink = {Shrink}";
-            }
-#endif
         }
 
         private struct BreakPoint
@@ -485,13 +478,6 @@ namespace Gwen.Net.RichText.KnuthPlass
                 Totals = totals;
                 Previous = previous;
             }
-
-#if DEBUG
-            public override string ToString()
-            {
-                return $"BreakPoint: Position = {Position} Demerits = {Demerits} Ratio = {Ratio} Line = {Line} FitnessClass = {FitnessClass} Totals = {{{Totals.ToString()}}} Previous = {{{(Previous != null ? Previous.Value.ToString() : "Null")}}}";
-            }
-#endif
         }
     }
 }
