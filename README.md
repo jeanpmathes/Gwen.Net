@@ -5,4 +5,8 @@ contains rich widget collection and most functionality you'd expect from a GUI f
 
 This specific fork is adapted to the needs of the VoxelGame project.
 
+It looks like this: 
+
+![Demo](imgs/Demo.png)
+
 > Original GWEN can be found from https://github.com/garrynewman/GWEN and Gwen.Net from https://code.google.com/archive/p/gwen-dotnet
