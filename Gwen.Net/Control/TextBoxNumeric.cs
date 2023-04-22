@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Gwen.Net.Control
 {
@@ -26,6 +27,17 @@ namespace Gwen.Net.Control
         /// </summary>
         public int DecimalPlaces { get; set; }
 
+        public static int DetermineDecimalPlaces(float value)
+        {
+            var decimalPlaces = 0;
+            while (Math.Abs(value - Math.Round(value, decimalPlaces)) > 0.00001f)
+            {
+                decimalPlaces++;
+            }
+                
+            return decimalPlaces;
+        }
+
         /// <summary>
         ///     Current numerical value.
         /// </summary>
@@ -35,6 +47,7 @@ namespace Gwen.Net.Control
             set
             {
                 this.value = value;
+                DecimalPlaces = DetermineDecimalPlaces(value);
                 Text = FormattedText;
             }
         }

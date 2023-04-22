@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net
@@ -79,13 +80,10 @@ namespace Gwen.Net
             Height = height;
             renderer.LoadTextureRaw(this, pixelData);
         }
-
-#if DEBUG
+        
         ~Texture()
         {
-            throw new InvalidOperationException($"IDisposable object finalized: {GetType()}");
-            //Debug.Print(String.Format("IDisposable object finalized: {0}", GetType()));
+            Debug.Fail($"IDisposable object finalized: {GetType()}");
         }
-#endif
     }
 }

@@ -61,13 +61,7 @@ namespace Gwen.Net.Control
             get => step;
             set
             {
-                var decimalPlaces = 0;
-                while (Math.Abs(value - Math.Round(value, decimalPlaces)) > 0.00001f)
-                {
-                    decimalPlaces++;
-                }
-                
-                DecimalPlaces = decimalPlaces;
+                DecimalPlaces = DetermineDecimalPlaces(value);
                 step = value;
             } 
         }
