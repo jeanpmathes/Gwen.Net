@@ -67,21 +67,7 @@ namespace Gwen.Net.Control.Layout
             }
         }
 
-        /// <summary>
-        ///     Column widths. <see cref="GridCellSizes" />
-        /// </summary>
-        public GridCellSizes ColumnWidths
-        {
-            set => SetColumnWidths(value.ToArray());
-        }
-
-        /// <summary>
-        ///     Row heights. <see cref="GridCellSizes" />
-        /// </summary>
-        public GridCellSizes RowHeights
-        {
-            set => SetRowHeights(value.ToArray());
-        }
+        private bool isColumnWidth100Percent = false;
 
         /// <summary>
         ///     Set column widths. <see cref="GridCellSizes" />
@@ -94,7 +80,7 @@ namespace Gwen.Net.Control.Layout
 
             foreach (float w in widths)
             {
-                if (w >= 0.0f && w <= 1.0f)
+                if (w is >= 0.0f and <= 1.0f)
                 {
                     relTotalWidth += w;
                 }
@@ -108,11 +94,15 @@ namespace Gwen.Net.Control.Layout
             {
                 throw new ArgumentException("Relative widths exceed total value of 1.0 (100%).");
             }
+            
+            isColumnWidth100Percent = Math.Abs(relTotalWidth - 1.0f) < 0.0001f;
 
             requestedColumnWidths = widths;
             columnCount = widths.Length;
             Invalidate();
         }
+        
+        private bool isRowHeight100Percent = false;
 
         /// <summary>
         ///     Set row heights. <see cref="GridCellSizes" />
@@ -125,7 +115,7 @@ namespace Gwen.Net.Control.Layout
 
             foreach (float h in heights)
             {
-                if (h >= 0.0f && h <= 1.0f)
+                if (h is >= 0.0f and <= 1.0f)
                 {
                     relTotalHeight += h;
                 }
@@ -139,6 +129,8 @@ namespace Gwen.Net.Control.Layout
             {
                 throw new ArgumentException("Relative heights exceed total value of 1.0 (100%).");
             }
+            
+            isRowHeight100Percent = Math.Abs(relTotalHeight - 1.0f) < 0.0001f;
 
             requestedRowHeights = heights;
             Invalidate();
@@ -197,6 +189,11 @@ namespace Gwen.Net.Control.Layout
                         if (w is >= 0.0f and <= 1.0f)
                         {
                             size.Width = (int) (w * (availableSize.Width - totalFixedSize.Width));
+                            
+                            if (isColumnWidth100Percent && columnIndex == columnCount - 1)
+                            {
+                                size.Width = cellAvailableSize.Width;
+                            }
                         }
                         else if (w > 1.0f)
                         {
@@ -208,9 +205,14 @@ namespace Gwen.Net.Control.Layout
                     {
                         float h = requestedRowHeights[rowIndex];
 
-                        if (h >= 0.0f && h <= 1.0f)
+                        if (h is >= 0.0f and <= 1.0f)
                         {
                             size.Height = (int) (h * (availableSize.Height - totalFixedSize.Height));
+                            
+                            if (isRowHeight100Percent && rowIndex == rowCount - 1)
+                            {
+                                size.Height = cellAvailableSize.Height;
+                            }
                         }
                         else if (h > 1.0f)
                         {
@@ -330,6 +332,11 @@ namespace Gwen.Net.Control.Layout
                         if (w is >= 0.0f and <= 1.0f)
                         {
                             width = Math.Max(val1: 0, (int) (w * (finalSize.Width - totalAutoFixedSize.Width)));
+                            
+                            if (isColumnWidth100Percent && columnIndex == columnWidths.Length - 1)
+                            {
+                                width = finalSize.Width - x - Padding.Right;
+                            }
                         }
                         else if (w > 1.0f)
                         {
@@ -341,9 +348,14 @@ namespace Gwen.Net.Control.Layout
                     {
                         float h = requestedRowHeights[rowIndex];
 
-                        if (h >= 0.0f && h <= 1.0f)
+                        if (h is >= 0.0f and <= 1.0f)
                         {
                             height = Math.Max(val1: 0, (int) (h * (finalSize.Height - totalAutoFixedSize.Height)));
+                            
+                            if (isRowHeight100Percent && rowIndex == rowHeights.Length - 1)
+                            {
+                                height = finalSize.Height - y - Padding.Bottom;
+                            }
                         }
                         else if (h > 1.0f)
                         {
