@@ -24,6 +24,7 @@ namespace Gwen.Net.Control
         public MultilineTextBox(ControlBase parent) : base(parent)
         {
             Padding = Padding.Three;
+            Cursor = Cursor.Beam;
 
             EnableScroll(horizontal: true, vertical: true);
             AutoHideBars = true;

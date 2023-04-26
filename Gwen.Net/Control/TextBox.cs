@@ -32,6 +32,7 @@ namespace Gwen.Net.Control
             : base(parent)
         {
             Padding = Padding.Three;
+            Cursor = Cursor.Beam;
 
             scrollArea = new ScrollArea(this);
             scrollArea.Dock = Dock.Fill;
