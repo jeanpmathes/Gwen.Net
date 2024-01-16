@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -15,18 +16,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Logical list of children. If InnerPanel is not null, returns InnerPanel's children.
         /// </summary>
-        public override List<ControlBase> Children
-        {
-            get
-            {
-                if (innerPanel != null)
-                {
-                    return innerPanel.Children;
-                }
-
-                return base.Children;
-            }
-        }
+        public override List<ControlBase> Children => innerPanel != null ? innerPanel.Children : base.Children;
 
         /// <summary>
         ///     Get the content of the control.
@@ -61,8 +51,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="dispose">Determines whether the child should be disposed (added to delayed delete queue).</param>
         public override void RemoveChild(ControlBase child, bool dispose)
         {
-            // If we removed our innerpanel
-            // remove our pointer to it
+            // If we removed our inner panel, remove our pointer to it.
             if (innerPanel == child)
             {
                 base.RemoveChild(child, dispose);
@@ -89,12 +78,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>Found control or null.</returns>
         public override ControlBase FindChildByName(string name, bool recursive = false)
         {
-            if (innerPanel != null && innerPanel is InnerContentControl)
-            {
-                return innerPanel.FindChildByName(name, recursive);
-            }
-
-            return base.FindChildByName(name, recursive);
+            return innerPanel is InnerContentControl ? innerPanel.FindChildByName(name, recursive) : base.FindChildByName(name, recursive);
         }
     }
 }
