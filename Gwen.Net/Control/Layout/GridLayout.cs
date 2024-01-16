@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Gwen.Net.Control.Layout
 {
@@ -136,40 +137,37 @@ namespace Gwen.Net.Control.Layout
             Invalidate();
         }
 
+        private static int[] GetSizeArray(int[] currentArray, int requiredSize)
+        {
+            if (currentArray == null || currentArray.Length != requiredSize)
+            {
+                return new int[requiredSize];
+            }
+            
+            Array.Fill(currentArray, value: 0);
+            
+            return currentArray;
+        }
+
         protected override Size Measure(Size availableSize)
         {
             availableSize -= Padding;
-
-            if (columnWidths == null || columnWidths.Length != columnCount)
-            {
-                columnWidths = new int[columnCount];
-            }
+            
+            columnWidths = GetSizeArray(columnWidths, columnCount);
 
             int rowCount = (Children.Count + columnCount - 1) / columnCount;
-
-            if (rowHeights == null || rowHeights.Length != rowCount)
-            {
-                rowHeights = new int[rowCount];
-            }
-
-            int columnIndex;
-
-            for (columnIndex = 0; columnIndex < columnCount; columnIndex++)
-            {
-                columnWidths[columnIndex] = 0;
-            }
-
-            int rowIndex;
-
-            for (rowIndex = 0; rowIndex < rowCount; rowIndex++)
-            {
-                rowHeights[rowIndex] = 0;
-            }
+            rowHeights = GetSizeArray(rowHeights, rowCount);
 
             Size cellAvailableSize = availableSize;
-            Size usedRelativeSize = Size.Zero;
-            columnIndex = 0;
-            rowIndex = 0;
+            
+            // We use this to ensure that relative sized cells are capable of filling all space.
+            // Otherwise, rounding errors would lose some pixels.
+            var usedWidthForRelativeSize = 0;
+            var usedHeightForRelativeSize = 0;
+            var currentHeightForRelativeSize = 0;
+            
+            var columnIndex = 0;
+            var rowIndex = 0;
 
             foreach (ControlBase child in Children)
             {
@@ -193,10 +191,10 @@ namespace Gwen.Net.Control.Layout
                             
                             if (isColumnWidth100Percent && columnIndex == columnCount - 1)
                             {
-                                size.Width = availableSize.Width - usedRelativeSize.Width;
+                                size.Width = availableSize.Width - usedWidthForRelativeSize;
                             }
                             
-                            usedRelativeSize.Width += size.Width;
+                            usedWidthForRelativeSize += size.Width;
                         }
                         else if (w > 1.0f)
                         {
@@ -214,10 +212,10 @@ namespace Gwen.Net.Control.Layout
                             
                             if (isRowHeight100Percent && rowIndex == rowCount - 1)
                             {
-                                size.Height = availableSize.Height - usedRelativeSize.Height;
+                                size.Height = availableSize.Height - usedHeightForRelativeSize;
                             }
                             
-                            usedRelativeSize.Height += size.Height;
+                            currentHeightForRelativeSize = Math.Max(currentHeightForRelativeSize, size.Height);
                         }
                         else if (h > 1.0f)
                         {
@@ -227,16 +225,9 @@ namespace Gwen.Net.Control.Layout
 
                     size = child.DoMeasure(size);
                 }
-
-                if (columnWidths[columnIndex] < size.Width)
-                {
-                    columnWidths[columnIndex] = size.Width;
-                }
-
-                if (rowHeights[rowIndex] < size.Height)
-                {
-                    rowHeights[rowIndex] = size.Height;
-                }
+                
+                columnWidths[columnIndex] = Math.Max(columnWidths[columnIndex], size.Width);
+                rowHeights[rowIndex] = Math.Max(rowHeights[rowIndex], size.Height);
 
                 cellAvailableSize.Width -= columnWidths[columnIndex];
 
@@ -247,7 +238,9 @@ namespace Gwen.Net.Control.Layout
                 cellAvailableSize.Width = availableSize.Width;
                 cellAvailableSize.Height -= rowHeights[rowIndex];
                 
-                usedRelativeSize.Width = 0;
+                usedWidthForRelativeSize = 0;
+                usedHeightForRelativeSize += currentHeightForRelativeSize;
+                currentHeightForRelativeSize = 0;
                 
                 columnIndex = 0;
                 rowIndex++;
