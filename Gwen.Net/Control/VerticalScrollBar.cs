@@ -193,19 +193,16 @@ namespace Gwen.Net.Control
         public override bool SetScrollAmount(float value, bool forceUpdate = false)
         {
             value = Util.Clamp(value, min: 0, max: 1);
-
-            if (!base.SetScrollAmount(value, forceUpdate))
-            {
-                return false;
-            }
-
+            
             if (forceUpdate)
             {
                 var newY = (int) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
                 bar.MoveTo(bar.ActualLeft, newY);
             }
 
-            return true;
+            bool changed = base.SetScrollAmount(value, forceUpdate);
+            
+            return changed || forceUpdate;
         }
 
         /// <summary>

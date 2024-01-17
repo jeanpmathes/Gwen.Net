@@ -49,6 +49,11 @@ namespace Gwen.Net.Tests.Components
             button.Margin = Margin.Five;
             button.Text = "Open a Long MessageBox";
             button.Clicked += OpenLongMsgbox;
+            
+            button = new Button(layout);
+            button.Margin = Margin.Five;
+            button.Text = "Open a Window (with scrollbars)";
+            button.Clicked += OpenWindowWithScrollbars;
 
             windowCount = 0;
         }
@@ -158,7 +163,6 @@ namespace Gwen.Net.Tests.Components
                 label = new Label(layout);
                 label.Margin = Margin.Six;
                 label.Text = "Hide / Show Label";
-                //label.IsCollapsed = true;
 
                 button.Clicked += (_, _) => label.IsCollapsed = !label.IsCollapsed;
             }
@@ -213,6 +217,32 @@ namespace Gwen.Net.Tests.Components
 
             window.Dismissed += OnDismissed;
             window.SetPosition(random.Next(maxValue: 700), random.Next(maxValue: 400));
+        }
+        
+        private void OpenWindowWithScrollbars(ControlBase sender, ClickedEventArgs arguments)
+        {
+            Window window = new(this);
+            window.Title = $"Window with Scrollbars ({++windowCount})";
+            window.Left = random.Next(maxValue: 700);
+            window.Top = random.Next(maxValue: 400);
+            window.Padding = new Padding(left: 6, top: 3, right: 6, bottom: 6);
+            window.HorizontalAlignment = HorizontalAlignment.Left;
+            window.VerticalAlignment = VerticalAlignment.Top;
+            window.Resizing = Resizing.None;
+            
+            window.Size = new Size(
+                random.Next(minValue: 200, maxValue: 400),
+                random.Next(minValue: 200, maxValue: 400));
+            
+            ScrollControl scroll = new(window);
+            VerticalLayout layout = new(scroll);
+            
+            for (var i = 0; i < 100; i++)
+            {
+                Label label = new(layout);
+                label.Margin = Margin.Six;
+                label.Text = "Label text";
+            }
         }
 
         private void OnDismissed(ControlBase sender, MessageBoxResultEventArgs args)
