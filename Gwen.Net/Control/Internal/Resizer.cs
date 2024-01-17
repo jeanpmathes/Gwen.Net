@@ -79,7 +79,7 @@ namespace Gwen.Net.Control.Internal
                 return;
             }
 
-            if (!held)
+            if (!IsHeld)
             {
                 return;
             }

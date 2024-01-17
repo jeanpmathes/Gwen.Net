@@ -84,7 +84,7 @@ namespace Gwen.Net.Control
             Size size = base.Arrange(finalSize);
 
             SetScrollAmount(ScrollAmount, forceUpdate: true);
-
+            
             return size;
         }
 
@@ -105,7 +105,7 @@ namespace Gwen.Net.Control
             bar.SetSize(bar.ActualWidth, (int) barHeight);
             bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
 
-            //Based on our last scroll amount, produce a position for the bar
+            //Based on our last scroll amount, produce a position for the bar.
             if (!bar.IsHeld)
             {
                 SetScrollAmount(ScrollAmount, forceUpdate: true);
@@ -193,15 +193,15 @@ namespace Gwen.Net.Control
         public override bool SetScrollAmount(float value, bool forceUpdate = false)
         {
             value = Util.Clamp(value, min: 0, max: 1);
-            
+
             if (forceUpdate)
             {
                 var newY = (int) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
                 bar.MoveTo(bar.ActualLeft, newY);
             }
-
-            bool changed = base.SetScrollAmount(value, forceUpdate);
             
+            bool changed = base.SetScrollAmount(value, forceUpdate);
+
             return changed || forceUpdate;
         }
 

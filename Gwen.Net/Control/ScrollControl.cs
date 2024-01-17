@@ -285,6 +285,9 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
+            verticalScrollBar.SetHoldIgnore(ignore: true);
+            horizontalScrollBar.SetHoldIgnore(ignore: true);
+            
             int scrollAreaWidth = finalSize.Width - Padding.Left - Padding.Right;
             int scrollAreaHeight = finalSize.Height - Padding.Top - Padding.Bottom;
 
@@ -334,6 +337,9 @@ namespace Gwen.Net.Control
             scrollArea.DoArrange(new Rectangle(Padding.Left, Padding.Top, scrollAreaWidth, scrollAreaHeight));
 
             UpdateScrollBars();
+            
+            verticalScrollBar.SetHoldIgnore(ignore: false);
+            horizontalScrollBar.SetHoldIgnore(ignore: false);
 
             return finalSize;
         }

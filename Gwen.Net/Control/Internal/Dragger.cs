@@ -9,7 +9,8 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Dragger : ControlBase
     {
-        protected bool held;
+        private bool held;
+        
         protected Point holdPos;
         protected ControlBase target;
 
@@ -32,7 +33,18 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates if the control is being dragged.
         /// </summary>
-        public bool IsHeld => held;
+        public bool IsHeld => held && !holdIgnore;
+        
+        private bool holdIgnore;
+        
+        /// <summary>
+        /// Set whether the control should ignore the hold state.
+        /// </summary>
+        /// <param name="ignore">Whether to ignore the hold state.</param>
+        internal void SetHoldIgnore(bool ignore)
+        {
+            holdIgnore = ignore;
+        }
 
         /// <summary>
         ///     Event invoked when the control position has been changed.
@@ -80,7 +92,7 @@ namespace Gwen.Net.Control.Internal
                 return;
             }
 
-            if (!held)
+            if (!IsHeld)
             {
                 return;
             }
@@ -115,6 +127,9 @@ namespace Gwen.Net.Control.Internal
         ///     Renders the control using specified skin.
         /// </summary>
         /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin) {}
+        protected override void Render(SkinBase currentSkin)
+        {
+            // Intentionally left empty.
+        }
     }
 }

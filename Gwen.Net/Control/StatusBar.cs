@@ -23,7 +23,7 @@ namespace Gwen.Net.Control
             VerticalAlignment = VerticalAlignment.Bottom;
 
             label = new Label(this);
-            label.AutoSizeToContents = false;
+            label.AutoSizeToContents = true;
             label.Alignment = Alignment.Left | Alignment.CenterV;
             label.Dock = Dock.Fill;
         }

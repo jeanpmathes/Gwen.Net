@@ -72,6 +72,12 @@ namespace Gwen.Net.Control.Internal
         ///     Invoked when the bar is moved.
         /// </summary>
         public event GwenEventHandler<EventArgs> BarMoved;
+        
+        /// <summary>
+        /// Set whether to ignore a mouse hold. Necessary during arranging.
+        /// </summary>
+        /// <param name="ignore">Whether to ignore a mouse hold</param>
+        internal void SetHoldIgnore(bool ignore) => bar.SetHoldIgnore(ignore);
 
         /// <summary>
         ///     Sets the scroll amount (0-1).
@@ -81,7 +87,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>True if control state changed.</returns>
         public virtual bool SetScrollAmount(float value, bool forceUpdate = false)
         {
-            if (scrollAmount == value && !forceUpdate)
+            if (Math.Abs(scrollAmount - value) < 0.0001f && !forceUpdate)
             {
                 return false;
             }
@@ -108,7 +114,10 @@ namespace Gwen.Net.Control.Internal
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down) {}
+        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        {
+            // Intentionally left empty.
+        }
 
         /// <summary>
         ///     Renders the control using specified skin.

@@ -38,7 +38,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="currentSkin">Skin to use.</param>
         protected override void Render(SkinBase currentSkin)
         {
-            currentSkin.DrawScrollBarBar(this, held, IsHovered, IsHorizontal);
+            currentSkin.DrawScrollBarBar(this, IsHeld, IsHovered, IsHorizontal);
             base.Render(currentSkin);
         }
 
