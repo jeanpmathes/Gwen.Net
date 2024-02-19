@@ -583,9 +583,24 @@ namespace Gwen.Net.Control
             IsSelected = !IsSelected;
         }
 
-        public void SetImage(string textureName)
+        public void SetImage(string textureName, Size? imageSize = null, Color? imageColor = null)
         {
             title.SetImage(textureName);
+
+            if (imageSize != null)
+            {
+                title.ImageSize = imageSize.Value;
+            }
+            
+            if (imageColor != null)
+            {
+                title.ImageColor = imageColor.Value;
+            }
+        }
+        
+        public void SetColor(Color color)
+        {
+            title.TextColorOverride = color;
         }
 
         protected override void OnChildAdded(ControlBase child)
