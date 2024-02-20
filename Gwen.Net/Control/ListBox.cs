@@ -310,6 +310,7 @@ namespace Gwen.Net.Control
             table.AddRow(row);
 
             row.Selected += OnRowSelected;
+            row.DoubleClicked += OnRowDoubleClicked;
 
             Invalidate();
         }
