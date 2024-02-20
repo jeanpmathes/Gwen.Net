@@ -4,13 +4,13 @@ using Gwen.Net.Control.Layout;
 namespace Gwen.Net.Tests.Components
 {
     [UnitTest(Category = "Non-Interactive", Order = 100)]
-    public class LabelTestTest : GUnit
+    public class LabelTest : GUnit
     {
         private readonly Font font1;
         private readonly Font font2;
         private readonly Font font3;
 
-        public LabelTestTest(ControlBase parent) : base(parent)
+        public LabelTest(ControlBase parent) : base(parent)
         {
             VerticalLayout layout = new(this);
 
@@ -42,6 +42,10 @@ namespace Gwen.Net.Tests.Components
                 label.Text =
                     "Hindi: \u092F\u0947 \u0905\u0928\u0941\u091A\u094D\u091B\u0947\u0926 \u0939\u093F\u0928\u094D\u0926\u0940 \u092E\u0947\u0902 \u0939\u0948\u0964";
             }
+            
+            {
+                Separator separator = new(layout);
+            }
 
             {
                 Label label = new(layout);
@@ -58,6 +62,11 @@ namespace Gwen.Net.Tests.Components
                 label.SetToolTipText("I'm a tooltip");
                 font3 = new Font(Skin.Renderer, "Motorwerk", size: 20);
                 ((Label)label.ToolTip).Font = font3;
+            }
+
+            {
+                Separator separator = new(layout);
+                separator.Text = "Text";
             }
 
             {

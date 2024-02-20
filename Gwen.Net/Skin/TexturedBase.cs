@@ -868,43 +868,24 @@ namespace Gwen.Net.Skin
 
             rect.Y += (int) (textHeight * 0.5f);
             rect.Height -= (int) (textHeight * 0.5f);
+            
+            // The same color as the separator line.
+            Renderer.DrawColor = new Color(a: 171, r: 205, g: 214, b: 216);
 
-            Color colDarker = new(a: 50, r: 0, g: 50, b: 60);
-            Color colLighter = new(a: 150, r: 255, g: 255, b: 255);
-
-            Renderer.DrawColor = colLighter;
-
-            Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + 1, textStart - 3, height: 1));
+            Renderer.DrawFilledRect(new Rectangle(rect.X + 1 + 1, rect.Y + 1, textStart - 3 - 1, height: 1));
 
             Renderer.DrawFilledRect(
                 new Rectangle(
                     rect.X + 1 + textStart + textWidth,
                     rect.Y + 1,
-                    rect.Width - textStart + textWidth - 2,
+                    rect.Width - textStart - textWidth - 2 - 1,
                     height: 1));
 
             Renderer.DrawFilledRect(
-                new Rectangle(rect.X + 1, rect.Y + rect.Height - 1, rect.X + rect.Width - 2, height: 1));
+                new Rectangle(rect.X + 1 + 1, rect.Y + rect.Height - 1, rect.X + rect.Width - 2 - 2, height: 1));
 
             Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y + 1, width: 1, rect.Height));
             Renderer.DrawFilledRect(new Rectangle(rect.X + rect.Width - 2, rect.Y + 1, width: 1, rect.Height - 1));
-
-            Renderer.DrawColor = colDarker;
-
-            Renderer.DrawFilledRect(new Rectangle(rect.X + 1, rect.Y, textStart - 3, height: 1));
-
-            Renderer.DrawFilledRect(
-                new Rectangle(
-                    rect.X + 1 + textStart + textWidth,
-                    rect.Y,
-                    rect.Width - textStart - textWidth - 2,
-                    height: 1));
-
-            Renderer.DrawFilledRect(
-                new Rectangle(rect.X + 1, rect.Y + rect.Height - 1, rect.X + rect.Width - 2, height: 1));
-
-            Renderer.DrawFilledRect(new Rectangle(rect.X, rect.Y + 1, width: 1, rect.Height - 1));
-            Renderer.DrawFilledRect(new Rectangle(rect.X + rect.Width - 1, rect.Y + 1, width: 1, rect.Height - 1));
         }
 
         public override void DrawTextBox(ControlBase control)

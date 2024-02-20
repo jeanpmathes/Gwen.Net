@@ -241,6 +241,26 @@ namespace Gwen.Net.Skin
             renderer.DrawFilledRect(new Rectangle(rect.X + borderLeft, rect.Y, rect.Width - borderLeft, borderTop));
         }
 
+        public virtual void DrawSeparator(ControlBase control, int textStart, int textWidth)
+        {
+            Rectangle rect = control.RenderBounds;
+            
+            rect.Y += rect.Height / 2;
+
+            // The same color as for the group box.
+            renderer.DrawColor = new Color(a: 171, r: 205, g: 214, b: 216);
+            
+            if (textWidth == 0)
+            {
+                renderer.DrawFilledRect(new Rectangle(rect.X, rect.Y, rect.Width, height: 1));
+            }
+            else
+            {
+                renderer.DrawFilledRect(new Rectangle(rect.X, rect.Y, textStart - 2, height: 1));
+                renderer.DrawFilledRect(new Rectangle(textStart + textWidth + 2, rect.Y, rect.Width - textStart - textWidth - 2, height: 1));
+            }
+        }
+
         #endregion
 
         #region Symbols for Simple skin
