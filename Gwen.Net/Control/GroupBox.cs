@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        ///     Text.
+        ///     The text of the group box caption.
         /// </summary>
         public virtual string Text
         {
@@ -32,6 +32,15 @@ namespace Gwen.Net.Control
             set => text.String = value;
         }
 
+        /// <summary>
+        ///     Font of the text.
+        /// </summary>
+        public virtual Font TextFont
+        {
+            get => text.Font;
+            set => text.Font = value;
+        }
+        
         public override Padding Padding
         {
             get => innerPanel.Padding;
@@ -57,21 +66,16 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            Size size = finalSize;
-
             text.DoArrange(new Rectangle(x: 10, y: 0, text.MeasuredSize.Width, text.MeasuredSize.Height));
 
-            if (innerPanel != null)
-            {
-                innerPanel.DoArrange(
-                    new Rectangle(
-                        x: 5,
-                        text.MeasuredSize.Height,
-                        finalSize.Width - 5 - 5,
-                        finalSize.Height - text.MeasuredSize.Height - 5));
-            }
+            innerPanel?.DoArrange(
+                new Rectangle(
+                    x: 5,
+                    text.MeasuredSize.Height,
+                    finalSize.Width - 5 - 5,
+                    finalSize.Height - text.MeasuredSize.Height - 5));
 
-            return size;
+            return finalSize;
         }
 
         /// <summary>
