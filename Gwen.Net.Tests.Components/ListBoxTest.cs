@@ -85,6 +85,14 @@ namespace Gwen.Net.Tests.Components
                     row.SetCellText(columnIndex: 1, "\u5355\u5143\u6D4B\u8BD5");
                     row.SetCellText(columnIndex: 2, "£8.95");
                 }
+
+                {
+                    TableRow row = ctrl.AddRow("Alignment!");
+                    
+                    row.SetCellText(columnIndex: 0, "Left", Alignment.Left);
+                    row.SetCellText(columnIndex: 1, "Center", Alignment.Center);
+                    row.SetCellText(columnIndex: 2, "Right", Alignment.Right);
+                }
             }
 
             VerticalLayout vlayout = new(hlayout);

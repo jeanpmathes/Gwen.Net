@@ -251,28 +251,8 @@ namespace Gwen.Net.Control
         /// <param name="idx">Row index.</param>
         public void RemoveRow(int idx)
         {
-            table.RemoveRow(idx); // this calls Dispose()
-        }
-
-        /// <summary>
-        ///     Adds a new row.
-        /// </summary>
-        /// <param name="label">Row text.</param>
-        /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label)
-        {
-            return AddRow(label, string.Empty);
-        }
-
-        /// <summary>
-        ///     Adds a new row.
-        /// </summary>
-        /// <param name="label">Row text.</param>
-        /// <param name="name">Internal control name.</param>
-        /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name)
-        {
-            return AddRow(label, name, userData: null);
+            // This will call Dispose() on the row.
+            table.RemoveRow(idx);
         }
 
         /// <summary>
@@ -282,7 +262,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Internal control name.</param>
         /// <param name="userData">User data for newly created row</param>
         /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name, object userData)
+        public ListBoxRow AddRow(string label, string name = "", object userData = null)
         {
             ListBoxRow row = new(this);
             table.AddRow(row);
@@ -433,7 +413,7 @@ namespace Gwen.Net.Control
         /// <param name="text">The label to look for, this is what is shown to the user.</param>
         public void SelectByText(string text)
         {
-            foreach (ListBoxRow item in table.Children)
+            foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
                 if (item.Text == text)
                 {
@@ -451,7 +431,7 @@ namespace Gwen.Net.Control
         /// <param name="name">The internal name to look for. To select by what is displayed to the user, use "SelectByText".</param>
         public void SelectByName(string name)
         {
-            foreach (ListBoxRow item in table.Children)
+            foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
                 if (item.Name == name)
                 {
@@ -472,7 +452,7 @@ namespace Gwen.Net.Control
         /// </param>
         public void SelectByUserData(object userdata)
         {
-            foreach (ListBoxRow item in table.Children)
+            foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
                 if (userdata == null)
                 {

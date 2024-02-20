@@ -10,7 +10,9 @@ namespace Gwen.Net
         Top = ControlBase.InternalFlags.AlignVTop,
         CenterV = ControlBase.InternalFlags.AlignVCenter,
         Bottom = ControlBase.InternalFlags.AlignVBottom,
-        Center = CenterV | CenterH
+        
+        Center = CenterV | CenterH,
+        LeftTop = Left | Top,
     }
 
     public enum HorizontalAlignment

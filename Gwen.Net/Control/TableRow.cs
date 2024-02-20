@@ -134,12 +134,14 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="columnIndex">Column number.</param>
         /// <param name="text">Text to set.</param>
-        public void SetCellText(int columnIndex, string text)
+        /// <param name="alignment">Text alignment.</param>
+        public void SetCellText(int columnIndex, string text, Alignment alignment = Alignment.LeftTop)
         {
             if (null == columns[columnIndex])
             {
                 columns[columnIndex] = new Label(this);
                 columns[columnIndex].Padding = Padding.Three;
+                columns[columnIndex].Alignment = alignment;
 
                 columns[columnIndex].Margin =
                     new Margin(left: 0, top: 0, right: 2, bottom: 0); // to separate them slightly
