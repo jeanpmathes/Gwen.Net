@@ -12,6 +12,7 @@
       </Description>
       <RepositoryUrl>https://github.com/pershingthesecond/Gwen.Net</RepositoryUrl>
       <PackageLicense>https://raw.githubusercontent.com/pershingthesecond/Gwen.Net/master/LICENSE</PackageLicense>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

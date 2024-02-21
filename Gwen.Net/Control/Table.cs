@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Gwen.Net.Control
 {
@@ -7,9 +8,13 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Table : ControlBase
     {
-        private readonly int[] columnWidth;
-        private int columnCount;
-        private int maxWidth; // for autosizing, if nonzero - fills last cell up to this size
+        private int[] columnWidth;
+        
+        /// <summary>
+        /// For auto-sizing, if nonzero - fills last cell up to this size.
+        /// </summary>
+        private int maxWidth;
+        
         private bool rowMeasurementDirty;
         private bool sizeToContents;
 
@@ -19,11 +24,9 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public Table(ControlBase parent) : base(parent)
         {
-            columnCount = 1;
+            columnWidth = new int[1];
 
-            columnWidth = new int[TableRow.MaxColumns];
-
-            for (var i = 0; i < TableRow.MaxColumns; i++)
+            for (var i = 0; i < columnWidth.Length; i++)
             {
                 columnWidth[i] = 20;
             }
@@ -45,7 +48,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public int ColumnCount
         {
-            get => columnCount;
+            get => columnWidth.Length;
             set
             {
                 SetColumnCount(value);
@@ -67,7 +70,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Row index.</param>
         /// <returns>Row at the specified index.</returns>
-        public TableRow this[int index] => Children[index] as TableRow;
+        public TableRow? this[int index] => Children[index] as TableRow;
 
         /// <summary>
         ///     Sets the number of columns.
@@ -75,17 +78,15 @@ namespace Gwen.Net.Control
         /// <param name="count">Number of columns.</param>
         public void SetColumnCount(int count)
         {
-            if (columnCount == count)
-            {
+            if (ColumnCount == count)
                 return;
-            }
+            
+            Array.Resize(ref columnWidth, count);
 
-            foreach (TableRow row in Children)
+            foreach (TableRow row in Children.Cast<TableRow>())
             {
                 row.ColumnCount = count;
             }
-
-            columnCount = count;
         }
 
         /// <summary>
@@ -121,7 +122,8 @@ namespace Gwen.Net.Control
         public TableRow AddRow()
         {
             TableRow row = new(this);
-            row.ColumnCount = columnCount;
+            row.ColumnCount = ColumnCount;
+            
             rowMeasurementDirty = true;
 
             return row;
@@ -134,7 +136,8 @@ namespace Gwen.Net.Control
         public void AddRow(TableRow row)
         {
             row.Parent = this;
-            row.ColumnCount = columnCount;
+            row.ColumnCount = ColumnCount;
+            
             rowMeasurementDirty = true;
         }
 
@@ -146,6 +149,7 @@ namespace Gwen.Net.Control
         public TableRow AddRow(string text)
         {
             TableRow row = AddRow();
+            
             row.SetCellText(columnIndex: 0, text);
 
             return row;
@@ -158,6 +162,7 @@ namespace Gwen.Net.Control
         public void RemoveRow(TableRow row)
         {
             RemoveChild(row, dispose: true);
+            
             rowMeasurementDirty = true;
         }
 
@@ -167,8 +172,9 @@ namespace Gwen.Net.Control
         /// <param name="idx">Row index.</param>
         public void RemoveRow(int idx)
         {
-            ControlBase row = Children[idx];
-            RemoveRow(row as TableRow);
+            var row = Children[idx] as TableRow;
+            
+            RemoveRow(row!);
         }
 
         /// <summary>
@@ -204,7 +210,7 @@ namespace Gwen.Net.Control
             var height = 0;
             var width = 0;
 
-            foreach (TableRow row in Children)
+            foreach (TableRow row in Children.Cast<TableRow>())
             {
                 row.DoMeasure(availableSize);
 
@@ -221,7 +227,7 @@ namespace Gwen.Net.Control
             var width = 0;
             var even = false;
 
-            foreach (TableRow row in Children)
+            foreach (TableRow row in Children.Cast<TableRow>())
             {
                 if (AlternateColor)
                 {
@@ -242,60 +248,51 @@ namespace Gwen.Net.Control
         /// </summary>
         public void SizeToContent(int newMaxWidth = 0)
         {
-            this.maxWidth = newMaxWidth;
+            maxWidth = newMaxWidth;
             sizeToContents = true;
+            
             Invalidate();
         }
-
-        protected Size DoSizeToContents(Size availableSize)
+        
+        private void DetermineColumnWidths(Size availableSize)
         {
-            var height = 0;
-            var width = 0;
-
-            for (var i = 0; i < ColumnCount; i++)
+            foreach (TableRow row in Children.Cast<TableRow>())
             {
-                columnWidth[i] = 0;
-            }
-
-            foreach (TableRow row in Children)
-            {
-                for (var i = 0; i < ColumnCount; i++)
+                for (var column = 0; column < ColumnCount; column++)
                 {
-                    row.SetColumnWidth(i, Util.Ignore);
+                    row.SetColumnWidth(column, Util.Ignore);
                 }
                 
                 row.DoMeasure(availableSize);
 
-                for (var i = 0; i < ColumnCount; i++)
+                for (var column = 0; column < ColumnCount; column++)
                 {
-                    ControlBase cell = row.GetColumn(i);
+                    ControlBase? cell = row.GetColumn(column);
+                    
+                    if (cell == null) 
+                        continue;
 
-                    if (cell != null)
-                    {
-                        columnWidth[i] = Math.Max(columnWidth[i], cell.MeasuredSize.Width);
-                    }
+                    columnWidth[column] = Math.Max(columnWidth[column], cell.MeasuredSize.Width);
                 }
             }
-
-            // sum all column widths 
-            for (var i = 0; i < ColumnCount; i++)
-            {
-                width += columnWidth[i];
-            }
-
+        }
+        
+        private void SetColumnWidths(Size availableSize, out int width, out int height)
+        {
             width = 0;
-
-            foreach (TableRow row in Children)
+            height = 0;
+            
+            foreach (TableRow row in Children.Cast<TableRow>())
             {
-                for (var i = 0; i < ColumnCount; i++)
+                for (var column = 0; column < ColumnCount; column++)
                 {
-                    if (i < ColumnCount - 1 || maxWidth == 0)
+                    if (column < ColumnCount - 1 || maxWidth == 0)
                     {
-                        row.SetColumnWidth(i, columnWidth[i]);
+                        row.SetColumnWidth(column, columnWidth[column]);
                     }
                     else
                     {
-                        row.SetColumnWidth(i, columnWidth[i] + Math.Max(val1: 0, maxWidth - width));
+                        row.SetColumnWidth(column, columnWidth[column] + Math.Max(val1: 0, maxWidth - width));
                     }
                 }
 
@@ -304,15 +301,20 @@ namespace Gwen.Net.Control
                 width = Math.Max(width, row.MeasuredSize.Width);
                 height += row.MeasuredSize.Height;
             }
+        }
+        
+        protected Size DoSizeToContents(Size availableSize)
+        {
+            Array.Fill(columnWidth, value: 0);
+
+            DetermineColumnWidths(availableSize);
+            SetColumnWidths(availableSize, out int width, out int height);
 
             rowMeasurementDirty = false;
 
-            if (maxWidth == 0 || maxWidth < width)
-            {
-                return new Size(width, height);
-            }
+            width = maxWidth == 0 ? width : Math.Max(width, maxWidth);
 
-            return new Size(maxWidth, height);
+            return new Size(width, height);
         }
     }
 }

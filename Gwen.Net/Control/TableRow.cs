@@ -8,11 +8,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class TableRow : ControlBase
     {
-        // [omeg] todo: get rid of this
-        public const int MaxColumns = 5;
-        private readonly Label[] columns;
-
-        private int columnCount;
+        private Label?[] columns;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TableRow" /> class.
@@ -21,14 +17,14 @@ namespace Gwen.Net.Control
         public TableRow(ControlBase parent)
             : base(parent)
         {
-            columns = new Label[MaxColumns];
-
-            columnCount = parent switch
+            int columnCount = parent switch
             {
                 ListBox listBox => listBox.ColumnCount,
                 Table table => table.ColumnCount,
-                _ => columnCount
+                _ => 0
             };
+            
+            columns = new Label[columnCount];
 
             KeyboardInputEnabled = true;
         }
@@ -38,7 +34,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public int ColumnCount
         {
-            get => columnCount;
+            get => columns.Length;
             set => SetColumnCount(value);
         }
 
@@ -56,7 +52,7 @@ namespace Gwen.Net.Control
             set => SetCellText(columnIndex: 0, value);
         }
 
-        internal Label GetColumn(int index)
+        internal Label? GetColumn(int index)
         {
             return columns[index];
         }
@@ -64,7 +60,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when the row has been selected.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs> Selected;
+        public event GwenEventHandler<ItemSelectedEventArgs>? Selected;
 
         /// <summary>
         ///     Sets the number of columns.
@@ -72,32 +68,26 @@ namespace Gwen.Net.Control
         /// <param name="newColumnCount">Number of columns.</param>
         protected void SetColumnCount(int newColumnCount)
         {
-            if (newColumnCount == columnCount)
-            {
+            if (newColumnCount == ColumnCount)
                 return;
+
+            if (newColumnCount >= ColumnCount)
+            {
+                Array.Resize(ref columns, newColumnCount);
             }
 
-            if (newColumnCount >= MaxColumns)
+            for (var column = 0; column < ColumnCount; column++)
             {
-                throw new ArgumentException("Invalid column count", nameof(newColumnCount));
-            }
-
-            for (var i = 0; i < MaxColumns; i++)
-            {
-                if (i < newColumnCount)
+                if (column < newColumnCount)
                 {
-                    if (columns[i] != null) continue;
-
-                    columns[i] = CreateLabel();
+                    columns[column] ??= CreateLabel();
                 }
-                else if (null != columns[i])
+                else if (columns[column] != null)
                 {
-                    RemoveChild(columns[i], dispose: true);
-                    columns[i] = null;
+                    RemoveChild(columns[column]!, dispose: true);
+                    columns[column] = null;
                 }
             }
-
-            columnCount = newColumnCount;
         }
 
         /// <summary>
@@ -107,17 +97,12 @@ namespace Gwen.Net.Control
         /// <param name="width">Column width.</param>
         public void SetColumnWidth(int column, int width)
         {
-            if (null == columns[column])
-            {
-                return;
-            }
-
-            if (columns[column].Width == width)
-            {
-                return;
-            }
-
-            columns[column].Width = width;
+            Label? label = columns[column];
+            
+            if (label == null) return;
+            if (label.Width == width) return;
+            
+            label.Width = width;
         }
 
         /// <summary>
@@ -130,13 +115,13 @@ namespace Gwen.Net.Control
         {
             columns[columnIndex] ??= CreateLabel();
 
-            if (columnIndex >= columnCount)
+            if (columnIndex >= ColumnCount)
             {
                 throw new ArgumentException("Invalid column index", nameof(columnIndex));
             }
             
-            columns[columnIndex].Text = text;
-            columns[columnIndex].Alignment = alignment;
+            columns[columnIndex]!.Text = text;
+            columns[columnIndex]!.Alignment = alignment;
         }
 
         /// <summary>
@@ -146,7 +131,7 @@ namespace Gwen.Net.Control
         /// <param name="font">The font.</param>
         public void SetCellFont(int columnIndex, Font font)
         {
-            columns[columnIndex].Font = font;
+            columns[columnIndex]!.Font = font;
         }
         
         /// <summary>
@@ -157,10 +142,7 @@ namespace Gwen.Net.Control
         /// <param name="enableMouseInput">Determines whether mouse input should be enabled for the cell.</param>
         public void SetCellContents(int column, ControlBase control, bool enableMouseInput = false)
         {
-            if (null == columns[column])
-            {
-                return;
-            }
+            if (columns[column] == null) return;
 
             control.Parent = columns[column];
             columns[column].MouseInputEnabled = enableMouseInput;
@@ -186,14 +168,14 @@ namespace Gwen.Net.Control
             var width = 0;
             var height = 0;
 
-            for (var i = 0; i < columnCount; i++)
+            for (var index = 0; index < ColumnCount; index++)
             {
-                if (null == columns[i])
-                {
+                Label? column = columns[index];
+                
+                if (column == null)
                     continue;
-                }
 
-                Size size = columns[i].DoMeasure(new Size(availableSize.Width - width, availableSize.Height));
+                Size size = column.DoMeasure(new Size(availableSize.Width - width, availableSize.Height));
 
                 width += size.Width;
                 height = Math.Max(height, size.Height);
@@ -207,19 +189,19 @@ namespace Gwen.Net.Control
             var x = 0;
             var height = 0;
 
-            for (var i = 0; i < columnCount; i++)
+            for (var i = 0; i < ColumnCount; i++)
             {
-                if (null == columns[i])
-                {
+                Label? column = columns[i];
+                
+                if (column == null)
                     continue;
-                }
 
-                columns[i].DoArrange(i == columnCount - 1 
+                column.DoArrange(i == ColumnCount - 1 
                     ? new Rectangle(x, y: 0, finalSize.Width - x, MeasuredSize.Height) 
-                    : new Rectangle(x, y: 0, columns[i].MeasuredSize.Width, MeasuredSize.Height));
+                    : new Rectangle(x, y: 0, column.MeasuredSize.Width, MeasuredSize.Height));
 
-                x += columns[i].MeasuredSize.Width;
-                height = Math.Max(height, columns[i].MeasuredSize.Height);
+                x += column.MeasuredSize.Width;
+                height = Math.Max(height, column.MeasuredSize.Height);
             }
 
             return new Size(finalSize.Width, height);
@@ -232,14 +214,14 @@ namespace Gwen.Net.Control
         /// <param name="color">Text color.</param>
         public void SetTextColor(Color color)
         {
-            for (var i = 0; i < columnCount; i++)
+            for (var i = 0; i < ColumnCount; i++)
             {
-                if (null == columns[i])
-                {
+                Label? column = columns[i];
+                
+                if (column == null)
                     continue;
-                }
-
-                columns[i].TextColor = color;
+                
+                column.TextColor = color;
             }
         }
 
@@ -250,7 +232,7 @@ namespace Gwen.Net.Control
         /// <returns>Column cell text.</returns>
         public string GetText(int column = 0)
         {
-            return columns[column].Text;
+            return columns[column]!.Text;
         }
 
         /// <summary>

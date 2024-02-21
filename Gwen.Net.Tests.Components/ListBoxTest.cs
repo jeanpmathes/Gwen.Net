@@ -149,6 +149,25 @@ namespace Gwen.Net.Tests.Components
                 ctrl[index: 2].SetCellText(columnIndex: 2, "Last cell");
             }
 
+            {
+                ListBox ctrl = new(vLayout);
+                ctrl.AutoSizeToContent = true;
+                ctrl.HorizontalAlignment = HorizontalAlignment.Left;
+                ctrl.ColumnCount = 15;
+                
+                ListBoxRow row1 = ctrl.AddRow("Row 1");
+                for (var i = 1; i < 15; i++)
+                {
+                    row1.SetCellText(i, $"{i}");
+                }
+                
+                ListBoxRow row2 = ctrl.AddRow("Row 2");
+                for (var i = 1; i < 15; i++)
+                {
+                    row2.SetCellText(i, $"{i}");
+                }
+            }
+
             hLayout = new HorizontalLayout(this);
             hLayout.Dock = Dock.Top;
 
