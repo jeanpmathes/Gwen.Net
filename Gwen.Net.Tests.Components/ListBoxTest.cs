@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Gwen.Net.Control;
+﻿using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -113,7 +111,7 @@ namespace Gwen.Net.Tests.Components
             VerticalLayout vLayout = new(hLayout);
 
             {
-                // fixed-size list box
+                // Fixed-size list box:
                 ListBox ctrl = new(vLayout);
                 ctrl.AutoSizeToContent = true;
                 ctrl.HorizontalAlignment = HorizontalAlignment.Left;
@@ -154,7 +152,7 @@ namespace Gwen.Net.Tests.Components
             hLayout = new HorizontalLayout(this);
             hLayout.Dock = Dock.Top;
 
-            /* Selecting Rows in Code */
+            // Selecting rows in code:
             {
                 ListBox ctrl = new(hLayout);
                 ctrl.AutoSizeToContent = true;
@@ -172,7 +170,7 @@ namespace Gwen.Net.Tests.Components
 
                 vLayout = new VerticalLayout(hLayout);
 
-                //Select by Menu Item
+                // Select by Menu Item:
                 {
                     Button triangleButton = new(vLayout);
                     triangleButton.Text = "Row";
@@ -181,7 +179,7 @@ namespace Gwen.Net.Tests.Components
                     triangleButton.Clicked += delegate { ctrl.SelectedRow = row; };
                 }
 
-                //Select by Text
+                // Select by Text:
                 {
                     Button testButton = new(vLayout);
                     testButton.Text = "Text";
@@ -190,7 +188,7 @@ namespace Gwen.Net.Tests.Components
                     testButton.Clicked += delegate { ctrl.SelectByText("Text"); };
                 }
 
-                //Select by Name
+                // Select by Name:
                 {
                     Button testButton = new(vLayout);
                     testButton.Text = "Name";
@@ -199,7 +197,7 @@ namespace Gwen.Net.Tests.Components
                     testButton.Clicked += delegate { ctrl.SelectByName("Name"); };
                 }
 
-                //Select by UserData
+                // Select by UserData:
                 {
                     Button testButton = new(vLayout);
                     testButton.Text = "UserData";
@@ -210,19 +208,14 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-        private void RowSelected(ControlBase control, EventArgs args)
+        private void RowSelected(ControlBase control, ItemSelectedEventArgs<ListBoxRow> args)
         {
-            var list = (ListBox) control;
-
-            UnitPrint(
-                $"ListBox: RowSelected: {list.SelectedRows.Last().Text} [{list[list.SelectedRowIndex].Text}]");
+            UnitPrint($"ListBox: RowSelected: {args.SelectedItem.Text}");
         }
 
-        private void RowUnSelected(ControlBase control, EventArgs args)
+        private void RowUnSelected(ControlBase control, ItemSelectedEventArgs<ListBoxRow> args)
         {
-            // todo: how to determine which one was unselected (store somewhere)
-            // or pass row as the event param?
-            UnitPrint("ListBox: OnRowUnselected");
+            UnitPrint($"ListBox: RowUnselected: {args.SelectedItem.Text}");
         }
     }
 }

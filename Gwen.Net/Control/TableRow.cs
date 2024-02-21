@@ -268,8 +268,7 @@ namespace Gwen.Net.Control
             {
                 Padding = Padding.Three,
                 Margin = new Margin(left: 0, top: 0, right: 2, bottom: 0), // To separate them slightly.
-                TextColor = Skin.colors.listBoxColors.textNormal,
-                DrawDebugOutlines = true
+                TextColor = Skin.colors.listBoxColors.textNormal
             };
     }
 }

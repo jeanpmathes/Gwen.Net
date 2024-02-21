@@ -94,7 +94,6 @@ namespace Gwen.Net.Control
 
             if (down)
             {
-                //IsSelected = true; // [omeg] ListBox manages that
                 OnRowSelected();
             }
         }

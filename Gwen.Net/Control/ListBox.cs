@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Gwen.Net.Input;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
@@ -54,6 +56,11 @@ namespace Gwen.Net.Control
                 }
             }
         }
+        
+        /// <summary>
+        /// Whether to require the shift key to be held down to multi-select.
+        /// </summary>
+        public bool RequireShiftToMultiSelect { get; set; }
 
         public bool AlternateColor
         {
@@ -148,32 +155,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when a row has been selected.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs> RowSelected;
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowSelected;
 
         /// <summary>
-        ///     Invoked whan a row has beed unselected.
+        ///     Invoked when a row has been unselected.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs> RowUnselected;
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowUnselected;
 
         /// <summary>
-        ///     Invoked whan a row has beed double clicked.
+        ///     Invoked when a row has been double clicked.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs> RowDoubleClicked;
-
-        /// <summary>
-        ///     Selects the specified row by index.
-        /// </summary>
-        /// <param name="index">Row to select.</param>
-        /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRow(int index, bool clearOthers = false)
-        {
-            if (index < 0 || index >= table.RowCount)
-            {
-                return;
-            }
-
-            SelectRow(table.Children[index], clearOthers);
-        }
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowDoubleClicked;
 
         /// <summary>
         ///     Selects the specified row(s) by text.
@@ -196,45 +188,60 @@ namespace Gwen.Net.Control
         /// <param name="pattern">Regex pattern to search for.</param>
         /// <param name="regexOptions">Regex options.</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRowsByRegex(string pattern, RegexOptions regexOptions = RegexOptions.None,
+        public void SelectRowsByRegex(string pattern, 
+            RegexOptions regexOptions = RegexOptions.None,
             bool clearOthers = false)
         {
             IEnumerable<ListBoxRow> rows = table.Children.OfType<ListBoxRow>()
-                .Where(x => Regex.IsMatch(x.Text, pattern));
+                .Where(x => Regex.IsMatch(x.Text, pattern, regexOptions));
 
             foreach (ListBoxRow row in rows)
             {
                 SelectRow(row, clearOthers);
             }
         }
+        
+        /// <summary>
+        ///     Selects the specified row by index.
+        /// </summary>
+        /// <param name="index">Row to select.</param>
+        /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
+        public void SelectRow(int index, bool clearOthers = false)
+        {
+            if (index < 0 || index >= table.RowCount)
+            {
+                return;
+            }
+
+            SelectRow(table.Children[index], clearOthers);
+        }
 
         /// <summary>
-        ///     Slelects the specified row.
+        ///     Selects the specified row.
         /// </summary>
         /// <param name="control">Row to select.</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
         public void SelectRow(ControlBase control, bool clearOthers = false)
         {
+            if (control is not ListBoxRow row)
+            {
+                throw new ArgumentException("Invalid control type, expected ListBoxRow", nameof(control));
+            }
+            
+            if (control.Parent != table)
+            {
+                throw new ArgumentException("Control is not a child of this ListBox", nameof(control));
+            }
+            
             if (!AllowMultiSelect || clearOthers)
             {
                 UnselectAll();
             }
-
-            var row = control as ListBoxRow;
-
-            if (row == null)
-            {
-                return;
-            }
-
-            // TODO: make sure this is one of our rows!
+            
             row.IsSelected = true;
             selectedRows.Add(row);
 
-            if (RowSelected != null)
-            {
-                RowSelected.Invoke(this, new ItemSelectedEventArgs(row));
-            }
+            RowSelected?.Invoke(this, new ItemSelectedEventArgs<ListBoxRow>(row));
         }
 
         /// <summary>
@@ -324,10 +331,7 @@ namespace Gwen.Net.Control
             {
                 row.IsSelected = false;
 
-                if (RowUnselected != null)
-                {
-                    RowUnselected.Invoke(this, new ItemSelectedEventArgs(row));
-                }
+                RowUnselected?.Invoke(this, new ItemSelectedEventArgs<ListBoxRow>(row));
             }
 
             selectedRows.Clear();
@@ -342,10 +346,7 @@ namespace Gwen.Net.Control
             row.IsSelected = false;
             selectedRows.Remove(row);
 
-            if (RowUnselected != null)
-            {
-                RowUnselected.Invoke(this, new ItemSelectedEventArgs(row));
-            }
+            RowUnselected?.Invoke(this, new ItemSelectedEventArgs<ListBoxRow>(row));
         }
 
         /// <summary>
@@ -355,8 +356,7 @@ namespace Gwen.Net.Control
         /// <param name="args">Event arguments.</param>
         protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
         {
-            // [omeg] changed default behavior
-            var clear = false; // !InputHandler.InputHandler.IsShiftDown;
+            bool clear = RequireShiftToMultiSelect && !InputHandler.IsShiftDown;
 
             if (args.SelectedItem is not ListBoxRow row)
             {
@@ -383,17 +383,10 @@ namespace Gwen.Net.Control
         /// <param name="args">Event arguments.</param>
         protected virtual void OnRowDoubleClicked(ControlBase control, ClickedEventArgs args)
         {
-            var row = control as ListBoxRow;
-
-            if (row == null)
-            {
+            if (control is not ListBoxRow row)
                 return;
-            }
 
-            if (RowDoubleClicked != null)
-            {
-                RowDoubleClicked.Invoke(this, new ItemSelectedEventArgs(row));
-            }
+            RowDoubleClicked?.Invoke(this, new ItemSelectedEventArgs<ListBoxRow>(row));
         }
 
         /// <summary>
@@ -415,12 +408,11 @@ namespace Gwen.Net.Control
         {
             foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
-                if (item.Text == text)
-                {
-                    SelectedRow = item;
+                if (item.Text != text) continue;
 
-                    return;
-                }
+                SelectedRow = item;
+
+                return;
             }
         }
 
@@ -433,12 +425,11 @@ namespace Gwen.Net.Control
         {
             foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
-                if (item.Name == name)
-                {
-                    SelectedRow = item;
+                if (item.Name != name) continue;
 
-                    return;
-                }
+                SelectedRow = item;
+
+                return;
             }
         }
 
@@ -456,19 +447,18 @@ namespace Gwen.Net.Control
             {
                 if (userdata == null)
                 {
-                    if (item.UserData == null)
-                    {
-                        SelectedRow = item;
+                    if (item.UserData != null) continue;
 
-                        return;
-                    }
-                }
-                else if (userdata.Equals(item.UserData))
-                {
                     SelectedRow = item;
 
                     return;
                 }
+
+                if (!userdata.Equals(item.UserData)) continue;
+
+                SelectedRow = item;
+
+                return;
             }
         }
     }
