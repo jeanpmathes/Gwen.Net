@@ -11,11 +11,11 @@ namespace Gwen.Net.Tests.Components
         public ListBoxTest(ControlBase parent)
             : base(parent)
         {
-            HorizontalLayout hlayout = new(this);
-            hlayout.Dock = Dock.Top;
+            HorizontalLayout hLayout = new(this);
+            hLayout.Dock = Dock.Top;
 
             {
-                ListBox ctrl = new(hlayout);
+                ListBox ctrl = new(hLayout);
                 ctrl.AutoSizeToContent = true;
                 ctrl.AllowMultiSelect = true;
 
@@ -31,7 +31,7 @@ namespace Gwen.Net.Tests.Components
                 ctrl.AddRow("Shoes");
                 ctrl.AddRow("Shirts");
                 ctrl.AddRow("Chair");
-                ctrl.AddRow("I'm autosized");
+                ctrl.AddRow("I'm auto-sized");
                 ctrl.AddRow("Last");
 
                 ctrl.SelectRowsByRegex("Bl.e|Dog");
@@ -41,7 +41,7 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                Table ctrl = new(hlayout);
+                Table ctrl = new(hLayout);
 
                 ctrl.AddRow("First");
                 ctrl.AddRow("Blue");
@@ -55,14 +55,14 @@ namespace Gwen.Net.Tests.Components
                 ctrl.AddRow("Shoes");
                 ctrl.AddRow("Shirts");
                 ctrl.AddRow("Chair");
-                ctrl.AddRow("I'm autosized");
+                ctrl.AddRow("I'm auto-sized");
                 ctrl.AddRow("Last");
 
                 ctrl.SizeToContent();
             }
 
             {
-                ListBox ctrl = new(hlayout);
+                ListBox ctrl = new(hLayout);
                 ctrl.AutoSizeToContent = true;
                 ctrl.ColumnCount = 3;
                 ctrl.RowSelected += RowSelected;
@@ -93,13 +93,28 @@ namespace Gwen.Net.Tests.Components
                     row.SetCellText(columnIndex: 1, "Center", Alignment.Center);
                     row.SetCellText(columnIndex: 2, "Right", Alignment.Right);
                 }
+
+                {
+                    Font small = new(Skin.Renderer, "Arial", size: 5);
+                    
+                    TableRow row = ctrl.AddRow("Small Font");
+                    
+                    row.SetCellText(columnIndex: 0, "Normal");
+                    // Use big font for first cell to make the row larger.
+                    
+                    row.SetCellText(columnIndex: 1, "Top", Alignment.Top);
+                    row.SetCellFont(columnIndex: 1, small);
+                    
+                    row.SetCellText(columnIndex: 2, "Bottom", Alignment.Bottom);
+                    row.SetCellFont(columnIndex: 2, small);
+                }
             }
 
-            VerticalLayout vlayout = new(hlayout);
+            VerticalLayout vLayout = new(hLayout);
 
             {
                 // fixed-size list box
-                ListBox ctrl = new(vlayout);
+                ListBox ctrl = new(vLayout);
                 ctrl.AutoSizeToContent = true;
                 ctrl.HorizontalAlignment = HorizontalAlignment.Left;
                 ctrl.ColumnCount = 3;
@@ -120,8 +135,7 @@ namespace Gwen.Net.Tests.Components
             }
 
             {
-                // autosized list box
-                ListBox ctrl = new(vlayout);
+                ListBox ctrl = new(vLayout);
                 ctrl.AutoSizeToContent = true;
                 ctrl.HorizontalAlignment = HorizontalAlignment.Left;
                 ctrl.ColumnCount = 3;
@@ -137,12 +151,12 @@ namespace Gwen.Net.Tests.Components
                 ctrl[index: 2].SetCellText(columnIndex: 2, "Last cell");
             }
 
-            hlayout = new HorizontalLayout(this);
-            hlayout.Dock = Dock.Top;
+            hLayout = new HorizontalLayout(this);
+            hLayout.Dock = Dock.Top;
 
             /* Selecting Rows in Code */
             {
-                ListBox ctrl = new(hlayout);
+                ListBox ctrl = new(hLayout);
                 ctrl.AutoSizeToContent = true;
 
                 ListBoxRow row = ctrl.AddRow("Row");
@@ -156,11 +170,11 @@ namespace Gwen.Net.Tests.Components
 
                 multiline.CheckChanged += delegate { ctrl.AllowMultiSelect = multiline.IsChecked; };
 
-                vlayout = new VerticalLayout(hlayout);
+                vLayout = new VerticalLayout(hLayout);
 
                 //Select by Menu Item
                 {
-                    Button triangleButton = new(vlayout);
+                    Button triangleButton = new(vLayout);
                     triangleButton.Text = "Row";
                     triangleButton.Width = 100;
 
@@ -169,7 +183,7 @@ namespace Gwen.Net.Tests.Components
 
                 //Select by Text
                 {
-                    Button testButton = new(vlayout);
+                    Button testButton = new(vLayout);
                     testButton.Text = "Text";
                     testButton.Width = 100;
 
@@ -178,7 +192,7 @@ namespace Gwen.Net.Tests.Components
 
                 //Select by Name
                 {
-                    Button testButton = new(vlayout);
+                    Button testButton = new(vLayout);
                     testButton.Text = "Name";
                     testButton.Width = 100;
 
@@ -187,7 +201,7 @@ namespace Gwen.Net.Tests.Components
 
                 //Select by UserData
                 {
-                    Button testButton = new(vlayout);
+                    Button testButton = new(vLayout);
                     testButton.Text = "UserData";
                     testButton.Width = 100;
 

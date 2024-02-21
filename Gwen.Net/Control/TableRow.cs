@@ -88,16 +88,7 @@ namespace Gwen.Net.Control
                 {
                     if (columns[i] != null) continue;
 
-                    columns[i] = new Label(this);
-                    columns[i].Padding = Padding.Three;
-
-                    columns[i].Margin = new Margin(
-                        left: 0,
-                        top: 0,
-                        right: 2,
-                        bottom: 0); // to separate them slightly
-
-                    columns[i].TextColor = Skin.colors.listBoxColors.textNormal;
+                    columns[i] = CreateLabel();
                 }
                 else if (null != columns[i])
                 {
@@ -137,24 +128,15 @@ namespace Gwen.Net.Control
         /// <param name="alignment">Text alignment.</param>
         public void SetCellText(int columnIndex, string text, Alignment alignment = Alignment.LeftTop)
         {
-            if (null == columns[columnIndex])
-            {
-                columns[columnIndex] = new Label(this);
-                columns[columnIndex].Padding = Padding.Three;
-                columns[columnIndex].Alignment = alignment;
-
-                columns[columnIndex].Margin =
-                    new Margin(left: 0, top: 0, right: 2, bottom: 0); // to separate them slightly
-
-                columns[columnIndex].TextColor = Skin.colors.listBoxColors.textNormal;
-            }
+            columns[columnIndex] ??= CreateLabel();
 
             if (columnIndex >= columnCount)
             {
                 throw new ArgumentException("Invalid column index", nameof(columnIndex));
             }
-
+            
             columns[columnIndex].Text = text;
+            columns[columnIndex].Alignment = alignment;
         }
 
         /// <summary>
@@ -196,10 +178,7 @@ namespace Gwen.Net.Control
 
         protected virtual void OnRowSelected()
         {
-            if (Selected != null)
-            {
-                Selected.Invoke(this, new ItemSelectedEventArgs(this));
-            }
+            Selected?.Invoke(this, new ItemSelectedEventArgs(this));
         }
 
         protected override Size Measure(Size availableSize)
@@ -235,16 +214,9 @@ namespace Gwen.Net.Control
                     continue;
                 }
 
-                if (i == columnCount - 1)
-                {
-                    columns[i].DoArrange(
-                        new Rectangle(x, y: 0, finalSize.Width - x, columns[i].MeasuredSize.Height));
-                }
-                else
-                {
-                    columns[i].DoArrange(
-                        new Rectangle(x, y: 0, columns[i].MeasuredSize.Width, columns[i].MeasuredSize.Height));
-                }
+                columns[i].DoArrange(i == columnCount - 1 
+                    ? new Rectangle(x, y: 0, finalSize.Width - x, MeasuredSize.Height) 
+                    : new Rectangle(x, y: 0, columns[i].MeasuredSize.Width, MeasuredSize.Height));
 
                 x += columns[i].MeasuredSize.Width;
                 height = Math.Max(height, columns[i].MeasuredSize.Height);
@@ -290,5 +262,14 @@ namespace Gwen.Net.Control
         {
             GwenPlatform.SetClipboardText(Text);
         }
+
+        private Label CreateLabel() =>
+            new(this)
+            {
+                Padding = Padding.Three,
+                Margin = new Margin(left: 0, top: 0, right: 2, bottom: 0), // To separate them slightly.
+                TextColor = Skin.colors.listBoxColors.textNormal,
+                DrawDebugOutlines = true
+            };
     }
 }
