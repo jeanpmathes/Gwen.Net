@@ -152,19 +152,17 @@ namespace Gwen.Net.Tests.Components
             {
                 ListBox ctrl = new(vLayout);
                 ctrl.AutoSizeToContent = true;
+                ctrl.AlternateColor = true;
                 ctrl.HorizontalAlignment = HorizontalAlignment.Left;
                 ctrl.ColumnCount = 15;
                 
-                ListBoxRow row1 = ctrl.AddRow("Row 1");
-                for (var i = 1; i < 15; i++)
+                for (var r = 0; r < 10; r++)
                 {
-                    row1.SetCellText(i, $"{i}");
-                }
-                
-                ListBoxRow row2 = ctrl.AddRow("Row 2");
-                for (var i = 1; i < 15; i++)
-                {
-                    row2.SetCellText(i, $"{i}");
+                    ListBoxRow row = ctrl.AddRow($"{r}");
+                    for (var c = 1; c < 15; c++)
+                    {
+                        row.SetCellText(c, $"{c}");
+                    }
                 }
             }
 

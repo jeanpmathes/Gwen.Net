@@ -632,26 +632,14 @@ namespace Gwen.Net.Skin
                     Margin.Two);
             }
 
-            textures.input.listBox.background = new Bordered(texture, x: 256, y: 256, w: 63, h: 127, Margin.Eight);
-            textures.input.listBox.hovered = new Bordered(texture, x: 320, y: 320, w: 31, h: 31, Margin.Eight);
-            textures.input.listBox.evenLine = new Bordered(texture, x: 352, y: 256, w: 31, h: 31, Margin.Eight);
-            textures.input.listBox.oddLine = new Bordered(texture, x: 352, y: 288, w: 31, h: 31, Margin.Eight);
-
-            textures.input.listBox.evenLineSelected = new Bordered(
-                texture,
-                x: 320,
-                y: 270,
-                w: 31,
-                h: 31,
-                Margin.Eight);
-
-            textures.input.listBox.oddLineSelected = new Bordered(
-                texture,
-                x: 320,
-                y: 288,
-                w: 31,
-                h: 31,
-                Margin.Eight);
+            ref SkinTextures.Input.ListBox listBox = ref textures.input.listBox;
+            
+            listBox.background = new Bordered(texture, x: 256, y: 256, w: 63, h: 127, Margin.Eight);
+            listBox.hovered = new Bordered(texture, x: 320, y: 320, w: 31, h: 31, Margin.Eight);
+            listBox.evenLine = new Bordered(texture, x: 352, y: 256, w: 31, h: 31, Margin.Eight);
+            listBox.oddLine = new Bordered(texture, x: 352, y: 288, w: 31, h: 31, Margin.Eight);
+            listBox.evenLineSelected = new Bordered(texture, x: 320, y: 256, w: 31, h: 31, Margin.Eight);
+            listBox.oddLineSelected = new Bordered(texture, x: 320, y: 288, w: 31, h: 31, Margin.Eight);
 
             textures.input.comboBox.normal = new Bordered(
                 texture,
@@ -1159,30 +1147,27 @@ namespace Gwen.Net.Skin
                 if (even)
                 {
                     textures.input.listBox.evenLineSelected.Draw(Renderer, control.RenderBounds);
-
-                    return;
                 }
-
-                textures.input.listBox.oddLineSelected.Draw(Renderer, control.RenderBounds);
-
-                return;
+                else
+                {
+                    textures.input.listBox.oddLineSelected.Draw(Renderer, control.RenderBounds);
+                }
             }
-
-            if (control.IsHovered)
+            else if (control.IsHovered)
             {
                 textures.input.listBox.hovered.Draw(Renderer, control.RenderBounds);
-
-                return;
             }
-
-            if (even)
+            else
             {
-                textures.input.listBox.evenLine.Draw(Renderer, control.RenderBounds);
-
-                return;
+                if (even)
+                {
+                    textures.input.listBox.evenLine.Draw(Renderer, control.RenderBounds);
+                }
+                else
+                {
+                    textures.input.listBox.oddLine.Draw(Renderer, control.RenderBounds);
+                }
             }
-
-            textures.input.listBox.oddLine.Draw(Renderer, control.RenderBounds);
         }
 
         public void DrawSliderNotchesH(Rectangle rect, int numNotches, float dist)

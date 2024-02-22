@@ -83,7 +83,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Row index.</param>
         /// <returns>Row at the specified index.</returns>
-        public ListBoxRow this[int index] => table[index] as ListBoxRow;
+        public ListBoxRow this[int index] => (ListBoxRow) table[index];
 
         /// <summary>
         ///     List of selected rows.
@@ -93,41 +93,38 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     First selected row (and only if list is not multiselectable).
         /// </summary>
-        public ListBoxRow SelectedRow
+        public ListBoxRow? SelectedRow
         {
-            get
-            {
-                if (selectedRows.Count == 0)
-                {
-                    return null;
-                }
-
-                return selectedRows[index: 0];
-            }
+            get => selectedRows.Count == 0 ? null : selectedRows[index: 0];
             set
             {
-                if (table.Children.Contains(value))
+                if (value == null)
                 {
-                    if (AllowMultiSelect)
-                    {
-                        SelectRow(value);
-                    }
-                    else
-                    {
-                        SelectRow(value, clearOthers: true);
-                    }
+                    UnselectAll();
+                    return;
+                }
+                
+                if (!table.Children.Contains(value)) return;
+
+                if (AllowMultiSelect)
+                {
+                    SelectRow(value);
+                }
+                else
+                {
+                    SelectRow(value, clearOthers: true);
                 }
             }
         }
 
         /// <summary>
-        ///     Gets the selected row number.
+        ///     Gets the selected row number, or <c>-1</c> if no row is selected.
         /// </summary>
         public int SelectedRowIndex
         {
             get
             {
-                ListBoxRow selected = SelectedRow;
+                ListBoxRow? selected = SelectedRow;
 
                 if (selected == null)
                 {
@@ -155,17 +152,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invoked when a row has been selected.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowSelected;
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>>? RowSelected;
 
         /// <summary>
         ///     Invoked when a row has been unselected.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowUnselected;
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>>? RowUnselected;
 
         /// <summary>
         ///     Invoked when a row has been double clicked.
         /// </summary>
-        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>> RowDoubleClicked;
+        public event GwenEventHandler<ItemSelectedEventArgs<ListBoxRow>>? RowDoubleClicked;
 
         /// <summary>
         ///     Selects the specified row(s) by text.
@@ -269,7 +266,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Internal control name.</param>
         /// <param name="userData">User data for newly created row</param>
         /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name = "", object userData = null)
+        public ListBoxRow AddRow(string label, string name = "", object? userData = null)
         {
             ListBoxRow row = new(this);
             table.AddRow(row);

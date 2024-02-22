@@ -70,7 +70,17 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Row index.</param>
         /// <returns>Row at the specified index.</returns>
-        public TableRow? this[int index] => Children[index] as TableRow;
+        public TableRow this[int index] => (TableRow) Children[index];
+
+        protected override void OnChildAdded(ControlBase child)
+        {
+            if (child is not TableRow)
+            {
+                throw new ArgumentException("Table can only have TableRow children.");
+            }
+            
+            base.OnChildAdded(child);
+        }
 
         /// <summary>
         ///     Sets the number of columns.

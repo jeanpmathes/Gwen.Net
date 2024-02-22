@@ -349,7 +349,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     User data associated with the control.
         /// </summary>
-        public object UserData { get; set; }
+        public object? UserData { get; set; }
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
