@@ -16,7 +16,7 @@ namespace Gwen.Net.Control
         public ListBoxRow(ControlBase parent)
             : base(parent)
         {
-            ListBox = parent as ListBox;
+            ListBox = (ListBox) parent;
 
             MouseInputEnabled = true;
             IsSelected = false;

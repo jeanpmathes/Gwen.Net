@@ -26,7 +26,7 @@ namespace Gwen.Net.Control
 
         private bool disposed;
 
-        private ControlBase parent;
+        private ControlBase? parent;
 
         /// <summary>
         ///     This is the panel's actual parent - most likely the logical
@@ -115,7 +115,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     The logical parent. It's usually what you expect, the control you've parented it to.
         /// </summary>
-        public ControlBase Parent
+        public ControlBase? Parent
         {
             get => parent;
             set
@@ -785,8 +785,8 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Initializes a new instance of the <see cref="ControlBase" /> class.
         /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public ControlBase(ControlBase parent = null)
+        /// <param name="parent">Parent control. If set to null, a skin must be provided.</param>
+        public ControlBase(ControlBase? parent)
         {
             children = new List<ControlBase>();
             accelerators = new Dictionary<string, GwenEventHandler<EventArgs>>();

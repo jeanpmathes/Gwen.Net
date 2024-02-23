@@ -8,7 +8,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class TableRow : ControlBase
     {
-        private Label?[] columns;
+        private ControlBase?[] columns;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TableRow" /> class.
@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
                 _ => 0
             };
             
-            columns = new Label[columnCount];
+            columns = new ControlBase?[columnCount];
 
             KeyboardInputEnabled = true;
         }
@@ -52,7 +52,7 @@ namespace Gwen.Net.Control
             set => SetCellText(columnIndex: 0, value);
         }
 
-        internal Label? GetColumn(int index)
+        internal ControlBase? GetColumn(int index)
         {
             return columns[index];
         }
@@ -97,7 +97,7 @@ namespace Gwen.Net.Control
         /// <param name="width">Column width.</param>
         public void SetColumnWidth(int column, int width)
         {
-            Label? label = columns[column];
+            ControlBase? label = columns[column];
             
             if (label == null) return;
             if (label.Width == width) return;
@@ -107,31 +107,79 @@ namespace Gwen.Net.Control
 
         /// <summary>
         ///     Sets the text of a specified cell.
+        ///     If this cell is not a label, it will be converted to a label.
         /// </summary>
         /// <param name="columnIndex">Column number.</param>
         /// <param name="text">Text to set.</param>
         /// <param name="alignment">Text alignment.</param>
         public void SetCellText(int columnIndex, string text, Alignment alignment = Alignment.LeftTop)
         {
-            columns[columnIndex] ??= CreateLabel();
-
             if (columnIndex >= ColumnCount)
             {
                 throw new ArgumentException("Invalid column index", nameof(columnIndex));
             }
             
-            columns[columnIndex]!.Text = text;
-            columns[columnIndex]!.Alignment = alignment;
+            if (columns[columnIndex] is not Label label)
+            {
+                label = CreateLabel();
+                
+                if (columns[columnIndex] != null)
+                {
+                    RemoveChild(columns[columnIndex]!, dispose: true);
+                }
+                
+                columns[columnIndex] = label;
+            }
+            
+            label.Text = text;
+            label.Alignment = alignment;
         }
 
         /// <summary>
         ///     Sets the font of a specified cell.
+        ///     If this cell is not a label, this will throw an exception.
         /// </summary>
         /// <param name="columnIndex">The column index.</param>
         /// <param name="font">The font.</param>
         public void SetCellFont(int columnIndex, Font font)
         {
-            columns[columnIndex]!.Font = font;
+            if (columns[columnIndex] is not Label label)
+                throw new ArgumentException("Cell is not a label", nameof(columnIndex));
+            
+            label.Font = font;
+        }
+        
+        /// <summary>
+        ///     Sets the text color for all cells.
+        ///     The color is overridden by the selected color if the row is selected.
+        ///     If a cell does not have a label, it is skipped.
+        /// </summary>
+        /// <param name="color">Text color.</param>
+        public void SetTextColor(Color color)
+        {
+            for (var i = 0; i < ColumnCount; i++)
+            {
+                ControlBase? column = columns[i];
+                
+                if (column is not Label label)
+                    continue;
+                
+                label.TextColor = color;
+            }
+        }
+
+        /// <summary>
+        ///     Returns text of a specified row cell (default first).
+        ///     If the cell is not a label, this will throw an exception.
+        /// </summary>
+        /// <param name="column">Column index.</param>
+        /// <returns>Column cell text.</returns>
+        public string GetText(int column = 0)
+        {
+            if (columns[column] is not Label label)
+                throw new ArgumentException("Cell is not a label", nameof(column));
+            
+            return label.Text;
         }
         
         /// <summary>
@@ -139,13 +187,17 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column number.</param>
         /// <param name="control">Cell contents.</param>
-        /// <param name="enableMouseInput">Determines whether mouse input should be enabled for the cell.</param>
-        public void SetCellContents(int column, ControlBase control, bool enableMouseInput = false)
+        public void SetCellContents(int column, ControlBase control)
         {
-            if (columns[column] == null) return;
+            if (columns[column] != null)
+            {
+                RemoveChild(columns[column]!, dispose: true);
+            }
 
-            control.Parent = columns[column];
-            columns[column].MouseInputEnabled = enableMouseInput;
+            Empty cell = new(this);
+            
+            columns[column] = cell;
+            control.Parent = cell;
         }
 
         /// <summary>
@@ -153,7 +205,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column number.</param>
         /// <returns>Control embedded in the cell.</returns>
-        public ControlBase GetCellContents(int column)
+        public ControlBase? GetCellContents(int column)
         {
             return columns[column];
         }
@@ -170,7 +222,7 @@ namespace Gwen.Net.Control
 
             for (var index = 0; index < ColumnCount; index++)
             {
-                Label? column = columns[index];
+                ControlBase? column = columns[index];
                 
                 if (column == null)
                     continue;
@@ -191,7 +243,7 @@ namespace Gwen.Net.Control
 
             for (var i = 0; i < ColumnCount; i++)
             {
-                Label? column = columns[i];
+                ControlBase? column = columns[i];
                 
                 if (column == null)
                     continue;
@@ -205,34 +257,6 @@ namespace Gwen.Net.Control
             }
 
             return new Size(finalSize.Width, height);
-        }
-
-        /// <summary>
-        ///     Sets the text color for all cells.
-        ///     The color is overridden by the selected color if the row is selected.
-        /// </summary>
-        /// <param name="color">Text color.</param>
-        public void SetTextColor(Color color)
-        {
-            for (var i = 0; i < ColumnCount; i++)
-            {
-                Label? column = columns[i];
-                
-                if (column == null)
-                    continue;
-                
-                column.TextColor = color;
-            }
-        }
-
-        /// <summary>
-        ///     Returns text of a specified row cell (default first).
-        /// </summary>
-        /// <param name="column">Column index.</param>
-        /// <returns>Column cell text.</returns>
-        public string GetText(int column = 0)
-        {
-            return columns[column]!.Text;
         }
 
         /// <summary>

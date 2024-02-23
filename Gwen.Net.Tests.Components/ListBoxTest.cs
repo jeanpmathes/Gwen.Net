@@ -166,6 +166,31 @@ namespace Gwen.Net.Tests.Components
                 }
             }
 
+            {
+                ListBox ctrl = new(vLayout);
+                ctrl.AutoSizeToContent = true;
+                ctrl.AlternateColor = true;
+                ctrl.HorizontalAlignment = HorizontalAlignment.Left;
+                ctrl.ColumnCount = 1;
+
+                for (var index = 0; index < 3; index++)
+                {
+                    HorizontalLayout h = new(vLayout);
+
+                    Button a = new(h);
+                    a.Text = "A";
+                    
+                    Label l = new(h);
+                    l.Text = "Label";
+
+                    Button b = new(h);
+                    b.Text = "B";
+
+                    ListBoxRow row = ctrl.AddRow("");
+                    row.SetCellContents(column: 0, h);
+                }
+            }
+
             hLayout = new HorizontalLayout(this);
             hLayout.Dock = Dock.Top;
 

@@ -28,7 +28,7 @@ namespace Gwen.Net.Control
         ///     Initializes a new instance of the <see cref="Canvas" /> class.
         /// </summary>
         /// <param name="skin">Skin to use.</param>
-        public Canvas(SkinBase skin)
+        public Canvas(SkinBase skin) : base(parent: null) // Is OK because skin is set.
         {
             Dock = Dock.Fill;
             SetBounds(x: 0, y: 0, width: 10000, height: 10000);
