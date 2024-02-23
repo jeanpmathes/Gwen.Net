@@ -27,7 +27,7 @@ namespace Gwen.Net.Control
             label = new Label(this);
             label.Alignment = Alignment.CenterV | Alignment.Left;
             label.Text = "Radio Button";
-            label.Clicked += delegate(ControlBase control, ClickedEventArgs _) { RadioButton.Press(control); };
+            label.Clicked += (_, _) => RadioButton.Press();
             label.IsTabable = false;
             label.KeyboardInputEnabled = false;
         }

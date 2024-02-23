@@ -25,7 +25,7 @@ namespace Gwen.Net.Input
         /// <summary>
         ///     Control that currently has mouse focus.
         /// </summary>
-        public static ControlBase MouseFocus { get; set; }
+        public static ControlBase? MouseFocus { get; set; }
 
         /// <summary>
         ///     Current mouse position.

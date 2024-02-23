@@ -22,7 +22,7 @@ namespace Gwen.Net.Control
             checkBox.CheckChanged += OnCheckChanged;
 
             label = new Label(this);
-            label.Clicked += delegate(ControlBase control, ClickedEventArgs _) { checkBox.Press(control); };
+            label.Clicked += (_, _) => checkBox.Press();
             label.IsTabable = false;
 
             IsTabable = false;

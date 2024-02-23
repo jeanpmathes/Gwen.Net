@@ -8,7 +8,7 @@ namespace Gwen.Net.Control.Internal
         private bool depressed;
         private bool toggleStatus;
 
-        public ButtonBase(ControlBase parent)
+        protected ButtonBase(ControlBase parent)
             : base(parent)
         {
             MouseInputEnabled = true;
@@ -57,23 +57,23 @@ namespace Gwen.Net.Control.Internal
 
                 toggleStatus = value;
 
-                if (Toggled != null && !IsDisabled)
+                if (!IsDisabled)
                 {
-                    Toggled.Invoke(this, EventArgs.Empty);
+                    Toggled?.Invoke(this, EventArgs.Empty);
                 }
 
                 if (toggleStatus)
                 {
-                    if (ToggledOn != null && !IsDisabled)
+                    if (!IsDisabled)
                     {
-                        ToggledOn.Invoke(this, EventArgs.Empty);
+                        ToggledOn?.Invoke(this, EventArgs.Empty);
                     }
                 }
                 else
                 {
-                    if (ToggledOff != null && !IsDisabled)
+                    if (!IsDisabled)
                     {
-                        ToggledOff.Invoke(this, EventArgs.Empty);
+                        ToggledOff?.Invoke(this, EventArgs.Empty);
                     }
                 }
 
@@ -84,27 +84,27 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Invoked when the button is pressed. Will not be invoked if the button is disabled.
         /// </summary>
-        public event GwenEventHandler<EventArgs> Pressed;
+        public event GwenEventHandler<EventArgs>? Pressed;
 
         /// <summary>
         ///     Invoked when the button is released. Will not be invoked if the button is disabled.
         /// </summary>
-        public event GwenEventHandler<EventArgs> Released;
+        public event GwenEventHandler<EventArgs>? Released;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed. Will not be invoked if the button is disabled.
         /// </summary>
-        public event GwenEventHandler<EventArgs> Toggled;
+        public event GwenEventHandler<EventArgs>? Toggled;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed to On. Will not be invoked if the button is disabled.
         /// </summary>
-        public event GwenEventHandler<EventArgs> ToggledOn;
+        public event GwenEventHandler<EventArgs>? ToggledOn;
 
         /// <summary>
         ///     Invoked when the button's toggle state has changed to Off. Will not be invoked if the button is disabled.
         /// </summary>
-        public event GwenEventHandler<EventArgs> ToggledOff;
+        public event GwenEventHandler<EventArgs>? ToggledOff;
 
         /// <summary>
         ///     Toggles the button.
@@ -117,7 +117,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     "Clicks" the button.
         /// </summary>
-        public virtual void Press(ControlBase control = null)
+        public virtual void Press()
         {
             OnClicked(x: 0, y: 0);
         }
@@ -135,14 +135,14 @@ namespace Gwen.Net.Control.Internal
                 IsDepressed = true;
                 InputHandler.MouseFocus = this;
 
-                if (Pressed != null && !IsDisabled)
+                if (!IsDisabled)
                 {
-                    Pressed.Invoke(this, EventArgs.Empty);
+                    Pressed?.Invoke(this, EventArgs.Empty);
                 }
             }
             else
             {
-                if (IsHovered && depressed)
+                if (IsHovered && depressed && !IsDisabled)
                 {
                     OnClicked(x, y);
                 }
@@ -152,9 +152,9 @@ namespace Gwen.Net.Control.Internal
                 
                 bool IsUnderMouse(Point localMouse) => localMouse is {X: >= 0, Y: >= 0} && localMouse.X < ActualWidth && localMouse.Y < ActualHeight;
                 
-                if (Released != null && !IsDisabled && IsUnderMouse(CanvasPosToLocal(new Point(x, y))))
+                if (!IsDisabled && IsUnderMouse(CanvasPosToLocal(new Point(x, y))))
                 {
-                    Released.Invoke(this, EventArgs.Empty);
+                    Released?.Invoke(this, EventArgs.Empty);
                 }
             }
 
