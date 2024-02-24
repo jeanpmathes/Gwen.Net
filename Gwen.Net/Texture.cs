@@ -31,7 +31,7 @@ namespace Gwen.Net
         /// <summary>
         ///     Renderer data.
         /// </summary>
-        public object RendererData { get; set; }
+        public object? RendererData { get; set; }
 
         /// <summary>
         ///     Indicates that the texture failed to load.
