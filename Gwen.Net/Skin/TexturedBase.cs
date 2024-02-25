@@ -1135,6 +1135,18 @@ namespace Gwen.Net.Skin
             }
         }
 
+        public override void DrawTableLine(ControlBase control, bool even)
+        {
+            if (even)
+            {
+                textures.input.listBox.evenLine.Draw(Renderer, control.RenderBounds);
+            }
+            else
+            {
+                textures.input.listBox.oddLine.Draw(Renderer, control.RenderBounds);
+            }
+        }
+
         public override void DrawListBox(ControlBase control)
         {
             textures.input.listBox.background.Draw(Renderer, control.RenderBounds);

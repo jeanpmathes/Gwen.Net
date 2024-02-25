@@ -1,5 +1,6 @@
 ﻿using System;
 using Gwen.Net.Platform;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -267,6 +268,12 @@ namespace Gwen.Net.Control
         protected override void OnCopy(ControlBase from, EventArgs args)
         {
             GwenPlatform.SetClipboardText(Text);
+        }
+        
+        /// <inheritdoc/>
+        protected override void Render(SkinBase currentSkin)
+        {
+            currentSkin.DrawListBoxLine(this, false, EvenRow);
         }
 
         private Label CreateLabel() =>

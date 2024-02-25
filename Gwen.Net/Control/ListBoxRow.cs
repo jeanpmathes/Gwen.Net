@@ -73,10 +73,7 @@ namespace Gwen.Net.Control
                 : normalColorOverride ?? Skin.colors.listBoxColors.textNormal);
         }
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
+        /// <inheritdoc/>
         protected override void Render(SkinBase currentSkin)
         {
             currentSkin.DrawListBoxLine(this, IsSelected, EvenRow);

@@ -134,6 +134,7 @@ namespace Gwen.Net.Skin
             bool hovered, bool disabled) {}
 
         public virtual void DrawProgressBar(ControlBase control, bool horizontal, float progress) {}
+        public virtual void DrawTableLine(ControlBase control, bool even) {}
         public virtual void DrawListBox(ControlBase control) {}
         public virtual void DrawListBoxLine(ControlBase control, bool selected, bool even) {}
         public virtual void DrawSlider(ControlBase control, bool horizontal, int numNotches, int barSize) {}
