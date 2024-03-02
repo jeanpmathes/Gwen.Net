@@ -4,7 +4,7 @@
       <TargetFramework>net6.0</TargetFramework>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <LangVersion>10</LangVersion>
-      <PackageVersion>0.5.2</PackageVersion>
+      <PackageVersion>0.5.4</PackageVersion>
       <Title>Gwen.Net</Title>
       <Description>Gwen.Net is a port of Gwen.Net which is a .Net port of GWEN. GWEN is a lightweight GUI library aimed at games. It contains rich widget collection and most functionality you'd expect from a GUI framework.
 

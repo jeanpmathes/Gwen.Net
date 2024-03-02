@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
@@ -28,9 +29,11 @@ namespace Gwen.Net.Control
     public class Button : ButtonBase
     {
         private Alignment align;
-        private ImagePanel image;
+        
+        private ImagePanel? image;
         private ImageAlign imageAlign;
-        private Text text;
+        
+        private Text? text;
         private Padding textPadding;
 
         /// <summary>
@@ -43,56 +46,84 @@ namespace Gwen.Net.Control
             Alignment = Alignment.Center;
             TextPadding = new Padding(left: 3, top: 3, right: 3, bottom: 3);
         }
-
+        
         /// <summary>
         ///     Text.
         /// </summary>
-        public virtual string Text
+        public virtual string? Text
         {
-            get => text.String;
+            get => text?.String;
             set
             {
-                EnsureText();
-                text.String = value;
+                if (value == null)
+                {
+                    RemoveText();
+                }
+                else
+                {
+                    EnsureText();
+                    text.String = value;
+                }
             }
         }
 
         /// <summary>
         ///     Font.
         /// </summary>
-        public Font Font
+        public Font? Font
         {
-            get => text.Font;
+            get => text?.Font;
             set
             {
-                EnsureText();
-                text.Font = value;
+                if (value == null)
+                {
+                    RemoveText();
+                }
+                else
+                {
+                    EnsureText();
+                    text.Font = value;
+                }
             }
         }
 
         /// <summary>
         ///     Text color.
         /// </summary>
-        public Color TextColor
+        public Color? TextColor
         {
-            get => text.TextColor;
+            get => text?.TextColor;
             set
             {
-                EnsureText();
-                text.TextColor = value;
+                if (value == null)
+                {
+                    RemoveText();
+                }
+                else
+                {
+                    EnsureText();
+                    text.TextColor = value.Value;
+                }
             }
         }
 
         /// <summary>
         ///     Override text color (used by tooltips).
         /// </summary>
-        public Color TextColorOverride
+        public Color? TextColorOverride
         {
-            get => text.TextColorOverride;
+            get => text?.TextColorOverride;
             set
             {
-                EnsureText();
-                text.TextColorOverride = value;
+                if (value == null)
+                {
+                    RemoveText();
+                }
+                else
+                {
+                    EnsureText();
+                    text.TextColorOverride = value.Value;
+                }
             }
         }
 
@@ -153,23 +184,13 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Returns the current image name (or null if no image set) or set a new image.
         /// </summary>
-        public string ImageName
+        public string? ImageName
         {
-            get
-            {
-                if (image != null)
-                {
-                    return image.ImageName;
-                }
-
-                return null;
-            }
+            get => image?.ImageName;
             set
             {
-                if (image != null && image.ImageName == value)
-                {
+                if (image != null && image.ImageName == value) 
                     return;
-                }
 
                 SetImage(value, imageAlign);
             }
@@ -250,12 +271,19 @@ namespace Gwen.Net.Control
             }
         }
 
+        [MemberNotNull(nameof(text))]
         private void EnsureText()
         {
-            if (text == null)
-            {
-                text = new Text(this);
-            }
+            text ??= new Text(this);
+        }
+        
+        private void RemoveText()
+        {
+            if (text == null) return;
+
+            RemoveChild(text, dispose: true);
+                
+            text = null;
         }
 
         /// <summary>
@@ -286,24 +314,17 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="textureName">Texture name. Null to remove.</param>
         /// <param name="newImageAlign">Determines how the image should be aligned.</param>
-        public virtual void SetImage(string textureName, ImageAlign newImageAlign = ImageAlign.LeftSide)
+        public virtual void SetImage(string? textureName, ImageAlign newImageAlign = ImageAlign.LeftSide)
         {
             if (string.IsNullOrEmpty(textureName))
             {
-                if (image != null)
-                {
-                    image.Dispose();
-                }
-
+                image?.Dispose();
                 image = null;
 
                 return;
             }
 
-            if (image == null)
-            {
-                image = new ImagePanel(this);
-            }
+            image ??= new ImagePanel(this);
 
             image.ImageName = textureName;
             image.MouseInputEnabled = false;
@@ -359,34 +380,33 @@ namespace Gwen.Net.Control
         {
             if (image == null)
             {
-                if (text != null)
+                if (text == null) return finalSize;
+
+                Size innerSize = finalSize - Padding;
+                Size textSize = text.MeasuredSize + textPadding;
+                Rectangle rect = new(Point.Zero, textSize);
+
+                if ((align & Alignment.CenterH) != 0)
                 {
-                    Size innerSize = finalSize - Padding;
-                    Size textSize = text.MeasuredSize + textPadding;
-                    Rectangle rect = new(Point.Zero, textSize);
-
-                    if ((align & Alignment.CenterH) != 0)
-                    {
-                        rect.X = (innerSize.Width - rect.Width) / 2;
-                    }
-                    else if ((align & Alignment.Right) != 0)
-                    {
-                        rect.X = innerSize.Width - rect.Width;
-                    }
-
-                    if ((align & Alignment.CenterV) != 0)
-                    {
-                        rect.Y = (innerSize.Height - rect.Height) / 2;
-                    }
-                    else if ((align & Alignment.Bottom) != 0)
-                    {
-                        rect.Y = innerSize.Height - rect.Height;
-                    }
-
-                    rect.Offset(textPadding + Padding);
-
-                    text.DoArrange(rect);
+                    rect.X = (innerSize.Width - rect.Width) / 2;
                 }
+                else if ((align & Alignment.Right) != 0)
+                {
+                    rect.X = innerSize.Width - rect.Width;
+                }
+
+                if ((align & Alignment.CenterV) != 0)
+                {
+                    rect.Y = (innerSize.Height - rect.Height) / 2;
+                }
+                else if ((align & Alignment.Bottom) != 0)
+                {
+                    rect.Y = innerSize.Height - rect.Height;
+                }
+
+                rect.Offset(textPadding + Padding);
+
+                text.DoArrange(rect);
             }
             else
             {
@@ -498,6 +518,11 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
+        /// Whether to consider the toggle state when coloring the button.
+        /// </summary>
+        public bool UseToggleStateForColor { get; set; } = true;
+        
+        /// <summary>
         ///     Updates control colors.
         /// </summary>
         public override void UpdateColors()
@@ -514,7 +539,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            if (IsDepressed || ToggleState)
+            if (IsDepressed || (UseToggleStateForColor && IsToggle && ToggleState))
             {
                 TextColor = Skin.colors.buttonColors.down;
 

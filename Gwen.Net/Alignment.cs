@@ -1,7 +1,9 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 
 namespace Gwen.Net
 {
+    [Flags]
     public enum Alignment
     {
         Left = ControlBase.InternalFlags.AlignHLeft,
@@ -14,7 +16,7 @@ namespace Gwen.Net
         Center = CenterV | CenterH,
         LeftTop = Left | Top,
     }
-
+    
     public enum HorizontalAlignment
     {
         Left = ControlBase.InternalFlags.AlignHLeft,
