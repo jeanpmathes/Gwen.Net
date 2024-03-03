@@ -249,25 +249,15 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the color of the image.
         /// </summary>
-        public Color ImageColor
+        public Color? ImageColor
         {
-            get
-            {
-                if (image != null)
-                {
-                    return image.ImageColor;
-                }
-
-                return Color.White;
-            }
+            get => image?.ImageColor;
             set
             {
-                if (image == null)
-                {
+                if (image == null || value == null)
                     return;
-                }
 
-                image.ImageColor = value;
+                image.ImageColor = value.Value;
             }
         }
 
