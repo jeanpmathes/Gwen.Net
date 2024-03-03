@@ -284,19 +284,18 @@ namespace Gwen.Net.Control
         {
             base.Render(currentSkin);
 
-            if (ShouldDrawBackground)
+            if (!ShouldDrawBackground) return;
+
+            bool drawDepressed = IsDepressed && IsHovered;
+
+            if (IsToggle && ShouldDrawToggleDepressedWhenOn)
             {
-                bool drawDepressed = IsDepressed && IsHovered;
-
-                if (IsToggle)
-                {
-                    drawDepressed = drawDepressed || ToggleState;
-                }
-
-                bool bDrawHovered = IsHovered && ShouldDrawHover;
-
-                currentSkin.DrawButton(this, drawDepressed, bDrawHovered, IsDisabled);
+                drawDepressed = drawDepressed || ToggleState;
             }
+
+            bool drawHovered = IsHovered && ShouldDrawHover;
+
+            currentSkin.DrawButton(this, drawDepressed, drawHovered, IsDisabled);
         }
 
         /// <summary>
@@ -508,9 +507,9 @@ namespace Gwen.Net.Control
         }
 
         /// <summary>
-        /// Whether to consider the toggle state when coloring the button.
+        /// Whether to draw a toggle button as depressed when it's on.
         /// </summary>
-        public bool UseToggleStateForColor { get; set; } = true;
+        public bool ShouldDrawToggleDepressedWhenOn { get; set; } = true;
         
         /// <summary>
         ///     Updates control colors.
@@ -529,7 +528,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            if (IsDepressed || (UseToggleStateForColor && IsToggle && ToggleState))
+            if (IsDepressed || (ShouldDrawToggleDepressedWhenOn && IsToggle && ToggleState))
             {
                 TextColor = Skin.colors.buttonColors.down;
 
