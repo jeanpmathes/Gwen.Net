@@ -11,11 +11,11 @@ namespace Gwen.Net.RichText
             this.font = font;
         }
 
-        public override string[] Split(ref Font splitFont)
+        public override String[] Split(ref Font splitFont)
         {
             splitFont = font;
 
-            return Array.Empty<string>();
+            return Array.Empty<String>();
         }
     }
 }

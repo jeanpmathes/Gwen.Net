@@ -1,30 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Gwen.Net.Platform
 {
     public interface IPlatform
     {
-        string CurrentDirectory { get; }
+        String CurrentDirectory { get; }
 
         /// <summary>
         ///     Gets text from clipboard.
         /// </summary>
         /// <returns>Clipboard text.</returns>
-        string GetClipboardText();
+        String GetClipboardText();
 
         /// <summary>
         ///     Sets the clipboard text.
         /// </summary>
         /// <param name="text">Text to set.</param>
         /// <returns>True if succeeded.</returns>
-        bool SetClipboardText(string text);
+        Boolean SetClipboardText(String text);
 
         /// <summary>
         ///     Gets elapsed time. Initialization time is platform specific.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
-        double GetTimeInSeconds();
+        Double GetTimeInSeconds();
 
         /// <summary>
         ///     Changes the mouse cursor.
@@ -38,21 +39,21 @@ namespace Gwen.Net.Platform
         /// <returns>List of folders.</returns>
         IEnumerable<ISpecialFolder> GetSpecialFolders();
 
-        string GetFileName(string path);
-        string GetDirectoryName(string path);
+        String GetFileName(String path);
+        String GetDirectoryName(String path);
 
-        bool FileExists(string path);
-        bool DirectoryExists(string path);
+        Boolean FileExists(String path);
+        Boolean DirectoryExists(String path);
 
-        void CreateDirectory(string path);
+        void CreateDirectory(String path);
 
-        string Combine(string path1, string path2);
-        string Combine(string path1, string path2, string path3);
-        string Combine(string path1, string path2, string path3, string path4);
+        String Combine(String path1, String path2);
+        String Combine(String path1, String path2, String path3);
+        String Combine(String path1, String path2, String path3, String path4);
 
-        IEnumerable<IFileSystemDirectoryInfo> GetDirectories(string path);
-        IEnumerable<IFileSystemFileInfo> GetFiles(string path, string filter);
+        IEnumerable<IFileSystemDirectoryInfo> GetDirectories(String path);
+        IEnumerable<IFileSystemFileInfo> GetFiles(String path, String filter);
 
-        Stream GetFileStream(string path, bool isWritable);
+        Stream GetFileStream(String path, Boolean isWritable);
     }
 }

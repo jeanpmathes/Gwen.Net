@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Renderer;
+﻿using System;
+using Gwen.Net.Renderer;
 
 namespace Gwen.Net.Skin.Texturing
 {
@@ -8,25 +9,25 @@ namespace Gwen.Net.Skin.Texturing
     public readonly struct Single
     {
         private readonly Texture texture;
-        private readonly float[] uv;
-        private readonly int width;
-        private readonly int height;
+        private readonly System.Single[] uv;
+        private readonly Int32 width;
+        private readonly Int32 height;
 
-        public Single(Texture texture, float x, float y, float w, float h)
+        public Single(Texture texture, System.Single x, System.Single y, System.Single w, System.Single h)
         {
             this.texture = texture;
 
-            float textureWidth = this.texture.Width;
-            float textureHeight = this.texture.Height;
+            System.Single textureWidth = this.texture.Width;
+            System.Single textureHeight = this.texture.Height;
 
-            uv = new float[4];
+            uv = new System.Single[4];
             uv[0] = x / textureWidth;
             uv[1] = y / textureHeight;
             uv[2] = (x + w) / textureWidth;
             uv[3] = (y + h) / textureHeight;
 
-            width = (int)w;
-            height = (int)h;
+            width = (Int32)w;
+            height = (Int32)h;
         }
 
         // can't have this as default param
@@ -58,8 +59,8 @@ namespace Gwen.Net.Skin.Texturing
 
         public void DrawCenter(RendererBase render, Rectangle r, Color col)
         {
-            r.X += (int)((r.Width - width) * 0.5);
-            r.Y += (int)((r.Height - height) * 0.5);
+            r.X += (Int32)((r.Width - width) * 0.5);
+            r.Y += (Int32)((r.Height - height) * 0.5);
             r.Width = width;
             r.Height = height;
 

@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -8,7 +9,7 @@ namespace Gwen.Net.Control
     public class ImagePanel : ControlBase
     {
         private readonly Texture texture;
-        private readonly float[] uv;
+        private readonly Single[] uv;
         private Size imageSize;
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace Gwen.Net.Control
         public ImagePanel(ControlBase parent)
             : base(parent)
         {
-            uv = new float[4];
+            uv = new Single[4];
             texture = new Texture(Skin.Renderer);
             imageSize = Size.Zero;
             SetUV(u1: 0, v1: 0, u2: 1, v2: 1);
@@ -29,7 +30,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Texture name.
         /// </summary>
-        public string ImageName
+        public String ImageName
         {
             get => texture.Name;
             set => texture.Load(value, _ => {});
@@ -65,10 +66,10 @@ namespace Gwen.Net.Control
                     return Rectangle.Empty;
                 }
 
-                var x1 = (int) (uv[0] * texture.Width);
-                var y1 = (int) (uv[1] * texture.Height);
-                int x2 = Util.Ceil(uv[2] * texture.Width);
-                int y2 = Util.Ceil(uv[3] * texture.Height);
+                var x1 = (Int32) (uv[0] * texture.Width);
+                var y1 = (Int32) (uv[1] * texture.Height);
+                Int32 x2 = Util.Ceil(uv[2] * texture.Width);
+                Int32 y2 = Util.Ceil(uv[3] * texture.Height);
 
                 return new Rectangle(x1, y1, x2 - x1, y2 - y1);
             }
@@ -79,10 +80,10 @@ namespace Gwen.Net.Control
                     return;
                 }
 
-                uv[0] = value.X / (float) texture.Width;
-                uv[1] = value.Y / (float) texture.Height;
-                uv[2] = uv[0] + (value.Width / (float) texture.Width);
-                uv[3] = uv[1] + (value.Height / (float) texture.Height);
+                uv[0] = value.X / (Single) texture.Width;
+                uv[1] = value.Y / (Single) texture.Height;
+                uv[2] = uv[0] + (value.Width / (Single) texture.Width);
+                uv[3] = uv[1] + (value.Height / (Single) texture.Height);
             }
         }
 
@@ -103,7 +104,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sets the texture coordinates of the image in uv-coordinates.
         /// </summary>
-        public virtual void SetUV(float u1, float v1, float u2, float v2)
+        public virtual void SetUV(Single u1, Single v1, Single u2, Single v2)
         {
             uv[0] = u1;
             uv[1] = v1;
@@ -129,7 +130,7 @@ namespace Gwen.Net.Control
                 return Size.Zero;
             }
 
-            float scale = Scale;
+            Single scale = Scale;
 
             Size size = imageSize;
 
@@ -158,7 +159,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeySpace(bool down)
+        protected override Boolean OnKeySpace(Boolean down)
         {
             if (down)
             {

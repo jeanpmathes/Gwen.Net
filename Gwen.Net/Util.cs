@@ -8,36 +8,21 @@ namespace Gwen.Net
     /// </summary>
     public static class Util
     {
-        public const int Ignore = -1;
+        public const Int32 Ignore = -1;
 
-        public const int Infinity = 0xfffffff;
+        public const Int32 Infinity = 0xfffffff;
 
-        public static int Ceil(float x)
+        public static Int32 Ceil(Single x)
         {
-            return (int) Math.Ceiling(x);
+            return (Int32) Math.Ceiling(x);
         }
 
-        public static Rectangle FloatRect(float x, float y, float w, float h)
+        public static Rectangle FloatRect(Single x, Single y, Single w, Single h)
         {
-            return new((int) x, (int) y, (int) w, (int) h);
+            return new((Int32) x, (Int32) y, (Int32) w, (Int32) h);
         }
 
-        public static int Clamp(int x, int min, int max)
-        {
-            if (x < min)
-            {
-                return min;
-            }
-
-            if (x > max)
-            {
-                return max;
-            }
-
-            return x;
-        }
-
-        public static float Clamp(float x, float min, float max)
+        public static Int32 Clamp(Int32 x, Int32 min, Int32 max)
         {
             if (x < min)
             {
@@ -52,7 +37,22 @@ namespace Gwen.Net
             return x;
         }
 
-        public static Rectangle ClampRectToRect(Rectangle inside, Rectangle outside, bool clampSize = false)
+        public static Single Clamp(Single x, Single min, Single max)
+        {
+            if (x < min)
+            {
+                return min;
+            }
+
+            if (x > max)
+            {
+                return max;
+            }
+
+            return x;
+        }
+
+        public static Rectangle ClampRectToRect(Rectangle inside, Rectangle outside, Boolean clampSize = false)
         {
             if (inside.X < outside.X)
             {
@@ -95,16 +95,16 @@ namespace Gwen.Net
         {
             HSV hsv = new();
 
-            float r = color.R / 255.0f;
-            float g = color.G / 255.0f;
-            float b = color.B / 255.0f;
+            Single r = color.R / 255.0f;
+            Single g = color.G / 255.0f;
+            Single b = color.B / 255.0f;
 
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
+            Single max = Math.Max(r, Math.Max(g, b));
+            Single min = Math.Min(r, Math.Min(g, b));
 
             hsv.V = max;
 
-            float delta = max - min;
+            Single delta = max - min;
 
             if (max != 0)
             {
@@ -145,10 +145,10 @@ namespace Gwen.Net
             return hsv;
         }
 
-        public static Color HSVToColor(float h, float s, float v)
+        public static Color HSVToColor(Single h, Single s, Single v)
         {
-            int hi = Convert.ToInt32(Math.Floor(h / 60)) % 6;
-            float f = (h / 60) - (float) Math.Floor(h / 60);
+            Int32 hi = Convert.ToInt32(Math.Floor(h / 60)) % 6;
+            Single f = (h / 60) - (Single) Math.Floor(h / 60);
 
             v = v * 255;
             var va = Convert.ToInt32(v);
@@ -195,9 +195,9 @@ namespace Gwen.Net
             return new(color.A + other.A, color.R + other.R, color.G + other.G, color.B + other.B);
         }
 
-        public static Color Multiply(this Color color, float amount)
+        public static Color Multiply(this Color color, Single amount)
         {
-            return new(color.A, (int) (color.R * amount), (int) (color.G * amount), (int) (color.B * amount));
+            return new(color.A, (Int32) (color.R * amount), (Int32) (color.G * amount), (Int32) (color.B * amount));
         }
 
         public static Rectangle Add(this Rectangle r, Rectangle other)
@@ -211,20 +211,20 @@ namespace Gwen.Net
         /// <param name="text">String to split.</param>
         /// <param name="separators">Separator characters.</param>
         /// <returns>Split strings.</returns>
-        public static string[] SplitAndKeep(string text, string separators)
+        public static String[] SplitAndKeep(String text, String separators)
         {
-            List<string> strings = new();
+            List<String> strings = new();
             var offset = 0;
-            int length = text.Length;
-            int sepLen = separators.Length;
-            int i = text.IndexOf(separators, StringComparison.Ordinal);
-            string word;
+            Int32 length = text.Length;
+            Int32 sepLen = separators.Length;
+            Int32 i = text.IndexOf(separators, StringComparison.Ordinal);
+            String word;
 
             while (i != -1)
             {
                 word = text.Substring(offset, i - offset);
 
-                if (!string.IsNullOrWhiteSpace(word))
+                if (!String.IsNullOrWhiteSpace(word))
                 {
                     strings.Add(word);
                 }
@@ -239,12 +239,12 @@ namespace Gwen.Net
             return strings.ToArray();
         }
 
-        public static bool IsIgnore(int value)
+        public static Boolean IsIgnore(Int32 value)
         {
             return value == Ignore;
         }
 
-        public static bool IsInfinity(int value)
+        public static Boolean IsInfinity(Int32 value)
         {
             return value > 0xffffff;
         }

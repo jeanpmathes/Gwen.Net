@@ -18,10 +18,10 @@ namespace Gwen.Net.DragDrop
         private static ControlBase lastPressedControl;
         private static ControlBase newHoveredControl;
         private static Point lastPressedPos;
-        private static int mouseX;
-        private static int mouseY;
+        private static Int32 mouseX;
+        private static Int32 mouseY;
 
-        private static void OnDrop(int x, int y)
+        private static void OnDrop(Int32 x, Int32 y)
         {
             var success = false;
 
@@ -40,7 +40,7 @@ namespace Gwen.Net.DragDrop
 
         }
 
-        private static bool ShouldStartDraggingControl(int x, int y)
+        private static Boolean ShouldStartDraggingControl(Int32 x, Int32 y)
         {
             // We're not holding a control down..
             if (lastPressedControl == null)
@@ -49,7 +49,7 @@ namespace Gwen.Net.DragDrop
             }
 
             // Not been dragged far enough
-            int length = Math.Abs(x - lastPressedPos.X) + Math.Abs(y - lastPressedPos.Y);
+            Int32 length = Math.Abs(x - lastPressedPos.X) + Math.Abs(y - lastPressedPos.Y);
 
             if (length < 5)
             {
@@ -92,7 +92,7 @@ namespace Gwen.Net.DragDrop
             return true;
         }
 
-        private static void UpdateHoveredControl(ControlBase control, int x, int y)
+        private static void UpdateHoveredControl(ControlBase control, Int32 x, Int32 y)
         {
             //
             // We use this global variable to represent our hovered control
@@ -150,7 +150,7 @@ namespace Gwen.Net.DragDrop
             newHoveredControl = null;
         }
 
-        public static bool Start(ControlBase control, Package package)
+        public static Boolean Start(ControlBase control, Package package)
         {
             if (CurrentPackage != null)
             {
@@ -163,7 +163,7 @@ namespace Gwen.Net.DragDrop
             return true;
         }
 
-        public static bool OnMouseButton(ControlBase hoveredControl, int x, int y, bool down)
+        public static Boolean OnMouseButton(ControlBase hoveredControl, Int32 x, Int32 y, Boolean down)
         {
             if (!down)
             {
@@ -200,7 +200,7 @@ namespace Gwen.Net.DragDrop
             return false;
         }
 
-        public static void OnMouseMoved(ControlBase hoveredControl, int x, int y)
+        public static void OnMouseMoved(ControlBase hoveredControl, Int32 x, Int32 y)
         {
             // Always keep these up to date, they're used to draw the dragged control.
             mouseX = x;

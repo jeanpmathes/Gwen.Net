@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.RichText
 {
@@ -6,7 +7,7 @@ namespace Gwen.Net.RichText
     {
         public Document() {}
 
-        public Document(string text)
+        public Document(String text)
         {
             Paragraph paragraph = new();
             paragraph.Text(text);
@@ -15,7 +16,7 @@ namespace Gwen.Net.RichText
 
         public List<Paragraph> Paragraphs { get; } = new();
 
-        public Paragraph Paragraph(Margin margin = new(), int firstIndent = 0, int remainingIndent = 0)
+        public Paragraph Paragraph(Margin margin = new(), Int32 firstIndent = 0, Int32 remainingIndent = 0)
         {
             Paragraph paragraph = new(margin, firstIndent, remainingIndent);
 
@@ -24,8 +25,8 @@ namespace Gwen.Net.RichText
             return paragraph;
         }
 
-        public ImageParagraph Image(string imageName, Size? imageSize = null, Rectangle? textureRect = null,
-            Color? imageColor = null, Margin margin = new(), int indent = 0)
+        public ImageParagraph Image(String imageName, Size? imageSize = null, Rectangle? textureRect = null,
+            Color? imageColor = null, Margin margin = new(), Int32 indent = 0)
         {
             ImageParagraph paragraph = new(margin, indent);
             paragraph.Image(imageName, imageSize, textureRect, imageColor);
@@ -35,7 +36,7 @@ namespace Gwen.Net.RichText
             return paragraph;
         }
 
-        public ImageParagraph Image(string imageName, Margin margin, int indent)
+        public ImageParagraph Image(String imageName, Margin margin, Int32 indent)
         {
             ImageParagraph paragraph = new(margin, indent);
             paragraph.Image(imageName);
@@ -45,7 +46,7 @@ namespace Gwen.Net.RichText
             return paragraph;
         }
 
-        public ImageParagraph Image(string imageName, Size imageSize, Margin margin = new(), int indent = 0)
+        public ImageParagraph Image(String imageName, Size imageSize, Margin margin = new(), Int32 indent = 0)
         {
             ImageParagraph paragraph = new(margin, indent);
             paragraph.Image(imageName, imageSize);

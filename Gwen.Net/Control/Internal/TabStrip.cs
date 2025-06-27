@@ -9,7 +9,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class TabStrip : StackLayout
     {
-        private int scrollOffset;
+        private Int32 scrollOffset;
         private ControlBase tabDragControl;
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether it is possible to reorder tabs by mouse dragging.
         /// </summary>
-        public bool AllowReorder { get; set; }
+        public Boolean AllowReorder { get; set; }
 
-        internal int ScrollOffset
+        internal Int32 ScrollOffset
         {
             get => scrollOffset;
             set => SetScrollOffset(value);
@@ -39,7 +39,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the control should be clipped to its bounds while rendering.
         /// </summary>
-        protected override bool ShouldClip => false;
+        protected override Boolean ShouldClip => false;
 
         /// <summary>
         ///     Strip position (top/left/right/bottom).
@@ -77,7 +77,7 @@ namespace Gwen.Net.Control.Internal
             }
         }
 
-        private void SetScrollOffset(int value)
+        private void SetScrollOffset(Int32 value)
         {
             for (var i = 0; i < Children.Count; i++)
             {
@@ -112,7 +112,7 @@ namespace Gwen.Net.Control.Internal
                 }
 
                 Margin m = new();
-                int notFirst = num > 0 ? -1 : 0;
+                Int32 notFirst = num > 0 ? -1 : 0;
 
                 switch (StripPosition)
                 {
@@ -137,7 +137,7 @@ namespace Gwen.Net.Control.Internal
             return TotalSize;
         }
 
-        public override void DragAndDrop_HoverEnter(Package p, int x, int y)
+        public override void DragAndDrop_HoverEnter(Package p, Int32 x, Int32 y)
         {
             if (tabDragControl != null)
             {
@@ -164,7 +164,7 @@ namespace Gwen.Net.Control.Internal
             tabDragControl = null;
         }
 
-        public override void DragAndDrop_Hover(Package p, int x, int y)
+        public override void DragAndDrop_Hover(Package p, Int32 x, Int32 y)
         {
             Point localPos = CanvasPosToLocal(new Point(x, y));
 
@@ -174,7 +174,7 @@ namespace Gwen.Net.Control.Internal
             {
                 Point dropPos = droppedOn.CanvasPosToLocal(new Point(x, y));
                 tabDragControl.BringToFront();
-                int pos = droppedOn.ActualLeft - 1;
+                Int32 pos = droppedOn.ActualLeft - 1;
 
                 if (dropPos.X > droppedOn.ActualWidth / 2)
                 {
@@ -190,7 +190,7 @@ namespace Gwen.Net.Control.Internal
             }
         }
 
-        public override bool DragAndDrop_HandleDrop(Package p, int x, int y)
+        public override Boolean DragAndDrop_HandleDrop(Package p, Int32 x, Int32 y)
         {
             Point localPos = CanvasPosToLocal(new Point(x, y));
 
@@ -218,7 +218,7 @@ namespace Gwen.Net.Control.Internal
             return true;
         }
 
-        public override bool DragAndDrop_CanAcceptPackage(Package p)
+        public override Boolean DragAndDrop_CanAcceptPackage(Package p)
         {
             if (!AllowReorder)
             {

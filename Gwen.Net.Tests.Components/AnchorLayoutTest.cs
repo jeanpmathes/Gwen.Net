@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -86,7 +87,7 @@ namespace Gwen.Net.Tests.Components
             width.Height = 25;
             width.Dock = Dock.Bottom;
             width.Padding = Padding.Five;
-            width.ValueChanged += (control, _) => { layout.Width = (int)((HorizontalSlider) control).Value; };
+            width.ValueChanged += (control, _) => { layout.Width = (Int32)((HorizontalSlider) control).Value; };
 
             VerticalSlider height = new(this);
             height.Min = 165;
@@ -94,7 +95,7 @@ namespace Gwen.Net.Tests.Components
             height.Width = 25;
             height.Dock = Dock.Right;
             height.Padding = Padding.Five;
-            height.ValueChanged += (control, _) => { layout.Height = (int)((VerticalSlider) control).Value; };
+            height.ValueChanged += (control, _) => { layout.Height = (Int32)((VerticalSlider) control).Value; };
         }
 
         public override void Dispose()

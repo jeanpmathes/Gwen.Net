@@ -38,7 +38,7 @@ namespace Gwen.Net.Control
             layout = new StackLayout(this);
         }
 
-        internal override bool IsMenuComponent => true;
+        internal override Boolean IsMenuComponent => true;
 
         /// <summary>
         ///     Parent menu item that owns the menu if this is a child of the menu item.
@@ -46,17 +46,17 @@ namespace Gwen.Net.Control
         /// </summary>
         public MenuItem ParentMenuItem { get; internal set; }
 
-        public bool IconMarginDisabled { get; set; }
+        public Boolean IconMarginDisabled { get; set; }
 
         /// <summary>
         ///     Determines whether the menu should be disposed on close.
         /// </summary>
-        public bool DeleteOnClose { get; set; }
+        public Boolean DeleteOnClose { get; set; }
 
         /// <summary>
         ///     Determines whether the menu should open on mouse hover.
         /// </summary>
-        protected virtual bool ShouldHoverOpenMenu => true;
+        protected virtual Boolean ShouldHoverOpenMenu => true;
 
         /// <summary>
         ///     Renders the control using specified skin.
@@ -105,9 +105,9 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="text">Item text.</param>
         /// <returns>Newly created control.</returns>
-        public virtual MenuItem AddItem(string text)
+        public virtual MenuItem AddItem(String text)
         {
-            return AddItem(text, string.Empty);
+            return AddItem(text, String.Empty);
         }
 
         /// <summary>
@@ -117,18 +117,18 @@ namespace Gwen.Net.Control
         /// <param name="iconName">Icon texture name.</param>
         /// <param name="accelerator">Accelerator for this item.</param>
         /// <returns>Newly created control.</returns>
-        public virtual MenuItem AddItem(string text, string iconName, string accelerator = null)
+        public virtual MenuItem AddItem(String text, String iconName, String accelerator = null)
         {
             MenuItem item = new(this);
             item.Padding = Padding.Three;
             item.Text = text;
 
-            if (!string.IsNullOrWhiteSpace(iconName))
+            if (!String.IsNullOrWhiteSpace(iconName))
             {
                 item.SetImage(iconName, ImageAlign.Left | ImageAlign.CenterV);
             }
 
-            if (!string.IsNullOrWhiteSpace(accelerator))
+            if (!String.IsNullOrWhiteSpace(accelerator))
             {
                 item.SetAccelerator(accelerator);
             }
@@ -151,23 +151,23 @@ namespace Gwen.Net.Control
             OnAddItem(item);
         }
 
-        public MenuItem AddItemPath(string text)
+        public MenuItem AddItemPath(String text)
         {
-            return AddItemPath(text, string.Empty);
+            return AddItemPath(text, String.Empty);
         }
 
-        public MenuItem AddItemPath(string text, string iconName, string accelerator = null)
+        public MenuItem AddItemPath(String text, String iconName, String accelerator = null)
         {
             MenuItem item = new(this);
             item.Text = text;
             item.Padding = Padding.Three;
 
-            if (!string.IsNullOrWhiteSpace(iconName))
+            if (!String.IsNullOrWhiteSpace(iconName))
             {
                 item.SetImage(iconName, ImageAlign.Left | ImageAlign.CenterV);
             }
 
-            if (!string.IsNullOrWhiteSpace(accelerator))
+            if (!String.IsNullOrWhiteSpace(accelerator))
             {
                 item.SetAccelerator(accelerator);
             }
@@ -180,7 +180,7 @@ namespace Gwen.Net.Control
         public void AddItemPath(MenuItem item)
         {
 
-            string[] path = item.Text.Split('\\', '/');
+            String[] path = item.Text.Split('\\', '/');
             Menu m = this;
 
             for (var i = 0; i < path.Length - 1; i++)
@@ -240,7 +240,7 @@ namespace Gwen.Net.Control
         ///     Indicates whether any (sub)menu is open.
         /// </summary>
         /// <returns></returns>
-        public virtual bool IsMenuOpen()
+        public virtual Boolean IsMenuOpen()
         {
             return Children.Any(
                 child =>
@@ -298,7 +298,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Finds all items by name in current menu.
         /// </summary>
-        public MenuItem[] FindItems(string name)
+        public MenuItem[] FindItems(String name)
         {
             List<MenuItem> mi = new();
 

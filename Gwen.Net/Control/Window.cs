@@ -35,7 +35,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Window caption.
         /// </summary>
-        public string Title
+        public String Title
         {
             get => titleBar.Title.Text;
             set => titleBar.Title.Text = value;
@@ -44,7 +44,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the window has close button.
         /// </summary>
-        public bool IsClosable
+        public Boolean IsClosable
         {
             get => !titleBar.CloseButton.IsCollapsed;
             set => titleBar.CloseButton.IsCollapsed = !value;
@@ -71,7 +71,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Set true to make window modal.
         /// </summary>
-        public bool Modal
+        public Boolean Modal
         {
             get => modal != null;
             set
@@ -106,7 +106,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="dim">Determines whether all the background should be dimmed.</param>
         /// <param name="backgroundColor">Determines background color.</param>
-        public void MakeModal(bool dim = false, Color? backgroundColor = null)
+        public void MakeModal(Boolean dim = false, Color? backgroundColor = null)
         {
             if (modal != null)
             {
@@ -138,7 +138,7 @@ namespace Gwen.Net.Control
         /// <param name="currentSkin">Skin to use.</param>
         protected override void Render(SkinBase currentSkin)
         {
-            bool hasFocus = IsOnTop;
+            Boolean hasFocus = IsOnTop;
 
             if (hasFocus)
             {
@@ -198,7 +198,7 @@ namespace Gwen.Net.Control
             return base.Arrange(finalSize);
         }
 
-        public override void EnableResizing(bool left = true, bool top = true, bool right = true, bool bottom = true)
+        public override void EnableResizing(Boolean left = true, Boolean top = true, Boolean right = true, Boolean bottom = true)
         {
             base.EnableResizing(left, top: false, right, bottom);
         }

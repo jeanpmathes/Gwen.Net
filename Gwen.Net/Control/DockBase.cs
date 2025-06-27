@@ -16,8 +16,8 @@ namespace Gwen.Net.Control
         // Only CHILD dockpanels have a tabcontrol.
         private DockedTabControl dockedTabControl;
 
-        private bool drawHover;
-        private bool dropFar;
+        private Boolean drawHover;
+        private Boolean dropFar;
         private Rectangle hoverRect;
         private DockBase left;
         private DockBase right;
@@ -63,7 +63,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control contains any docked children.
         /// </summary>
-        public virtual bool IsEmpty
+        public virtual Boolean IsEmpty
         {
             get
             {
@@ -103,7 +103,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeySpace(bool down)
+        protected override Boolean OnKeySpace(Boolean down)
         {
             // No action on space (default button action is to press)
             return false;
@@ -248,15 +248,15 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <returns>Dock direction.</returns>
-        protected virtual Dock GetDroppedTabDirection(int x, int y)
+        protected virtual Dock GetDroppedTabDirection(Int32 x, Int32 y)
         {
-            int w = ActualWidth;
-            int h = ActualHeight;
-            float localTop = y / (float) h;
-            float localLeft = x / (float) w;
-            float localRight = (w - x) / (float) w;
-            float localBottom = (h - y) / (float) h;
-            float minimum = Math.Min(Math.Min(Math.Min(localTop, localLeft), localRight), localBottom);
+            Int32 w = ActualWidth;
+            Int32 h = ActualHeight;
+            Single localTop = y / (Single) h;
+            Single localLeft = x / (Single) w;
+            Single localRight = (w - x) / (Single) w;
+            Single localBottom = (h - y) / (Single) h;
+            Single minimum = Math.Min(Math.Min(Math.Min(localTop, localLeft), localRight), localBottom);
 
             dropFar = minimum < 0.2f;
 
@@ -288,7 +288,7 @@ namespace Gwen.Net.Control
             return Dock.Fill;
         }
 
-        public override bool DragAndDrop_CanAcceptPackage(Package p)
+        public override Boolean DragAndDrop_CanAcceptPackage(Package p)
         {
             // A TAB button dropped 
             if (p.Name == "TabButtonMove")
@@ -305,7 +305,7 @@ namespace Gwen.Net.Control
             return false;
         }
 
-        public override bool DragAndDrop_HandleDrop(Package p, int x, int y)
+        public override Boolean DragAndDrop_HandleDrop(Package p, Int32 x, Int32 y)
         {
             Point pos = CanvasPosToLocal(new Point(x, y));
             Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
@@ -440,7 +440,7 @@ namespace Gwen.Net.Control
             DoConsolidateCheck();
         }
 
-        public override void DragAndDrop_HoverEnter(Package p, int x, int y)
+        public override void DragAndDrop_HoverEnter(Package p, Int32 x, Int32 y)
         {
             drawHover = true;
         }
@@ -450,7 +450,7 @@ namespace Gwen.Net.Control
             drawHover = false;
         }
 
-        public override void DragAndDrop_Hover(Package p, int x, int y)
+        public override void DragAndDrop_Hover(Package p, Int32 x, Int32 y)
         {
             Point pos = CanvasPosToLocal(new Point(x, y));
             Dock dir = GetDroppedTabDirection(pos.X, pos.Y);
@@ -471,30 +471,30 @@ namespace Gwen.Net.Control
 
             hoverRect = RenderBounds;
 
-            int helpBarWidth;
+            Int32 helpBarWidth;
 
             if (dir == Dock.Left)
             {
-                helpBarWidth = (int) (hoverRect.Width * 0.25f);
+                helpBarWidth = (Int32) (hoverRect.Width * 0.25f);
                 hoverRect.Width = helpBarWidth;
             }
 
             if (dir == Dock.Right)
             {
-                helpBarWidth = (int) (hoverRect.Width * 0.25f);
+                helpBarWidth = (Int32) (hoverRect.Width * 0.25f);
                 hoverRect.X = hoverRect.Width - helpBarWidth;
                 hoverRect.Width = helpBarWidth;
             }
 
             if (dir == Dock.Top)
             {
-                helpBarWidth = (int) (hoverRect.Height * 0.25f);
+                helpBarWidth = (Int32) (hoverRect.Height * 0.25f);
                 hoverRect.Height = helpBarWidth;
             }
 
             if (dir == Dock.Bottom)
             {
-                helpBarWidth = (int) (hoverRect.Height * 0.25f);
+                helpBarWidth = (Int32) (hoverRect.Height * 0.25f);
                 hoverRect.Y = hoverRect.Height - helpBarWidth;
                 hoverRect.Height = helpBarWidth;
             }

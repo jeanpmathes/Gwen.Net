@@ -1,47 +1,48 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.RichText
 {
     public class TextPart : Part
     {
-        private static readonly char[] separator =
+        private static readonly Char[] separator =
         {
             ' ',
             '\n',
             '\r'
         };
 
-        public TextPart(string text)
+        public TextPart(String text)
         {
             Text = text;
             Color = null;
         }
 
-        public TextPart(string text, Color color)
+        public TextPart(String text, Color color)
         {
             Text = text;
             Color = color;
         }
 
-        public string Text { get; }
+        public String Text { get; }
 
         public Color? Color { get; }
 
         public Font Font { get; protected set; }
 
-        public override string[] Split(ref Font splitFont)
+        public override String[] Split(ref Font splitFont)
         {
             Font = splitFont;
 
             return StringSplit(Text);
         }
 
-        protected static string[] StringSplit(string str)
+        protected static String[] StringSplit(String str)
         {
-            List<string> strings = new();
-            int len = str.Length;
+            List<String> strings = new();
+            Int32 len = str.Length;
             var index = 0;
-            int i;
+            Int32 i;
 
             while (index < len)
             {

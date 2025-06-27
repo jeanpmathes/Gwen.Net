@@ -12,11 +12,11 @@ namespace Gwen.Net.RichText.KnuthPlass
     // licensed under the new BSD License.
     internal class LineBreaker : RichText.LineBreaker
     {
-        public const int Infinity = 10000;
+        public const Int32 Infinity = 10000;
 
-        public const int DemeritsLine = 10;
-        public const int DemeritsFlagged = 100;
-        public const int DemeritsFitness = 3000;
+        public const Int32 DemeritsLine = 10;
+        public const Int32 DemeritsFlagged = 100;
+        public const Int32 DemeritsFitness = 3000;
 
         private readonly LinkedList<BreakPoint> activeNodes = new();
 
@@ -27,8 +27,8 @@ namespace Gwen.Net.RichText.KnuthPlass
         private Paragraph paragraph;
 
         private Sum sum = new(width: 0, stretch: 0, shrink: 0);
-        private int tolerance;
-        private int totalWidth;
+        private Int32 tolerance;
+        private Int32 totalWidth;
 
         public LineBreaker(RendererBase renderer, Font defaultFont)
             : base(renderer, defaultFont)
@@ -36,7 +36,7 @@ namespace Gwen.Net.RichText.KnuthPlass
             formatter = new LeftFormatter(renderer, defaultFont);
         }
 
-        public override List<TextBlock> LineBreak(Paragraph currentParagraph, int width)
+        public override List<TextBlock> LineBreak(Paragraph currentParagraph, Int32 width)
         {
             List<TextBlock> textBlocks = null;
 
@@ -55,17 +55,17 @@ namespace Gwen.Net.RichText.KnuthPlass
             return textBlocks;
         }
 
-        private int GetLineLength(int currentLine)
+        private Int32 GetLineLength(Int32 currentLine)
         {
             return totalWidth - paragraph.Margin.Left - paragraph.Margin.Right -
                    (currentLine == 1 ? paragraph.FirstIndent : paragraph.RemainigIndent);
         }
 
-        private float ComputeCost(int end, Sum activeTotals, int currentLine)
+        private Single ComputeCost(Int32 end, Sum activeTotals, Int32 currentLine)
         {
-            int width = sum.Width - activeTotals.Width;
+            Int32 width = sum.Width - activeTotals.Width;
 
-            int lineLength = GetLineLength(currentLine);
+            Int32 lineLength = GetLineLength(currentLine);
 
             if (nodes[end].Type == NodeType.Penalty)
             {
@@ -74,11 +74,11 @@ namespace Gwen.Net.RichText.KnuthPlass
 
             if (width < lineLength)
             {
-                int stretch = sum.Stretch - activeTotals.Stretch;
+                Int32 stretch = sum.Stretch - activeTotals.Stretch;
 
                 if (stretch > 0)
                 {
-                    return (float) (lineLength - width) / stretch;
+                    return (Single) (lineLength - width) / stretch;
                 }
 
                 return Infinity;
@@ -86,11 +86,11 @@ namespace Gwen.Net.RichText.KnuthPlass
 
             if (width > lineLength)
             {
-                int shrink = sum.Shrink - activeTotals.Shrink;
+                Int32 shrink = sum.Shrink - activeTotals.Shrink;
 
                 if (shrink > 0)
                 {
-                    return (float) (lineLength - width) / shrink;
+                    return (Single) (lineLength - width) / shrink;
                 }
 
                 return Infinity;
@@ -99,11 +99,11 @@ namespace Gwen.Net.RichText.KnuthPlass
             return 0.0f;
         }
 
-        private Sum ComputeSum(int breakPointIndex)
+        private Sum ComputeSum(Int32 breakPointIndex)
         {
             Sum result = new(sum.Width, sum.Stretch, sum.Shrink);
 
-            for (int i = breakPointIndex; i < nodes.Count; i++)
+            for (Int32 i = breakPointIndex; i < nodes.Count; i++)
             {
                 if (nodes[i].Type == NodeType.Glue)
                 {
@@ -122,7 +122,7 @@ namespace Gwen.Net.RichText.KnuthPlass
             return result;
         }
 
-        private void MainLoop(int index)
+        private void MainLoop(Int32 index)
         {
             Node node = nodes[index];
 
@@ -139,8 +139,8 @@ namespace Gwen.Net.RichText.KnuthPlass
                 while (active != null)
                 {
                     LinkedListNode<BreakPoint> next = active.Next;
-                    int currentLine = active.Value.Line + 1;
-                    float ratio = ComputeCost(index, active.Value.Totals, currentLine);
+                    Int32 currentLine = active.Value.Line + 1;
+                    Single ratio = ComputeCost(index, active.Value.Totals, currentLine);
 
                     if (ratio < -1 || (node.Type == NodeType.Penalty && ((PenaltyNode) node).Penalty == -Infinity))
                     {
@@ -149,7 +149,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                     if (-1 <= ratio && ratio <= tolerance)
                     {
-                        var badness = (int) (100.0f * Math.Pow(Math.Abs(ratio), y: 3));
+                        var badness = (Int32) (100.0f * Math.Pow(Math.Abs(ratio), y: 3));
 
                         var demerits = 0;
 
@@ -218,7 +218,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                 Sum tmpSum = ComputeSum(index);
 
-                int fitnessClass;
+                Int32 fitnessClass;
 
                 for (fitnessClass = 0; fitnessClass < candidates.Length; fitnessClass++)
                 {
@@ -249,7 +249,7 @@ namespace Gwen.Net.RichText.KnuthPlass
             }
         }
 
-        private List<TextBlock> DoLineBreak(Paragraph currentParagraph, Formatter currentFormatter, int width, int currentTolerance)
+        private List<TextBlock> DoLineBreak(Paragraph currentParagraph, Formatter currentFormatter, Int32 width, Int32 currentTolerance)
         {
             paragraph = currentParagraph;
             totalWidth = width;
@@ -327,11 +327,11 @@ namespace Gwen.Net.RichText.KnuthPlass
                 StringBuilder str = new(capacity: 1000);
                 List<TextBlock> textBlocks = new();
 
-                for (int i = breaks.Count - 2; i >= 0; i--)
+                for (Int32 i = breaks.Count - 2; i >= 0; i--)
                 {
-                    int position = breaks[i].Position;
+                    Int32 position = breaks[i].Position;
 
-                    for (int j = lineStart; j < nodes.Count; j++)
+                    for (Int32 j = lineStart; j < nodes.Count; j++)
                     {
                         if (nodes[j].Type == NodeType.Box || (nodes[j].Type == NodeType.Penalty &&
                                                                 ((PenaltyNode) nodes[j]).Penalty == -Infinity))
@@ -345,7 +345,7 @@ namespace Gwen.Net.RichText.KnuthPlass
                     var height = 0;
                     var baseline = 0;
 
-                    for (int nodeIndex = lineStart; nodeIndex <= position; nodeIndex++)
+                    for (Int32 nodeIndex = lineStart; nodeIndex <= position; nodeIndex++)
                     {
                         if (nodes[nodeIndex].Type == NodeType.Box)
                         {
@@ -353,14 +353,14 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                             baseline = Math.Max(
                                 baseline,
-                                (int) ((TextPart) ((BoxNode) nodes[nodeIndex]).Part).Font.FontMetrics.Baseline);
+                                (Int32) ((TextPart) ((BoxNode) nodes[nodeIndex]).Part).Font.FontMetrics.Baseline);
                         }
                     }
 
                     Part part = ((BoxNode) nodes[lineStart]).Part;
-                    int blockStart = lineStart;
+                    Int32 blockStart = lineStart;
 
-                    for (int nodeIndex = lineStart; nodeIndex <= position; nodeIndex++)
+                    for (Int32 nodeIndex = lineStart; nodeIndex <= position; nodeIndex++)
                     {
                         if ((nodes[nodeIndex].Type == NodeType.Box && ((BoxNode) nodes[nodeIndex]).Part != part) ||
                             nodeIndex == position)
@@ -369,7 +369,7 @@ namespace Gwen.Net.RichText.KnuthPlass
                             textBlock.Part = part;
                             str.Clear();
 
-                            for (int k = blockStart; k < nodeIndex - 1; k++)
+                            for (Int32 k = blockStart; k < nodeIndex - 1; k++)
                             {
                                 if (nodes[k].Type == NodeType.Glue)
                                 {
@@ -386,7 +386,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                             textBlock.Position = new Point(
                                 x,
-                                y + baseline - (int) ((TextPart) part).Font.FontMetrics.Baseline);
+                                y + baseline - (Int32) ((TextPart) part).Font.FontMetrics.Baseline);
 
                             textBlock.Text = str.ToString();
 
@@ -422,10 +422,10 @@ namespace Gwen.Net.RichText.KnuthPlass
         private struct Candidate
         {
             public LinkedListNode<BreakPoint> Active { get; set; }
-            public int Demerits { get; set; }
-            public float Ratio { get; set; }
+            public Int32 Demerits { get; set; }
+            public Single Ratio { get; set; }
             
-            public override string ToString()
+            public override String ToString()
             {
                 return $"Candidate: Demerits = {Demerits} Ratio = {Ratio} Active = {Active.Value.ToString()}";
             }
@@ -433,10 +433,10 @@ namespace Gwen.Net.RichText.KnuthPlass
 
         private struct Break
         {
-            public int Position { get; }
-            public float Ratio { get; }
+            public Int32 Position { get; }
+            public Single Ratio { get; }
 
-            public Break(int position, float ratio)
+            public Break(Int32 position, Single ratio)
             {
                 Position = position;
                 Ratio = ratio;
@@ -445,11 +445,11 @@ namespace Gwen.Net.RichText.KnuthPlass
 
         private struct Sum
         {
-            public int Width { get; set; }
-            public int Stretch { get; set; }
-            public int Shrink { get; set; }
+            public Int32 Width { get; set; }
+            public Int32 Stretch { get; set; }
+            public Int32 Shrink { get; set; }
 
-            public Sum(int width, int stretch, int shrink)
+            public Sum(Int32 width, Int32 stretch, Int32 shrink)
             {
                 Width = width;
                 Stretch = stretch;
@@ -459,15 +459,15 @@ namespace Gwen.Net.RichText.KnuthPlass
 
         private struct BreakPoint
         {
-            public int Position { get; }
-            public int Demerits { get; }
-            public float Ratio { get; }
-            public int Line { get; }
-            public int FitnessClass { get; }
+            public Int32 Position { get; }
+            public Int32 Demerits { get; }
+            public Single Ratio { get; }
+            public Int32 Line { get; }
+            public Int32 FitnessClass { get; }
             public Sum Totals { get; set; }
             public LinkedListNode<BreakPoint> Previous { get; }
 
-            public BreakPoint(int position, int demerits, float ratio, int line, int fitnessClass, Sum totals,
+            public BreakPoint(Int32 position, Int32 demerits, Single ratio, Int32 line, Int32 fitnessClass, Sum totals,
                 LinkedListNode<BreakPoint> previous)
             {
                 Position = position;

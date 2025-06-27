@@ -4,12 +4,12 @@ namespace Gwen.Net.Control
 {
     public class LinkClickedEventArgs : EventArgs
     {
-        internal LinkClickedEventArgs(string link)
+        internal LinkClickedEventArgs(String link)
         {
             Link = link;
         }
 
-        public string Link { get; }
+        public String Link { get; }
     }
 
     public class LinkLabel : Label
@@ -29,7 +29,7 @@ namespace Gwen.Net.Control
             base.Clicked += OnClicked;
         }
 
-        public string Link { get; set; }
+        public String Link { get; set; }
 
         public Color HoverColor
         {

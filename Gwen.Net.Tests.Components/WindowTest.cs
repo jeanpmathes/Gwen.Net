@@ -8,7 +8,7 @@ namespace Gwen.Net.Tests.Components
     public class WindowTest : GUnit
     {
         private readonly Random random;
-        private int windowCount;
+        private Int32 windowCount;
 
         public WindowTest(ControlBase parent)
             : base(parent)
@@ -108,9 +108,9 @@ namespace Gwen.Net.Tests.Components
             {
                 MenuItem root = menuStrip.AddItem("File");
                 root.Menu.AddItem("Load", "test16.png", "Ctrl+L");
-                root.Menu.AddItem("Save", string.Empty, "Ctrl+S");
-                root.Menu.AddItem("Save As..", string.Empty, "Ctrl+A");
-                root.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((_, _) => window.Close());
+                root.Menu.AddItem("Save", String.Empty, "Ctrl+S");
+                root.Menu.AddItem("Save As..", String.Empty, "Ctrl+A");
+                root.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction((_, _) => window.Close());
             }
 
             /* Resizing */

@@ -5,8 +5,8 @@ namespace Gwen.Net.Control.Internal
 {
     public abstract class ButtonBase : ControlBase
     {
-        private bool depressed;
-        private bool toggleStatus;
+        private Boolean depressed;
+        private Boolean toggleStatus;
 
         protected ButtonBase(ControlBase parent)
             : base(parent)
@@ -17,7 +17,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the button is depressed.
         /// </summary>
-        public bool IsDepressed
+        public Boolean IsDepressed
         {
             get => depressed;
             set
@@ -35,12 +35,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the button is toggleable.
         /// </summary>
-        public bool IsToggle { get; set; }
+        public Boolean IsToggle { get; set; }
 
         /// <summary>
         ///     Determines the button's toggle state.
         /// </summary>
-        public bool ToggleState
+        public Boolean ToggleState
         {
             get => toggleStatus;
             set
@@ -128,7 +128,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             if (down)
             {
@@ -150,7 +150,7 @@ namespace Gwen.Net.Control.Internal
                 IsDepressed = false;
                 InputHandler.MouseFocus = null;
                 
-                bool IsUnderMouse(Point localMouse) => localMouse is {X: >= 0, Y: >= 0} && localMouse.X < ActualWidth && localMouse.Y < ActualHeight;
+                Boolean IsUnderMouse(Point localMouse) => localMouse is {X: >= 0, Y: >= 0} && localMouse.X < ActualWidth && localMouse.Y < ActualHeight;
                 
                 if (!IsDisabled && IsUnderMouse(CanvasPosToLocal(new Point(x, y))))
                 {
@@ -164,7 +164,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Internal OnPressed implementation.
         /// </summary>
-        protected virtual void OnClicked(int x, int y)
+        protected virtual void OnClicked(Int32 x, Int32 y)
         {
             if (IsToggle)
             {
@@ -187,7 +187,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
-        protected override void OnMouseDoubleClickedLeft(int x, int y)
+        protected override void OnMouseDoubleClickedLeft(Int32 x, Int32 y)
         {
             base.OnMouseDoubleClickedLeft(x, y);
             OnMouseClickedLeft(x, y, down: true);

@@ -20,10 +20,10 @@ namespace Gwen.Net.Tests.Components
         private readonly TextBoxNumeric uIScale;
         private readonly Label uIScaleText;
         private ControlBase lastControl;
-        public string Note { get; set; }
+        public String Note { get; set; }
 
-        public double RenderFps { get; set; }
-        public double UpdateFps { get; set; }
+        public Double RenderFps { get; set; }
+        public Double UpdateFps { get; set; }
 
         public UnitTestHarnessControls(ControlBase parent) : base(parent)
         {
@@ -96,8 +96,8 @@ namespace Gwen.Net.Tests.Components
             tests.Sort(
                 (t1, t2) =>
                 {
-                    object[] a1S = t1.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
-                    object[] a2S = t2.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
+                    Object[] a1S = t1.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
+                    Object[] a2S = t2.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
 
                     if (a1S.Length > 0 && a2S.Length > 0)
                     {
@@ -108,13 +108,13 @@ namespace Gwen.Net.Tests.Components
                         {
                             if (a1.Category == a2.Category)
                             {
-                                return string.Compare(
+                                return String.Compare(
                                     a1.Name ?? t1.Name,
                                     a2.Name ?? t2.Name,
                                     StringComparison.OrdinalIgnoreCase);
                             }
 
-                            return string.Compare(a1.Category, a2.Category, StringComparison.OrdinalIgnoreCase);
+                            return String.Compare(a1.Category, a2.Category, StringComparison.OrdinalIgnoreCase);
                         }
 
                         return a1.Order - a2.Order;
@@ -125,7 +125,7 @@ namespace Gwen.Net.Tests.Components
 
             foreach (Type type in tests)
             {
-                object[] attribs = type.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
+                Object[] attribs = type.GetCustomAttributes(typeof(UnitTestAttribute), inherit: false);
 
                 if (attribs.Length > 0)
                 {
@@ -150,7 +150,7 @@ namespace Gwen.Net.Tests.Components
             PrintText("Unit Test started!");
         }
 
-        public void RegisterUnitTest(string name, CollapsibleCategory cat, GUnit test)
+        public void RegisterUnitTest(String name, CollapsibleCategory cat, GUnit test)
         {
             Button btn = cat.Add(name);
             test.Dock = Dock.Fill;
@@ -187,7 +187,7 @@ namespace Gwen.Net.Tests.Components
             lastControl = test;
         }
 
-        public void PrintText(string str)
+        public void PrintText(String str)
         {
             textOutput.AddRow(str);
             textOutput.ScrollToBottom();
@@ -195,7 +195,7 @@ namespace Gwen.Net.Tests.Components
 
         protected override void Render(SkinBase currentSkin)
         {
-            statusBar.Text = string.Format(
+            statusBar.Text = String.Format(
                 "GWEN.Net Unit Test - {0} Render Frames, {1} Update Frames. {2}",
                 RenderFps,
                 UpdateFps,

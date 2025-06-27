@@ -26,15 +26,15 @@ namespace Gwen.Net.Control
             Height = BaseUnit;
         }
 
-        protected override float CalculateValue()
+        protected override Single CalculateValue()
         {
-            return (float) sliderBar.ActualLeft / (ActualWidth - sliderBar.ActualWidth);
+            return (Single) sliderBar.ActualLeft / (ActualWidth - sliderBar.ActualWidth);
         }
 
         protected override void UpdateBarFromValue()
         {
             sliderBar.MoveTo(
-                (int) ((ActualWidth - sliderBar.ActualWidth) * value),
+                (Int32) ((ActualWidth - sliderBar.ActualWidth) * value),
                 (ActualHeight - sliderBar.ActualHeight) / 2);
         }
 
@@ -44,7 +44,7 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
 

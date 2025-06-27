@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control;
@@ -21,7 +22,7 @@ public class Separator : ControlBase
     /// <summary>
     ///     The text of the separator.
     /// </summary>
-    public virtual string Text
+    public virtual String Text
     {
         get => text.String;
         set => text.String = value;
@@ -63,7 +64,7 @@ public class Separator : ControlBase
     
     protected override void Render(SkinBase currentSkin)
     {
-        int textWidth = text.String.Length > 0 ? text.ActualWidth : 0;
+        Int32 textWidth = text.String.Length > 0 ? text.ActualWidth : 0;
         
         currentSkin.DrawSeparator(this, textStart: 10, textWidth);
     }

@@ -16,7 +16,7 @@ namespace Gwen.Net.Control.Property
         /// <summary>
         ///     Property value (todo: always string, which is ugly. do something about it).
         /// </summary>
-        public virtual string Value
+        public virtual String Value
         {
             get => null;
             set => SetValue(value);
@@ -25,7 +25,7 @@ namespace Gwen.Net.Control.Property
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public virtual bool IsEditing => false;
+        public virtual Boolean IsEditing => false;
 
         /// <summary>
         ///     Invoked when the property value has been changed.
@@ -50,6 +50,6 @@ namespace Gwen.Net.Control.Property
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public virtual void SetValue(string value, bool fireEvents = false) {}
+        public virtual void SetValue(String value, Boolean fireEvents = false) {}
     }
 }

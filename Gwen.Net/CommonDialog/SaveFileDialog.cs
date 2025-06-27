@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 using static Gwen.Net.Platform.GwenPlatform;
 
 namespace Gwen.Net.CommonDialog
@@ -19,7 +20,7 @@ namespace Gwen.Net.CommonDialog
             OkButtonText = "Save";
         }
 
-        protected override void OnItemSelected(string selectedPath)
+        protected override void OnItemSelected(String selectedPath)
         {
             if (FileExists(selectedPath))
             {
@@ -27,7 +28,7 @@ namespace Gwen.Net.CommonDialog
             }
         }
 
-        protected override bool IsSubmittedNameOk(string submittedPath)
+        protected override Boolean IsSubmittedNameOk(String submittedPath)
         {
             if (DirectoryExists(submittedPath))
             {
@@ -41,7 +42,7 @@ namespace Gwen.Net.CommonDialog
             return false;
         }
 
-        protected override bool ValidateFileName(string pathToValidate)
+        protected override Boolean ValidateFileName(String pathToValidate)
         {
             if (DirectoryExists(pathToValidate))
             {
@@ -69,7 +70,7 @@ namespace Gwen.Net.CommonDialog
         {
             if (args.Result == MessageBoxResult.Yes)
             {
-                Close(sender.UserData as string);
+                Close(sender.UserData as String);
             }
         }
     }

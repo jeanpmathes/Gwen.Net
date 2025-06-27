@@ -27,7 +27,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Red value of the selected color.
         /// </summary>
-        public int R
+        public Int32 R
         {
             get => color.R;
             set => color = new Color(color.A, value, color.G, color.B);
@@ -36,7 +36,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Green value of the selected color.
         /// </summary>
-        public int G
+        public Int32 G
         {
             get => color.G;
             set => color = new Color(color.A, color.R, value, color.B);
@@ -45,7 +45,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Blue value of the selected color.
         /// </summary>
-        public int B
+        public Int32 B
         {
             get => color.B;
             set => color = new Color(color.A, color.R, color.G, value);
@@ -54,7 +54,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Alpha value of the selected color.
         /// </summary>
-        public int A
+        public Int32 A
         {
             get => color.A;
             set => color = new Color(value, color.R, color.G, color.B);
@@ -63,7 +63,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the Alpha control is visible.
         /// </summary>
-        public bool AlphaVisible
+        public Boolean AlphaVisible
         {
             get
             {
@@ -121,7 +121,7 @@ namespace Gwen.Net.Control
             disp.Height = Util.Ignore;
         }
 
-        private void CreateColorControl(ControlBase parent, string name)
+        private void CreateColorControl(ControlBase parent, String name)
         {
             GroupBox colorGroup = new(parent);
             colorGroup.Text = name;
@@ -158,12 +158,12 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            if (box.Text == string.Empty)
+            if (box.Text == String.Empty)
             {
                 return;
             }
 
-            var textValue = (int) box.Value;
+            var textValue = (Int32) box.Value;
 
             if (textValue < 0)
             {
@@ -198,7 +198,7 @@ namespace Gwen.Net.Control
             UpdateControls();
         }
 
-        private void UpdateColorControls(string name, Color col, int sliderVal)
+        private void UpdateColorControls(String name, Color col, Int32 sliderVal)
         {
             var disp = FindChildByName(name, recursive: true) as ColorDisplay;
             disp.Color = col;
@@ -233,13 +233,13 @@ namespace Gwen.Net.Control
 
             if (slider != null)
             {
-                SetColorByName(GetColorFromName(slider.Name), (int) slider.Value);
+                SetColorByName(GetColorFromName(slider.Name), (Int32) slider.Value);
             }
 
             UpdateControls();
         }
 
-        private static string GetColorFromName(string name)
+        private static String GetColorFromName(String name)
         {
             if (name.Contains("Red"))
             {
@@ -261,10 +261,10 @@ namespace Gwen.Net.Control
                 return "Alpha";
             }
 
-            return string.Empty;
+            return String.Empty;
         }
 
-        private void SetColorByName(string colorName, int colorValue)
+        private void SetColorByName(String colorName, Int32 colorValue)
         {
             if (colorName == "Red")
             {

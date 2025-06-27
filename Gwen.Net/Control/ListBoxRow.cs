@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -7,7 +8,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ListBoxRow : TableRow
     {
-        private bool selected;
+        private Boolean selected;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ListBoxRow" /> class.
@@ -56,7 +57,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is selected.
         /// </summary>
-        public bool IsSelected
+        public Boolean IsSelected
         {
             get => selected;
             set
@@ -85,7 +86,7 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
 

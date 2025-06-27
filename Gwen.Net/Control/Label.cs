@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
@@ -40,7 +41,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        public virtual string Text
+        public virtual String Text
         {
             get => text.String;
             set => text.String = value;
@@ -80,7 +81,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text override - used to display different string.
         /// </summary>
-        public string TextOverride
+        public String TextOverride
         {
             get => text.TextOverride;
             set => text.TextOverride = value;
@@ -89,7 +90,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if the control should autosize to its text.
         /// </summary>
-        public bool AutoSizeToContents
+        public Boolean AutoSizeToContents
         {
             get => text.AutoSizeToContents;
             set
@@ -179,7 +180,7 @@ namespace Gwen.Net.Control
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        protected virtual Point GetClosestCharacter(int x, int y)
+        protected virtual Point GetClosestCharacter(Int32 x, Int32 y)
         {
             return new Point(text.GetClosestCharacter(text.CanvasPosToLocal(new Point(x, y))), y: 0);
         }
@@ -229,7 +230,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Character index.</param>
         /// <returns>Character coordinates (local).</returns>
-        public virtual Point GetCharacterPosition(int index)
+        public virtual Point GetCharacterPosition(Int32 index)
         {
             Point p = text.GetCharacterPosition(index);
 

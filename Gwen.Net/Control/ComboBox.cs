@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
@@ -20,7 +21,7 @@ namespace Gwen.Net.Control
         {
             button = new Button(this);
             button.Alignment = Alignment.Left | Alignment.CenterV;
-            button.Text = string.Empty;
+            button.Text = String.Empty;
             button.TextPadding = Padding.Three;
             button.Clicked += OnClicked;
 
@@ -30,8 +31,8 @@ namespace Gwen.Net.Control
             KeyboardInputEnabled = true;
         }
 
-        internal bool IsDepressed => button.IsDepressed;
-        public override bool IsHovered => button.IsHovered;
+        internal Boolean IsDepressed => button.IsDepressed;
+        public override Boolean IsHovered => button.IsHovered;
 
         /// <summary>
         ///     Internal Pressed implementation.
@@ -53,7 +54,7 @@ namespace Gwen.Net.Control
         /// </summary>
         public override void RemoveAll()
         {
-            button.Text = string.Empty;
+            button.Text = String.Empty;
             base.RemoveAll();
         }
 

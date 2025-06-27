@@ -32,7 +32,7 @@ namespace Gwen.Net.Tests.Components
                     imgnode.SetImage("test16.png");
 
                     imgnode = node.AddNode("Image_Kids");
-                    imgnode.SetImage("test16.png", new Size(32, 32), Color.Blue);
+                    imgnode.SetImage("test16.png", new Size(width: 32, height: 32), Color.Blue);
 
                     {
                         imgnode.AddNode("Kid1");

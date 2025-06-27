@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control.Internal
+﻿using System;
+
+namespace Gwen.Net.Control.Internal
 {
     public abstract class ComboBoxBase : ControlBase
     {
@@ -24,7 +26,7 @@
         /// <summary>
         ///     Index of the selected radio button.
         /// </summary>
-        public int SelectedIndex
+        public Int32 SelectedIndex
         {
             get => Children.IndexOf(selectedItem);
             set => SetSelection(value);
@@ -50,9 +52,9 @@
         /// <summary>
         ///     Indicates whether the combo menu is open.
         /// </summary>
-        public bool IsOpen => menu != null && !menu.IsCollapsed;
+        public Boolean IsOpen => menu != null && !menu.IsCollapsed;
 
-        internal override bool IsMenuComponent => true;
+        internal override Boolean IsMenuComponent => true;
 
         /// <summary>
         ///     Invoked when the selected item has changed.
@@ -66,9 +68,9 @@
         /// <param name="name">Item name.</param>
         /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
-        public virtual MenuItem AddItem(string label, string name = null, object userData = null)
+        public virtual MenuItem AddItem(String label, String name = null, Object userData = null)
         {
-            MenuItem item = menu.AddItem(label, string.Empty);
+            MenuItem item = menu.AddItem(label, String.Empty);
             item.Name = name;
             item.Selected += OnItemSelected;
             item.UserData = userData;
@@ -164,7 +166,7 @@
 
                 menu.Width = ActualWidth;
 
-                int canvasHeight = GetCanvas().ActualHeight;
+                Int32 canvasHeight = GetCanvas().ActualHeight;
 
                 if (p.Y > canvasHeight - 100)
                 {
@@ -202,11 +204,11 @@
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyDown(bool down)
+        protected override Boolean OnKeyDown(Boolean down)
         {
             if (down)
             {
-                int it = menu.Children.IndexOf(selectedItem);
+                Int32 it = menu.Children.IndexOf(selectedItem);
 
                 if (it + 1 < menu.Children.Count)
                 {
@@ -224,11 +226,11 @@
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyUp(bool down)
+        protected override Boolean OnKeyUp(Boolean down)
         {
             if (down)
             {
-                int it = menu.Children.LastIndexOf(selectedItem);
+                Int32 it = menu.Children.LastIndexOf(selectedItem);
 
                 if (it - 1 >= 0)
                 {
@@ -243,7 +245,7 @@
         ///     Selects the specified option.
         /// </summary>
         /// <param name="index">Option to select.</param>
-        public void SetSelection(int index)
+        public void SetSelection(Int32 index)
         {
             if (index < 0 || index >= Children.Count)
             {
@@ -258,7 +260,7 @@
         ///     If a menu item can not be found that matches input, nothing happens.
         /// </summary>
         /// <param name="text">The label to look for, this is what is shown to the user.</param>
-        public void SelectByText(string text)
+        public void SelectByText(String text)
         {
             foreach (MenuItem item in menu.Children)
             {
@@ -276,7 +278,7 @@
         ///     If a menu item can not be found that matches input, nothing happens.
         /// </summary>
         /// <param name="name">The internal name to look for. To select by what is displayed to the user, use "SelectByText".</param>
-        public void SelectByName(string name)
+        public void SelectByName(String name)
         {
             foreach (MenuItem item in menu.Children)
             {
@@ -297,7 +299,7 @@
         ///     The UserData to look for. The equivalency check uses "param.Equals(item.UserData)".
         ///     If null is passed in, it will look for null/unset UserData.
         /// </param>
-        public void SelectByUserData(object userdata)
+        public void SelectByUserData(Object userdata)
         {
             foreach (MenuItem item in menu.Children)
             {

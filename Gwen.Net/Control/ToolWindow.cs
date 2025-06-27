@@ -1,11 +1,12 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
     public class ToolWindow : WindowBase
     {
-        private bool vertical;
+        private Boolean vertical;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ToolWindow" /> class.
@@ -24,7 +25,7 @@ namespace Gwen.Net.Control
             innerPanel.SendToBack();
         }
 
-        public bool Vertical
+        public Boolean Vertical
         {
             get => vertical;
             set
@@ -140,7 +141,7 @@ namespace Gwen.Net.Control
             return base.Arrange(finalSize);
         }
 
-        public override void EnableResizing(bool left = true, bool top = true, bool right = true, bool bottom = true)
+        public override void EnableResizing(Boolean left = true, Boolean top = true, Boolean right = true, Boolean bottom = true)
         {
             base.EnableResizing(!vertical ? false : left, vertical ? false : top, right, bottom);
         }

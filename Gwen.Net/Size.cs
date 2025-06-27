@@ -4,16 +4,16 @@ namespace Gwen.Net
 {
     public struct Size
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public Int32 Width { get; set; }
+        public Int32 Height { get; set; }
 
-        public Size(int width, int height)
+        public Size(Int32 width, Int32 height)
         {
             Width = width;
             Height = height;
         }
 
-        public Size(int size)
+        public Size(Int32 size)
         {
             Width = size;
             Height = size;
@@ -44,12 +44,12 @@ namespace Gwen.Net
             return new(sz1.Width - sz2.Width, sz1.Height - sz2.Height);
         }
 
-        public static bool operator ==(Size sz1, Size sz2)
+        public static Boolean operator ==(Size sz1, Size sz2)
         {
             return sz1.Width == sz2.Width && sz1.Height == sz2.Height;
         }
 
-        public static bool operator !=(Size sz1, Size sz2)
+        public static Boolean operator !=(Size sz1, Size sz2)
         {
             return sz1.Width != sz2.Width || sz1.Height != sz2.Height;
         }
@@ -74,7 +74,7 @@ namespace Gwen.Net
             return new(size.Width - padding.Left - padding.Right, size.Height - padding.Top - padding.Bottom);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj is Size)
             {
@@ -84,12 +84,12 @@ namespace Gwen.Net
             return false;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return Width | (Height << 16);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"Width = {Width} Height = {Height}";
         }

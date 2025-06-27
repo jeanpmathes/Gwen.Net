@@ -35,7 +35,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label text.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => label.Text;
             set => label.Text = value;
@@ -123,7 +123,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeySpace(bool down)
+        protected override Boolean OnKeySpace(Boolean down)
         {
             if (down)
             {

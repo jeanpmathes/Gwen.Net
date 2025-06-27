@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.DragDrop;
 
 namespace Gwen.Net.Control
@@ -29,7 +30,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the title bar is visible.
         /// </summary>
-        public bool TitleBarVisible
+        public Boolean TitleBarVisible
         {
             get => !titleBar.IsCollapsed;
             set => titleBar.IsCollapsed = !value;
@@ -53,7 +54,7 @@ namespace Gwen.Net.Control
             titleBar.UpdateFromTab(CurrentButton);
         }
 
-        public override void DragAndDrop_StartDragging(Package package, int x, int y)
+        public override void DragAndDrop_StartDragging(Package package, Int32 x, Int32 y)
         {
             base.DragAndDrop_StartDragging(package, x, y);
 
@@ -62,7 +63,7 @@ namespace Gwen.Net.Control
             Parent.IsCollapsed = true;
         }
 
-        public override void DragAndDrop_EndDragging(bool success, int x, int y)
+        public override void DragAndDrop_EndDragging(Boolean success, Int32 x, Int32 y)
         {
             IsCollapsed = false;
 

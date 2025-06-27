@@ -1,22 +1,23 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Gwen.Net.OpenTk.Shaders
 {
     public class GL40ShaderLoader : IShaderLoader
     {
-        public IShader Load(string shaderName)
+        public IShader Load(String shaderName)
         {
             return Load(shaderName, shaderName);
         }
 
-        public IShader Load(string vertexShaderName, string fragmentShaderName)
+        public IShader Load(String vertexShaderName, String fragmentShaderName)
         {
-            string vSource = EmbeddedShaderLoader.GetShader<GL40ShaderLoader>(vertexShaderName, "vert");
-            string fSource = EmbeddedShaderLoader.GetShader<GL40ShaderLoader>(fragmentShaderName, "frag");
+            String vSource = EmbeddedShaderLoader.GetShader<GL40ShaderLoader>(vertexShaderName, "vert");
+            String fSource = EmbeddedShaderLoader.GetShader<GL40ShaderLoader>(fragmentShaderName, "frag");
 
-            int vShader = GL.CreateShader(ShaderType.VertexShader);
-            int fShader = GL.CreateShader(ShaderType.FragmentShader);
+            Int32 vShader = GL.CreateShader(ShaderType.VertexShader);
+            Int32 fShader = GL.CreateShader(ShaderType.FragmentShader);
 
             GL.ShaderSource(vShader, vSource);
             GL.ShaderSource(fShader, fSource);
@@ -26,7 +27,7 @@ namespace Gwen.Net.OpenTk.Shaders
             Debug.WriteLine(GL.GetShaderInfoLog(vShader));
             Debug.WriteLine(GL.GetShaderInfoLog(fShader));
 
-            int program = GL.CreateProgram();
+            Int32 program = GL.CreateProgram();
             // Link and attach shaders to program
             GL.AttachShader(program, vShader);
             GL.AttachShader(program, fShader);

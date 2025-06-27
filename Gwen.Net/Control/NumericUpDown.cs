@@ -47,16 +47,16 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Minimum value.
         /// </summary>
-        public float Min { get; set; }
+        public Single Min { get; set; }
 
         /// <summary>
         ///     Maximum value.
         /// </summary>
-        public float Max { get; set; }
+        public Single Max { get; set; }
 
-        private float step;
+        private Single step;
         
-        public float Step
+        public Single Step
         {
             get => step;
             set
@@ -69,7 +69,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Numeric value of the control.
         /// </summary>
-        public override float Value
+        public override Single Value
         {
             get => base.Value;
             set
@@ -105,7 +105,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyUp(bool down)
+        protected override Boolean OnKeyUp(Boolean down)
         {
             if (down)
             {
@@ -122,7 +122,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyDown(bool down)
+        protected override Boolean OnKeyDown(Boolean down)
         {
             if (down)
             {
@@ -157,11 +157,11 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="str">Text to evaluate.</param>
         /// <returns>True if the text is allowed.</returns>
-        protected override bool IsTextAllowed(string str)
+        protected override Boolean IsTextAllowed(String str)
         {
-            float d;
+            Single d;
 
-            if (!float.TryParse(str, out d))
+            if (!Single.TryParse(str, out d))
             {
                 return false;
             }
@@ -192,7 +192,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        public override void SetValue(float newValue, bool doEvents = true)
+        public override void SetValue(Single newValue, Boolean doEvents = true)
         {
             if (newValue < Min)
             {

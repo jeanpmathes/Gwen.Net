@@ -27,17 +27,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Internal name of the selected radio button.
         /// </summary>
-        public string SelectedName => Selected.Name;
+        public String SelectedName => Selected.Name;
 
         /// <summary>
         ///     Text of the selected radio button.
         /// </summary>
-        public string SelectedLabel => Selected.Text;
+        public String SelectedLabel => Selected.Text;
 
         /// <summary>
         ///     Index of the selected radio button.
         /// </summary>
-        public int SelectedIndex => Children.IndexOf(Selected);
+        public Int32 SelectedIndex => Children.IndexOf(Selected);
 
         /// <summary>
         ///     Invoked when the selected option has changed.
@@ -51,7 +51,7 @@ namespace Gwen.Net.Control
         /// <param name="optionName">Internal name.</param>
         /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
-        public virtual LabeledRadioButton AddOption(string text, string optionName = null, object userData = null)
+        public virtual LabeledRadioButton AddOption(String text, String optionName = null, Object userData = null)
         {
             LabeledRadioButton lrb = new(this);
             lrb.Name = optionName;
@@ -113,7 +113,7 @@ namespace Gwen.Net.Control
         ///     Selects the specified option.
         /// </summary>
         /// <param name="index">Option to select.</param>
-        public void SetSelection(int index)
+        public void SetSelection(Int32 index)
         {
             if (index < 0 || index >= Children.Count)
             {
@@ -127,7 +127,7 @@ namespace Gwen.Net.Control
         ///     Selects the specified option.
         /// </summary>
         /// <param name="name">Option name to select.</param>
-        public void SetSelectionByName(string name)
+        public void SetSelectionByName(String name)
         {
             ControlBase child = FindChildByName(name);
 
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
         ///     The UserData to look for. The equivalency check uses "param.Equals(item.UserData)".
         ///     If null is passed in, it will look for null/unset UserData.
         /// </param>
-        public void SelectByUserData(object userdata)
+        public void SelectByUserData(Object userdata)
         {
             ControlBase option = Children.Where(x => x.UserData.Equals(userdata)).FirstOrDefault();
 

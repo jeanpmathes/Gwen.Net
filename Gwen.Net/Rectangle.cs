@@ -1,16 +1,18 @@
-﻿namespace Gwen.Net
+﻿using System;
+
+namespace Gwen.Net
 {
     public struct Rectangle
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public Int32 X { get; set; }
+        public Int32 Y { get; set; }
+        public Int32 Width { get; set; }
+        public Int32 Height { get; set; }
 
-        public int Left => X;
-        public int Top => Y;
-        public int Right => X + Width - 1;
-        public int Bottom => Y + Height - 1;
+        public Int32 Left => X;
+        public Int32 Top => Y;
+        public Int32 Right => X + Width - 1;
+        public Int32 Bottom => Y + Height - 1;
 
         public Point Location
         {
@@ -32,7 +34,7 @@
             }
         }
 
-        public Rectangle(int x, int y, int width, int height)
+        public Rectangle(Int32 x, Int32 y, Int32 width, Int32 height)
         {
             X = x;
             Y = y;
@@ -48,7 +50,7 @@
             Height = size.Height;
         }
 
-        public Rectangle(int x, int y, Size size)
+        public Rectangle(Int32 x, Int32 y, Size size)
         {
             X = x;
             Y = y;
@@ -56,7 +58,7 @@
             Height = size.Height;
         }
 
-        public Rectangle(Point point, int width, int height)
+        public Rectangle(Point point, Int32 width, Int32 height)
         {
             X = point.X;
             Y = point.Y;
@@ -108,19 +110,19 @@
             Y += padding.Top;
         }
 
-        public static bool operator ==(Rectangle rect1, Rectangle rect2)
+        public static Boolean operator ==(Rectangle rect1, Rectangle rect2)
         {
             return rect1.X == rect2.X && rect1.Y == rect2.Y && rect1.Width == rect2.Width &&
                    rect1.Height == rect2.Height;
         }
 
-        public static bool operator !=(Rectangle rect1, Rectangle rect2)
+        public static Boolean operator !=(Rectangle rect1, Rectangle rect2)
         {
             return rect1.X != rect2.X || rect1.Y != rect2.Y || rect1.Width != rect2.Width ||
                    rect1.Height != rect2.Height;
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj is Rectangle)
             {
@@ -130,12 +132,12 @@
             return false;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return (X | (Y << 16)) ^ (Width | (Height << 16));
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"X = {X} Y = {Y} Width = {Width} Height = {Height}";
         }

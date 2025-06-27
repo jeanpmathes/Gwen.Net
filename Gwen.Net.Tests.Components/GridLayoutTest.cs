@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -43,7 +44,7 @@ namespace Gwen.Net.Tests.Components
             return grid;
         }
 
-        private static void CreateControl(ControlBase parent, string text)
+        private static void CreateControl(ControlBase parent, String text)
         {
             Button button = new(parent);
             button.Text = text;

@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control.Internal
+﻿using System;
+
+namespace Gwen.Net.Control.Internal
 {
     public class InnerContentControl : ContentControl
     {
@@ -39,7 +41,7 @@
             return finalSize;
         }
 
-        public override ControlBase FindChildByName(string name, bool recursive = false)
+        public override ControlBase FindChildByName(String name, Boolean recursive = false)
         {
             if (innerPanel != null && innerPanel.Name == name)
             {

@@ -13,10 +13,10 @@ namespace Gwen.Net.OpenTk
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static string GetShader<TRoot>(string name, string type)
+        public static String GetShader<TRoot>(String name, String type)
         {
             Type programType = typeof(TRoot);
-            string shaderName = $"{programType.Namespace}.{name}.{type}";
+            String shaderName = $"{programType.Namespace}.{name}.{type}";
 
             Stream stream = programType.Assembly.GetManifestResourceStream(shaderName);
 

@@ -26,21 +26,21 @@ namespace Gwen.Net.OpenTk.Platform
         ///     Gets text from clipboard.
         /// </summary>
         /// <returns>Clipboard text.</returns>
-        public string GetClipboardText()
+        public String GetClipboardText()
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return "";
 
             // code from http://forums.getpaint.net/index.php?/topic/13712-trouble-accessing-the-clipboard/page__view__findpost__p__226140
-            var ret = string.Empty;
+            var ret = String.Empty;
 
             Thread staThread = new(
                 () =>
                 {
                     try
                     {
-                        string text = ClipboardService.GetText();
+                        String text = ClipboardService.GetText();
 
-                        if (string.IsNullOrEmpty(text))
+                        if (String.IsNullOrEmpty(text))
                         {
                             return;
                         }
@@ -66,7 +66,7 @@ namespace Gwen.Net.OpenTk.Platform
         /// </summary>
         /// <param name="text">Text to set.</param>
         /// <returns>True if succeeded.</returns>
-        public bool SetClipboardText(string text)
+        public Boolean SetClipboardText(String text)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return false;
 
@@ -98,7 +98,7 @@ namespace Gwen.Net.OpenTk.Platform
         ///     Gets elapsed time since this class was initialized.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
-        public double GetTimeInSeconds()
+        public Double GetTimeInSeconds()
         {
             return watch.Elapsed.TotalSeconds;
         }
@@ -200,7 +200,7 @@ namespace Gwen.Net.OpenTk.Platform
                     {
                         if (driveInfo.IsReady)
                         {
-                            if (string.IsNullOrWhiteSpace(driveInfo.VolumeLabel))
+                            if (String.IsNullOrWhiteSpace(driveInfo.VolumeLabel))
                             {
                                 folders.Add(new SpecialFolder(driveInfo.Name, "Computer", driveInfo.Name));
                             }
@@ -224,49 +224,49 @@ namespace Gwen.Net.OpenTk.Platform
             return folders;
         }
 
-        public string GetFileName(string path)
+        public String GetFileName(String path)
         {
             return Path.GetFileName(path);
         }
 
-        public string GetDirectoryName(string path)
+        public String GetDirectoryName(String path)
         {
             return Path.GetDirectoryName(path);
         }
 
-        public bool FileExists(string path)
+        public Boolean FileExists(String path)
         {
             return File.Exists(path);
         }
 
-        public bool DirectoryExists(string path)
+        public Boolean DirectoryExists(String path)
         {
             return Directory.Exists(path);
         }
 
-        public void CreateDirectory(string path)
+        public void CreateDirectory(String path)
         {
             Directory.CreateDirectory(path);
         }
 
-        public string Combine(string path1, string path2)
+        public String Combine(String path1, String path2)
         {
             return Path.Combine(path1, path2);
         }
 
-        public string Combine(string path1, string path2, string path3)
+        public String Combine(String path1, String path2, String path3)
         {
             return Path.Combine(path1, path2, path3);
         }
 
-        public string Combine(string path1, string path2, string path3, string path4)
+        public String Combine(String path1, String path2, String path3, String path4)
         {
             return Path.Combine(path1, path2, path3, path4);
         }
 
-        public string CurrentDirectory => Environment.CurrentDirectory;
+        public String CurrentDirectory => Environment.CurrentDirectory;
 
-        public IEnumerable<IFileSystemDirectoryInfo> GetDirectories(string path)
+        public IEnumerable<IFileSystemDirectoryInfo> GetDirectories(String path)
         {
             DirectoryInfo di = new(path);
 
@@ -274,7 +274,7 @@ namespace Gwen.Net.OpenTk.Platform
                 d => new FileSystemDirectoryInfo(d.FullName, d.LastWriteTime) as IFileSystemDirectoryInfo);
         }
 
-        public IEnumerable<IFileSystemFileInfo> GetFiles(string path, string filter)
+        public IEnumerable<IFileSystemFileInfo> GetFiles(String path, String filter)
         {
             DirectoryInfo di = new(path);
 
@@ -282,7 +282,7 @@ namespace Gwen.Net.OpenTk.Platform
                 f => new FileSystemFileInfo(f.FullName, f.LastWriteTime, f.Length) as IFileSystemFileInfo);
         }
 
-        public Stream GetFileStream(string path, bool isWritable)
+        public Stream GetFileStream(String path, Boolean isWritable)
         {
             return new FileStream(
                 path,
@@ -292,21 +292,21 @@ namespace Gwen.Net.OpenTk.Platform
 
         private class SpecialFolder : ISpecialFolder
         {
-            public SpecialFolder(string name, string category, string path)
+            public SpecialFolder(String name, String category, String path)
             {
                 Name = name;
                 Category = category;
                 Path = path;
             }
 
-            public string Name { get; }
-            public string Category { get; }
-            public string Path { get; }
+            public String Name { get; }
+            public String Category { get; }
+            public String Path { get; }
         }
 
         public class FileSystemItemInfo : IFileSystemItemInfo
         {
-            protected FileSystemItemInfo(string path, DateTime lastWriteTime)
+            protected FileSystemItemInfo(String path, DateTime lastWriteTime)
             {
                 Name = Path.GetFileName(path);
                 FullName = path;
@@ -314,42 +314,42 @@ namespace Gwen.Net.OpenTk.Platform
                 FormattedLastWriteTime = $"{lastWriteTime.ToShortDateString()} {lastWriteTime.ToLongTimeString()}";
             }
 
-            public string Name { get; internal set; }
-            public string FullName { get; internal set; }
-            public string FormattedLastWriteTime { get; internal set; }
+            public String Name { get; internal set; }
+            public String FullName { get; internal set; }
+            public String FormattedLastWriteTime { get; internal set; }
         }
 
         public class FileSystemDirectoryInfo : FileSystemItemInfo, IFileSystemDirectoryInfo
         {
-            public FileSystemDirectoryInfo(string path, DateTime lastWriteTime)
+            public FileSystemDirectoryInfo(String path, DateTime lastWriteTime)
                 : base(path, lastWriteTime) {}
         }
 
         public class FileSystemFileInfo : FileSystemItemInfo, IFileSystemFileInfo
         {
-            public FileSystemFileInfo(string path, DateTime lastWriteTime, long length)
+            public FileSystemFileInfo(String path, DateTime lastWriteTime, Int64 length)
                 : base(path, lastWriteTime)
             {
                 FormattedFileLength = FormatFileLength(length);
             }
 
-            public string FormattedFileLength { get; internal set; }
+            public String FormattedFileLength { get; internal set; }
 
-            private static string FormatFileLength(long length)
+            private static String FormatFileLength(Int64 length)
             {
                 if (length > 1024 * 1024 * 1024)
                 {
-                    return $"{(double) length / (1024 * 1024 * 1024):0.0} GB";
+                    return $"{(Double) length / (1024 * 1024 * 1024):0.0} GB";
                 }
 
                 if (length > 1024 * 1024)
                 {
-                    return $"{(double) length / (1024 * 1024):0.0} MB";
+                    return $"{(Double) length / (1024 * 1024):0.0} MB";
                 }
 
                 if (length > 1024)
                 {
-                    return $"{(double) length / 1024:0.0} kB";
+                    return $"{(Double) length / 1024:0.0} kB";
                 }
 
                 return $"{length} B";

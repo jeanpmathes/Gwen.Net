@@ -10,11 +10,11 @@ namespace Gwen.Net.Control.Internal
     public class Slider : ControlBase
     {
         protected readonly SliderBar sliderBar;
-        protected float max;
-        protected float min;
-        protected int notchCount;
-        protected bool snapToNotches;
-        protected float value;
+        protected Single max;
+        protected Single min;
+        protected Int32 notchCount;
+        protected Boolean snapToNotches;
+        protected Single value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Slider" /> class.
@@ -40,7 +40,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Number of notches on the slider axis.
         /// </summary>
-        public int NotchCount
+        public Int32 NotchCount
         {
             get => notchCount;
             set => notchCount = value;
@@ -49,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the slider should snap to notches.
         /// </summary>
-        public bool SnapToNotches
+        public Boolean SnapToNotches
         {
             get => snapToNotches;
             set => snapToNotches = value;
@@ -58,7 +58,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Minimum value.
         /// </summary>
-        public float Min
+        public Single Min
         {
             get => min;
             set => SetRange(value, max);
@@ -67,7 +67,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Maximum value.
         /// </summary>
-        public float Max
+        public Single Max
         {
             get => max;
             set => SetRange(min, value);
@@ -76,7 +76,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Current value.
         /// </summary>
-        public float Value
+        public Single Value
         {
             get => min + (value * (max - min));
             set
@@ -110,7 +110,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyRight(bool down)
+        protected override Boolean OnKeyRight(Boolean down)
         {
             if (down)
             {
@@ -127,7 +127,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyUp(bool down)
+        protected override Boolean OnKeyUp(Boolean down)
         {
             if (down)
             {
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyLeft(bool down)
+        protected override Boolean OnKeyLeft(Boolean down)
         {
             if (down)
             {
@@ -161,7 +161,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyDown(bool down)
+        protected override Boolean OnKeyDown(Boolean down)
         {
             if (down)
             {
@@ -178,7 +178,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyHome(bool down)
+        protected override Boolean OnKeyHome(Boolean down)
         {
             if (down)
             {
@@ -195,7 +195,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyEnd(bool down)
+        protected override Boolean OnKeyEnd(Boolean down)
         {
             if (down)
             {
@@ -211,25 +211,25 @@ namespace Gwen.Net.Control.Internal
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down) {}
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down) {}
 
         protected virtual void OnMoved(ControlBase control, EventArgs args)
         {
             SetValueInternal(CalculateValue());
         }
 
-        protected virtual float CalculateValue()
+        protected virtual Single CalculateValue()
         {
             return 0;
         }
 
         protected virtual void UpdateBarFromValue() {}
 
-        protected virtual void SetValueInternal(float val)
+        protected virtual void SetValueInternal(Single val)
         {
             if (snapToNotches)
             {
-                val = (float)Math.Floor((val * notchCount) + 0.5f);
+                val = (Single)Math.Floor((val * notchCount) + 0.5f);
                 val /= notchCount;
             }
 
@@ -251,7 +251,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="newMin">Minimum value.</param>
         /// <param name="newMax">Maximum value.</param>
-        public void SetRange(float newMin, float newMax)
+        public void SetRange(Single newMin, Single newMax)
         {
             min = newMin;
             max = newMax;

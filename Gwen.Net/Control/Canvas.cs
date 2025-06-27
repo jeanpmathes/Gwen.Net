@@ -21,7 +21,7 @@ namespace Gwen.Net.Control
         // [omeg] these are not created by us, so no disposing
         internal ControlBase firstTab;
 
-        private float scale;
+        private Single scale;
         internal ControlBase nextTab;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Scale for rendering.
         /// </summary>
-        public override float Scale
+        public override Single Scale
         {
             get => scale;
             set
@@ -76,7 +76,7 @@ namespace Gwen.Net.Control
         ///     But in some situations you will only want to render when there have been changes.
         ///     You can do this by checking NeedsRedraw.
         /// </summary>
-        public bool NeedsRedraw { get; set; }
+        public Boolean NeedsRedraw { get; set; }
 
         public override void Dispose()
         {
@@ -199,7 +199,7 @@ namespace Gwen.Net.Control
             {
                 ControlBase element = measureQueue.First();
                 measureQueue.Remove(element);
-                bool added = measured.Add(element);
+                Boolean added = measured.Add(element);
                 
                 if (added) element.DoLayout();
             }
@@ -244,7 +244,7 @@ namespace Gwen.Net.Control
         ///     Handles mouse movement events. Called from Input subsystems.
         /// </summary>
         /// <returns>True if handled.</returns>
-        public bool Input_MouseMoved(int x, int y, int dx, int dy)
+        public Boolean Input_MouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             if (IsHidden || IsCollapsed)
             {
@@ -261,7 +261,7 @@ namespace Gwen.Net.Control
         ///     Handles mouse button events. Called from Input subsystems.
         /// </summary>
         /// <returns>True if handled.</returns>
-        public bool Input_MouseButton(int button, bool down)
+        public Boolean Input_MouseButton(Int32 button, Boolean down)
         {
             if (IsHidden || IsCollapsed)
             {
@@ -275,7 +275,7 @@ namespace Gwen.Net.Control
         ///     Handles keyboard events. Called from Input subsystems.
         /// </summary>
         /// <returns>True if handled.</returns>
-        public bool Input_Key(GwenMappedKey key, bool down)
+        public Boolean Input_Key(GwenMappedKey key, Boolean down)
         {
             if (IsHidden || IsCollapsed)
             {
@@ -299,14 +299,14 @@ namespace Gwen.Net.Control
         ///     Handles keyboard events. Called from Input subsystems.
         /// </summary>
         /// <returns>True if handled.</returns>
-        public bool Input_Character(char chr)
+        public Boolean Input_Character(Char chr)
         {
             if (IsHidden || IsCollapsed)
             {
                 return false;
             }
 
-            if (char.IsControl(chr))
+            if (Char.IsControl(chr))
             {
                 return false;
             }
@@ -345,7 +345,7 @@ namespace Gwen.Net.Control
         ///     Handles the mouse wheel events. Called from Input subsystems.
         /// </summary>
         /// <returns>True if handled.</returns>
-        public bool Input_MouseWheel(int val)
+        public Boolean Input_MouseWheel(Int32 val)
         {
             if (IsHidden || IsCollapsed)
             {

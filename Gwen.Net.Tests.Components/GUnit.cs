@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 
 namespace Gwen.Net.Tests.Components
 {
@@ -11,7 +12,7 @@ namespace Gwen.Net.Tests.Components
             IsVirtualControl = true;
         }
 
-        public void UnitPrint(string str)
+        public void UnitPrint(String str)
         {
             UnitTest?.PrintText(str);
         }

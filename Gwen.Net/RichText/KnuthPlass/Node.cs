@@ -1,10 +1,12 @@
-﻿namespace Gwen.Net.RichText.KnuthPlass
+﻿using System;
+
+namespace Gwen.Net.RichText.KnuthPlass
 {
     internal enum NodeType { Box, Glue, Penalty }
 
     internal abstract class Node
     {
-        public Node(NodeType type, int width)
+        public Node(NodeType type, Int32 width)
         {
             Type = type;
             Width = width;
@@ -12,12 +14,12 @@
 
         public NodeType Type { get; }
 
-        public int Width { get; }
+        public Int32 Width { get; }
     }
 
     internal class BoxNode : Node
     {
-        public BoxNode(int width, string value, Part part, int height)
+        public BoxNode(Int32 width, String value, Part part, Int32 height)
             : base(NodeType.Box, width)
         {
             Value = value;
@@ -25,38 +27,38 @@
             Part = part;
         }
 
-        public string Value { get; }
+        public String Value { get; }
 
-        public int Height { get; }
+        public Int32 Height { get; }
 
         public Part Part { get; }
     }
 
     internal class GlueNode : Node
     {
-        public GlueNode(int width, int stretch, int shrink)
+        public GlueNode(Int32 width, Int32 stretch, Int32 shrink)
             : base(NodeType.Glue, width)
         {
             Stretch = stretch;
             Shrink = shrink;
         }
 
-        public int Stretch { get; }
+        public Int32 Stretch { get; }
 
-        public int Shrink { get; }
+        public Int32 Shrink { get; }
     }
 
     internal class PenaltyNode : Node
     {
-        public PenaltyNode(int width, int penalty, int flagged)
+        public PenaltyNode(Int32 width, Int32 penalty, Int32 flagged)
             : base(NodeType.Penalty, width)
         {
             Penalty = penalty;
             Flagged = flagged;
         }
 
-        public int Penalty { get; }
+        public Int32 Penalty { get; }
 
-        public int Flagged { get; }
+        public Int32 Flagged { get; }
     }
 }

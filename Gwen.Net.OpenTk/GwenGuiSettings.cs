@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Gwen.Net.OpenTk
 {
-    public record TexturePreload(FileInfo File, string Name);
+    public record TexturePreload(FileInfo File, String Name);
     
     public class GwenGuiSettings
     {

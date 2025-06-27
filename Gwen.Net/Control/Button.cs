@@ -50,7 +50,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        public virtual string? Text
+        public virtual String? Text
         {
             get => text?.String;
             set
@@ -184,7 +184,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Returns the current image name (or null if no image set) or set a new image.
         /// </summary>
-        public string? ImageName
+        public String? ImageName
         {
             get => image?.ImageName;
             set
@@ -286,14 +286,14 @@ namespace Gwen.Net.Control
 
             if (!ShouldDrawBackground) return;
 
-            bool drawDepressed = IsDepressed && IsHovered;
+            Boolean drawDepressed = IsDepressed && IsHovered;
 
             if (IsToggle && ShouldDrawToggleDepressedWhenOn)
             {
                 drawDepressed = drawDepressed || ToggleState;
             }
 
-            bool drawHovered = IsHovered && ShouldDrawHover;
+            Boolean drawHovered = IsHovered && ShouldDrawHover;
 
             currentSkin.DrawButton(this, drawDepressed, drawHovered, IsDisabled);
         }
@@ -303,9 +303,9 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="textureName">Texture name. Null to remove.</param>
         /// <param name="newImageAlign">Determines how the image should be aligned.</param>
-        public virtual void SetImage(string? textureName, ImageAlign newImageAlign = ImageAlign.LeftSide)
+        public virtual void SetImage(String? textureName, ImageAlign newImageAlign = ImageAlign.LeftSide)
         {
-            if (string.IsNullOrEmpty(textureName))
+            if (String.IsNullOrEmpty(textureName))
             {
                 image?.Dispose();
                 image = null;
@@ -509,7 +509,7 @@ namespace Gwen.Net.Control
         /// <summary>
         /// Whether to draw a toggle button as depressed when it's on.
         /// </summary>
-        public bool ShouldDrawToggleDepressedWhenOn { get; set; } = true;
+        public Boolean ShouldDrawToggleDepressedWhenOn { get; set; } = true;
         
         /// <summary>
         ///     Updates control colors.

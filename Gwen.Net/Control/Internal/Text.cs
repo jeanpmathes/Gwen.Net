@@ -10,9 +10,9 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Text : ControlBase
     {
-        private string fitToText;
+        private String fitToText;
         private Font font;
-        private string @string;
+        private String @string;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Text" /> class.
@@ -23,7 +23,7 @@ namespace Gwen.Net.Control.Internal
         {
             AutoSizeToContents = true;
             font = Skin.DefaultFont;
-            @string = string.Empty;
+            @string = String.Empty;
             fitToText = null;
             TextColor = Skin.colors.labelColors.@default;
             MouseInputEnabled = false;
@@ -49,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Text to display.
         /// </summary>
-        public string String
+        public String String
         {
             get => @string;
             set
@@ -76,12 +76,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the control should be automatically resized to fit the text.
         /// </summary>
-        public bool AutoSizeToContents { get; set; }
+        public Boolean AutoSizeToContents { get; set; }
 
         /// <summary>
         ///     Text length in characters.
         /// </summary>
-        public int Length => String.Length;
+        public Int32 Length => String.Length;
 
         /// <summary>
         ///     Text color override - used by tooltips.
@@ -91,12 +91,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Text override - used to display different string.
         /// </summary>
-        public string TextOverride { get; set; }
+        public String TextOverride { get; set; }
 
         /// <summary>
         ///     Set the minimum size of the control to be able to show the text of this property.
         /// </summary>
-        public string FitToText
+        public String FitToText
         {
             get => fitToText;
             set
@@ -168,13 +168,13 @@ namespace Gwen.Net.Control.Internal
 
             Size size;
 
-            string text = TextOverride ?? String;
+            String text = TextOverride ?? String;
 
             if (AutoSizeToContents && text.Length == 0)
             {
                 size = Skin.Renderer.MeasureText(Font, " ");
             }
-            else if (!AutoSizeToContents && !string.IsNullOrWhiteSpace(fitToText))
+            else if (!AutoSizeToContents && !String.IsNullOrWhiteSpace(fitToText))
             {
                 size = Skin.Renderer.MeasureText(Font, fitToText);
             }
@@ -196,14 +196,14 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="index">Character index.</param>
         /// <returns>Character position in local coordinates.</returns>
-        public Point GetCharacterPosition(int index)
+        public Point GetCharacterPosition(Int32 index)
         {
             if (Length == 0 || index == 0)
             {
                 return new Point(x: 0, y: 0);
             }
 
-            string sub = (TextOverride ?? String).Substring(startIndex: 0, index);
+            String sub = (TextOverride ?? String).Substring(startIndex: 0, index);
             Size s = Skin.Renderer.MeasureText(Font, sub);
 
             return new Point(s.Width, y: 0);
@@ -214,14 +214,14 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="p">Point.</param>
         /// <returns>Character index.</returns>
-        public int GetClosestCharacter(Point p)
+        public Int32 GetClosestCharacter(Point p)
         {
-            int px = p.X;
+            Int32 px = p.X;
             var left = 0;
-            int right = String.Length;
+            Int32 right = String.Length;
 
-            int center;
-            int cx;
+            Int32 center;
+            Int32 cx;
 
             while (true)
             {
@@ -250,7 +250,7 @@ namespace Gwen.Net.Control.Internal
                 }
             }
 
-            int lx = cx, rx = cx;
+            Int32 lx = cx, rx = cx;
 
             if (left == center)
             {

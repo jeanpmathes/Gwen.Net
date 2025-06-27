@@ -175,7 +175,7 @@ namespace Gwen.Net.Tests.Components
             private readonly Font font;
             private readonly MultilineTextBox textBox;
 
-            private string path;
+            private String path;
 
             public TextPad(ControlBase parent)
                 : base(parent)
@@ -191,10 +191,10 @@ namespace Gwen.Net.Tests.Components
                 MenuStrip menuStrip = new(layout);
                 menuStrip.Dock = Dock.Top;
                 MenuItem fileMenu = menuStrip.AddItem("File");
-                fileMenu.Menu.AddItem("Open...", string.Empty, "Ctrl+O").SetAction(OnOpen);
-                fileMenu.Menu.AddItem("Save", string.Empty, "Ctrl+S").SetAction(OnSave);
+                fileMenu.Menu.AddItem("Open...", String.Empty, "Ctrl+O").SetAction(OnOpen);
+                fileMenu.Menu.AddItem("Save", String.Empty, "Ctrl+S").SetAction(OnSave);
                 fileMenu.Menu.AddItem("Save As...").SetAction(OnSaveAs);
-                fileMenu.Menu.AddItem("Quit", string.Empty, "Ctrl+Q").SetAction((_, _) => Close());
+                fileMenu.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction((_, _) => Close());
 
                 font = Skin.DefaultFont.Copy();
                 font.FaceName = "Courier New";
@@ -250,7 +250,7 @@ namespace Gwen.Net.Tests.Components
 
                 dialog.Callback = newPath =>
                 {
-                    if (string.IsNullOrWhiteSpace(newPath)) return;
+                    if (String.IsNullOrWhiteSpace(newPath)) return;
 
                     try
                     {
@@ -306,7 +306,7 @@ namespace Gwen.Net.Tests.Components
 
                 dialog.Callback = newPath =>
                 {
-                    if (!string.IsNullOrWhiteSpace(newPath))
+                    if (!String.IsNullOrWhiteSpace(newPath))
                     {
                         try
                         {

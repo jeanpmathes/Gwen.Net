@@ -8,7 +8,7 @@ namespace Gwen.Net.Control.Layout
     public class Splitter : ControlBase
     {
         private readonly ControlBase[] panel;
-        private readonly bool[] scale;
+        private readonly Boolean[] scale;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Splitter" /> class.
@@ -17,7 +17,7 @@ namespace Gwen.Net.Control.Layout
         public Splitter(ControlBase parent) : base(parent)
         {
             panel = new ControlBase[2];
-            scale = new bool[2];
+            scale = new Boolean[2];
             scale[0] = true;
             scale[1] = true;
         }
@@ -28,7 +28,7 @@ namespace Gwen.Net.Control.Layout
         /// <param name="panelIndex">Panel index (0-1).</param>
         /// <param name="newPanel">Panel contents.</param>
         /// <param name="noScale">Determines whether the content is to be scaled.</param>
-        public void SetPanel(int panelIndex, ControlBase newPanel, bool noScale = false)
+        public void SetPanel(Int32 panelIndex, ControlBase newPanel, Boolean noScale = false)
         {
             if (panelIndex < 0 || panelIndex > 1)
             {

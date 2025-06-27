@@ -12,7 +12,7 @@ namespace Gwen.Net.Control.Internal
         private readonly List<Text> textLines = new();
         private Font font;
 
-        private int lineHeight;
+        private Int32 lineHeight;
 
         public MultilineText(ControlBase parent)
             : base(parent) {}
@@ -22,7 +22,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="index">Line index.</param>
         /// <returns>Text.</returns>
-        public string this[int index]
+        public String this[Int32 index]
         {
             get
             {
@@ -49,12 +49,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Returns the number of lines that are in the Multiline Text Box.
         /// </summary>
-        public int TotalLines => textLines.Count;
+        public Int32 TotalLines => textLines.Count;
 
         /// <summary>
         ///     Height of the text line in pixels.
         /// </summary>
-        public int LineHeight
+        public Int32 LineHeight
         {
             get
             {
@@ -71,9 +71,9 @@ namespace Gwen.Net.Control.Internal
         ///     Gets and sets the text to display to the user. Each line is seperated by
         ///     an Environment.NetLine character.
         /// </summary>
-        public string Text
+        public String Text
         {
-            get => string.Join(Environment.NewLine, textLines.Select(t => t.String));
+            get => String.Join(Environment.NewLine, textLines.Select(t => t.String));
             set => SetText(value);
         }
 
@@ -101,10 +101,10 @@ namespace Gwen.Net.Control.Internal
         ///     Sets the text.
         /// </summary>
         /// <param name="text">Text to set.</param>
-        public void SetText(string text)
+        public void SetText(String text)
         {
-            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(separator: '\n');
-            int index;
+            String[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(separator: '\n');
+            Int32 index;
 
             for (index = 0; index < lines.Length; index++)
             {
@@ -131,7 +131,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="text">Text to insert.</param>
         /// <param name="position">Position where to insert.</param>
-        public Point InsertText(string text, Point position)
+        public Point InsertText(String text, Point position)
         {
             if (position.Y < 0 || position.Y >= textLines.Count)
             {
@@ -145,10 +145,10 @@ namespace Gwen.Net.Control.Internal
 
             if (text.Contains("\r") || text.Contains("\n"))
             {
-                string[] newLines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(separator: '\n');
+                String[] newLines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(separator: '\n');
 
-                string oldLineStart = textLines[position.Y].String.Substring(startIndex: 0, position.X);
-                string oldLineEnd = textLines[position.Y].String.Substring(position.X);
+                String oldLineStart = textLines[position.Y].String.Substring(startIndex: 0, position.X);
+                String oldLineEnd = textLines[position.Y].String.Substring(position.X);
 
                 textLines[position.Y].String = oldLineStart + newLines[0]; // First line
 
@@ -164,7 +164,7 @@ namespace Gwen.Net.Control.Internal
                 return new Point(newLines[newLines.Length - 1].Length, position.Y + newLines.Length - 1);
             }
 
-            string str = textLines[position.Y].String;
+            String str = textLines[position.Y].String;
             str = str.Insert(position.X, text);
             textLines[position.Y].String = str;
 
@@ -177,7 +177,7 @@ namespace Gwen.Net.Control.Internal
         ///     Add line to the end.
         /// </summary>
         /// <param name="text">Text to add.</param>
-        public void AddLine(string text)
+        public void AddLine(String text)
         {
             InsertLine(textLines.Count, text);
         }
@@ -187,7 +187,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="index">Index where to insert.</param>
         /// <param name="text">Text to insert.</param>
-        public void InsertLine(int index, string text)
+        public void InsertLine(Int32 index, String text)
         {
             if (index < 0 || index > textLines.Count)
             {
@@ -209,7 +209,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="index">Index what to replace.</param>
         /// <param name="text">New text.</param>
-        public void ReplaceLine(int index, string text)
+        public void ReplaceLine(Int32 index, String text)
         {
             if (index < 0 || index >= textLines.Count)
             {
@@ -225,7 +225,7 @@ namespace Gwen.Net.Control.Internal
         ///     Remove the line at the index.
         /// </summary>
         /// <param name="index">Index to remove.</param>
-        public void RemoveLine(int index)
+        public void RemoveLine(Int32 index)
         {
             if (index < 0 || index >= textLines.Count)
             {
@@ -270,7 +270,7 @@ namespace Gwen.Net.Control.Internal
                 throw new ArgumentOutOfRangeException("position");
             }
 
-            string currLine = textLines[position.Y].String.Substring(
+            String currLine = textLines[position.Y].String.Substring(
                 startIndex: 0,
                 Math.Min(position.X, textLines[position.Y].Length));
 
@@ -306,7 +306,7 @@ namespace Gwen.Net.Control.Internal
 
             var width = 0;
             var height = 0;
-            int currentLineHeight = LineHeight;
+            Int32 currentLineHeight = LineHeight;
 
             foreach (Text line in textLines)
             {
@@ -328,9 +328,9 @@ namespace Gwen.Net.Control.Internal
         {
             finalSize -= Padding;
 
-            int width = finalSize.Width;
-            int y = Padding.Top;
-            int currentLineHeight = LineHeight;
+            Int32 width = finalSize.Width;
+            Int32 y = Padding.Top;
+            Int32 currentLineHeight = LineHeight;
 
             foreach (Text line in textLines)
             {

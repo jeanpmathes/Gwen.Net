@@ -41,7 +41,7 @@ namespace Gwen.Net.Components
         /// <param name="parent">Parent Gwen control of the component.</param>
         /// <param name="data">Optional data for a component constructor.</param>
         /// <returns>Created instance of the component.</returns>
-        public static T Create<T>(ControlBase parent, params object[] data) where T : Component
+        public static T Create<T>(ControlBase parent, params Object[] data) where T : Component
         {
             return Create(typeof(T), parent, data) as T;
         }
@@ -54,7 +54,7 @@ namespace Gwen.Net.Components
         /// <param name="parent">Parent Gwen control of the component.</param>
         /// <param name="data">Optional data for a component constructor.</param>
         /// <returns>Created instance of the component.</returns>
-        public static Component Create(Type type, ControlBase parent, params object[] data)
+        public static Component Create(Type type, ControlBase parent, params Object[] data)
         {
             Component component;
 
@@ -62,7 +62,7 @@ namespace Gwen.Net.Components
             {
                 component = Activator.CreateInstance(
                     type,
-                    new object[]
+                    new Object[]
                     {
                         parent
                     }.Concat(data).ToArray()) as Component;
@@ -108,7 +108,7 @@ namespace Gwen.Net.Components
         /// <typeparam name="T">Type of the control or component.</typeparam>
         /// <param name="name">Name.</param>
         /// <returns>Control or component.</returns>
-        public T GetControl<T>(string name) where T : class
+        public T GetControl<T>(String name) where T : class
         {
             return GetControl(name) as T;
         }
@@ -118,7 +118,7 @@ namespace Gwen.Net.Components
         /// </summary>
         /// <param name="name">Name.</param>
         /// <returns>Control or component.</returns>
-        public object GetControl(string name)
+        public Object GetControl(String name)
         {
             if (View == null)
             {
@@ -154,7 +154,7 @@ namespace Gwen.Net.Components
         /// <param name="args">Event arguments.</param>
         /// <returns>True if the event was handled, false otherwise.</returns>
         /// <remarks>No need to call the base implementation.</remarks>
-        public virtual bool HandleEvent(string eventName, string handlerName, ControlBase sender, EventArgs args)
+        public virtual Boolean HandleEvent(String eventName, String handlerName, ControlBase sender, EventArgs args)
         {
             return false;
         }
@@ -170,7 +170,7 @@ namespace Gwen.Net.Components
         /// </param>
         /// <returns>True if the property is a valid property, false otherwise.</returns>
         /// <remarks>No need to call the base implementation.</remarks>
-        public virtual bool GetValueType(string name, out Type type)
+        public virtual Boolean GetValueType(String name, out Type type)
         {
             type = null;
 
@@ -185,7 +185,7 @@ namespace Gwen.Net.Components
         /// <param name="value">Value of the property.</param>
         /// <returns>True if the property value was successfully evaluated, false otherwise.</returns>
         /// <remarks>No need to call the base implementation.</remarks>
-        public virtual bool GetValue(string name, out object value)
+        public virtual Boolean GetValue(String name, out Object value)
         {
             value = null;
 
@@ -201,12 +201,12 @@ namespace Gwen.Net.Components
         /// <param name="value">Value of the property.</param>
         /// <returns>True if the property value was successfully set, false otherwise.</returns>
         /// <remarks>No need to call the base implementation. If you implement this, implement also <see cref="ValueType" />.</remarks>
-        public virtual bool SetValue(string name, object value)
+        public virtual Boolean SetValue(String name, Object value)
         {
             return false;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (!disposing) return;
             if (View == null) return;

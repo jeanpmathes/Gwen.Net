@@ -72,7 +72,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected override void OnMouseMoved(int x, int y, int dx, int dy)
+        protected override void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             if (null == target)
             {
@@ -113,7 +113,7 @@ namespace Gwen.Net.Control.Internal
 
                 if (bounds.Width < min.Width)
                 {
-                    int diff = min.Width - bounds.Width;
+                    Int32 diff = min.Width - bounds.Width;
                     bounds.Width += diff;
                     bounds.X -= diff;
                 }
@@ -137,7 +137,7 @@ namespace Gwen.Net.Control.Internal
                 
                 if (bounds.Height < min.Height)
                 {
-                    int diff = min.Height - bounds.Height;
+                    Int32 diff = min.Height - bounds.Height;
                     bounds.Height += diff;
                     bounds.Y -= diff;
                 }

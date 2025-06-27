@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control.Property
+﻿using System;
+
+namespace Gwen.Net.Control.Property
 {
     /// <summary>
     ///     Checkable property.
@@ -25,7 +27,7 @@
         /// <summary>
         ///     Property value.
         /// </summary>
-        public override string Value
+        public override String Value
         {
             get => checkBox.IsChecked ? "1" : "0";
             set => base.Value = value;
@@ -34,19 +36,19 @@
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public override bool IsEditing => checkBox.HasFocus;
+        public override Boolean IsEditing => checkBox.HasFocus;
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public override bool IsHovered => base.IsHovered || checkBox.IsHovered;
+        public override Boolean IsHovered => base.IsHovered || checkBox.IsHovered;
 
         /// <summary>
         ///     Sets the property value.
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public override void SetValue(string value, bool fireEvents = false)
+        public override void SetValue(String value, Boolean fireEvents = false)
         {
             if (value == "1" || value.ToLower() == "true" || value.ToLower() == "yes")
             {

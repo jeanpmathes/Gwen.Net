@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net
 {
@@ -10,22 +11,22 @@ namespace Gwen.Net
         /// <summary>
         ///     Red value.
         /// </summary>
-        public byte R { get; set; }
+        public Byte R { get; set; }
 
         /// <summary>
         ///     Green value.
         /// </summary>
-        public byte G { get; set; }
+        public Byte G { get; set; }
 
         /// <summary>
         ///     Blue value.
         /// </summary>
-        public byte B { get; set; }
+        public Byte B { get; set; }
 
         /// <summary>
         ///     Alpha value.
         /// </summary>
-        public byte A { get; set; }
+        public Byte A { get; set; }
 
         /// <summary>
         ///     Initializes new color. Alpha value is 255.
@@ -33,11 +34,11 @@ namespace Gwen.Net
         /// <param name="r">Red value.</param>
         /// <param name="g">Green value.</param>
         /// <param name="b">Blue value.</param>
-        public Color(int r, int g, int b)
+        public Color(Int32 r, Int32 g, Int32 b)
         {
-            R = (byte)r;
-            G = (byte)g;
-            B = (byte)b;
+            R = (Byte)r;
+            G = (Byte)g;
+            B = (Byte)b;
             A = 255;
         }
 
@@ -48,26 +49,26 @@ namespace Gwen.Net
         /// <param name="r">Red value.</param>
         /// <param name="g">Green value.</param>
         /// <param name="b">Blue value.</param>
-        public Color(int a, int r, int g, int b)
+        public Color(Int32 a, Int32 r, Int32 g, Int32 b)
         {
-            R = (byte)r;
-            G = (byte)g;
-            B = (byte)b;
-            A = (byte)a;
+            R = (Byte)r;
+            G = (Byte)g;
+            B = (Byte)b;
+            A = (Byte)a;
         }
 
         /// <summary>
         ///     Initializes new color.
         /// </summary>
         /// <param name="value">32 bit color value as 0xAARRGGBB. Alpha value 0 is treated as 255.</param>
-        public Color(uint value)
+        public Color(UInt32 value)
         {
             unchecked
             {
-                R = (byte)((value >> 16) & 0xff);
-                G = (byte)((value >> 8) & 0xff);
-                B = (byte)(value & 0xff);
-                A = (byte)((value >> 24) & 0xff);
+                R = (Byte)((value >> 16) & 0xff);
+                G = (Byte)((value >> 8) & 0xff);
+                B = (Byte)(value & 0xff);
+                A = (Byte)((value >> 24) & 0xff);
 
                 if (A == 0)
                 {
@@ -81,7 +82,7 @@ namespace Gwen.Net
         /// </summary>
         /// <param name="name">HTML color name supported by browsers.</param>
         /// <returns>Color if named value exists, color black otherwise.</returns>
-        public static Color FromName(string name)
+        public static Color FromName(String name)
         {
             Color color;
 
@@ -93,7 +94,7 @@ namespace Gwen.Net
             return Black;
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"R = {R} G = {G} B = {B} A = {A}";
         }
@@ -249,7 +250,7 @@ namespace Gwen.Net
         public static readonly Color GwenPink = new(r: 255, g: 65, b: 199);
         public static readonly Color Transparent = new(a: 0, r: 255, g: 255, b: 255);
 
-        private static readonly Dictionary<string, Color> namedColors = new()
+        private static readonly Dictionary<String, Color> namedColors = new()
         {
             {"AliceBlue", new Color(value: 0xF0F8FF)},
             {"AntiqueWhite", new Color(value: 0xFAEBD7)},

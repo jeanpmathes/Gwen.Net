@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -22,7 +23,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether unchecking is allowed.
         /// </summary>
-        protected override bool AllowUncheck => false;
+        protected override Boolean AllowUncheck => false;
 
         protected override Size Measure(Size availableSize)
         {

@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
         /// <param name="arguments">Additional arguments. May be empty (EventArgs.Empty).</param>
         public delegate void GwenEventHandler<in T>(ControlBase sender, T arguments) where T : EventArgs;
 
-        private bool disposed;
+        private Boolean disposed;
 
         private ControlBase? parent;
 
@@ -99,13 +99,13 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Returns true if any on click events are set.
         /// </summary>
-        internal bool ClickEventAssigned => Clicked != null || RightClicked != null || DoubleClicked != null ||
-                                            DoubleRightClicked != null;
+        internal Boolean ClickEventAssigned => Clicked != null || RightClicked != null || DoubleClicked != null ||
+                                               DoubleRightClicked != null;
 
         /// <summary>
         ///     Accelerator map.
         /// </summary>
-        private readonly Dictionary<string, GwenEventHandler<EventArgs>> accelerators;
+        private readonly Dictionary<String, GwenEventHandler<EventArgs>> accelerators;
 
         /// <summary>
         ///     Logical list of children.
@@ -158,7 +158,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Is layout needed.
         /// </summary>
-        protected bool NeedsLayout
+        protected Boolean NeedsLayout
         {
             get => IsSetInternalFlag(InternalFlags.NeedsLayout);
             set => SetInternalFlag(InternalFlags.NeedsLayout, value);
@@ -167,7 +167,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Is layout done at least once for the control.
         /// </summary>
-        protected bool LayoutDone
+        protected Boolean LayoutDone
         {
             get => IsSetInternalFlag(InternalFlags.LayoutDone);
             set => SetInternalFlag(InternalFlags.LayoutDone, value);
@@ -214,7 +214,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label typed tool tip text.
         /// </summary>
-        public string ToolTipText
+        public String ToolTipText
         {
             get
             {
@@ -223,7 +223,7 @@ namespace Gwen.Net.Control
                     return ((Label) toolTip).Text;
                 }
 
-                return string.Empty;
+                return String.Empty;
             }
             set => SetToolTipText(value);
         }
@@ -231,7 +231,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether this control is a menu component.
         /// </summary>
-        internal virtual bool IsMenuComponent
+        internal virtual Boolean IsMenuComponent
         {
             get
             {
@@ -247,14 +247,14 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the control should be clipped to its bounds while rendering.
         /// </summary>
-        protected virtual bool ShouldClip => true;
+        protected virtual Boolean ShouldClip => true;
 
         /// <summary>
         ///     Minimum size that the control needs to draw itself correctly. Valid after DoMeasure call. This includes margins.
         /// </summary>
         public Size MeasuredSize => measuredSize;
 
-        public virtual float Scale
+        public virtual Single Scale
         {
             get
             {
@@ -268,7 +268,7 @@ namespace Gwen.Net.Control
             set => throw new NotImplementedException();
         }
 
-        public int BaseUnit => Util.Ceil(Skin.BaseUnit * Scale);
+        public Int32 BaseUnit => Util.Ceil(Skin.BaseUnit * Scale);
 
         /// <summary>
         ///     Current padding - inner spacing. Padding is not valid for all controls.
@@ -339,7 +339,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is on top of its parent's children.
         /// </summary>
-        public virtual bool IsOnTop => this == Parent.children.First(); // todo: validate
+        public virtual Boolean IsOnTop => this == Parent.children.First(); // todo: validate
 
         /// <summary>
         ///     Component if this control is the base of the user defined control group.
@@ -349,22 +349,22 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     User data associated with the control.
         /// </summary>
-        public object? UserData { get; set; }
+        public Object? UserData { get; set; }
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public virtual bool IsHovered => InputHandler.HoveredControl == this;
+        public virtual Boolean IsHovered => InputHandler.HoveredControl == this;
 
         /// <summary>
         ///     Indicates whether the control has focus.
         /// </summary>
-        public bool HasFocus => InputHandler.KeyboardFocus == this;
+        public Boolean HasFocus => InputHandler.KeyboardFocus == this;
 
         /// <summary>
         ///     Indicates whether the control is disabled.
         /// </summary>
-        public bool IsDisabled
+        public Boolean IsDisabled
         {
             get => IsSetInternalFlag(InternalFlags.Disabled);
             set => SetInternalFlag(InternalFlags.Disabled, value);
@@ -373,7 +373,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is hidden.
         /// </summary>
-        public virtual bool IsHidden
+        public virtual Boolean IsHidden
         {
             get => IsSetInternalFlag(InternalFlags.Hidden);
             set
@@ -388,7 +388,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is hidden.
         /// </summary>
-        public virtual bool IsCollapsed
+        public virtual Boolean IsCollapsed
         {
             get => IsSetInternalFlag(InternalFlags.Collapsed);
             set
@@ -403,7 +403,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the control's position should be restricted to parent's bounds.
         /// </summary>
-        public bool RestrictToParent
+        public Boolean RestrictToParent
         {
             get => IsSetInternalFlag(InternalFlags.RestrictToParent);
             set => SetInternalFlag(InternalFlags.RestrictToParent, value);
@@ -412,7 +412,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the control receives mouse input events.
         /// </summary>
-        public bool MouseInputEnabled
+        public Boolean MouseInputEnabled
         {
             get => IsSetInternalFlag(InternalFlags.MouseInputEnabled);
             set => SetInternalFlag(InternalFlags.MouseInputEnabled, value);
@@ -421,7 +421,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the control receives keyboard input events.
         /// </summary>
-        public bool KeyboardInputEnabled
+        public Boolean KeyboardInputEnabled
         {
             get => IsSetInternalFlag(InternalFlags.KeyboardInputEnabled);
             set => SetInternalFlag(InternalFlags.KeyboardInputEnabled, value);
@@ -430,7 +430,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the control receives keyboard character events.
         /// </summary>
-        public bool KeyboardNeeded
+        public Boolean KeyboardNeeded
         {
             get => IsSetInternalFlag(InternalFlags.KeyboardNeeded);
             set => SetInternalFlag(InternalFlags.KeyboardNeeded, value);
@@ -444,7 +444,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is tabable (can be focused by pressing Tab).
         /// </summary>
-        public bool IsTabable
+        public Boolean IsTabable
         {
             get => IsSetInternalFlag(InternalFlags.Tabable);
             set => SetInternalFlag(InternalFlags.Tabable, value);
@@ -453,7 +453,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether control's background should be drawn during rendering.
         /// </summary>
-        public bool ShouldDrawBackground
+        public Boolean ShouldDrawBackground
         {
             get => IsSetInternalFlag(InternalFlags.DrawBackground);
             set => SetInternalFlag(InternalFlags.DrawBackground, value);
@@ -462,7 +462,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the control's internal name.
         /// </summary>
-        public string Name { get; set; }
+        public String Name { get; set; }
 
         /// <summary>
         ///     Control's size and position relative to the parent.
@@ -508,15 +508,15 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether hover should be drawn during rendering.
         /// </summary>
-        protected bool ShouldDrawHover => InputHandler.MouseFocus == this || InputHandler.MouseFocus == null;
+        protected Boolean ShouldDrawHover => InputHandler.MouseFocus == this || InputHandler.MouseFocus == null;
 
-        protected virtual bool AccelOnlyFocus => false;
-        protected virtual bool NeedsInputChars => false;
+        protected virtual Boolean AccelOnlyFocus => false;
+        protected virtual Boolean NeedsInputChars => false;
 
         /// <summary>
         ///     Indicates whether the control and its parents are visible.
         /// </summary>
-        public bool IsVisible
+        public Boolean IsVisible
         {
             get
             {
@@ -542,22 +542,22 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualLeft => bounds.X;
+        public Int32 ActualLeft => bounds.X;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualTop => bounds.Y;
+        public Int32 ActualTop => bounds.Y;
 
         /// <summary>
         ///     Width of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualWidth => bounds.Width;
+        public Int32 ActualWidth => bounds.Width;
 
         /// <summary>
         ///     Height of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualHeight => bounds.Height;
+        public Int32 ActualHeight => bounds.Height;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
@@ -572,17 +572,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualRight => bounds.Right;
+        public Int32 ActualRight => bounds.Right;
 
         /// <summary>
         ///     Location of the control. Valid after DoArrange call.
         /// </summary>
-        public int ActualBottom => bounds.Bottom;
+        public Int32 ActualBottom => bounds.Bottom;
 
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
-        public virtual int Left
+        public virtual Int32 Left
         {
             get => desiredBounds.X;
             set
@@ -600,7 +600,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Desired location of the control. Used only on default layout (DockLayout) if Dock property is None.
         /// </summary>
-        public virtual int Top
+        public virtual Int32 Top
         {
             get => desiredBounds.Y;
             set
@@ -619,7 +619,7 @@ namespace Gwen.Net.Control
         ///     Desired size of the control. Set this value only if HorizontalAlignment is not Stretch. By default this value is
         ///     ignored.
         /// </summary>
-        public virtual int Width
+        public virtual Int32 Width
         {
             get => desiredBounds.Width;
             set
@@ -640,7 +640,7 @@ namespace Gwen.Net.Control
         ///     Desired size of the control. Set this value only if VerticalAlignment is not Stretch. By default this value is
         ///     ignored.
         /// </summary>
-        public virtual int Height
+        public virtual Int32 Height
         {
             get => desiredBounds.Height;
             set
@@ -751,7 +751,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Enable this if the parent of the control doesn't need to know if a new layout is needed.
         /// </summary>
-        protected bool IsVirtualControl
+        protected Boolean IsVirtualControl
         {
             get => IsSetInternalFlag(InternalFlags.VirtualControl);
             set => SetInternalFlag(InternalFlags.VirtualControl, value);
@@ -761,7 +761,7 @@ namespace Gwen.Net.Control
         ///     Determines whether margin, padding and bounds outlines for the control will be drawn. Applied recursively to all
         ///     children.
         /// </summary>
-        public bool DrawDebugOutlines
+        public Boolean DrawDebugOutlines
         {
             get => IsSetInternalFlag(InternalFlags.DrawDebugOutlines);
             set
@@ -789,7 +789,7 @@ namespace Gwen.Net.Control
         public ControlBase(ControlBase? parent)
         {
             children = new List<ControlBase>();
-            accelerators = new Dictionary<string, GwenEventHandler<EventArgs>>();
+            accelerators = new Dictionary<String, GwenEventHandler<EventArgs>>();
 
             bounds = new Rectangle(Point.Zero, Size.Infinity);
             padding = Padding.Zero;
@@ -881,10 +881,10 @@ namespace Gwen.Net.Control
             GetCanvas().AddDelayedDelete(this);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             var type = GetType().ToString();
-            string name = string.IsNullOrWhiteSpace(Name) ? "" : " Name: " + Name;
+            String name = String.IsNullOrWhiteSpace(Name) ? "" : " Name: " + Name;
 
             if (this is MenuItem menuItem)
             {
@@ -964,7 +964,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="collapsed">Collapse or show.</param>
         /// <param name="measure">Is layout triggered.</param>
-        public virtual void Collapse(bool collapsed = true, bool measure = true)
+        public virtual void Collapse(Boolean collapsed = true, Boolean measure = true)
         {
             if (!measure)
             {
@@ -989,7 +989,7 @@ namespace Gwen.Net.Control
         ///     Creates a tooltip for the control.
         /// </summary>
         /// <param name="text">Tooltip text.</param>
-        public virtual void SetToolTipText(string text)
+        public virtual void SetToolTipText(String text)
         {
             Label tooltip = new(this)
             {
@@ -1089,15 +1089,15 @@ namespace Gwen.Net.Control
             Redraw();
         }
 
-        public virtual void BringNextToControl(ControlBase child, bool behind)
+        public virtual void BringNextToControl(ControlBase child, Boolean behind)
         {
             if (null == actualParent)
             {
                 return;
             }
 
-            int index = actualParent.children.IndexOf(this);
-            int newIndex = actualParent.children.IndexOf(child);
+            Int32 index = actualParent.children.IndexOf(this);
+            Int32 newIndex = actualParent.children.IndexOf(child);
 
             if (index == -1 || newIndex == -1)
             {
@@ -1139,7 +1139,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Child name.</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found control or null.</returns>
-        public virtual ControlBase FindChildByName(string name, bool recursive = false)
+        public virtual ControlBase FindChildByName(String name, Boolean recursive = false)
         {
             ControlBase b = Children.Where(x => x.Name == name).FirstOrDefault();
 
@@ -1181,7 +1181,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="child">Child to be removed.</param>
         /// <param name="dispose">Determines whether the child should be disposed (added to delayed delete queue).</param>
-        public virtual void RemoveChild(ControlBase child, bool dispose)
+        public virtual void RemoveChild(ControlBase child, Boolean dispose)
         {
             children.Remove(child);
             OnChildRemoved(child);
@@ -1222,7 +1222,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="x">Target x coordinate.</param>
         /// <param name="y">Target y coordinate.</param>
-        public virtual void MoveTo(int x, int y)
+        public virtual void MoveTo(Int32 x, Int32 y)
         {
             if (RestrictToParent && Parent != null)
             {
@@ -1259,9 +1259,9 @@ namespace Gwen.Net.Control
         /// <param name="x">Target x coordinate.</param>
         /// <param name="y">Target y coordinate.</param>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual void SetPosition(float x, float y)
+        public virtual void SetPosition(Single x, Single y)
         {
-            SetPosition((int) x, (int) y);
+            SetPosition((Int32) x, (Int32) y);
         }
 
         /// <summary>
@@ -1270,7 +1270,7 @@ namespace Gwen.Net.Control
         /// <param name="x">Target x coordinate.</param>
         /// <param name="y">Target y coordinate.</param>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual void SetPosition(int x, int y)
+        public virtual void SetPosition(Int32 x, Int32 y)
         {
             SetBounds(x, y, ActualWidth, ActualHeight);
         }
@@ -1282,7 +1282,7 @@ namespace Gwen.Net.Control
         /// <param name="height">New height.</param>
         /// <returns>True if bounds changed.</returns>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual bool SetSize(int width, int height)
+        public virtual Boolean SetSize(Int32 width, Int32 height)
         {
             return SetBounds(ActualLeft, ActualTop, width, height);
         }
@@ -1293,7 +1293,7 @@ namespace Gwen.Net.Control
         /// <param name="newBounds">New bounds.</param>
         /// <returns>True if bounds changed.</returns>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual bool SetBounds(Rectangle newBounds)
+        public virtual Boolean SetBounds(Rectangle newBounds)
         {
             return SetBounds(newBounds.X, newBounds.Y, newBounds.Width, newBounds.Height);
         }
@@ -1309,7 +1309,7 @@ namespace Gwen.Net.Control
         ///     True if bounds changed.
         /// </returns>
         /// <remarks>Bounds are reset after the next layout pass.</remarks>
-        public virtual bool SetBounds(int x, int y, int width, int height)
+        public virtual Boolean SetBounds(Int32 x, Int32 y, Int32 width, Int32 height)
         {
             if (bounds.X == x &&
                 bounds.Y == y &&
@@ -1453,7 +1453,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="currentSkin">New skin.</param>
         /// <param name="doChildren">Determines whether to change children skin.</param>
-        public virtual void SetSkin(SkinBase currentSkin, bool doChildren = false)
+        public virtual void SetSkin(SkinBase currentSkin, Boolean doChildren = false)
         {
             if (skin == currentSkin)
             {
@@ -1484,7 +1484,7 @@ namespace Gwen.Net.Control
         ///     Handler invoked on mouse wheel event.
         /// </summary>
         /// <param name="delta">Scroll delta.</param>
-        protected virtual bool OnMouseWheeled(int delta)
+        protected virtual Boolean OnMouseWheeled(Int32 delta)
         {
             if (actualParent != null)
             {
@@ -1497,7 +1497,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invokes mouse wheeled event (used by input system).
         /// </summary>
-        internal bool InputMouseWheeled(int delta)
+        internal Boolean InputMouseWheeled(Int32 delta)
         {
             return OnMouseWheeled(delta);
         }
@@ -1509,12 +1509,12 @@ namespace Gwen.Net.Control
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected virtual void OnMouseMoved(int x, int y, int dx, int dy) {}
+        protected virtual void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy) {}
 
         /// <summary>
         ///     Invokes mouse moved event (used by input system).
         /// </summary>
-        internal void InputMouseMoved(int x, int y, int dx, int dy)
+        internal void InputMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             OnMouseMoved(x, y, dx, dy);
         }
@@ -1525,18 +1525,18 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected virtual void OnMouseClickedLeft(int x, int y, bool down)
+        protected virtual void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             if (down && Clicked != null)
             {
-                Clicked(this, new ClickedEventArgs(x, y, true));
+                Clicked(this, new ClickedEventArgs(x, y, down: true));
             }
         }
 
         /// <summary>
         ///     Invokes left mouse click event (used by input system).
         /// </summary>
-        internal void InputMouseClickedLeft(int x, int y, bool down)
+        internal void InputMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             OnMouseClickedLeft(x, y, down);
         }
@@ -1547,18 +1547,18 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected virtual void OnMouseClickedRight(int x, int y, bool down)
+        protected virtual void OnMouseClickedRight(Int32 x, Int32 y, Boolean down)
         {
             if (down && RightClicked != null)
             {
-                RightClicked(this, new ClickedEventArgs(x, y, true));
+                RightClicked(this, new ClickedEventArgs(x, y, down: true));
             }
         }
 
         /// <summary>
         ///     Invokes right mouse click event (used by input system).
         /// </summary>
-        internal void InputMouseClickedRight(int x, int y, bool down)
+        internal void InputMouseClickedRight(Int32 x, Int32 y, Boolean down)
         {
             OnMouseClickedRight(x, y, down);
         }
@@ -1568,7 +1568,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
-        protected virtual void OnMouseDoubleClickedLeft(int x, int y)
+        protected virtual void OnMouseDoubleClickedLeft(Int32 x, Int32 y)
         {
             // [omeg] should this be called?
             // [halfofastaple] Maybe. Technically, a double click is still technically a single click. However, this shouldn't be called here, and
@@ -1584,7 +1584,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invokes left double mouse click event (used by input system).
         /// </summary>
-        internal void InputMouseDoubleClickedLeft(int x, int y)
+        internal void InputMouseDoubleClickedLeft(Int32 x, Int32 y)
         {
             OnMouseDoubleClickedLeft(x, y);
         }
@@ -1594,7 +1594,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
-        protected virtual void OnMouseDoubleClickedRight(int x, int y)
+        protected virtual void OnMouseDoubleClickedRight(Int32 x, Int32 y)
         {
             // [halfofastaple] See: OnMouseDoubleClicked for discussion on triggering single clicks in a double click event
             OnMouseClickedRight(x, y, down: true);
@@ -1608,7 +1608,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invokes right double mouse click event (used by input system).
         /// </summary>
-        internal void InputMouseDoubleClickedRight(int x, int y)
+        internal void InputMouseDoubleClickedRight(Int32 x, Int32 y)
         {
             OnMouseDoubleClickedRight(x, y);
         }
@@ -1726,7 +1726,7 @@ namespace Gwen.Net.Control
         /// <param name="x">Child X.</param>
         /// <param name="y">Child Y.</param>
         /// <returns>Control or null if not found.</returns>
-        public virtual ControlBase GetControlAt(int x, int y)
+        public virtual ControlBase GetControlAt(Int32 x, Int32 y)
         {
             if (IsHidden || IsCollapsed)
             {
@@ -1771,10 +1771,10 @@ namespace Gwen.Net.Control
         /// <returns>Minimum size that the control needs to draw itself correctly.</returns>
         protected virtual Size Measure(Size availableSize)
         {
-            int parentWidth = padding.Left + padding.Right;
-            int parentHeight = padding.Top + padding.Bottom;
-            int childrenWidth = padding.Left + padding.Right;
-            int childrenHeight = padding.Top + padding.Bottom;
+            Int32 parentWidth = padding.Left + padding.Right;
+            Int32 parentHeight = padding.Top + padding.Bottom;
+            Int32 childrenWidth = padding.Left + padding.Right;
+            Int32 childrenHeight = padding.Top + padding.Bottom;
 
             foreach (ControlBase child in children)
             {
@@ -1873,7 +1873,7 @@ namespace Gwen.Net.Control
         /// <param name="availableWidth">Width that is available for the control.</param>
         /// <param name="availableHeight">Height that is available for the control.</param>
         /// <returns>Minimum size that the control needs to draw itself correctly.</returns>
-        public Size DoMeasure(int availableWidth, int availableHeight)
+        public Size DoMeasure(Int32 availableWidth, Int32 availableHeight)
         {
             return DoMeasure(new Size(availableWidth, availableHeight));
         }
@@ -1945,10 +1945,10 @@ namespace Gwen.Net.Control
         /// <returns>Space that the control filled.</returns>
         protected virtual Size Arrange(Size finalSize)
         {
-            int childrenLeft = padding.Left;
-            int childrenTop = padding.Top;
-            int childrenRight = padding.Right;
-            int childrenBottom = padding.Bottom;
+            Int32 childrenLeft = padding.Left;
+            Int32 childrenTop = padding.Top;
+            Int32 childrenRight = padding.Right;
+            Int32 childrenBottom = padding.Bottom;
 
             foreach (ControlBase child in children)
             {
@@ -2058,7 +2058,7 @@ namespace Gwen.Net.Control
         /// <param name="y">Final vertical location. This includes margins.</param>
         /// <param name="width">Final width of the control. This includes margins.</param>
         /// <param name="height">Final height of the control. This includes margins.</param>
-        public void DoArrange(int x, int y, int width, int height)
+        public void DoArrange(Int32 x, Int32 y, Int32 width, Int32 height)
         {
             DoArrange(new Rectangle(x, y, width, height));
         }
@@ -2213,7 +2213,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="child">Control to examine.</param>
         /// <returns>True if the control is our child.</returns>
-        public bool IsChild(ControlBase child)
+        public Boolean IsChild(ControlBase child)
         {
             return children.Contains(child);
         }
@@ -2227,8 +2227,8 @@ namespace Gwen.Net.Control
         {
             if (actualParent != null)
             {
-                int x = pnt.X + ActualLeft;
-                int y = pnt.Y + ActualTop;
+                Int32 x = pnt.X + ActualLeft;
+                Int32 y = pnt.Y + ActualTop;
 
                 return actualParent.LocalPosToCanvas(new Point(x, y));
             }
@@ -2245,8 +2245,8 @@ namespace Gwen.Net.Control
         {
             if (actualParent != null)
             {
-                int x = pnt.X - ActualLeft;
-                int y = pnt.Y - ActualTop;
+                Int32 x = pnt.X - ActualLeft;
+                Int32 y = pnt.Y - ActualTop;
 
                 return actualParent.CanvasPosToLocal(new Point(x, y));
             }
@@ -2289,13 +2289,13 @@ namespace Gwen.Net.Control
         }
 
         // giver
-        public virtual Package DragAndDrop_GetPackage(int x, int y)
+        public virtual Package DragAndDrop_GetPackage(Int32 x, Int32 y)
         {
             return dragAndDropPackage;
         }
 
         // giver
-        public virtual bool DragAndDrop_Draggable()
+        public virtual Boolean DragAndDrop_Draggable()
         {
             if (dragAndDropPackage == null)
             {
@@ -2306,7 +2306,7 @@ namespace Gwen.Net.Control
         }
 
         // giver
-        public virtual void DragAndDrop_SetPackage(bool draggable, string name = "", object userData = null)
+        public virtual void DragAndDrop_SetPackage(Boolean draggable, String name = "", Object userData = null)
         {
             if (dragAndDropPackage == null)
             {
@@ -2315,23 +2315,23 @@ namespace Gwen.Net.Control
         }
 
         // giver
-        public virtual bool DragAndDrop_ShouldStartDrag()
+        public virtual Boolean DragAndDrop_ShouldStartDrag()
         {
             return true;
         }
 
         // giver
-        public virtual void DragAndDrop_StartDragging(Package package, int x, int y)
+        public virtual void DragAndDrop_StartDragging(Package package, Int32 x, Int32 y)
         {
             package.HoldOffset = CanvasPosToLocal(new Point(x, y));
             package.DrawControl = this;
         }
 
         // giver
-        public virtual void DragAndDrop_EndDragging(bool success, int x, int y) {}
+        public virtual void DragAndDrop_EndDragging(Boolean success, Int32 x, Int32 y) {}
 
         // receiver
-        public virtual bool DragAndDrop_HandleDrop(Package p, int x, int y)
+        public virtual Boolean DragAndDrop_HandleDrop(Package p, Int32 x, Int32 y)
         {
             DragAndDrop.SourceControl.Parent = this;
 
@@ -2339,16 +2339,16 @@ namespace Gwen.Net.Control
         }
 
         // receiver
-        public virtual void DragAndDrop_HoverEnter(Package p, int x, int y) {}
+        public virtual void DragAndDrop_HoverEnter(Package p, Int32 x, Int32 y) {}
 
         // receiver
         public virtual void DragAndDrop_HoverLeave(Package p) {}
 
         // receiver
-        public virtual void DragAndDrop_Hover(Package p, int x, int y) {}
+        public virtual void DragAndDrop_Hover(Package p, Int32 x, Int32 y) {}
 
         // receiver
-        public virtual bool DragAndDrop_CanAcceptPackage(Package p)
+        public virtual Boolean DragAndDrop_CanAcceptPackage(Package p)
         {
             return false;
         }
@@ -2358,7 +2358,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="accelerator">Accelerator text.</param>
         /// <returns>True if handled.</returns>
-        internal virtual bool HandleAccelerator(string accelerator)
+        internal virtual Boolean HandleAccelerator(String accelerator)
         {
             if (InputHandler.KeyboardFocus == this || !AccelOnlyFocus)
             {
@@ -2378,7 +2378,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="accelerator">Accelerator text.</param>
         /// <param name="handler">Handler.</param>
-        public void AddAccelerator(string accelerator, GwenEventHandler<EventArgs> handler)
+        public void AddAccelerator(String accelerator, GwenEventHandler<EventArgs> handler)
         {
             accelerator = accelerator.Trim().ToUpperInvariant();
             accelerators[accelerator] = handler;
@@ -2388,7 +2388,7 @@ namespace Gwen.Net.Control
         ///     Adds keyboard accelerator with a default handler.
         /// </summary>
         /// <param name="accelerator">Accelerator text.</param>
-        public void AddAccelerator(string accelerator)
+        public void AddAccelerator(String accelerator)
         {
             accelerators[accelerator] = DefaultAcceleratorHandler;
         }
@@ -2420,7 +2420,7 @@ namespace Gwen.Net.Control
         /// <param name="key">Key pressed.</param>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyPressed(GwenMappedKey key, bool down = true)
+        protected virtual Boolean OnKeyPressed(GwenMappedKey key, Boolean down = true)
         {
             var handled = false;
 
@@ -2487,7 +2487,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Invokes key press event (used by input system).
         /// </summary>
-        internal bool InputKeyPressed(GwenMappedKey key, bool down = true)
+        internal Boolean InputKeyPressed(GwenMappedKey key, Boolean down = true)
         {
             return OnKeyPressed(key, down);
         }
@@ -2497,7 +2497,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="key">Key pressed.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyReleaseed(GwenMappedKey key)
+        protected virtual Boolean OnKeyReleaseed(GwenMappedKey key)
         {
             return OnKeyPressed(key, down: false);
         }
@@ -2507,7 +2507,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyTab(bool down)
+        protected virtual Boolean OnKeyTab(Boolean down)
         {
             if (!down)
             {
@@ -2528,7 +2528,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeySpace(bool down)
+        protected virtual Boolean OnKeySpace(Boolean down)
         {
             return false;
         }
@@ -2538,7 +2538,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyReturn(bool down)
+        protected virtual Boolean OnKeyReturn(Boolean down)
         {
             return false;
         }
@@ -2548,7 +2548,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyBackspace(bool down)
+        protected virtual Boolean OnKeyBackspace(Boolean down)
         {
             return false;
         }
@@ -2558,7 +2558,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyDelete(bool down)
+        protected virtual Boolean OnKeyDelete(Boolean down)
         {
             return false;
         }
@@ -2568,7 +2568,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyRight(bool down)
+        protected virtual Boolean OnKeyRight(Boolean down)
         {
             return false;
         }
@@ -2578,7 +2578,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyLeft(bool down)
+        protected virtual Boolean OnKeyLeft(Boolean down)
         {
             return false;
         }
@@ -2588,7 +2588,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyHome(bool down)
+        protected virtual Boolean OnKeyHome(Boolean down)
         {
             return false;
         }
@@ -2598,7 +2598,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyEnd(bool down)
+        protected virtual Boolean OnKeyEnd(Boolean down)
         {
             return false;
         }
@@ -2608,7 +2608,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyUp(bool down)
+        protected virtual Boolean OnKeyUp(Boolean down)
         {
             return false;
         }
@@ -2618,7 +2618,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyDown(bool down)
+        protected virtual Boolean OnKeyDown(Boolean down)
         {
             return false;
         }
@@ -2628,7 +2628,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="down">Indicates whether the key was pressed or released.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnKeyEscape(bool down)
+        protected virtual Boolean OnKeyEscape(Boolean down)
         {
             return false;
         }
@@ -2732,19 +2732,19 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="chr">Character typed.</param>
         /// <returns>True if handled.</returns>
-        protected virtual bool OnChar(char chr)
+        protected virtual Boolean OnChar(Char chr)
         {
             return false;
         }
 
-        internal bool InputChar(char chr)
+        internal Boolean InputChar(Char chr)
         {
             return OnChar(chr);
         }
 
         private InternalFlags internalFlags;
 
-        private bool IsSetInternalFlag(InternalFlags flag)
+        private Boolean IsSetInternalFlag(InternalFlags flag)
         {
             return (internalFlags & flag) != 0;
         }
@@ -2754,7 +2754,7 @@ namespace Gwen.Net.Control
             return internalFlags & mask;
         }
 
-        private void SetInternalFlag(InternalFlags flag, bool value)
+        private void SetInternalFlag(InternalFlags flag, Boolean value)
         {
             if (value)
             {
@@ -2766,9 +2766,9 @@ namespace Gwen.Net.Control
             }
         }
 
-        private bool CheckAndChangeInternalFlag(InternalFlags flag, bool value)
+        private Boolean CheckAndChangeInternalFlag(InternalFlags flag, Boolean value)
         {
-            bool oldValue = (internalFlags & flag) != 0;
+            Boolean oldValue = (internalFlags & flag) != 0;
 
             if (oldValue == value)
             {
@@ -2787,7 +2787,7 @@ namespace Gwen.Net.Control
             return true;
         }
 
-        private bool CheckAndChangeInternalFlag(InternalFlags mask, InternalFlags flag)
+        private Boolean CheckAndChangeInternalFlag(InternalFlags mask, InternalFlags flag)
         {
             if ((internalFlags & mask) == flag)
             {

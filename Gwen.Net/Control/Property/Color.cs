@@ -27,7 +27,7 @@ namespace Gwen.Net.Control.Property
         /// <summary>
         ///     Property value.
         /// </summary>
-        public override string Value
+        public override String Value
         {
             get => textBox.Text;
             set => base.Value = value;
@@ -36,7 +36,7 @@ namespace Gwen.Net.Control.Property
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public override bool IsEditing => textBox == InputHandler.KeyboardFocus;
+        public override Boolean IsEditing => textBox == InputHandler.KeyboardFocus;
 
         /// <summary>
         ///     Color-select button press handler.
@@ -89,7 +89,7 @@ namespace Gwen.Net.Control.Property
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public override void SetValue(string value, bool fireEvents = false)
+        public override void SetValue(String value, Boolean fireEvents = false)
         {
             textBox.SetText(value, fireEvents);
         }
@@ -101,26 +101,26 @@ namespace Gwen.Net.Control.Property
 
         private Color GetColorFromText()
         {
-            string[] split = textBox.Text.Split(separator: ' ');
+            String[] split = textBox.Text.Split(separator: ' ');
 
-            byte red = 0;
-            byte green = 0;
-            byte blue = 0;
-            byte alpha = 255;
+            Byte red = 0;
+            Byte green = 0;
+            Byte blue = 0;
+            Byte alpha = 255;
 
             if (split.Length > 0 && split[0].Length > 0)
             {
-                byte.TryParse(split[0], out red);
+                Byte.TryParse(split[0], out red);
             }
 
             if (split.Length > 1 && split[1].Length > 0)
             {
-                byte.TryParse(split[1], out green);
+                Byte.TryParse(split[1], out green);
             }
 
             if (split.Length > 2 && split[2].Length > 0)
             {
-                byte.TryParse(split[2], out blue);
+                Byte.TryParse(split[2], out blue);
             }
 
             return new Color(alpha, red, green, blue);

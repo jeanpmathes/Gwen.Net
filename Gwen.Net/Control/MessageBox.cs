@@ -35,13 +35,13 @@ namespace Gwen.Net.Control
     /// </summary>
     public class MessageBoxButtonTexts
     {
-        public string Abort { get; init; } = "Abort";
-        public string Retry { get; init; } = "Retry";
-        public string Ignore { get; init; } = "Ignore";
-        public string Ok { get; init; } = "Ok";
-        public string Cancel { get; init; } = "Cancel";
-        public string Yes { get; init; } = "Yes";
-        public string No { get; init; } = "No";
+        public String Abort { get; init; } = "Abort";
+        public String Retry { get; init; } = "Retry";
+        public String Ignore { get; init; } = "Ignore";
+        public String Ok { get; init; } = "Ok";
+        public String Cancel { get; init; } = "Cancel";
+        public String Yes { get; init; } = "Yes";
+        public String No { get; init; } = "No";
 
         /// <summary>
         /// A shared instance of the default text. It is used by the <see cref="MessageBox"/> class by default.
@@ -67,7 +67,7 @@ namespace Gwen.Net.Control
         /// <param name="caption">Window caption.</param>
         /// <param name="buttonText">The text used in the message box buttons.</param>
         /// <param name="buttons">Message box buttons.</param>
-        public MessageBox(ControlBase parent, string text, string caption, 
+        public MessageBox(ControlBase parent, String text, String caption, 
             MessageBoxButtonTexts buttonText, MessageBoxButtons buttons = MessageBoxButtons.Ok)
             : base(parent)
         {
@@ -75,7 +75,7 @@ namespace Gwen.Net.Control
             VerticalAlignment = VerticalAlignment.Top;
 
             Canvas canvas = GetCanvas();
-            MaximumSize = new Size((int)(canvas.ActualWidth * 0.8f), canvas.ActualHeight);
+            MaximumSize = new Size((Int32)(canvas.ActualWidth * 0.8f), canvas.ActualHeight);
 
             StartPosition = StartPosition.CenterParent;
             Title = caption;
@@ -137,15 +137,15 @@ namespace Gwen.Net.Control
         /// <param name="buttonText">The text used in the message box buttons.</param>
         /// <param name="buttons">Message box buttons.</param>
         /// <returns>Message box.</returns>
-        public static MessageBox Show(ControlBase parent, string text,
-            string caption = "", MessageBoxButtonTexts buttonText = null, MessageBoxButtons buttons = MessageBoxButtons.Ok)
+        public static MessageBox Show(ControlBase parent, String text,
+            String caption = "", MessageBoxButtonTexts buttonText = null, MessageBoxButtons buttons = MessageBoxButtons.Ok)
         {
             MessageBox messageBox = new(parent, text, caption, buttonText ?? MessageBoxButtonTexts.Shared, buttons);
 
             return messageBox;
         }
 
-        private void CreateButton(ControlBase parent, string text, MessageBoxResult result)
+        private void CreateButton(ControlBase parent, String text, MessageBoxResult result)
         {
             Button button = new(parent);
             button.Width = 70;

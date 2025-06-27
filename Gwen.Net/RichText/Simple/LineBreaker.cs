@@ -10,19 +10,19 @@ namespace Gwen.Net.RichText.Simple
         public LineBreaker(RendererBase renderer, Font defaultFont)
             : base(renderer, defaultFont) {}
 
-        public override List<TextBlock> LineBreak(Paragraph currentParagraph, int totalWidth)
+        public override List<TextBlock> LineBreak(Paragraph currentParagraph, Int32 totalWidth)
         {
             List<Node> nodes = Split(currentParagraph);
 
-            int lineWidth = totalWidth - currentParagraph.Margin.Left - currentParagraph.Margin.Right - currentParagraph.FirstIndent;
+            Int32 lineWidth = totalWidth - currentParagraph.Margin.Left - currentParagraph.Margin.Right - currentParagraph.FirstIndent;
 
             List<TextBlock> textBlocks = new();
 
             var lineStart = 0;
-            int lineStop;
+            Int32 lineStop;
             var w = 0;
             var y = 0;
-            int x = currentParagraph.FirstIndent;
+            Int32 x = currentParagraph.FirstIndent;
             var index = 0;
 
             while (index < nodes.Count)
@@ -62,17 +62,17 @@ namespace Gwen.Net.RichText.Simple
                     var height = 0;
                     var baseline = 0;
 
-                    for (int i = lineStart; i <= lineStop; i++)
+                    for (Int32 i = lineStart; i <= lineStop; i++)
                     {
                         height = Math.Max(height, nodes[i].Size.Height);
-                        baseline = Math.Max(baseline, (int) ((TextPart) nodes[i].Part).Font.FontMetrics.Baseline);
+                        baseline = Math.Max(baseline, (Int32) ((TextPart) nodes[i].Part).Font.FontMetrics.Baseline);
                     }
 
                     StringBuilder str = new(capacity: 1000);
                     Part part = nodes[lineStart].Part;
-                    int blockStart = lineStart;
+                    Int32 blockStart = lineStart;
 
-                    for (int i = lineStart; i <= lineStop; i++)
+                    for (Int32 i = lineStart; i <= lineStop; i++)
                     {
                         if (i == lineStop || nodes[i + 1].Part != part)
                         {
@@ -82,7 +82,7 @@ namespace Gwen.Net.RichText.Simple
 
                             var h = 0;
 
-                            for (int k = blockStart; k <= i; k++)
+                            for (Int32 k = blockStart; k <= i; k++)
                             {
                                 if (nodes[k].IsSpace)
                                 {
@@ -97,7 +97,7 @@ namespace Gwen.Net.RichText.Simple
 
                             textBlock.Position = new Point(
                                 x,
-                                y + baseline - (int) ((TextPart) part).Font.FontMetrics.Baseline);
+                                y + baseline - (Int32) ((TextPart) part).Font.FontMetrics.Baseline);
 
                             textBlock.Text = str.ToString();
 
@@ -149,7 +149,7 @@ namespace Gwen.Net.RichText.Simple
             {
                 Part part = paragraph.Parts[partIndex];
 
-                string[] words = part.Split(ref font);
+                String[] words = part.Split(ref font);
 
                 if (font == null)
                 {
@@ -158,7 +158,7 @@ namespace Gwen.Net.RichText.Simple
 
                 for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)
                 {
-                    string word = words[wordIndex];
+                    String word = words[wordIndex];
 
                     if (word[index: 0] == ' ')
                     {
@@ -190,9 +190,9 @@ namespace Gwen.Net.RichText.Simple
         {
             public Part Part { get; }
             public Size Size { get; }
-            public string Text { get; }
+            public String Text { get; }
 
-            public Node(string text, Size size, Part part)
+            public Node(String text, Size size, Part part)
             {
                 Text = text;
                 Size = size;
@@ -213,9 +213,9 @@ namespace Gwen.Net.RichText.Simple
                 Part = null;
             }
 
-            public bool IsSpace => Text == null && Part != null;
+            public Boolean IsSpace => Text == null && Part != null;
 
-            public bool IsLineBreak => Part == null;
+            public Boolean IsLineBreak => Part == null;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Gwen.Net.Control
         private readonly ColorLerpBox lerpBox;
         private readonly NumericUpDown red;
 
-        private bool enableDefaultColor;
+        private Boolean enableDefaultColor;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="HSVColorPicker" /> class.
@@ -28,7 +28,7 @@ namespace Gwen.Net.Control
         {
             MouseInputEnabled = true;
 
-            int baseSize = BaseUnit;
+            Int32 baseSize = BaseUnit;
 
             lerpBox = new ColorLerpBox(this);
             lerpBox.Margin = Margin.Two;
@@ -111,7 +111,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Show / hide default color box
         /// </summary>
-        public bool EnableDefaultColor
+        public Boolean EnableDefaultColor
         {
             get => enableDefaultColor;
             set
@@ -128,7 +128,7 @@ namespace Gwen.Net.Control
 
         protected override void AdaptToScaleChange()
         {
-            int baseSize = BaseUnit;
+            Int32 baseSize = BaseUnit;
 
             after.Size = new Size(baseSize * 5, baseSize * 2);
             before.Size = new Size(baseSize * 5, baseSize * 2);
@@ -148,7 +148,7 @@ namespace Gwen.Net.Control
                 return;
             }
 
-            var value = (int) box.Value;
+            var value = (Int32) box.Value;
 
             if (value < 0)
             {
@@ -201,7 +201,7 @@ namespace Gwen.Net.Control
         /// <param name="color">Color to set.</param>
         /// <param name="onlyHue">Determines whether only the hue should be set.</param>
         /// <param name="reset">Determines whether the "before" color should be set as well.</param>
-        public void SetColor(Color color, bool onlyHue = false, bool reset = false)
+        public void SetColor(Color color, Boolean onlyHue = false, Boolean reset = false)
         {
             UpdateControls(color);
 

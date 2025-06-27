@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -31,7 +32,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the menu should open on mouse hover.
         /// </summary>
-        protected override bool ShouldHoverOpenMenu => IsMenuOpen();
+        protected override Boolean ShouldHoverOpenMenu => IsMenuOpen();
 
         /// <summary>
         ///     Closes the current menu.

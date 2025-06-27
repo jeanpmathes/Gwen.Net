@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -21,12 +22,12 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the bar is horizontal.
         /// </summary>
-        public bool IsHorizontal { get; set; }
+        public Boolean IsHorizontal { get; set; }
 
         /// <summary>
         ///     Indicates whether the bar is vertical.
         /// </summary>
-        public bool IsVertical
+        public Boolean IsVertical
         {
             get => !IsHorizontal;
             set => IsHorizontal = !value;
@@ -49,11 +50,11 @@ namespace Gwen.Net.Control.Internal
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected override void OnMouseMoved(int x, int y, int dx, int dy)
+        protected override void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             base.OnMouseMoved(x, y, dx, dy);
 
-            int buttonSize = (Parent as ScrollBar).ButtonSize;
+            Int32 buttonSize = (Parent as ScrollBar).ButtonSize;
 
             if (IsHorizontal)
             {

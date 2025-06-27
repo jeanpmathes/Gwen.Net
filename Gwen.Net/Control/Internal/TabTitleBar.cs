@@ -1,4 +1,5 @@
-﻿using Gwen.Net.DragDrop;
+﻿using System;
+using Gwen.Net.DragDrop;
 using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
@@ -26,7 +27,7 @@ namespace Gwen.Net.Control.Internal
             currentSkin.DrawTabTitleBar(this);
         }
 
-        public override void DragAndDrop_StartDragging(Package package, int x, int y)
+        public override void DragAndDrop_StartDragging(Package package, Int32 x, Int32 y)
         {
             DragAndDrop.SourceControl = Parent;
             DragAndDrop.SourceControl.DragAndDrop_StartDragging(package, x, y);

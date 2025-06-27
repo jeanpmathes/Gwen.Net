@@ -7,10 +7,10 @@ namespace Gwen.Net
     /// </summary>
     public struct Margin : IEquatable<Margin>
     {
-        public int Top { get; set; }
-        public int Bottom { get; set; }
-        public int Left { get; set; }
-        public int Right { get; set; }
+        public Int32 Top { get; set; }
+        public Int32 Bottom { get; set; }
+        public Int32 Left { get; set; }
+        public Int32 Right { get; set; }
 
         // common values
         public static Margin Zero { get; } = new(margin: 0);
@@ -25,7 +25,7 @@ namespace Gwen.Net
         public static Margin Nine { get; } = new(margin: 9);
         public static Margin Ten { get; } = new(margin: 10);
 
-        public Margin(int left, int top, int right, int bottom)
+        public Margin(Int32 left, Int32 top, Int32 right, Int32 bottom)
         {
             Top = top;
             Bottom = bottom;
@@ -33,7 +33,7 @@ namespace Gwen.Net
             Right = right;
         }
 
-        public Margin(int horizontal, int vertical)
+        public Margin(Int32 horizontal, Int32 vertical)
         {
             Top = vertical;
             Bottom = vertical;
@@ -41,7 +41,7 @@ namespace Gwen.Net
             Right = horizontal;
         }
 
-        public Margin(int margin)
+        public Margin(Int32 margin)
         {
             Top = margin;
             Bottom = margin;
@@ -49,17 +49,17 @@ namespace Gwen.Net
             Right = margin;
         }
 
-        public bool Equals(Margin other)
+        public Boolean Equals(Margin other)
         {
             return other.Top == Top && other.Bottom == Bottom && other.Left == Left && other.Right == Right;
         }
 
-        public static bool operator ==(Margin lhs, Margin rhs)
+        public static Boolean operator ==(Margin lhs, Margin rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Margin lhs, Margin rhs)
+        public static Boolean operator !=(Margin lhs, Margin rhs)
         {
             return !lhs.Equals(rhs);
         }
@@ -74,7 +74,7 @@ namespace Gwen.Net
             return new(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (ReferenceEquals(objA: null, obj))
             {
@@ -89,11 +89,11 @@ namespace Gwen.Net
             return Equals((Margin)obj);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             unchecked
             {
-                int result = Top;
+                Int32 result = Top;
                 result = (result * 397) ^ Bottom;
                 result = (result * 397) ^ Left;
                 result = (result * 397) ^ Right;
@@ -107,7 +107,7 @@ namespace Gwen.Net
             return new(padding.Left, padding.Top, padding.Right, padding.Bottom);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"Left = {Left} Top = {Top} Right = {Right} Bottom = {Bottom}";
         }

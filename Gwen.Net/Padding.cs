@@ -7,10 +7,10 @@ namespace Gwen.Net
     /// </summary>
     public struct Padding : IEquatable<Padding>
     {
-        public int Top { get; }
-        public int Bottom { get; }
-        public int Left{ get; }
-        public int Right { get; }
+        public Int32 Top { get; }
+        public Int32 Bottom { get; }
+        public Int32 Left{ get; }
+        public Int32 Right { get; }
 
         // common values
         public static Padding Zero { get; } = new(padding: 0);
@@ -20,7 +20,7 @@ namespace Gwen.Net
         public static Padding Four { get; } = new(padding: 4);
         public static Padding Five { get; } = new(padding: 5);
 
-        public Padding(int left, int top, int right, int bottom)
+        public Padding(Int32 left, Int32 top, Int32 right, Int32 bottom)
         {
             Top = top;
             Bottom = bottom;
@@ -28,7 +28,7 @@ namespace Gwen.Net
             Right = right;
         }
 
-        public Padding(int horizontal, int vertical)
+        public Padding(Int32 horizontal, Int32 vertical)
         {
             Top = vertical;
             Bottom = vertical;
@@ -36,7 +36,7 @@ namespace Gwen.Net
             Right = horizontal;
         }
 
-        public Padding(int padding)
+        public Padding(Int32 padding)
         {
             Top = padding;
             Bottom = padding;
@@ -44,17 +44,17 @@ namespace Gwen.Net
             Right = padding;
         }
 
-        public bool Equals(Padding other)
+        public Boolean Equals(Padding other)
         {
             return other.Top == Top && other.Bottom == Bottom && other.Left == Left && other.Right == Right;
         }
 
-        public static bool operator ==(Padding lhs, Padding rhs)
+        public static Boolean operator ==(Padding lhs, Padding rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(Padding lhs, Padding rhs)
+        public static Boolean operator !=(Padding lhs, Padding rhs)
         {
             return !lhs.Equals(rhs);
         }
@@ -69,7 +69,7 @@ namespace Gwen.Net
             return new(lhs.Left - rhs.Left, lhs.Top - rhs.Top, lhs.Right - rhs.Right, lhs.Bottom - rhs.Bottom);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (ReferenceEquals(objA: null, obj))
             {
@@ -84,11 +84,11 @@ namespace Gwen.Net
             return Equals((Padding)obj);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             unchecked
             {
-                int result = Top;
+                Int32 result = Top;
                 result = (result * 397) ^ Bottom;
                 result = (result * 397) ^ Left;
                 result = (result * 397) ^ Right;
@@ -102,7 +102,7 @@ namespace Gwen.Net
             return new(margin.Left, margin.Top, margin.Right, margin.Bottom);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"Left = {Left} Top = {Top} Right = {Right} Bottom = {Bottom}";
         }

@@ -103,7 +103,7 @@ namespace Gwen.Net.Tests.Components
             }
         }
 
-        private ControlBase CreateControls(ControlBase subject, Dock docking, string name, ControlBase container)
+        private ControlBase CreateControls(ControlBase subject, Dock docking, String name, ControlBase container)
         {
             GroupBox gb = new(container);
             gb.Text = name;
@@ -209,7 +209,7 @@ namespace Gwen.Net.Tests.Components
         private void PaddingChanged(ControlBase control, EventArgs args)
         {
             var val = (Slider) control;
-            var i = (int) val.Value;
+            var i = (Int32) val.Value;
             outer.Padding = new Padding(i, i, i, i);
         }
 
@@ -217,7 +217,7 @@ namespace Gwen.Net.Tests.Components
         {
             var inner = (ControlBase) control.UserData;
             var val = (Slider) control;
-            var i = (int) val.Value;
+            var i = (Int32) val.Value;
             inner.Margin = new Margin(i, i, i, i);
         }
 
@@ -228,7 +228,7 @@ namespace Gwen.Net.Tests.Components
 
             if (inner.HorizontalAlignment != HorizontalAlignment.Stretch)
             {
-                inner.Width = (int) val.Value;
+                inner.Width = (Int32) val.Value;
             }
         }
 
@@ -239,7 +239,7 @@ namespace Gwen.Net.Tests.Components
 
             if (inner.VerticalAlignment != VerticalAlignment.Stretch)
             {
-                inner.Height = (int) val.Value;
+                inner.Height = (Int32) val.Value;
             }
         }
 
@@ -272,8 +272,8 @@ namespace Gwen.Net.Tests.Components
             var inner = (ControlBase) control.UserData;
             var rbg = (RadioButtonGroup) control;
             var gb = (ControlBase) inner.UserData;
-            var w = (int) ((Slider) gb.FindChildByName("Width", recursive: true)).Value;
-            var h = (int) ((Slider) gb.FindChildByName("Height", recursive: true)).Value;
+            var w = (Int32) ((Slider) gb.FindChildByName("Width", recursive: true)).Value;
+            var h = (Int32) ((Slider) gb.FindChildByName("Height", recursive: true)).Value;
             inner.Dock = (Dock) rbg.Selected.UserData;
 
             switch (inner.Dock)

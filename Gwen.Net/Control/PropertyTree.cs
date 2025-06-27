@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control.Internal;
+﻿using System;
+using Gwen.Net.Control.Internal;
 using Gwen.Net.Control.Layout;
 using Gwen.Net.Skin;
 
@@ -28,7 +29,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Width of the first column (property names).
         /// </summary>
-        public int LabelWidth
+        public Int32 LabelWidth
         {
             get
             {
@@ -63,7 +64,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="label">Node label.</param>
         /// <returns>Newly created control</returns>
-        public Properties Add(string label)
+        public Properties Add(String label)
         {
             PropertyTreeNode node = new(this);
             node.Text = label;

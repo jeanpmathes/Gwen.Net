@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net.RichText.KnuthPlass
@@ -13,13 +14,13 @@ namespace Gwen.Net.RichText.KnuthPlass
             List<Node> nodes = new();
 
             Font font = defaultFont;
-            int width, height;
+            Int32 width, height;
 
             for (var partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
             {
                 Part part = paragraph.Parts[partIndex];
 
-                string[] words = part.Split(ref font);
+                String[] words = part.Split(ref font);
 
                 if (font == null)
                 {
@@ -28,7 +29,7 @@ namespace Gwen.Net.RichText.KnuthPlass
 
                 for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)
                 {
-                    string word = words[wordIndex];
+                    String word = words[wordIndex];
 
                     if (word[index: 0] == ' ')
                     {

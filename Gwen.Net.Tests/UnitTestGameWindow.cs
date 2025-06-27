@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using Boolean = System.Boolean;
 
 [assembly: SupportedOSPlatform("windows")]
 
@@ -16,11 +17,11 @@ namespace Gwen.Net.Tests
 {
     public class UnitTestGameWindow : GameWindow
     {
-        private const int MaxFrameSampleSize = 10000;
+        private const Int32 MaxFrameSampleSize = 10000;
         private readonly IGwenGui gui;
-        private readonly CircularBuffer<double> renderFrameTimes;
+        private readonly CircularBuffer<Double> renderFrameTimes;
 
-        private readonly CircularBuffer<double> updateFrameTimes;
+        private readonly CircularBuffer<Double> updateFrameTimes;
 
         private UnitTestHarnessControls unitTestControls;
 
@@ -38,11 +39,11 @@ namespace Gwen.Net.Tests
                         settings.SkinFile = new FileInfo("DefaultSkin2.png");
                     }));
 
-            updateFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
-            renderFrameTimes = new CircularBuffer<double>(MaxFrameSampleSize);
+            updateFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
+            renderFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(Boolean disposing)
         {
             gui.Dispose();
             base.Dispose(disposing);
@@ -68,7 +69,7 @@ namespace Gwen.Net.Tests
 
                 if (updateFrameTimes.Sum(t => t) >= 1)
                 {
-                    int frames = updateFrameTimes.Count();
+                    Int32 frames = updateFrameTimes.Count();
                     updateFrameTimes.Clear();
                     unitTestControls.UpdateFps = frames;
                 }
@@ -91,7 +92,7 @@ namespace Gwen.Net.Tests
 
                 if (renderFrameTimes.Sum(t => t) >= 1)
                 {
-                    int frames = renderFrameTimes.Count();
+                    Int32 frames = renderFrameTimes.Count();
                     renderFrameTimes.Clear();
                     unitTestControls.RenderFps = frames;
                 }

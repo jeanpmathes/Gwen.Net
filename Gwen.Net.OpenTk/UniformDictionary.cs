@@ -5,27 +5,27 @@ namespace Gwen.Net.OpenTk
 {
     public class UniformDictionary
     {
-        private readonly Dictionary<string, int> data;
-        private readonly int program;
-        private readonly Func<int, string, int> uniformLocationResolver;
+        private readonly Dictionary<String, Int32> data;
+        private readonly Int32 program;
+        private readonly Func<Int32, String, Int32> uniformLocationResolver;
 
-        public UniformDictionary(int program, Func<int, string, int> uniformLocationResolver)
+        public UniformDictionary(Int32 program, Func<Int32, String, Int32> uniformLocationResolver)
         {
-            data = new Dictionary<string, int>();
+            data = new Dictionary<String, Int32>();
             this.program = program;
             this.uniformLocationResolver = uniformLocationResolver;
         }
 
-        public int this[string key]
+        public Int32 this[String key]
         {
             get
             {
-                if (data.TryGetValue(key, out int loc))
+                if (data.TryGetValue(key, out Int32 loc))
                 {
                     return loc;
                 }
 
-                int uniformLocation = uniformLocationResolver.Invoke(program, key);
+                Int32 uniformLocation = uniformLocationResolver.Invoke(program, key);
                 data.Add(key, uniformLocation);
 
                 return uniformLocation;

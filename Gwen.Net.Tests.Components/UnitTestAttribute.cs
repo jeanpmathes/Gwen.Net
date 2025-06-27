@@ -6,11 +6,11 @@ namespace Gwen.Net.Tests.Components
     {
         public UnitTestAttribute()
         {
-            Order = int.MaxValue;
+            Order = Int32.MaxValue;
         }
 
-        public string Category { get; set; }
-        public int Order { get; set; }
-        public string Name { get; set; }
+        public String Category { get; set; }
+        public Int32 Order { get; set; }
+        public String Name { get; set; }
     }
 }

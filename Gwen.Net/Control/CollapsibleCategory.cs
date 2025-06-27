@@ -30,7 +30,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Header text.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => headerButton.Text;
             set => headerButton.Text = value;
@@ -39,7 +39,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the category is collapsed (closed).
         /// </summary>
-        public bool IsCategoryCollapsed
+        public Boolean IsCategoryCollapsed
         {
             get => headerButton.ToggleState;
             set => headerButton.ToggleState = value;
@@ -129,7 +129,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="name">Entry name (displayed).</param>
         /// <returns>Newly created control.</returns>
-        public Button Add(string name)
+        public Button Add(String name)
         {
             CategoryButton button = new(this);
             button.Text = name;
@@ -178,8 +178,8 @@ namespace Gwen.Net.Control
                 return headerSize;
             }
 
-            int width = headerSize.Width;
-            int height = headerSize.Height + Padding.Top + Padding.Bottom;
+            Int32 width = headerSize.Width;
+            Int32 height = headerSize.Height + Padding.Top + Padding.Bottom;
 
             foreach (ControlBase child in Children)
             {
@@ -214,8 +214,8 @@ namespace Gwen.Net.Control
                 return new Size(finalSize.Width, headerButton.MeasuredSize.Height);
             }
 
-            int y = headerButton.MeasuredSize.Height + Padding.Top;
-            int width = finalSize.Width - Padding.Left - Padding.Right;
+            Int32 y = headerButton.MeasuredSize.Height + Padding.Top;
+            Int32 width = finalSize.Width - Padding.Left - Padding.Right;
             var b = true;
 
             foreach (ControlBase child in Children)

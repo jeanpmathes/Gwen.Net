@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.RichText
 {
     public class Paragraph
     {
-        public Paragraph(Margin margin = new(), int firstIndent = 0, int remainingIndent = 0)
+        public Paragraph(Margin margin = new(), Int32 firstIndent = 0, Int32 remainingIndent = 0)
         {
             Margin = margin;
             FirstIndent = firstIndent;
@@ -15,25 +16,25 @@ namespace Gwen.Net.RichText
 
         public Margin Margin { get; }
 
-        public int FirstIndent { get; }
+        public Int32 FirstIndent { get; }
 
-        public int RemainigIndent { get; }
+        public Int32 RemainigIndent { get; }
 
-        public Paragraph Text(string text)
+        public Paragraph Text(String text)
         {
             Parts.Add(new TextPart(text));
 
             return this;
         }
 
-        public Paragraph Text(string text, Color color)
+        public Paragraph Text(String text, Color color)
         {
             Parts.Add(new TextPart(text, color));
 
             return this;
         }
 
-        public Paragraph Link(string text, string link, Color? color = null, Color? hoverColor = null,
+        public Paragraph Link(String text, String link, Color? color = null, Color? hoverColor = null,
             Font hoverFont = null)
         {
             Parts.Add(

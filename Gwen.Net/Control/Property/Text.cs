@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control.Property
+﻿using System;
+
+namespace Gwen.Net.Control.Property
 {
     /// <summary>
     ///     Text property.
@@ -24,7 +26,7 @@
         /// <summary>
         ///     Property value.
         /// </summary>
-        public override string Value
+        public override String Value
         {
             get => textBox.Text;
             set => base.Value = value;
@@ -33,19 +35,19 @@
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public override bool IsEditing => textBox.HasFocus;
+        public override Boolean IsEditing => textBox.HasFocus;
 
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public override bool IsHovered => base.IsHovered | textBox.IsHovered;
+        public override Boolean IsHovered => base.IsHovered | textBox.IsHovered;
 
         /// <summary>
         ///     Sets the property value.
         /// </summary>
         /// <param name="value">Value to set.</param>
         /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public override void SetValue(string value, bool fireEvents = false)
+        public override void SetValue(String value, Boolean fireEvents = false)
         {
             textBox.SetText(value, fireEvents);
         }

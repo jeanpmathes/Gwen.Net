@@ -27,7 +27,7 @@ namespace Gwen.Net.Control
         }
 
 
-        protected override float CalculateValue()
+        protected override Single CalculateValue()
         {
             return 1 - (sliderBar.ActualTop / (float) (ActualHeight - sliderBar.ActualHeight));
         }
@@ -36,7 +36,7 @@ namespace Gwen.Net.Control
         {
             sliderBar.MoveTo(
                 (ActualWidth - sliderBar.ActualWidth) / 2,
-                (int) ((ActualHeight - sliderBar.ActualHeight) * (1 - value)));
+                (Int32) ((ActualHeight - sliderBar.ActualHeight) * (1 - value)));
         }
 
         /// <summary>
@@ -45,13 +45,13 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
 
             sliderBar.MoveTo(
                 (ActualWidth - sliderBar.ActualWidth) / 2,
-                (int) (CanvasPosToLocal(new Point(x, y)).Y - (sliderBar.ActualHeight * 0.5)));
+                (Int32) (CanvasPosToLocal(new Point(x, y)).Y - (sliderBar.ActualHeight * 0.5)));
 
             sliderBar.InputMouseClickedLeft(x, y, down);
             OnMoved(sliderBar, EventArgs.Empty);

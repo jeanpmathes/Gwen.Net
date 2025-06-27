@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control
+﻿using System;
+
+namespace Gwen.Net.Control
 {
     /// <summary>
     ///     Text box with masked text.
@@ -8,7 +10,7 @@
     /// </remarks>
     public class TextBoxPassword : TextBox
     {
-        private string mask;
+        private String mask;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextBoxPassword" /> class.
@@ -23,14 +25,14 @@
         /// <summary>
         ///     Character used in place of actual characters for display.
         /// </summary>
-        public char MaskCharacter { get; set; }
+        public Char MaskCharacter { get; set; }
 
         /// <summary>
         ///     Handler for text changed event.
         /// </summary>
         protected override void OnTextChanged()
         {
-            mask = new string(MaskCharacter, Text.Length);
+            mask = new String(MaskCharacter, Text.Length);
             TextOverride = mask;
             base.OnTextChanged();
         }

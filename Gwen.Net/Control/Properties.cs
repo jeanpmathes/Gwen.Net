@@ -11,9 +11,9 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Properties : ContentControl
     {
-        internal const int DefaultLabelWidth = 80;
+        internal const Int32 DefaultLabelWidth = 80;
         private readonly SplitterBar splitterBar;
-        private int labelWidth;
+        private Int32 labelWidth;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Properties" /> class.
@@ -36,7 +36,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Width of the first column (property names).
         /// </summary>
-        internal int LabelWidth
+        internal Int32 LabelWidth
         {
             get => labelWidth;
             set
@@ -105,7 +105,7 @@ namespace Gwen.Net.Control
         /// <param name="label">Property name.</param>
         /// <param name="value">Initial value.</param>
         /// <returns>Newly created row.</returns>
-        public PropertyRow Add(string label, string value = "")
+        public PropertyRow Add(String label, String value = "")
         {
             return Add(label, new Text(this), value);
         }
@@ -117,7 +117,7 @@ namespace Gwen.Net.Control
         /// <param name="prop">Property control.</param>
         /// <param name="value">Initial value.</param>
         /// <returns>Newly created row.</returns>
-        public PropertyRow Add(string label, PropertyBase prop, string value = "")
+        public PropertyRow Add(String label, PropertyBase prop, String value = "")
         {
             PropertyRow row = new(this, prop);
             row.Label = label;

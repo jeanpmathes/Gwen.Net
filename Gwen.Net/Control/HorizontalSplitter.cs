@@ -8,8 +8,8 @@ namespace Gwen.Net.Control
         private readonly ControlBase[] sections;
         private readonly SplitterBar vSplitter;
 
-        private float vVal; // 0-1
-        private int zoomedSection; // 0-1
+        private Single vVal; // 0-1
+        private Int32 zoomedSection; // 0-1
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CrossSplitter" /> class.
@@ -38,7 +38,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Splitter position (0 - 1)
         /// </summary>
-        public float Value
+        public Single Value
         {
             get => vVal;
             set => SetVValue(value);
@@ -47,12 +47,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether any of the panels is zoomed.
         /// </summary>
-        public bool IsZoomed => zoomedSection != -1;
+        public Boolean IsZoomed => zoomedSection != -1;
 
         /// <summary>
         ///     Gets or sets a value indicating whether splitters should be visible.
         /// </summary>
-        public bool SplittersVisible
+        public Boolean SplittersVisible
         {
             get => vSplitter.ShouldDrawBackground;
             set => vSplitter.ShouldDrawBackground = value;
@@ -61,7 +61,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the size of the splitter.
         /// </summary>
-        public int SplitterSize { get; set; }
+        public Int32 SplitterSize { get; set; }
 
         /// <summary>
         ///     Invoked when one of the panels has been zoomed (maximized).
@@ -87,7 +87,7 @@ namespace Gwen.Net.Control
             Invalidate();
         }
 
-        public void SetVValue(float value)
+        public void SetVValue(Single value)
         {
             if (value <= 1f || value >= 0)
             {
@@ -103,9 +103,9 @@ namespace Gwen.Net.Control
             Invalidate();
         }
 
-        private float CalculateValueVertical()
+        private Single CalculateValueVertical()
         {
-            return vSplitter.ActualTop / (float) (ActualHeight - vSplitter.ActualHeight);
+            return vSplitter.ActualTop / (Single) (ActualHeight - vSplitter.ActualHeight);
         }
 
         protected override Size Measure(Size availableSize)
@@ -115,7 +115,7 @@ namespace Gwen.Net.Control
             vSplitter.DoMeasure(new Size(availableSize.Width, SplitterSize));
             size.Height += vSplitter.Height;
 
-            var v = (int) ((availableSize.Height - SplitterSize) * vVal);
+            var v = (Int32) ((availableSize.Height - SplitterSize) * vVal);
 
             if (zoomedSection == -1)
             {
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            var v = (int) ((finalSize.Height - SplitterSize) * vVal);
+            var v = (Int32) ((finalSize.Height - SplitterSize) * vVal);
 
             vSplitter.DoArrange(
                 new Rectangle(x: 0, v, vSplitter.MeasuredSize.Width, vSplitter.MeasuredSize.Height));
@@ -175,7 +175,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Section index (0-3).</param>
         /// <param name="panel">Control to assign.</param>
-        public void SetPanel(int index, ControlBase panel)
+        public void SetPanel(Int32 index, ControlBase panel)
         {
             sections[index] = panel;
 
@@ -192,7 +192,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Section index (0-3).</param>
         /// <returns>Specified section.</returns>
-        public ControlBase GetPanel(int index)
+        public ControlBase GetPanel(Int32 index)
         {
             return sections[index];
         }
@@ -248,7 +248,7 @@ namespace Gwen.Net.Control
         ///     Maximizes the specified panel so it fills the entire control.
         /// </summary>
         /// <param name="section">Panel index (0-3).</param>
-        public void Zoom(int section)
+        public void Zoom(Int32 section)
         {
             UnZoom();
 

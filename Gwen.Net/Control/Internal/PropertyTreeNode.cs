@@ -8,7 +8,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class PropertyTreeNode : ContentControl
     {
-        public const int TreeIndentation = 14;
+        public const Int32 TreeIndentation = 14;
         protected readonly Properties properties;
 
         protected readonly PropertyTree propertyTree;
@@ -44,7 +44,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Node's label.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => title.Text;
             set => title.Text = value;

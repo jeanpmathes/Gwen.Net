@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -8,7 +9,7 @@ namespace Gwen.Net.Platform
     {
         private static IPlatform platform;
 
-        public static string CurrentDirectory
+        public static String CurrentDirectory
         {
             get
             {
@@ -31,7 +32,7 @@ namespace Gwen.Net.Platform
         ///     Gets text from clipboard.
         /// </summary>
         /// <returns>Clipboard text.</returns>
-        public static string GetClipboardText()
+        public static String GetClipboardText()
         {
             Debug.Assert(platform != null);
 
@@ -43,7 +44,7 @@ namespace Gwen.Net.Platform
         /// </summary>
         /// <param name="text">Text to set.</param>
         /// <returns>True if succeeded.</returns>
-        public static bool SetClipboardText(string text)
+        public static Boolean SetClipboardText(String text)
         {
             Debug.Assert(platform != null);
 
@@ -55,11 +56,11 @@ namespace Gwen.Net.Platform
         ///     Gets elapsed time since this class was initalized.
         /// </summary>
         /// <returns>Time interval in seconds.</returns>
-        public static float GetTimeInSeconds()
+        public static Single GetTimeInSeconds()
         {
             Debug.Assert(platform != null);
 
-            return (float)platform.GetTimeInSeconds();
+            return (Single)platform.GetTimeInSeconds();
         }
 
         /// <summary>
@@ -84,77 +85,77 @@ namespace Gwen.Net.Platform
             return platform.GetSpecialFolders();
         }
 
-        public static string GetFileName(string path)
+        public static String GetFileName(String path)
         {
             Debug.Assert(platform != null);
 
             return platform.GetFileName(path);
         }
 
-        public static string GetDirectoryName(string path)
+        public static String GetDirectoryName(String path)
         {
             Debug.Assert(platform != null);
 
             return platform.GetDirectoryName(path);
         }
 
-        public static bool FileExists(string path)
+        public static Boolean FileExists(String path)
         {
             Debug.Assert(platform != null);
 
             return platform.FileExists(path);
         }
 
-        public static bool DirectoryExists(string path)
+        public static Boolean DirectoryExists(String path)
         {
             Debug.Assert(platform != null);
 
             return platform.DirectoryExists(path);
         }
 
-        public static void CreateDirectory(string path)
+        public static void CreateDirectory(String path)
         {
             Debug.Assert(platform != null);
 
             platform.CreateDirectory(path);
         }
 
-        public static string Combine(string path1, string path2)
+        public static String Combine(String path1, String path2)
         {
             Debug.Assert(platform != null);
 
             return platform.Combine(path1, path2);
         }
 
-        public static string Combine(string path1, string path2, string path3)
+        public static String Combine(String path1, String path2, String path3)
         {
             Debug.Assert(platform != null);
 
             return platform.Combine(path1, path2, path3);
         }
 
-        public static string Combine(string path1, string path2, string path3, string path4)
+        public static String Combine(String path1, String path2, String path3, String path4)
         {
             Debug.Assert(platform != null);
 
             return platform.Combine(path1, path2, path3, path4);
         }
 
-        public static IEnumerable<IFileSystemDirectoryInfo> GetDirectories(string path)
+        public static IEnumerable<IFileSystemDirectoryInfo> GetDirectories(String path)
         {
             Debug.Assert(platform != null);
 
             return platform.GetDirectories(path);
         }
 
-        public static IEnumerable<IFileSystemFileInfo> GetFiles(string path, string filter)
+        public static IEnumerable<IFileSystemFileInfo> GetFiles(String path, String filter)
         {
             Debug.Assert(platform != null);
 
             return platform.GetFiles(path, filter);
         }
 
-        public static Stream GetFileStream(string path, bool isWritable)
+        public static Stream GetFileStream(String path, Boolean isWritable)
         {
             Debug.Assert(platform != null);
 

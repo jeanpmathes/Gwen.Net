@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -21,12 +22,12 @@ namespace Gwen.Net.Control
             DeleteOnClose = false;
         }
 
-        internal override bool IsMenuComponent => true;
+        internal override Boolean IsMenuComponent => true;
 
         /// <summary>
         ///     Determines whether the popup should be disposed on close.
         /// </summary>
-        public bool DeleteOnClose { get; set; }
+        public Boolean DeleteOnClose { get; set; }
 
         /// <summary>
         ///     Renders the control using specified skin.

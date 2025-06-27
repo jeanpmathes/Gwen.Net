@@ -32,7 +32,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Text.
         /// </summary>
-        public virtual string Text
+        public virtual String Text
         {
             get => textBox.Text;
             set => textBox.SetText(value);
@@ -56,7 +56,7 @@ namespace Gwen.Net.Control
             set => textBox.Font = value;
         }
 
-        internal bool IsDepressed => button.IsDepressed;
+        internal Boolean IsDepressed => button.IsDepressed;
 
         /// <summary>
         ///     Invoked when the text has changed.

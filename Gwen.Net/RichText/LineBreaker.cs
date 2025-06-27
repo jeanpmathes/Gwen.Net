@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net.RichText
@@ -15,6 +16,6 @@ namespace Gwen.Net.RichText
 
         public Font DefaultFont { get; }
 
-        public abstract List<TextBlock> LineBreak(Paragraph currentParagraph, int width);
+        public abstract List<TextBlock> LineBreak(Paragraph currentParagraph, Int32 width);
     }
 }

@@ -12,9 +12,9 @@ namespace Gwen.Net.OpenTk
     {
         private readonly Bitmap bitmap;
         private readonly Graphics graphics;
-        private bool disposed;
+        private Boolean disposed;
 
-        public TextRenderer(int width, int height, RendererBase renderer)
+        public TextRenderer(Int32 width, Int32 height, RendererBase renderer)
         {
             if (width <= 0)
             {
@@ -52,7 +52,7 @@ namespace Gwen.Net.OpenTk
         ///     The origin (0, 0) lies at the top-left corner of the backing store.
         /// </param>
         /// <param name="format">The <see cref="StringFormat" /> that will be used.</param>
-        public void DrawString(string text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
+        public void DrawString(String text, System.Drawing.Font font, Brush brush, Point point, StringFormat format)
         {
             graphics.DrawString(
                 text,
@@ -64,7 +64,7 @@ namespace Gwen.Net.OpenTk
             OpenTkRendererBase.LoadTextureInternal(Texture, bitmap); // copy bitmap to gl texture
         }
 
-        private void Dispose(bool manual)
+        private void Dispose(Boolean manual)
         {
             if (!disposed)
             {

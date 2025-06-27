@@ -1,11 +1,13 @@
-﻿namespace Gwen.Net.Control.Layout
+﻿using System;
+
+namespace Gwen.Net.Control.Layout
 {
     /// <summary>
     ///     Arrange child controls into a row or a column.
     /// </summary>
     public class StackLayout : ControlBase
     {
-        private bool horizontal;
+        private Boolean horizontal;
 
         public StackLayout(ControlBase parent)
             : base(parent) {}
@@ -13,7 +15,7 @@
         /// <summary>
         ///     If set, arrange child controls into a row instead of a column.
         /// </summary>
-        public bool Horizontal
+        public Boolean Horizontal
         {
             get => horizontal;
             set
@@ -85,8 +87,8 @@
 
             if (horizontal)
             {
-                int height = finalSize.Height;
-                int x = Padding.Left;
+                Int32 height = finalSize.Height;
+                Int32 x = Padding.Left;
 
                 foreach (ControlBase child in Children)
                 {
@@ -104,8 +106,8 @@
                 return new Size(x, finalSize.Height + Padding.Top + Padding.Bottom);
             }
 
-            int width = finalSize.Width;
-            int y = Padding.Top;
+            Int32 width = finalSize.Width;
+            Int32 y = Padding.Top;
 
             foreach (ControlBase child in Children)
             {

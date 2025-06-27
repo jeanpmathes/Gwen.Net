@@ -31,7 +31,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is checked.
         /// </summary>
-        public bool IsChecked
+        public Boolean IsChecked
         {
             get => checkBox.IsChecked;
             set => checkBox.IsChecked = value;
@@ -40,7 +40,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Label text.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => label.Text;
             set => label.Text = value;
@@ -138,7 +138,7 @@ namespace Gwen.Net.Control
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeySpace(bool down)
+        protected override Boolean OnKeySpace(Boolean down)
         {
             base.OnKeySpace(down);
 

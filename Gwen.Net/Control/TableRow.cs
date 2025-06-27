@@ -18,7 +18,7 @@ namespace Gwen.Net.Control
         public TableRow(ControlBase parent)
             : base(parent)
         {
-            int columnCount = parent switch
+            Int32 columnCount = parent switch
             {
                 ListBox listBox => listBox.ColumnCount,
                 Table table => table.ColumnCount,
@@ -33,7 +33,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Column count.
         /// </summary>
-        public int ColumnCount
+        public Int32 ColumnCount
         {
             get => columns.Length;
             set => SetColumnCount(value);
@@ -42,18 +42,18 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the row is even or odd (used for alternate coloring).
         /// </summary>
-        public bool EvenRow { get; set; }
+        public Boolean EvenRow { get; set; }
 
         /// <summary>
         ///     Text of the first column.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => GetText();
             set => SetCellText(columnIndex: 0, value);
         }
 
-        internal ControlBase? GetColumn(int index)
+        internal ControlBase? GetColumn(Int32 index)
         {
             return columns[index];
         }
@@ -67,7 +67,7 @@ namespace Gwen.Net.Control
         ///     Sets the number of columns.
         /// </summary>
         /// <param name="newColumnCount">Number of columns.</param>
-        protected void SetColumnCount(int newColumnCount)
+        protected void SetColumnCount(Int32 newColumnCount)
         {
             if (newColumnCount == ColumnCount)
                 return;
@@ -96,7 +96,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column index.</param>
         /// <param name="width">Column width.</param>
-        public void SetColumnWidth(int column, int width)
+        public void SetColumnWidth(Int32 column, Int32 width)
         {
             ControlBase? label = columns[column];
             
@@ -113,7 +113,7 @@ namespace Gwen.Net.Control
         /// <param name="columnIndex">Column number.</param>
         /// <param name="text">Text to set.</param>
         /// <param name="alignment">Text alignment.</param>
-        public void SetCellText(int columnIndex, string text, Alignment alignment = Alignment.LeftTop)
+        public void SetCellText(Int32 columnIndex, String text, Alignment alignment = Alignment.LeftTop)
         {
             if (columnIndex >= ColumnCount)
             {
@@ -142,7 +142,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="columnIndex">The column index.</param>
         /// <param name="font">The font.</param>
-        public void SetCellFont(int columnIndex, Font font)
+        public void SetCellFont(Int32 columnIndex, Font font)
         {
             if (columns[columnIndex] is not Label label)
                 throw new ArgumentException("Cell is not a label", nameof(columnIndex));
@@ -175,7 +175,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column index.</param>
         /// <returns>Column cell text.</returns>
-        public string GetText(int column = 0)
+        public String GetText(Int32 column = 0)
         {
             if (columns[column] is not Label label)
                 throw new ArgumentException("Cell is not a label", nameof(column));
@@ -188,7 +188,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column number.</param>
         /// <param name="control">Cell contents.</param>
-        public void SetCellContents(int column, ControlBase control)
+        public void SetCellContents(Int32 column, ControlBase control)
         {
             if (columns[column] != null)
             {
@@ -206,7 +206,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column number.</param>
         /// <returns>Control embedded in the cell.</returns>
-        public ControlBase? GetCellContents(int column)
+        public ControlBase? GetCellContents(Int32 column)
         {
             return columns[column];
         }
@@ -273,7 +273,7 @@ namespace Gwen.Net.Control
         /// <inheritdoc/>
         protected override void Render(SkinBase currentSkin)
         {
-            currentSkin.DrawListBoxLine(this, false, EvenRow);
+            currentSkin.DrawListBoxLine(this, selected: false, EvenRow);
         }
 
         private Label CreateLabel() =>

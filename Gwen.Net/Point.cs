@@ -1,11 +1,13 @@
-﻿namespace Gwen.Net
+﻿using System;
+
+namespace Gwen.Net
 {
     public struct Point
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public Int32 X { get; set; }
+        public Int32 Y { get; set; }
 
-        public Point(int x, int y)
+        public Point(Int32 x, Int32 y)
         {
             X = x;
             Y = y;
@@ -26,17 +28,17 @@
             return new(pt1.X - pt2.X, pt1.Y - pt2.Y);
         }
 
-        public static bool operator ==(Point pt1, Point pt2)
+        public static Boolean operator ==(Point pt1, Point pt2)
         {
             return pt1.X == pt2.X && pt1.Y == pt2.Y;
         }
 
-        public static bool operator !=(Point pt1, Point pt2)
+        public static Boolean operator !=(Point pt1, Point pt2)
         {
             return pt1.X != pt2.X || pt1.Y != pt2.Y;
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
             if (obj is Point)
             {
@@ -46,12 +48,12 @@
             return false;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return X | (Y << 16);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return $"X = {X} Y = {Y}";
         }

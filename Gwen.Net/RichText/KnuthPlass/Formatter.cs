@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gwen.Net.Renderer;
 
 namespace Gwen.Net.RichText.KnuthPlass
@@ -14,14 +15,14 @@ namespace Gwen.Net.RichText.KnuthPlass
             this.defaultFont = defaultFont;
         }
 
-        public void MeasureText(Font font, string text, out int width, out int height)
+        public void MeasureText(Font font, String text, out Int32 width, out Int32 height)
         {
             Size p = renderer.MeasureText(font, text);
             width = p.Width;
             height = p.Height;
         }
 
-        public Size MeasureText(Font font, string text)
+        public Size MeasureText(Font font, String text)
         {
             Size size = renderer.MeasureText(font, text);
 

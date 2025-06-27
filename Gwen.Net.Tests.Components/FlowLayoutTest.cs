@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 using Gwen.Net.Control.Layout;
 
 namespace Gwen.Net.Tests.Components
@@ -20,7 +21,7 @@ namespace Gwen.Net.Tests.Components
             {
                 Button button;
                 var buttonNum = 1;
-                const int buttonCount = 10;
+                const Int32 buttonCount = 10;
 
                 for (var n = 0; n < buttonCount; n++)
                 {
@@ -42,7 +43,7 @@ namespace Gwen.Net.Tests.Components
             flowLayoutWidth.Min = 50;
             flowLayoutWidth.Max = 500;
             flowLayoutWidth.Value = flowLayout.Width;
-            flowLayoutWidth.ValueChanged += (_, _) => { flowLayout.Width = (int) flowLayoutWidth.Value; };
+            flowLayoutWidth.ValueChanged += (_, _) => { flowLayout.Width = (Int32) flowLayoutWidth.Value; };
         }
     }
 }

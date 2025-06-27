@@ -15,10 +15,10 @@ namespace Gwen.Net.Control
         private readonly ControlBase[] sections;
         private readonly SplitterBar vSplitter;
 
-        private float hVal; // 0-1
-        private float vVal; // 0-1
+        private Single hVal; // 0-1
+        private Single vVal; // 0-1
 
-        private int zoomedSection; // 0-3
+        private Int32 zoomedSection; // 0-3
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CrossSplitter" /> class.
@@ -58,12 +58,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether any of the panels is zoomed.
         /// </summary>
-        public bool IsZoomed => zoomedSection != -1;
+        public Boolean IsZoomed => zoomedSection != -1;
 
         /// <summary>
         ///     Gets or sets a value indicating whether splitters should be visible.
         /// </summary>
-        public bool SplittersVisible
+        public Boolean SplittersVisible
         {
             get => cSplitter.ShouldDrawBackground;
             set
@@ -77,7 +77,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the size of the splitter.
         /// </summary>
-        public int SplitterSize { get; set; }
+        public Int32 SplitterSize { get; set; }
 
         /// <summary>
         ///     Invoked when one of the panels has been zoomed (maximized).
@@ -124,18 +124,18 @@ namespace Gwen.Net.Control
 
         private void CalculateValueCenter()
         {
-            hVal = cSplitter.ActualLeft / (float) (ActualWidth - cSplitter.ActualWidth);
-            vVal = cSplitter.ActualTop / (float) (ActualHeight - cSplitter.ActualHeight);
+            hVal = cSplitter.ActualLeft / (Single) (ActualWidth - cSplitter.ActualWidth);
+            vVal = cSplitter.ActualTop / (Single) (ActualHeight - cSplitter.ActualHeight);
         }
 
-        private float CalculateValueVertical()
+        private Single CalculateValueVertical()
         {
-            return vSplitter.ActualTop / (float) (ActualHeight - vSplitter.ActualHeight);
+            return vSplitter.ActualTop / (Single) (ActualHeight - vSplitter.ActualHeight);
         }
 
-        private float CalculateValueHorizontal()
+        private Single CalculateValueHorizontal()
         {
-            return hSplitter.ActualLeft / (float) (ActualWidth - hSplitter.ActualWidth);
+            return hSplitter.ActualLeft / (Single) (ActualWidth - hSplitter.ActualWidth);
         }
 
         protected override Size Measure(Size availableSize)
@@ -147,8 +147,8 @@ namespace Gwen.Net.Control
             cSplitter.DoMeasure(new Size(SplitterSize, SplitterSize));
             size = new Size(hSplitter.Width, vSplitter.Height);
 
-            var h = (int) ((availableSize.Width - SplitterSize) * hVal);
-            var v = (int) ((availableSize.Height - SplitterSize) * vVal);
+            var h = (Int32) ((availableSize.Width - SplitterSize) * hVal);
+            var v = (Int32) ((availableSize.Height - SplitterSize) * vVal);
 
             if (zoomedSection == -1)
             {
@@ -189,8 +189,8 @@ namespace Gwen.Net.Control
 
         protected override Size Arrange(Size finalSize)
         {
-            var h = (int) ((finalSize.Width - SplitterSize) * hVal);
-            var v = (int) ((finalSize.Height - SplitterSize) * vVal);
+            var h = (Int32) ((finalSize.Width - SplitterSize) * hVal);
+            var v = (Int32) ((finalSize.Height - SplitterSize) * vVal);
 
             vSplitter.DoArrange(
                 new Rectangle(x: 0, v, vSplitter.MeasuredSize.Width, vSplitter.MeasuredSize.Height));
@@ -242,7 +242,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Section index (0-3).</param>
         /// <param name="panel">Control to assign.</param>
-        public void SetPanel(int index, ControlBase panel)
+        public void SetPanel(Int32 index, ControlBase panel)
         {
             sections[index] = panel;
 
@@ -259,7 +259,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Section index (0-3).</param>
         /// <returns>Specified section.</returns>
-        public ControlBase GetPanel(int index)
+        public ControlBase GetPanel(Int32 index)
         {
             return sections[index];
         }
@@ -323,7 +323,7 @@ namespace Gwen.Net.Control
         ///     Maximizes the specified panel so it fills the entire control.
         /// </summary>
         /// <param name="section">Panel index (0-3).</param>
-        public void Zoom(int section)
+        public void Zoom(Int32 section)
         {
             UnZoom();
 

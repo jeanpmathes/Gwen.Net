@@ -73,7 +73,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if multiple nodes can be selected at the same time.
         /// </summary>
-        public bool AllowMultiSelect { get; set; }
+        public Boolean AllowMultiSelect { get; set; }
 
         /// <summary>
         ///     Get the root node of the tree view. Root node is an invisible always expanded node that works
@@ -154,7 +154,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Node's name.</param>
         /// <param name="userData">Node's user data.</param>
         /// <returns>Newly created control.</returns>
-        public TreeNode AddNode(string label, string name = null, object userData = null)
+        public TreeNode AddNode(String label, String name = null, Object userData = null)
         {
             return RootNode.AddNode(label, name, userData);
         }
@@ -211,7 +211,7 @@ namespace Gwen.Net.Control
         /// <param name="userData">Node user data.</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByUserData(object userData, bool recursive = true)
+        public TreeNode FindNodeByUserData(Object userData, Boolean recursive = true)
         {
             return RootNode.FindNodeByUserData(userData, recursive);
         }
@@ -222,7 +222,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Node name</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByName(string name, bool recursive = true)
+        public TreeNode FindNodeByName(String name, Boolean recursive = true)
         {
             return RootNode.FindNodeByName(name, recursive);
         }

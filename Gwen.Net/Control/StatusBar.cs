@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control
 {
@@ -28,7 +29,7 @@ namespace Gwen.Net.Control
             label.Dock = Dock.Fill;
         }
 
-        public string Text
+        public String Text
         {
             get => label.Text;
             set => label.Text = value;
@@ -50,7 +51,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="control">Control to add.</param>
         /// <param name="right">Determines whether the control should be added to the right side of the bar.</param>
-        public void AddControl(ControlBase control, bool right)
+        public void AddControl(ControlBase control, Boolean right)
         {
             control.Parent = this;
             control.Dock = right ? Dock.Right : Dock.Left;

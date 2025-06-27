@@ -10,8 +10,8 @@ namespace Gwen.Net.Control
     public class ColorLerpBox : ControlBase
     {
         private Point cursorPos;
-        private bool depressed;
-        private float hue;
+        private Boolean depressed;
+        private Single hue;
         private Texture texture;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Linear color interpolation.
         /// </summary>
-        public static Color Lerp(Color toColor, Color fromColor, float amount)
+        public static Color Lerp(Color toColor, Color fromColor, Single amount)
         {
             Color delta = toColor.Subtract(fromColor);
             delta = delta.Multiply(amount);
@@ -67,15 +67,15 @@ namespace Gwen.Net.Control
         /// <param name="value">Value to set.</param>
         /// <param name="onlyHue">Determines whether to only set H value (not SV).</param>
         /// <param name="doEvents">Determines whether to invoke the ColorChanged event.</param>
-        public void SetColor(Color value, bool onlyHue = true, bool doEvents = true)
+        public void SetColor(Color value, Boolean onlyHue = true, Boolean doEvents = true)
         {
             var hsv = value.ToHSV();
             hue = hsv.H;
 
             if (!onlyHue)
             {
-                cursorPos.X = (int) (hsv.S * ActualWidth);
-                cursorPos.Y = (int) ((1 - hsv.V) * ActualHeight);
+                cursorPos.X = (Int32) (hsv.S * ActualWidth);
+                cursorPos.Y = (Int32) ((1 - hsv.V) * ActualHeight);
             }
 
             InvalidateTexture();
@@ -93,7 +93,7 @@ namespace Gwen.Net.Control
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected override void OnMouseMoved(int x, int y, int dx, int dy)
+        protected override void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             if (depressed)
             {
@@ -133,7 +133,7 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
             depressed = down;
@@ -156,10 +156,10 @@ namespace Gwen.Net.Control
         /// <param name="x">X</param>
         /// <param name="y">Y</param>
         /// <returns>Color value.</returns>
-        private Color GetColorAt(int x, int y)
+        private Color GetColorAt(Int32 x, Int32 y)
         {
-            float xPercent = x / (float) ActualWidth;
-            float yPercent = 1 - (y / (float) ActualHeight);
+            Single xPercent = x / (Single) ActualWidth;
+            Single yPercent = 1 - (y / (Single) ActualHeight);
 
             Color result = Util.HSVToColor(hue, xPercent, yPercent);
 
@@ -186,7 +186,7 @@ namespace Gwen.Net.Control
         {
             if (texture == null)
             {
-                var pixelData = new byte[ActualWidth * ActualHeight * 4];
+                var pixelData = new Byte[ActualWidth * ActualHeight * 4];
 
                 for (var x = 0; x < ActualWidth; x++)
                 {

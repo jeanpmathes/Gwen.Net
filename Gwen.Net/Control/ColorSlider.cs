@@ -9,8 +9,8 @@ namespace Gwen.Net.Control
     /// </summary>
     public class ColorSlider : ControlBase
     {
-        private bool depressed;
-        private int selectedDist;
+        private Boolean depressed;
+        private Int32 selectedDist;
         private Texture texture;
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Gwen.Net.Control
 
             if (texture == null)
             {
-                var pixelData = new byte[ActualWidth * ActualHeight * 4];
+                var pixelData = new Byte[ActualWidth * ActualHeight * 4];
 
                 for (var y = 0; y < ActualHeight; y++)
                 {
@@ -92,7 +92,7 @@ namespace Gwen.Net.Control
             currentSkin.Renderer.DrawColor = Color.White;
             currentSkin.Renderer.DrawTexturedRect(texture, new Rectangle(x: 5, y: 0, ActualWidth - 10, ActualHeight));
 
-            int drawHeight = selectedDist - 3;
+            Int32 drawHeight = selectedDist - 3;
 
             //Draw our selectors
             currentSkin.Renderer.DrawColor = Color.Black;
@@ -112,7 +112,7 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
             depressed = down;
@@ -136,7 +136,7 @@ namespace Gwen.Net.Control
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected override void OnMouseMoved(int x, int y, int dx, int dy)
+        protected override void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             if (depressed)
             {
@@ -161,18 +161,18 @@ namespace Gwen.Net.Control
             }
         }
 
-        private Color GetColorAtHeight(int y)
+        private Color GetColorAtHeight(Int32 y)
         {
-            float yPercent = y / (float) ActualHeight;
+            Single yPercent = y / (Single) ActualHeight;
 
             return Util.HSVToColor(yPercent * 360, s: 1, v: 1);
         }
 
-        public void SetColor(Color color, bool doEvents = true)
+        public void SetColor(Color color, Boolean doEvents = true)
         {
             var hsv = color.ToHSV();
 
-            selectedDist = (int) (hsv.H / 360 * ActualHeight);
+            selectedDist = (Int32) (hsv.H / 360 * ActualHeight);
 
             if (doEvents && ColorChanged != null)
             {

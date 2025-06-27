@@ -1,4 +1,6 @@
-﻿namespace Gwen.Net.Control.Internal
+﻿using System;
+
+namespace Gwen.Net.Control.Internal
 {
     public class WindowTitleBar : Dragger
     {
@@ -37,7 +39,7 @@
 
             if (!CloseButton.IsCollapsed)
             {
-                int closeButtonSize = finalSize.Height;
+                Int32 closeButtonSize = finalSize.Height;
 
                 CloseButton.DoArrange(
                     new Rectangle(finalSize.Width - 6 - closeButtonSize, y: 0, closeButtonSize, closeButtonSize));

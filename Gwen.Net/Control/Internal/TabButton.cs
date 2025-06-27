@@ -29,7 +29,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the tab is active.
         /// </summary>
-        public bool IsActive => Page != null && Page.IsVisible;
+        public Boolean IsActive => Page != null && Page.IsVisible;
 
         // todo: remove public access
         public TabControl TabControl
@@ -59,20 +59,20 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the control should be clipped to its bounds while rendering.
         /// </summary>
-        protected override bool ShouldClip => false;
+        protected override Boolean ShouldClip => false;
 
-        public override void DragAndDrop_StartDragging(Package package, int x, int y)
+        public override void DragAndDrop_StartDragging(Package package, Int32 x, Int32 y)
         {
             IsCollapsed = true;
         }
 
-        public override void DragAndDrop_EndDragging(bool success, int x, int y)
+        public override void DragAndDrop_EndDragging(Boolean success, Int32 x, Int32 y)
         {
             IsCollapsed = false;
             IsDepressed = false;
         }
 
-        public override bool DragAndDrop_ShouldStartDrag()
+        public override Boolean DragAndDrop_ShouldStartDrag()
         {
             return control.AllowReorder;
         }
@@ -93,7 +93,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyDown(bool down)
+        protected override Boolean OnKeyDown(Boolean down)
         {
             OnKeyRight(down);
 
@@ -107,7 +107,7 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyUp(bool down)
+        protected override Boolean OnKeyUp(Boolean down)
         {
             OnKeyLeft(down);
 
@@ -121,12 +121,12 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyRight(bool down)
+        protected override Boolean OnKeyRight(Boolean down)
         {
             if (down)
             {
-                int count = Parent.Children.Count;
-                int me = Parent.Children.IndexOf(this);
+                Int32 count = Parent.Children.Count;
+                Int32 me = Parent.Children.IndexOf(this);
 
                 if (me + 1 < count)
                 {
@@ -146,11 +146,11 @@ namespace Gwen.Net.Control.Internal
         /// <returns>
         ///     True if handled.
         /// </returns>
-        protected override bool OnKeyLeft(bool down)
+        protected override Boolean OnKeyLeft(Boolean down)
         {
             if (down)
             {
-                int me = Parent.Children.IndexOf(this);
+                Int32 me = Parent.Children.IndexOf(this);
 
                 if (me - 1 >= 0)
                 {

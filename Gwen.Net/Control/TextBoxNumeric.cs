@@ -11,7 +11,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current numeric value.
         /// </summary>
-        protected float value;
+        protected Single value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="TextBoxNumeric" /> class.
@@ -25,9 +25,9 @@ namespace Gwen.Net.Control
         /// <summary>
         /// Sets the number of decimal places to display.
         /// </summary>
-        public int DecimalPlaces { get; set; }
+        public Int32 DecimalPlaces { get; set; }
 
-        public static int DetermineDecimalPlaces(float value)
+        public static Int32 DetermineDecimalPlaces(Single value)
         {
             var decimalPlaces = 0;
             while (Math.Abs(value - Math.Round(value, decimalPlaces)) > 0.00001f)
@@ -41,7 +41,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Current numerical value.
         /// </summary>
-        public virtual float Value
+        public virtual Single Value
         {
             get => value;
             set
@@ -52,16 +52,16 @@ namespace Gwen.Net.Control
             }
         }
         
-        private string FormattedText => value.ToString($"F{DecimalPlaces}");
+        private String FormattedText => value.ToString($"F{DecimalPlaces}");
 
-        protected virtual bool IsTextAllowed(string str)
+        protected virtual Boolean IsTextAllowed(String str)
         {
             if (str == "" || str == "-")
             {
                 return true; // annoying if single - is not allowed
             }
 
-            return float.TryParse(str, out _);
+            return Single.TryParse(str, out _);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Gwen.Net.Control
         /// <param name="textToCheck">Text to check.</param>
         /// <param name="position">Cursor position.</param>
         /// <returns>True if allowed.</returns>
-        protected override bool IsTextAllowed(string textToCheck, int position)
+        protected override Boolean IsTextAllowed(String textToCheck, Int32 position)
         {
-            string newText = Text.Insert(position, textToCheck);
+            String newText = Text.Insert(position, textToCheck);
 
             return IsTextAllowed(newText);
         }
@@ -83,13 +83,13 @@ namespace Gwen.Net.Control
         /// </summary>
         protected override void OnTextChanged()
         {
-            if (string.IsNullOrEmpty(Text) || Text == "-")
+            if (String.IsNullOrEmpty(Text) || Text == "-")
             {
                 value = 0;
             }
             else
             {
-                value = float.Parse(Text);
+                value = Single.Parse(Text);
             }
 
             base.OnTextChanged();
@@ -100,7 +100,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="str">Text to set.</param>
         /// <param name="doEvents">Determines whether to invoke "text changed" event.</param>
-        public override void SetText(string str, bool doEvents = true)
+        public override void SetText(String str, Boolean doEvents = true)
         {
             if (IsTextAllowed(str))
             {
@@ -113,7 +113,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="newValue">Value to set.</param>
         /// <param name="doEvents">Determines whether to invoke "text changed" event.</param>
-        public virtual void SetValue(float newValue, bool doEvents = true)
+        public virtual void SetValue(Single newValue, Boolean doEvents = true)
         {
             value = newValue;
             base.SetText(FormattedText, doEvents);

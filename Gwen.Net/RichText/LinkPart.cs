@@ -1,14 +1,16 @@
-﻿namespace Gwen.Net.RichText
+﻿using System;
+
+namespace Gwen.Net.RichText
 {
     public class LinkPart : TextPart
     {
-        public LinkPart(string text, string link)
+        public LinkPart(String text, String link)
             : base(text)
         {
             Link = link;
         }
 
-        public LinkPart(string text, string link, Color color, Color? hoverColor = null, Font hoverFont = null)
+        public LinkPart(String text, String link, Color color, Color? hoverColor = null, Font hoverFont = null)
             : base(text, color)
         {
             Link = link;
@@ -24,13 +26,13 @@
             }
         }
 
-        public string Link { get; }
+        public String Link { get; }
 
         public Color? HoverColor { get; }
 
         public Font HoverFont { get; }
 
-        public override string[] Split(ref Font splitFont)
+        public override String[] Split(ref Font splitFont)
         {
             Font = splitFont;
 

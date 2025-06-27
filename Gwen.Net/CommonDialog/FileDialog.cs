@@ -14,21 +14,21 @@ namespace Gwen.Net.CommonDialog
     /// </summary>
     public abstract class FileDialog : Component
     {
-        private string currentFilter;
+        private String currentFilter;
 
-        private string currentFolder;
+        private String currentFolder;
         private readonly Label fileNameLabel;
         private readonly ComboBox filters;
 
         private readonly TreeControl folders;
 
-        private bool foldersOnly;
+        private Boolean foldersOnly;
         private readonly ListBox items;
         private readonly VerticalSplitter nameFilterSplitter;
         private readonly Button newFolder;
         private readonly Button ok;
 
-        private bool onClosing;
+        private Boolean onClosing;
         private readonly TextBox path;
         private readonly TextBox selectedName;
         private readonly Window window;
@@ -40,7 +40,7 @@ namespace Gwen.Net.CommonDialog
         protected FileDialog(ControlBase parent) : base(new Window(parent))
         {
             window = (Window) View;
-            window.Size = new Size(400, 300);
+            window.Size = new Size(width: 400, height: 300);
             window.StartPosition = StartPosition.CenterCanvas;
             window.Closed += OnWindowClosed;
 
@@ -73,7 +73,7 @@ namespace Gwen.Net.CommonDialog
             {
                 Dock = Dock.Right,
                 Margin = Margin.Two,
-                Padding = new Padding(10, 0, 10, 0),
+                Padding = new Padding(left: 10, top: 0, right: 10, bottom: 0),
                 Text = "New"
             };
             newFolder.Clicked += OnNewFolderClicked;
@@ -82,7 +82,7 @@ namespace Gwen.Net.CommonDialog
             {
                 Dock = Dock.Right,
                 Margin = Margin.Two,
-                Padding = new Padding(10, 0, 10, 0),
+                Padding = new Padding(left: 10, top: 0, right: 10, bottom: 0),
                 Text = "Up"
             };
             up.Clicked += OnUpClicked;
@@ -117,7 +117,7 @@ namespace Gwen.Net.CommonDialog
             {
                 Dock = Dock.Right,
                 Margin = Margin.Two,
-                Padding = new Padding(10, 0, 10, 0),
+                Padding = new Padding(left: 10, top: 0, right: 10, bottom: 0),
                 Width = 100,
                 Text = "Cancel"
             };
@@ -127,7 +127,7 @@ namespace Gwen.Net.CommonDialog
             {
                 Dock = Dock.Right,
                 Margin = Margin.Two,
-                Padding = new Padding(10, 0, 10, 0),
+                Padding = new Padding(left: 10, top: 0, right: 10, bottom: 0),
                 Width = 100,
                 Text = "Ok"
             };
@@ -175,7 +175,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Initial folder for the dialog.
         /// </summary>
-        public string InitialFolder
+        public String InitialFolder
         {
             set => SetPath(value);
         }
@@ -183,7 +183,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Set initial folder and selected item.
         /// </summary>
-        public string CurrentItem
+        public String CurrentItem
         {
             set
             {
@@ -195,7 +195,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Window title.
         /// </summary>
-        public string Title
+        public String Title
         {
             get => window.Title;
             set => window.Title = value;
@@ -204,7 +204,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     File filters. See <see cref="SetFilters(string, int)" />.
         /// </summary>
-        public string Filters
+        public String Filters
         {
             set => SetFilters(value);
         }
@@ -212,7 +212,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Text shown in the ok button.
         /// </summary>
-        public string OkButtonText
+        public String OkButtonText
         {
             get => ok.Text;
             set => ok.Text = value;
@@ -222,12 +222,12 @@ namespace Gwen.Net.CommonDialog
         ///     Function that is called when dialog is closed. If ok is pressed, parameter is the selected file / directory.
         ///     If cancel is pressed or window closed, parameter is null.
         /// </summary>
-        public Action<string> Callback { get; set; }
+        public Action<String> Callback { get; set; }
 
         /// <summary>
         ///     Hide or show new folder button.
         /// </summary>
-        public bool EnableNewFolder
+        public Boolean EnableNewFolder
         {
             get => !newFolder.IsCollapsed;
             set => newFolder.IsCollapsed = !value;
@@ -236,7 +236,7 @@ namespace Gwen.Net.CommonDialog
         /// <summary>
         ///     Show only directories.
         /// </summary>
-        protected bool FoldersOnly
+        protected Boolean FoldersOnly
         {
             get => foldersOnly;
             set
@@ -273,7 +273,7 @@ namespace Gwen.Net.CommonDialog
         /// </summary>
         /// <param name="newPath">Path.</param>
         /// <returns>True if the path change was successful. False otherwise.</returns>
-        public bool SetPath(string newPath)
+        public Boolean SetPath(String newPath)
         {
             if (DirectoryExists(newPath))
             {
@@ -292,9 +292,9 @@ namespace Gwen.Net.CommonDialog
         /// </summary>
         /// <param name="filterStr">Filter string. Format 'name|filter[|name|filter]...'</param>
         /// <param name="current">Set this index as a current filter.</param>
-        public void SetFilters(string filterStr, int current = 0)
+        public void SetFilters(String filterStr, Int32 current = 0)
         {
-            string[] newFilters = filterStr.Split(separator: '|');
+            String[] newFilters = filterStr.Split(separator: '|');
 
             if ((newFilters.Length & 0x1) == 0x1)
             {
@@ -315,7 +315,7 @@ namespace Gwen.Net.CommonDialog
         ///     Set current file or directory.
         /// </summary>
         /// <param name="item">File or directory. This doesn't need to exists.</param>
-        protected void SetCurrentItem(string item)
+        protected void SetCurrentItem(String item)
         {
             selectedName.Text = item;
         }
@@ -324,7 +324,7 @@ namespace Gwen.Net.CommonDialog
         ///     Close the dialog and call the call back function.
         /// </summary>
         /// <param name="callbackPath">Parameter for the call back function.</param>
-        protected void Close(string callbackPath)
+        protected void Close(String callbackPath)
         {
             OnClosing(callbackPath, doClose: true);
         }
@@ -333,7 +333,7 @@ namespace Gwen.Net.CommonDialog
         ///     Called when the user selects a file or directory.
         /// </summary>
         /// <param name="selectedPath">Full path of selected file or directory.</param>
-        protected virtual void OnItemSelected(string selectedPath)
+        protected virtual void OnItemSelected(String selectedPath)
         {
             if ((DirectoryExists(selectedPath) && foldersOnly) || (FileExists(selectedPath) && !foldersOnly))
             {
@@ -346,7 +346,7 @@ namespace Gwen.Net.CommonDialog
         /// </summary>
         /// <param name="submittedPath">Full path of the name.</param>
         /// <returns>Is the name valid.</returns>
-        protected virtual bool IsSubmittedNameOk(string submittedPath)
+        protected virtual Boolean IsSubmittedNameOk(String submittedPath)
         {
             if (DirectoryExists(submittedPath))
             {
@@ -372,7 +372,7 @@ namespace Gwen.Net.CommonDialog
         /// </summary>
         /// <param name="pathToValidate">Full path.</param>
         /// <returns>Is the path valid.</returns>
-        protected virtual bool ValidateFileName(string pathToValidate)
+        protected virtual Boolean ValidateFileName(String pathToValidate)
         {
             return true;
         }
@@ -382,7 +382,7 @@ namespace Gwen.Net.CommonDialog
         /// </summary>
         /// <param name="callbackPath">Path for the call back function</param>
         /// <param name="doClose">True if the dialog needs to be closed.</param>
-        protected virtual void OnClosing(string callbackPath, bool doClose)
+        protected virtual void OnClosing(String callbackPath, Boolean doClose)
         {
             if (onClosing)
             {
@@ -412,7 +412,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnUpClicked(ControlBase sender, ClickedEventArgs args)
         {
-            string newPath = GetDirectoryName(currentFolder);
+            String newPath = GetDirectoryName(currentFolder);
 
             if (newPath != null)
             {
@@ -422,7 +422,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnNewFolderClicked(ControlBase sender, ClickedEventArgs args)
         {
-            string folderPath = path.Text;
+            String folderPath = path.Text;
 
             if (DirectoryExists(folderPath))
             {
@@ -448,13 +448,13 @@ namespace Gwen.Net.CommonDialog
 
             if (node != null && node.UserData != null)
             {
-                SetPath(node.UserData as string);
+                SetPath(node.UserData as String);
             }
         }
 
         private void OnItemSelected(ControlBase sender, ItemSelectedEventArgs args)
         {
-            if (args.SelectedItem.UserData is string selectedPath)
+            if (args.SelectedItem.UserData is String selectedPath)
             {
                 OnItemSelected(selectedPath);
             }
@@ -462,7 +462,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnItemDoubleClicked(ControlBase sender, ItemSelectedEventArgs args)
         {
-            if (args.SelectedItem.UserData is string selectedPath)
+            if (args.SelectedItem.UserData is String selectedPath)
             {
                 if (DirectoryExists(selectedPath))
                 {
@@ -477,7 +477,7 @@ namespace Gwen.Net.CommonDialog
 
         private void OnNameSubmitted(ControlBase sender, EventArgs args)
         {
-            string submittedPath = Combine(currentFolder, selectedName.Text);
+            String submittedPath = Combine(currentFolder, selectedName.Text);
 
             if (IsSubmittedNameOk(submittedPath))
             {
@@ -487,13 +487,13 @@ namespace Gwen.Net.CommonDialog
 
         private void OnFilterSelected(ControlBase sender, ItemSelectedEventArgs args)
         {
-            currentFilter = filters.SelectedItem.UserData as string;
+            currentFilter = filters.SelectedItem.UserData as String;
             UpdateItemList();
         }
 
         private void OnOkClicked(ControlBase sender, ClickedEventArgs args)
         {
-            string clickedPath = Combine(currentFolder, selectedName.Text);
+            String clickedPath = Combine(currentFolder, selectedName.Text);
 
             if (ValidateFileName(clickedPath))
             {

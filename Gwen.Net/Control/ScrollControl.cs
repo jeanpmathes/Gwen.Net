@@ -13,10 +13,10 @@ namespace Gwen.Net.Control
         private readonly ScrollArea scrollArea;
         private readonly ScrollBar verticalScrollBar;
 
-        private bool autoSizeToContent;
+        private Boolean autoSizeToContent;
 
-        private bool canScrollH;
-        private bool canScrollV;
+        private Boolean canScrollH;
+        private Boolean canScrollV;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ScrollControl" /> class.
@@ -49,19 +49,19 @@ namespace Gwen.Net.Control
             IsVirtualControl = true;
         }
 
-        public int VerticalScroll
+        public Int32 VerticalScroll
         {
             get => -scrollArea.VerticalScroll;
             set => verticalScrollBar.SetScrollAmount(
-                value / (float) (ContentSize.Height - ViewableContentSize.Height),
+                value / (Single) (ContentSize.Height - ViewableContentSize.Height),
                 forceUpdate: true);
         }
 
-        public int HorizontalScroll
+        public Int32 HorizontalScroll
         {
             get => -scrollArea.HorizontalScroll;
             set => horizontalScrollBar.SetScrollAmount(
-                value / (float) (ContentSize.Width - ViewableContentSize.Width),
+                value / (Single) (ContentSize.Width - ViewableContentSize.Width),
                 forceUpdate: true);
         }
 
@@ -72,7 +72,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control can be scrolled horizontally.
         /// </summary>
-        public bool CanScrollH
+        public Boolean CanScrollH
         {
             get => canScrollH;
             set => EnableScroll(value, canScrollV);
@@ -81,7 +81,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control can be scrolled vertically.
         /// </summary>
-        public bool CanScrollV
+        public Boolean CanScrollV
         {
             get => canScrollV;
             set => EnableScroll(canScrollH, value);
@@ -90,7 +90,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     If set, try to set the control size the same as the content size. If it doesn't fit, enable scrolling.
         /// </summary>
-        public bool AutoSizeToContent
+        public Boolean AutoSizeToContent
         {
             get => autoSizeToContent;
             set
@@ -108,7 +108,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether the scroll bars should be hidden if not needed.
         /// </summary>
-        public bool AutoHideBars { get; set; }
+        public Boolean AutoHideBars { get; set; }
 
         public Size ViewableContentSize => scrollArea.ViewableContentSize;
 
@@ -119,7 +119,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="horizontal">Determines whether the horizontal scrollbar should be enabled.</param>
         /// <param name="vertical">Determines whether the vertical scrollbar should be enabled.</param>
-        public virtual void EnableScroll(bool horizontal, bool vertical)
+        public virtual void EnableScroll(Boolean horizontal, Boolean vertical)
         {
             canScrollV = vertical;
             canScrollH = horizontal;
@@ -144,8 +144,8 @@ namespace Gwen.Net.Control
             Size innerSize = availableSize - Padding;
 
             // Check if scroll bars visible because of auto hide flag not set
-            bool needScrollH = canScrollH && !AutoHideBars;
-            bool needScrollV = canScrollV && !AutoHideBars;
+            Boolean needScrollH = canScrollH && !AutoHideBars;
+            Boolean needScrollV = canScrollV && !AutoHideBars;
 
             Size scrollAreaSize = innerSize;
 
@@ -288,8 +288,8 @@ namespace Gwen.Net.Control
             verticalScrollBar.SetHoldIgnore(ignore: true);
             horizontalScrollBar.SetHoldIgnore(ignore: true);
             
-            int scrollAreaWidth = finalSize.Width - Padding.Left - Padding.Right;
-            int scrollAreaHeight = finalSize.Height - Padding.Top - Padding.Bottom;
+            Int32 scrollAreaWidth = finalSize.Width - Padding.Left - Padding.Right;
+            Int32 scrollAreaHeight = finalSize.Height - Padding.Top - Padding.Bottom;
 
             if (!verticalScrollBar.IsCollapsed && !horizontalScrollBar.IsCollapsed)
             {
@@ -349,7 +349,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="delta">Scroll delta.</param>
         /// <returns></returns>
-        protected override bool OnMouseWheeled(int delta)
+        protected override Boolean OnMouseWheeled(Int32 delta)
         {
             if (CanScrollV && verticalScrollBar.IsVisible)
             {
@@ -405,14 +405,14 @@ namespace Gwen.Net.Control
 
             if (CanScrollV && !verticalScrollBar.IsCollapsed)
             {
-                newInnerPanelPosY = (int) (-(ContentSize.Height - ViewableContentSize.Height) *
-                                           verticalScrollBar.ScrollAmount);
+                newInnerPanelPosY = (Int32) (-(ContentSize.Height - ViewableContentSize.Height) *
+                                             verticalScrollBar.ScrollAmount);
             }
 
             if (CanScrollH && !horizontalScrollBar.IsCollapsed)
             {
-                newInnerPanelPosX = (int) (-(ContentSize.Width - ViewableContentSize.Width) *
-                                           horizontalScrollBar.ScrollAmount);
+                newInnerPanelPosX = (Int32) (-(ContentSize.Width - ViewableContentSize.Width) *
+                                             horizontalScrollBar.ScrollAmount);
             }
 
             scrollArea.SetScrollPosition(newInnerPanelPosX, newInnerPanelPosY);

@@ -41,7 +41,7 @@ namespace Gwen.Net.Tests.Components
             ctrl = new NumericUpDown(layout);
             ctrl.Margin = Margin.Five;
             ctrl.Width = 70;
-            ctrl.Max = float.MaxValue;
+            ctrl.Max = Single.MaxValue;
             ctrl.Min = 0;
             ctrl.Step = 1f;
             ctrl.ValueChanged += OnValueChanged;

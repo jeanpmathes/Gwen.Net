@@ -50,7 +50,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines if tabs can be reordered by dragging.
         /// </summary>
-        public bool AllowReorder
+        public Boolean AllowReorder
         {
             get => TabStrip.AllowReorder;
             set => TabStrip.AllowReorder = value;
@@ -78,7 +78,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Number of tabs in the control.
         /// </summary>
-        public int TabCount => TabStrip.Children.Count;
+        public Int32 TabCount => TabStrip.Children.Count;
 
         // Ugly way to implement padding but other ways would be more complicated
         public override Padding Padding
@@ -117,7 +117,7 @@ namespace Gwen.Net.Control
         /// <param name="label">Tab label.</param>
         /// <param name="page">Page contents.</param>
         /// <returns>Newly created control.</returns>
-        public TabButton AddPage(string label, ControlBase page = null)
+        public TabButton AddPage(String label, ControlBase page = null)
         {
             if (null == page)
             {
@@ -227,7 +227,7 @@ namespace Gwen.Net.Control
             Size size = base.Arrange(finalSize);
 
             // At this point we know TabStrip location so lets move ScrollButtons
-            int buttonSize = scroll[0].Size.Width;
+            Int32 buttonSize = scroll[0].Size.Width;
 
             switch (TabStrip.StripPosition)
             {

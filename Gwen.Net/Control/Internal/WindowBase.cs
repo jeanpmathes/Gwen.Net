@@ -40,7 +40,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Is window draggable.
         /// </summary>
-        public bool IsDraggingEnabled
+        public Boolean IsDraggingEnabled
         {
             get => dragBar.Target != null;
             set => dragBar.Target = value ? this : null;
@@ -49,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Determines whether the control should be disposed on close.
         /// </summary>
-        public bool DeleteOnClose { get; set; }
+        public Boolean DeleteOnClose { get; set; }
 
         public override Padding Padding
         {
@@ -65,7 +65,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the control is on top of its parent's children.
         /// </summary>
-        public override bool IsOnTop => Parent.Children.LastOrDefault(x => x is Window) == this;
+        public override Boolean IsOnTop => Parent.Children.LastOrDefault(x => x is Window) == this;
 
         public event GwenEventHandler<EventArgs> Closed;
 
@@ -122,7 +122,7 @@ namespace Gwen.Net.Control.Internal
             }
         }
 
-        public override bool SetBounds(int x, int y, int width, int height)
+        public override Boolean SetBounds(Int32 x, Int32 y, Int32 width, Int32 height)
         {
             if (StartPosition == StartPosition.CenterCanvas)
             {

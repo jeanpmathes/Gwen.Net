@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -23,7 +24,7 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates whether the bar is horizontal.
         /// </summary>
-        public bool IsHorizontal { get; set; }
+        public Boolean IsHorizontal { get; set; }
 
         protected override void AdaptToScaleChange()
         {

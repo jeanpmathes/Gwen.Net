@@ -13,7 +13,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class TreeNode : ContentControl
     {
-        private bool selected;
+        private Boolean selected;
         protected readonly TreeNodeLabel title;
         protected readonly TreeToggleButton toggleButton;
 
@@ -61,19 +61,19 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether this is a root node.
         /// </summary>
-        public bool IsRoot { get; set; }
+        public Boolean IsRoot { get; set; }
 
         /// <summary>
         ///     Determines whether the node is selectable.
         /// </summary>
-        public bool IsSelectable { get; set; }
+        public Boolean IsSelectable { get; set; }
 
-        public int NodeCount => Children.Count;
+        public Int32 NodeCount => Children.Count;
 
         /// <summary>
         ///     Indicates whether the node is selected.
         /// </summary>
-        public bool IsSelected
+        public Boolean IsSelected
         {
             get => selected;
             set
@@ -141,7 +141,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Node's label.
         /// </summary>
-        public string Text
+        public String Text
         {
             get => title.Text;
             set => title.Text = value;
@@ -233,7 +233,7 @@ namespace Gwen.Net.Control
                     IsSelected,
                     title.ActualHeight,
                     title.ActualWidth,
-                    (int) (toggleButton.ActualTop + (toggleButton.ActualHeight * 0.5f)),
+                    (Int32) (toggleButton.ActualTop + (toggleButton.ActualHeight * 0.5f)),
                     bottom,
                     RootNode == Parent,
                     toggleButton.ActualWidth);
@@ -320,7 +320,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Node's name.</param>
         /// <param name="userData">User data.</param>
         /// <returns>Newly created control.</returns>
-        public TreeNode AddNode(string label, string name = null, object userData = null)
+        public TreeNode AddNode(String label, String name = null, Object userData = null)
         {
             TreeNode node = new(this);
             node.Text = label;
@@ -330,7 +330,7 @@ namespace Gwen.Net.Control
             return node;
         }
 
-        public TreeNode InsertNode(int index, string label, string name = null, object userData = null)
+        public TreeNode InsertNode(Int32 index, String label, String name = null, Object userData = null)
         {
             TreeNode node = AddNode(label, name, userData);
 
@@ -485,7 +485,7 @@ namespace Gwen.Net.Control
         /// <param name="userData">Node user data.</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByUserData(object userData, bool recursive = true)
+        public TreeNode FindNodeByUserData(Object userData, Boolean recursive = true)
         {
             if (Children.FirstOrDefault(x => x is TreeNode && x.UserData == userData) is TreeNode node)
             {
@@ -519,7 +519,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Node name</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByName(string name, bool recursive = true)
+        public TreeNode FindNodeByName(String name, Boolean recursive = true)
         {
             return FindChildByName(name, recursive) as TreeNode;
         }
@@ -583,7 +583,7 @@ namespace Gwen.Net.Control
             IsSelected = !IsSelected;
         }
 
-        public void SetImage(string textureName, Size? imageSize = null, Color? imageColor = null)
+        public void SetImage(String textureName, Size? imageSize = null, Color? imageColor = null)
         {
             title.SetImage(textureName);
 

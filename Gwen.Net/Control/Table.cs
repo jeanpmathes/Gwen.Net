@@ -8,15 +8,15 @@ namespace Gwen.Net.Control
     /// </summary>
     public class Table : ControlBase
     {
-        private int[] columnWidth;
+        private Int32[] columnWidth;
         
         /// <summary>
         /// For auto-sizing, if nonzero - fills last cell up to this size.
         /// </summary>
-        private int maxWidth;
+        private Int32 maxWidth;
         
-        private bool rowMeasurementDirty;
-        private bool sizeToContents;
+        private Boolean rowMeasurementDirty;
+        private Boolean sizeToContents;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Table" /> class.
@@ -24,7 +24,7 @@ namespace Gwen.Net.Control
         /// <param name="parent">Parent control.</param>
         public Table(ControlBase parent) : base(parent)
         {
-            columnWidth = new int[1];
+            columnWidth = new Int32[1];
 
             for (var i = 0; i < columnWidth.Length; i++)
             {
@@ -46,7 +46,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Column count (default 1).
         /// </summary>
-        public int ColumnCount
+        public Int32 ColumnCount
         {
             get => columnWidth.Length;
             set
@@ -59,18 +59,18 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Row count.
         /// </summary>
-        public int RowCount => Children.Count;
+        public Int32 RowCount => Children.Count;
 
-        public bool AutoSizeToContent { get; set; }
+        public Boolean AutoSizeToContent { get; set; }
 
-        public bool AlternateColor { get; set; }
+        public Boolean AlternateColor { get; set; }
 
         /// <summary>
         ///     Returns specific row of the table.
         /// </summary>
         /// <param name="index">Row index.</param>
         /// <returns>Row at the specified index.</returns>
-        public TableRow this[int index] => (TableRow) Children[index];
+        public TableRow this[Int32 index] => (TableRow) Children[index];
 
         protected override void OnChildAdded(ControlBase child)
         {
@@ -86,7 +86,7 @@ namespace Gwen.Net.Control
         ///     Sets the number of columns.
         /// </summary>
         /// <param name="count">Number of columns.</param>
-        public void SetColumnCount(int count)
+        public void SetColumnCount(Int32 count)
         {
             if (ColumnCount == count)
                 return;
@@ -104,7 +104,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column index.</param>
         /// <param name="width">Column width.</param>
-        public void SetColumnWidth(int column, int width)
+        public void SetColumnWidth(Int32 column, Int32 width)
         {
             if (columnWidth[column] == width)
             {
@@ -120,7 +120,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column index.</param>
         /// <returns>Column width.</returns>
-        public int GetColumnWidth(int column)
+        public Int32 GetColumnWidth(Int32 column)
         {
             return columnWidth[column];
         }
@@ -156,7 +156,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="text">Text to add.</param>
         /// <returns>New row.</returns>
-        public TableRow AddRow(string text)
+        public TableRow AddRow(String text)
         {
             TableRow row = AddRow();
             
@@ -180,7 +180,7 @@ namespace Gwen.Net.Control
         ///     Removes a row by index.
         /// </summary>
         /// <param name="idx">Row index.</param>
-        public void RemoveRow(int idx)
+        public void RemoveRow(Int32 idx)
         {
             var row = Children[idx] as TableRow;
             
@@ -203,7 +203,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="row">Row to search for.</param>
         /// <returns>Row index if found, -1 otherwise.</returns>
-        public int GetRowIndex(TableRow row)
+        public Int32 GetRowIndex(TableRow row)
         {
             return Children.IndexOf(row);
         }
@@ -256,7 +256,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Sizes to fit contents.
         /// </summary>
-        public void SizeToContent(int newMaxWidth = 0)
+        public void SizeToContent(Int32 newMaxWidth = 0)
         {
             maxWidth = newMaxWidth;
             sizeToContents = true;
@@ -287,7 +287,7 @@ namespace Gwen.Net.Control
             }
         }
         
-        private void SetColumnWidths(Size availableSize, out int width, out int height)
+        private void SetColumnWidths(Size availableSize, out Int32 width, out Int32 height)
         {
             width = 0;
             height = 0;
@@ -318,7 +318,7 @@ namespace Gwen.Net.Control
             Array.Fill(columnWidth, value: 0);
 
             DetermineColumnWidths(availableSize);
-            SetColumnWidths(availableSize, out int width, out int height);
+            SetColumnWidths(availableSize, out Int32 width, out Int32 height);
 
             rowMeasurementDirty = false;
 

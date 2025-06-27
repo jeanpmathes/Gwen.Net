@@ -4,7 +4,7 @@ using Gwen.Net.Platform;
 
 namespace Gwen.Net
 {
-    public delegate void ElapsedEventHandler(object sender, EventArgs args);
+    public delegate void ElapsedEventHandler(Object sender, EventArgs args);
 
     /// <summary>
     ///     Render based timer.
@@ -15,11 +15,11 @@ namespace Gwen.Net
     public class Timer : IDisposable
     {
         private static readonly List<Timer> timers = new();
-        private static float lastTime;
-        private static bool started;
-        private bool enabled;
+        private static Single lastTime;
+        private static Boolean started;
+        private Boolean enabled;
 
-        private int timerValue;
+        private Int32 timerValue;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Timer" /> class.
@@ -36,17 +36,17 @@ namespace Gwen.Net
         /// <summary>
         ///     Timer interval in milliseconds.
         /// </summary>
-        public int Interval { get; set; }
+        public Int32 Interval { get; set; }
 
         /// <summary>
         ///     If true, timer is disabled when timeout occurs.
         /// </summary>
-        public bool IsOneTime { get; set; }
+        public Boolean IsOneTime { get; set; }
 
         /// <summary>
         ///     Is timer enabled.
         /// </summary>
-        public bool IsEnabled
+        public Boolean IsEnabled
         {
             get => enabled;
             set
@@ -90,7 +90,7 @@ namespace Gwen.Net
             enabled = false;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (disposing)
             {
@@ -105,7 +105,7 @@ namespace Gwen.Net
                 return;
             }
 
-            float currentTime = GwenPlatform.GetTimeInSeconds();
+            Single currentTime = GwenPlatform.GetTimeInSeconds();
 
             if (!started)
             {
@@ -115,7 +115,7 @@ namespace Gwen.Net
                 return;
             }
 
-            var diff = (int) ((currentTime - lastTime) * 1000.0f);
+            var diff = (Int32) ((currentTime - lastTime) * 1000.0f);
 
             foreach (Timer timer in timers)
             {

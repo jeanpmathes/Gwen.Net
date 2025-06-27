@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -7,7 +8,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class CategoryButton : Button
     {
-        internal bool alt; // for alternate coloring
+        internal Boolean alt; // for alternate coloring
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CategoryButton" /> class.

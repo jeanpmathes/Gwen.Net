@@ -12,8 +12,8 @@ namespace Gwen.Net.Control
     {
         private readonly Label label;
         private readonly PropertyBase property;
-        private bool lastEditing;
-        private bool lastHover;
+        private Boolean lastEditing;
+        private Boolean lastHover;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PropertyRow" /> class.
@@ -36,12 +36,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the property value is being edited.
         /// </summary>
-        public bool IsEditing => property != null && property.IsEditing;
+        public Boolean IsEditing => property != null && property.IsEditing;
 
         /// <summary>
         ///     Property value.
         /// </summary>
-        public string Value
+        public String Value
         {
             get => property.Value;
             set => property.Value = value;
@@ -50,12 +50,12 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the control is hovered by mouse pointer.
         /// </summary>
-        public override bool IsHovered => base.IsHovered || (property != null && property.IsHovered);
+        public override Boolean IsHovered => base.IsHovered || (property != null && property.IsHovered);
 
         /// <summary>
         ///     Property name.
         /// </summary>
-        public string Label
+        public String Label
         {
             get => label.Text;
             set => label.Text = value;

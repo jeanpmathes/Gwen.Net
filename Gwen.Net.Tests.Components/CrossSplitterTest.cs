@@ -6,7 +6,7 @@ namespace Gwen.Net.Tests.Components
     [UnitTest(Category = "Layout", Order = 403)]
     public class CrossSplitterTest : GUnit
     {
-        private int curZoom;
+        private Int32 curZoom;
         private readonly CrossSplitter splitter;
 
         public CrossSplitterTest(ControlBase parent)

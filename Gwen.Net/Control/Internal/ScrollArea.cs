@@ -4,8 +4,8 @@ namespace Gwen.Net.Control.Internal
 {
     public class ScrollArea : InnerContentControl
     {
-        private bool canScrollH;
-        private bool canScrollV;
+        private Boolean canScrollH;
+        private Boolean canScrollV;
 
         public ScrollArea(ControlBase parent)
             : base(parent)
@@ -24,25 +24,25 @@ namespace Gwen.Net.Control.Internal
             set => SetScrollPosition(value.X, value.Y);
         }
 
-        public int VerticalScroll
+        public Int32 VerticalScroll
         {
             get => innerPanel.ActualTop;
             set => innerPanel.SetPosition(Content.ActualLeft, value);
         }
 
-        public int HorizontalScroll
+        public Int32 HorizontalScroll
         {
             get => innerPanel.ActualLeft;
             set => innerPanel.SetPosition(value, innerPanel.ActualTop);
         }
 
-        public virtual void EnableScroll(bool horizontal, bool vertical)
+        public virtual void EnableScroll(Boolean horizontal, Boolean vertical)
         {
             canScrollV = vertical;
             canScrollH = horizontal;
         }
 
-        public void SetScrollPosition(int horizontal, int vertical)
+        public void SetScrollPosition(Int32 horizontal, Int32 vertical)
         {
             innerPanel.SetPosition(horizontal, vertical);
         }
@@ -73,8 +73,8 @@ namespace Gwen.Net.Control.Internal
                 return finalSize;
             }
 
-            int scrollAreaWidth = Math.Max(finalSize.Width, innerPanel.MeasuredSize.Width);
-            int scrollAreaHeight = Math.Max(finalSize.Height, innerPanel.MeasuredSize.Height);
+            Int32 scrollAreaWidth = Math.Max(finalSize.Width, innerPanel.MeasuredSize.Width);
+            Int32 scrollAreaHeight = Math.Max(finalSize.Height, innerPanel.MeasuredSize.Height);
 
             innerPanel.DoArrange(new Rectangle(x: 0, y: 0, scrollAreaWidth, scrollAreaHeight));
 

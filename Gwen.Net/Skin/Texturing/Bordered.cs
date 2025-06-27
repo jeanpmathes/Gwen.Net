@@ -1,10 +1,11 @@
-﻿using Gwen.Net.Renderer;
+﻿using System;
+using Gwen.Net.Renderer;
 
 namespace Gwen.Net.Skin.Texturing
 {
     public struct SubRect
     {
-        public float[] uv;
+        public System.Single[] uv;
     }
 
     /// <summary>
@@ -18,24 +19,24 @@ namespace Gwen.Net.Skin.Texturing
 
         private Margin margin;
 
-        private float width;
-        private float height;
+        private System.Single width;
+        private System.Single height;
 
-        public Bordered(Texture texture, float x, float y, float w, float h, Margin inMargin,
-            float drawMarginScale = 1.0f)
+        public Bordered(Texture texture, System.Single x, System.Single y, System.Single w, System.Single h, Margin inMargin,
+            System.Single drawMarginScale = 1.0f)
             : this()
         {
             rects = new SubRect[9];
 
             for (var i = 0; i < rects.Length; i++)
             {
-                rects[i].uv = new float[4];
+                rects[i].uv = new System.Single[4];
             }
 
             Init(texture, x, y, w, h, inMargin, drawMarginScale);
         }
 
-        private void DrawRect(RendererBase render, int i, int x, int y, int w, int h)
+        private void DrawRect(RendererBase render, Int32 i, Int32 x, Int32 y, Int32 w, Int32 h)
         {
             render.DrawTexturedRect(
                 texture,
@@ -46,10 +47,10 @@ namespace Gwen.Net.Skin.Texturing
                 rects[i].uv[3]);
         }
 
-        private void SetRect(int num, float x, float y, float w, float h)
+        private void SetRect(Int32 num, System.Single x, System.Single y, System.Single w, System.Single h)
         {
-            float textureWidth = texture.Width;
-            float textureHeight = texture.Height;
+            System.Single textureWidth = texture.Width;
+            System.Single textureHeight = texture.Height;
 
             rects[num].uv[0] = x / textureWidth;
             rects[num].uv[1] = y / textureHeight;
@@ -58,8 +59,8 @@ namespace Gwen.Net.Skin.Texturing
             rects[num].uv[3] = (y + h) / textureHeight;
         }
 
-        private void Init(Texture initTexture, float x, float y, float w, float h, Margin inMargin,
-            float drawMarginScale = 1.0f)
+        private void Init(Texture initTexture, System.Single x, System.Single y, System.Single w, System.Single h, Margin inMargin,
+            System.Single drawMarginScale = 1.0f)
         {
             texture = initTexture;
 
@@ -96,10 +97,10 @@ namespace Gwen.Net.Skin.Texturing
 
             SetRect(num: 8, x + w - margin.Right, y + h - margin.Bottom, margin.Right, margin.Bottom);
 
-            margin.Left = (int) (margin.Left * drawMarginScale);
-            margin.Right = (int) (margin.Right * drawMarginScale);
-            margin.Top = (int) (margin.Top * drawMarginScale);
-            margin.Bottom = (int) (margin.Bottom * drawMarginScale);
+            margin.Left = (Int32) (margin.Left * drawMarginScale);
+            margin.Right = (Int32) (margin.Right * drawMarginScale);
+            margin.Top = (Int32) (margin.Top * drawMarginScale);
+            margin.Bottom = (Int32) (margin.Bottom * drawMarginScale);
 
             width = w - x;
             height = h - y;

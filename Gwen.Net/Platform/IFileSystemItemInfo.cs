@@ -1,9 +1,11 @@
-﻿namespace Gwen.Net.Platform
+﻿using System;
+
+namespace Gwen.Net.Platform
 {
     public interface IFileSystemItemInfo
     {
-        string Name { get; }
-        string FullName { get; }
-        string FormattedLastWriteTime { get; }
+        String Name { get; }
+        String FullName { get; }
+        String FormattedLastWriteTime { get; }
     }
 }

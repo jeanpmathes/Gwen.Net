@@ -12,11 +12,11 @@ namespace Gwen.Net.Control
     /// </summary>
     public class RichLabel : ControlBase
     {
-        private int buildWidth;
+        private Int32 buildWidth;
         private Document document;
-        private bool needsRebuild;
+        private Boolean needsRebuild;
         private Size textSize;
-        private bool updating;
+        private Boolean updating;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RichLabel" /> class.
@@ -60,9 +60,9 @@ namespace Gwen.Net.Control
 #endif
 
                 var y = 0;
-                int x;
-                int width;
-                int height;
+                Int32 x;
+                Int32 width;
+                Int32 height;
 
                 foreach (Paragraph paragraph in document.Paragraphs)
                 {

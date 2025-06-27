@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 
 namespace Gwen.Net.Input
 {
@@ -7,16 +8,16 @@ namespace Gwen.Net.Input
     /// </summary>
     public class KeyData
     {
-        public bool[] KeyState { get; }
-        public float[] NextRepeat { get; }
-        public bool LeftMouseDown { get; set; }
-        public bool RightMouseDown { get; set; }
+        public Boolean[] KeyState { get; }
+        public Single[] NextRepeat { get; }
+        public Boolean LeftMouseDown { get; set; }
+        public Boolean RightMouseDown { get; set; }
         public ControlBase Target { get; set; }
 
         public KeyData()
         {
-            KeyState = new bool[(int)GwenMappedKey.Count];
-            NextRepeat = new float[(int)GwenMappedKey.Count];
+            KeyState = new Boolean[(Int32)GwenMappedKey.Count];
+            NextRepeat = new Single[(Int32)GwenMappedKey.Count];
             // everything is initialized to 0 by default
         }
     }

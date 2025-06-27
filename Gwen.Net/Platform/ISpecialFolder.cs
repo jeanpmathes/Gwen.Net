@@ -1,9 +1,11 @@
-﻿namespace Gwen.Net.Platform
+﻿using System;
+
+namespace Gwen.Net.Platform
 {
     public interface ISpecialFolder
     {
-        string Name { get; }
-        string Category { get; }
-        string Path { get; }
+        String Name { get; }
+        String Category { get; }
+        String Path { get; }
     }
 }

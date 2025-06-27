@@ -49,7 +49,7 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         /// <param name="child">Child to be removed.</param>
         /// <param name="dispose">Determines whether the child should be disposed (added to delayed delete queue).</param>
-        public override void RemoveChild(ControlBase child, bool dispose)
+        public override void RemoveChild(ControlBase child, Boolean dispose)
         {
             // If we removed our inner panel, remove our pointer to it.
             if (innerPanel == child)
@@ -76,7 +76,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="name">Child name.</param>
         /// <param name="recursive">Determines whether the search should be recursive.</param>
         /// <returns>Found control or null.</returns>
-        public override ControlBase FindChildByName(string name, bool recursive = false)
+        public override ControlBase FindChildByName(String name, Boolean recursive = false)
         {
             return innerPanel is InnerContentControl ? innerPanel.FindChildByName(name, recursive) : base.FindChildByName(name, recursive);
         }

@@ -26,27 +26,27 @@ namespace Gwen.Net
         /// <summary>
         ///     Texture name. Usually file name, but exact meaning depends on renderer.
         /// </summary>
-        public string Name { get; set; }
+        public String Name { get; set; }
 
         /// <summary>
         ///     Renderer data.
         /// </summary>
-        public object? RendererData { get; set; }
+        public Object? RendererData { get; set; }
 
         /// <summary>
         ///     Indicates that the texture failed to load.
         /// </summary>
-        public bool Failed { get; set; }
+        public Boolean Failed { get; set; }
 
         /// <summary>
         ///     Texture width.
         /// </summary>
-        public int Width { get; set; }
+        public Int32 Width { get; set; }
 
         /// <summary>
         ///     Texture height.
         /// </summary>
-        public int Height { get; set; }
+        public Int32 Height { get; set; }
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -62,7 +62,7 @@ namespace Gwen.Net
         /// </summary>
         /// <param name="name">Texture name.</param>
         /// <param name="errorCallback">Callback to invoke when texture fails to load.</param>
-        public void Load(string name, Action<Exception> errorCallback)
+        public void Load(String name, Action<Exception> errorCallback)
         {
             Name = name;
             renderer.LoadTexture(this, errorCallback);
@@ -74,7 +74,7 @@ namespace Gwen.Net
         /// <param name="width">Texture width.</param>
         /// <param name="height">Texture height.</param>
         /// <param name="pixelData">Color array in RGBA format.</param>
-        public void LoadRaw(int width, int height, byte[] pixelData)
+        public void LoadRaw(Int32 width, Int32 height, Byte[] pixelData)
         {
             Width = width;
             Height = height;

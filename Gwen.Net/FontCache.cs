@@ -8,7 +8,7 @@ namespace Gwen.Net
     {
         private static FontCache instance;
 
-        private readonly Dictionary<string, Font> fontCache = new();
+        private readonly Dictionary<String, Font> fontCache = new();
 
         public void Dispose()
         {
@@ -17,7 +17,7 @@ namespace Gwen.Net
             instance = null;
         }
 
-        public static Font GetFont(RendererBase renderer, string faceName, int size = 10, FontStyle style = 0)
+        public static Font GetFont(RendererBase renderer, String faceName, Int32 size = 10, FontStyle style = 0)
         {
             if (instance == null)
             {
@@ -35,9 +35,9 @@ namespace Gwen.Net
             }
         }
 
-        private Font InternalGetFont(RendererBase renderer, string faceName, int size, FontStyle style)
+        private Font InternalGetFont(RendererBase renderer, String faceName, Int32 size, FontStyle style)
         {
-            string id = $"{faceName};{size};{(int) style}";
+            String id = $"{faceName};{size};{(Int32) style}";
             Font font;
 
             if (!fontCache.TryGetValue(id, out font))
@@ -70,11 +70,11 @@ namespace Gwen.Net
             return font;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(Boolean disposing)
         {
             if (disposing)
             {
-                foreach (KeyValuePair<string, Font> font in fontCache)
+                foreach (KeyValuePair<String, Font> font in fontCache)
                 {
                     font.Value.Dispose();
                 }

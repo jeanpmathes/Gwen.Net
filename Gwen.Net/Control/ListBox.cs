@@ -15,7 +15,7 @@ namespace Gwen.Net.Control
         private readonly List<ListBoxRow> selectedRows;
         private readonly Table table;
 
-        private bool multiSelect;
+        private Boolean multiSelect;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ListBox" /> class.
@@ -43,7 +43,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether multiple rows can be selected at once.
         /// </summary>
-        public bool AllowMultiSelect
+        public Boolean AllowMultiSelect
         {
             get => multiSelect;
             set
@@ -60,9 +60,9 @@ namespace Gwen.Net.Control
         /// <summary>
         /// Whether to require the shift key to be held down to multi-select.
         /// </summary>
-        public bool RequireShiftToMultiSelect { get; set; }
+        public Boolean RequireShiftToMultiSelect { get; set; }
 
-        public bool AlternateColor
+        public Boolean AlternateColor
         {
             get => table.AlternateColor;
             set => table.AlternateColor = value;
@@ -71,19 +71,19 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether rows can be unselected by clicking on them again.
         /// </summary>
-        public bool IsToggle { get; set; }
+        public Boolean IsToggle { get; set; }
 
         /// <summary>
         ///     Number of rows in the list box.
         /// </summary>
-        public int RowCount => table.RowCount;
+        public Int32 RowCount => table.RowCount;
 
         /// <summary>
         ///     Returns specific row of the ListBox.
         /// </summary>
         /// <param name="index">Row index.</param>
         /// <returns>Row at the specified index.</returns>
-        public ListBoxRow this[int index] => (ListBoxRow) table[index];
+        public ListBoxRow this[Int32 index] => (ListBoxRow) table[index];
 
         /// <summary>
         ///     List of selected rows.
@@ -120,7 +120,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets the selected row number, or <c>-1</c> if no row is selected.
         /// </summary>
-        public int SelectedRowIndex
+        public Int32 SelectedRowIndex
         {
             get
             {
@@ -139,7 +139,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Column count of table rows.
         /// </summary>
-        public int ColumnCount
+        public Int32 ColumnCount
         {
             get => table.ColumnCount;
             set
@@ -169,7 +169,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="rowText">Text to search for (exact match).</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRows(string rowText, bool clearOthers = false)
+        public void SelectRows(String rowText, Boolean clearOthers = false)
         {
             IEnumerable<ListBoxRow> rows = table.Children.OfType<ListBoxRow>().Where(x => x.Text == rowText);
 
@@ -185,9 +185,9 @@ namespace Gwen.Net.Control
         /// <param name="pattern">Regex pattern to search for.</param>
         /// <param name="regexOptions">Regex options.</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRowsByRegex(string pattern, 
+        public void SelectRowsByRegex(String pattern, 
             RegexOptions regexOptions = RegexOptions.None,
-            bool clearOthers = false)
+            Boolean clearOthers = false)
         {
             IEnumerable<ListBoxRow> rows = table.Children.OfType<ListBoxRow>()
                 .Where(x => Regex.IsMatch(x.Text, pattern, regexOptions));
@@ -203,7 +203,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="index">Row to select.</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRow(int index, bool clearOthers = false)
+        public void SelectRow(Int32 index, Boolean clearOthers = false)
         {
             if (index < 0 || index >= table.RowCount)
             {
@@ -218,7 +218,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="control">Row to select.</param>
         /// <param name="clearOthers">Determines whether to deselect previously selected rows.</param>
-        public void SelectRow(ControlBase control, bool clearOthers = false)
+        public void SelectRow(ControlBase control, Boolean clearOthers = false)
         {
             if (control is not ListBoxRow row)
             {
@@ -253,7 +253,7 @@ namespace Gwen.Net.Control
         ///     Removes the specified row by index.
         /// </summary>
         /// <param name="idx">Row index.</param>
-        public void RemoveRow(int idx)
+        public void RemoveRow(Int32 idx)
         {
             // This will call Dispose() on the row.
             table.RemoveRow(idx);
@@ -266,7 +266,7 @@ namespace Gwen.Net.Control
         /// <param name="name">Internal control name.</param>
         /// <param name="userData">User data for newly created row</param>
         /// <returns>Newly created control.</returns>
-        public ListBoxRow AddRow(string label, string name = "", object? userData = null)
+        public ListBoxRow AddRow(String label, String name = "", Object? userData = null)
         {
             ListBoxRow row = new(this);
             table.AddRow(row);
@@ -304,7 +304,7 @@ namespace Gwen.Net.Control
         /// </summary>
         /// <param name="column">Column index.</param>
         /// <param name="width">Column width.</param>
-        public void SetColumnWidth(int column, int width)
+        public void SetColumnWidth(Int32 column, Int32 width)
         {
             table.SetColumnWidth(column, width);
             Invalidate();
@@ -353,7 +353,7 @@ namespace Gwen.Net.Control
         /// <param name="args">Event arguments.</param>
         protected virtual void OnRowSelected(ControlBase control, ItemSelectedEventArgs args)
         {
-            bool clear = RequireShiftToMultiSelect && !InputHandler.IsShiftDown;
+            Boolean clear = RequireShiftToMultiSelect && !InputHandler.IsShiftDown;
 
             if (args.SelectedItem is not ListBoxRow row)
             {
@@ -401,7 +401,7 @@ namespace Gwen.Net.Control
         ///     If a menu item can not be found that matches input, nothing happens.
         /// </summary>
         /// <param name="text">The label to look for, this is what is shown to the user.</param>
-        public void SelectByText(string text)
+        public void SelectByText(String text)
         {
             foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
@@ -418,7 +418,7 @@ namespace Gwen.Net.Control
         ///     If a menu item can not be found that matches input, nothing happens.
         /// </summary>
         /// <param name="name">The internal name to look for. To select by what is displayed to the user, use "SelectByText".</param>
-        public void SelectByName(string name)
+        public void SelectByName(String name)
         {
             foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {
@@ -438,7 +438,7 @@ namespace Gwen.Net.Control
         ///     The UserData to look for. The equivalency check uses "param.Equals(item.UserData)".
         ///     If null is passed in, it will look for null/unset UserData.
         /// </param>
-        public void SelectByUserData(object userdata)
+        public void SelectByUserData(Object userdata)
         {
             foreach (ListBoxRow item in table.Children.Cast<ListBoxRow>())
             {

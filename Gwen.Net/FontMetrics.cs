@@ -1,21 +1,23 @@
-﻿namespace Gwen.Net
+﻿using System;
+
+namespace Gwen.Net
 {
     /// <summary>
     ///     Font metrics.
     /// </summary>
     public struct FontMetrics
     {
-        public float EmHeightPixels { get; internal set; }
-        public float AscentPixels { get; internal set; }
-        public float DescentPixels { get; internal set; }
-        public float CellHeightPixels { get; internal set; }
-        public float InternalLeadingPixels { get; internal set; }
-        public float LineSpacingPixels { get; internal set; }
-        public float ExternalLeadingPixels { get; internal set; }
+        public Single EmHeightPixels { get; internal set; }
+        public Single AscentPixels { get; internal set; }
+        public Single DescentPixels { get; internal set; }
+        public Single CellHeightPixels { get; internal set; }
+        public Single InternalLeadingPixels { get; internal set; }
+        public Single LineSpacingPixels { get; internal set; }
+        public Single ExternalLeadingPixels { get; internal set; }
 
-        public float Top => InternalLeadingPixels;
-        public float Baseline => AscentPixels;
-        public float Bottom => CellHeightPixels;
+        public Single Top => InternalLeadingPixels;
+        public Single Baseline => AscentPixels;
+        public Single Bottom => CellHeightPixels;
 
         public FontMetrics(Font font)
         {
@@ -30,13 +32,13 @@
 
         public FontMetrics
         (
-            float emHeightPixels,
-            float ascentPixels,
-            float descentPixels,
-            float cellHeightPixels,
-            float internalLeadingPixels,
-            float lineSpacingPixels,
-            float externalLeadingPixels
+            Single emHeightPixels,
+            Single ascentPixels,
+            Single descentPixels,
+            Single cellHeightPixels,
+            Single internalLeadingPixels,
+            Single lineSpacingPixels,
+            Single externalLeadingPixels
         )
         {
             EmHeightPixels = emHeightPixels;

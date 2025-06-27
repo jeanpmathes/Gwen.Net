@@ -10,7 +10,7 @@ namespace Gwen.Net.Control
     public class MenuItem : Button
     {
         private Label accelerator;
-        private bool @checked;
+        private Boolean @checked;
         private Menu menu;
         private ControlBase submenuArrow;
 
@@ -29,17 +29,17 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the item is on a menu strip.
         /// </summary>
-        public bool IsOnStrip => Parent is MenuStrip;
+        public Boolean IsOnStrip => Parent is MenuStrip;
 
         /// <summary>
         ///     Determines if the menu item is checkable.
         /// </summary>
-        public bool IsCheckable { get; set; }
+        public Boolean IsCheckable { get; set; }
 
         /// <summary>
         ///     Indicates if the parent menu is open.
         /// </summary>
-        public bool IsMenuOpen
+        public Boolean IsMenuOpen
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Gets or sets the check value.
         /// </summary>
-        public bool IsChecked
+        public Boolean IsChecked
         {
             get => @checked;
             set
@@ -191,7 +191,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Internal OnPressed implementation.
         /// </summary>
-        protected override void OnClicked(int x, int y)
+        protected override void OnClicked(Int32 x, Int32 y)
         {
             if (menu != null)
             {
@@ -287,11 +287,11 @@ namespace Gwen.Net.Control
             return this;
         }
 
-        public void SetAccelerator(string acc)
+        public void SetAccelerator(String acc)
         {
             accelerator = null;
 
-            if (acc == string.Empty)
+            if (acc == String.Empty)
             {
                 return;
             }
@@ -301,7 +301,7 @@ namespace Gwen.Net.Control
             accelerator.Margin = new Margin(left: 0, top: 0, right: 16, bottom: 0);
         }
 
-        public override ControlBase FindChildByName(string name, bool recursive = false)
+        public override ControlBase FindChildByName(String name, Boolean recursive = false)
         {
             ControlBase item = base.FindChildByName(name, recursive);
 

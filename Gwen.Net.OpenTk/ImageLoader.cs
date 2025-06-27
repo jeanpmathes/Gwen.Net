@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Gwen.Net.OpenTk.Exceptions;
@@ -7,9 +8,9 @@ namespace Gwen.Net.OpenTk
 {
     public static class ImageLoader
     {
-        public delegate Bitmap Loader(string filename);
+        public delegate Bitmap Loader(String filename);
 
-        private static readonly Dictionary<string, Loader> loaders = new()
+        private static readonly Dictionary<String, Loader> loaders = new()
         {
             { "jpeg", StandardLoader },
             { "jpe", StandardLoader },
@@ -26,14 +27,14 @@ namespace Gwen.Net.OpenTk
             { "emf", StandardLoader }
         };
 
-        public static Bitmap StandardLoader(string s)
+        public static Bitmap StandardLoader(String s)
         {
             return new Bitmap(s);
         }
 
-        public static Bitmap Load(string filename)
+        public static Bitmap Load(String filename)
         {
-            string resourceType = filename.ToLower().Split(separator: '.').Last();
+            String resourceType = filename.ToLower().Split(separator: '.').Last();
 
             if (loaders.TryGetValue(resourceType, out Loader loader))
             {

@@ -37,7 +37,7 @@ namespace Gwen.Net
         /// <param name="renderer">Renderer to use.</param>
         /// <param name="faceName">Face name.</param>
         /// <param name="size">Font size.</param>
-        public Font(RendererBase renderer, string faceName, int size = 10)
+        public Font(RendererBase renderer, String faceName, Int32 size = 10)
         {
             this.renderer = renderer;
             fontMetrics = null;
@@ -54,34 +54,34 @@ namespace Gwen.Net
         /// <summary>
         ///     Font face name. Exact meaning depends on renderer.
         /// </summary>
-        public string FaceName { get; set; }
+        public String FaceName { get; set; }
 
         /// <summary>
         ///     Font size.
         /// </summary>
-        public int Size { get; set; }
+        public Int32 Size { get; set; }
 
         /// <summary>
         ///     Enables or disables font smoothing (default: disabled).
         /// </summary>
-        public bool Smooth { get; set; }
+        public Boolean Smooth { get; set; }
 
-        public bool Bold { get; set; }
-        public bool Italic { get; set; }
-        public bool Underline { get; set; }
-        public bool Strikeout { get; set; }
+        public Boolean Bold { get; set; }
+        public Boolean Italic { get; set; }
+        public Boolean Underline { get; set; }
+        public Boolean Strikeout { get; set; }
 
         //public bool DropShadow { get; set; }
 
         /// <summary>
         ///     This should be set by the renderer if it tries to use a font where it's null.
         /// </summary>
-        public object? RendererData { get; set; }
+        public Object? RendererData { get; set; }
 
         /// <summary>
         ///     This is the real font size, after it's been scaled by Renderer.Scale()
         /// </summary>
-        public float RealSize { get; set; }
+        public Single RealSize { get; set; }
 
         /// <summary>
         ///     Gets the font metrics.
@@ -142,7 +142,7 @@ namespace Gwen.Net
         /// <param name="size">Font size.</param>
         /// <param name="style">Font style.</param>
         /// <returns>Font.</returns>
-        public static Font Create(RendererBase renderer, string faceName, int size = 10, FontStyle style = 0)
+        public static Font Create(RendererBase renderer, String faceName, Int32 size = 10, FontStyle style = 0)
         {
             return FontCache.GetFont(renderer, faceName, size, style);
         }

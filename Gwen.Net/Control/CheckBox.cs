@@ -9,7 +9,7 @@ namespace Gwen.Net.Control
     /// </summary>
     public class CheckBox : ButtonBase
     {
-        private bool @checked;
+        private Boolean @checked;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CheckBox" /> class.
@@ -25,7 +25,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Indicates whether the checkbox is checked.
         /// </summary>
-        public bool IsChecked
+        public Boolean IsChecked
         {
             get => @checked;
             set
@@ -43,7 +43,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Determines whether unchecking is allowed.
         /// </summary>
-        protected virtual bool AllowUncheck => true;
+        protected virtual Boolean AllowUncheck => true;
 
         protected override void AdaptToScaleChange()
         {
@@ -123,7 +123,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Internal OnPressed implementation.
         /// </summary>
-        protected override void OnClicked(int x, int y)
+        protected override void OnClicked(Int32 x, Int32 y)
         {
             if (IsDisabled) return;
             if (IsChecked && !AllowUncheck) return;

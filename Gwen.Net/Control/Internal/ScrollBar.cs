@@ -10,12 +10,12 @@ namespace Gwen.Net.Control.Internal
     {
         protected readonly ScrollBarBar bar;
         protected readonly ScrollBarButton[] scrollButton;
-        protected float contentSize;
+        protected Single contentSize;
 
-        protected bool depressed;
-        protected float nudgeAmount;
-        protected float scrollAmount;
-        protected float viewableContentSize;
+        protected Boolean depressed;
+        protected Single nudgeAmount;
+        protected Single scrollAmount;
+        protected Single viewableContentSize;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ScrollBar" /> class.
@@ -41,32 +41,32 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Bar size (in pixels).
         /// </summary>
-        public virtual int BarSize { get; set; }
+        public virtual Int32 BarSize { get; set; }
 
         /// <summary>
         ///     Bar position (in pixels).
         /// </summary>
-        public virtual int BarPos => 0;
+        public virtual Int32 BarPos => 0;
 
         /// <summary>
         ///     Button size (in pixels).
         /// </summary>
-        public virtual int ButtonSize => 0;
+        public virtual Int32 ButtonSize => 0;
 
-        public virtual float NudgeAmount
+        public virtual Single NudgeAmount
         {
             get => nudgeAmount / contentSize;
             set => nudgeAmount = value;
         }
 
-        public float ScrollAmount => scrollAmount;
-        public float ContentSize => contentSize;
-        public float ViewableContentSize => viewableContentSize;
+        public Single ScrollAmount => scrollAmount;
+        public Single ContentSize => contentSize;
+        public Single ViewableContentSize => viewableContentSize;
 
         /// <summary>
         ///     Indicates whether the bar is horizontal.
         /// </summary>
-        public virtual bool IsHorizontal => false;
+        public virtual Boolean IsHorizontal => false;
 
         /// <summary>
         ///     Invoked when the bar is moved.
@@ -77,7 +77,7 @@ namespace Gwen.Net.Control.Internal
         /// Set whether to ignore a mouse hold. Necessary during arranging.
         /// </summary>
         /// <param name="ignore">Whether to ignore a mouse hold</param>
-        internal void SetHoldIgnore(bool ignore) => bar.SetHoldIgnore(ignore);
+        internal void SetHoldIgnore(Boolean ignore) => bar.SetHoldIgnore(ignore);
 
         /// <summary>
         ///     Sets the scroll amount (0-1).
@@ -85,7 +85,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="value">Scroll amount.</param>
         /// <param name="forceUpdate">Determines whether the control should be updated.</param>
         /// <returns>True if control state changed.</returns>
-        public virtual bool SetScrollAmount(float value, bool forceUpdate = false)
+        public virtual Boolean SetScrollAmount(Single value, Boolean forceUpdate = false)
         {
             if (Math.Abs(scrollAmount - value) < 0.0001f && !forceUpdate)
             {
@@ -98,7 +98,7 @@ namespace Gwen.Net.Control.Internal
             return true;
         }
 
-        public void SetContentSize(float newContentSize, float newViewableContentSize)
+        public void SetContentSize(Single newContentSize, Single newViewableContentSize)
         {
             this.contentSize = newContentSize;
             this.viewableContentSize = newViewableContentSize;
@@ -114,7 +114,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             // Intentionally left empty.
         }
@@ -141,12 +141,12 @@ namespace Gwen.Net.Control.Internal
             }
         }
 
-        protected virtual float CalculateScrolledAmount()
+        protected virtual Single CalculateScrolledAmount()
         {
             return 0;
         }
 
-        protected virtual int CalculateBarSize()
+        protected virtual Int32 CalculateBarSize()
         {
             return 0;
         }

@@ -11,7 +11,7 @@ namespace Gwen.Net.OpenTk.Input
     {
         private readonly Canvas canvas;
 
-        private bool controlPressed;
+        private Boolean controlPressed;
         private Vector2 lastMousePosition;
 
         public OpenTkInputTranslator(Canvas canvas)
@@ -57,11 +57,11 @@ namespace Gwen.Net.OpenTk.Input
             return GwenMappedKey.Invalid;
         }
 
-        private static char TranslateChar(Keys key)
+        private static Char TranslateChar(Keys key)
         {
             if (key >= Keys.A && key <= Keys.Z)
             {
-                return (char) ('a' + ((int) key - (int) Keys.A));
+                return (Char) ('a' + ((Int32) key - (Int32) Keys.A));
             }
 
             return ' ';
@@ -95,10 +95,10 @@ namespace Gwen.Net.OpenTk.Input
             lastMousePosition = args.Position;
 
             canvas.Input_MouseMoved(
-                (int) lastMousePosition.X,
-                (int) lastMousePosition.Y,
-                (int) deltaPosition.X,
-                (int) deltaPosition.Y);
+                (Int32) lastMousePosition.X,
+                (Int32) lastMousePosition.Y,
+                (Int32) deltaPosition.X,
+                (Int32) deltaPosition.Y);
         }
 
         public void ProcessMouseWheel(MouseWheelEventArgs args)
@@ -108,12 +108,12 @@ namespace Gwen.Net.OpenTk.Input
                 return;
             }
 
-            canvas.Input_MouseWheel((int) (args.OffsetY * 60));
+            canvas.Input_MouseWheel((Int32) (args.OffsetY * 60));
         }
 
-        public bool ProcessKeyDown(KeyboardKeyEventArgs eventArgs)
+        public Boolean ProcessKeyDown(KeyboardKeyEventArgs eventArgs)
         {
-            char ch = TranslateChar(eventArgs.Key);
+            Char ch = TranslateChar(eventArgs.Key);
 
             if (InputHandler.DoSpecialKeys(canvas, ch))
             {
@@ -132,13 +132,13 @@ namespace Gwen.Net.OpenTk.Input
 
         public void ProcessTextInput(TextInputEventArgs obj)
         {
-            foreach (char c in obj.AsString)
+            foreach (Char c in obj.AsString)
             {
                 canvas.Input_Character(c);
             }
         }
 
-        public bool ProcessKeyUp(KeyboardKeyEventArgs eventArgs)
+        public Boolean ProcessKeyUp(KeyboardKeyEventArgs eventArgs)
         {
             GwenMappedKey key = TranslateKeyCode(eventArgs.Key);
 

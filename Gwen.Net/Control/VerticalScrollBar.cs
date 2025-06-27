@@ -35,19 +35,19 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     Bar size (in pixels).
         /// </summary>
-        public override int BarSize => bar.ActualHeight;
+        public override Int32 BarSize => bar.ActualHeight;
 
         /// <summary>
         ///     Bar position (in pixels).
         /// </summary>
-        public override int BarPos => bar.ActualTop - ActualWidth;
+        public override Int32 BarPos => bar.ActualTop - ActualWidth;
 
         /// <summary>
         ///     Button size (in pixels).
         /// </summary>
-        public override int ButtonSize => ActualWidth;
+        public override Int32 ButtonSize => ActualWidth;
 
-        public override int Width
+        public override Int32 Width
         {
             get => base.Width;
 
@@ -60,7 +60,7 @@ namespace Gwen.Net.Control
             }
         }
 
-        public override float NudgeAmount
+        public override Single NudgeAmount
         {
             get
             {
@@ -99,10 +99,10 @@ namespace Gwen.Net.Control
 
             if (barHeight < ButtonSize * 0.5f)
             {
-                barHeight = (int) (ButtonSize * 0.5f);
+                barHeight = (Int32) (ButtonSize * 0.5f);
             }
 
-            bar.SetSize(bar.ActualWidth, (int) barHeight);
+            bar.SetSize(bar.ActualWidth, (Int32) barHeight);
             bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
 
             //Based on our last scroll amount, produce a position for the bar.
@@ -144,7 +144,7 @@ namespace Gwen.Net.Control
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             base.OnMouseClickedLeft(x, y, down);
 
@@ -171,12 +171,12 @@ namespace Gwen.Net.Control
             }
         }
 
-        protected override float CalculateScrolledAmount()
+        protected override Single CalculateScrolledAmount()
         {
-            float value = (float) (bar.ActualTop - ButtonSize) /
-                          (ActualHeight - bar.ActualHeight - (ButtonSize * 2));
+            Single value = (Single) (bar.ActualTop - ButtonSize) /
+                           (ActualHeight - bar.ActualHeight - (ButtonSize * 2));
 
-            if (float.IsNaN(value))
+            if (Single.IsNaN(value))
             {
                 value = 0.0f;
             }
@@ -190,17 +190,17 @@ namespace Gwen.Net.Control
         /// <param name="value">Scroll amount.</param>
         /// <param name="forceUpdate">Determines whether the control should be updated.</param>
         /// <returns>True if control state changed.</returns>
-        public override bool SetScrollAmount(float value, bool forceUpdate = false)
+        public override Boolean SetScrollAmount(Single value, Boolean forceUpdate = false)
         {
             value = Util.Clamp(value, min: 0, max: 1);
 
             if (forceUpdate)
             {
-                var newY = (int) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
+                var newY = (Int32) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
                 bar.MoveTo(bar.ActualLeft, newY);
             }
             
-            bool changed = base.SetScrollAmount(value, forceUpdate);
+            Boolean changed = base.SetScrollAmount(value, forceUpdate);
 
             return changed || forceUpdate;
         }

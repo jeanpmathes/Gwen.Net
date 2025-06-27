@@ -5,30 +5,31 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Gwen.Net.Renderer;
 using OpenTK.Graphics.OpenGL;
+using Boolean = System.Boolean;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Gwen.Net.OpenTk.Renderers
 {
     public abstract class OpenTkRendererBase : RendererBase
     {
-        protected static int lastTextureID;
+        protected static Int32 lastTextureID;
         private readonly Graphics graphics;
 
-        private readonly Dictionary<Tuple<string, Font>, TextRenderer> stringCache;
+        private readonly Dictionary<Tuple<String, Font>, TextRenderer> stringCache;
         private readonly StringFormat stringFormat;
-        protected bool clipEnabled;
+        protected Boolean clipEnabled;
         protected Color color;
 
-        protected int drawCallCount;
-        protected bool textureEnabled;
+        protected Int32 drawCallCount;
+        protected Boolean textureEnabled;
 
-        private readonly Dictionary<string, Bitmap> preloadedTextures = new();
+        private readonly Dictionary<String, Bitmap> preloadedTextures = new();
 
         protected OpenTkRendererBase(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback)
         {
             GLVersion = (GL.GetInteger(GetPName.MajorVersion) * 10) + GL.GetInteger(GetPName.MinorVersion);
 
-            stringCache = new Dictionary<Tuple<string, Font>, TextRenderer>();
+            stringCache = new Dictionary<Tuple<String, Font>, TextRenderer>();
             graphics = Graphics.FromImage(new Bitmap(width: 1024, height: 1024));
             stringFormat = new StringFormat(StringFormat.GenericTypographic);
             stringFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
@@ -47,13 +48,13 @@ namespace Gwen.Net.OpenTk.Renderers
             }
         }
 
-        public int TextCacheSize => stringCache.Count;
+        public Int32 TextCacheSize => stringCache.Count;
 
-        public int DrawCallCount => drawCallCount;
+        public Int32 DrawCallCount => drawCallCount;
 
-        public abstract int VertexCount { get; }
+        public abstract Int32 VertexCount { get; }
 
-        public int GLVersion { get; }
+        public Int32 GLVersion { get; }
 
         public override Color DrawColor
         {
@@ -80,7 +81,7 @@ namespace Gwen.Net.OpenTk.Renderers
             preloadedTextures.Clear();
         }
 
-        protected override void OnScaleChanged(float oldScale)
+        protected override void OnScaleChanged(Single oldScale)
         {
             FlushTextCache();
         }
@@ -121,8 +122,8 @@ namespace Gwen.Net.OpenTk.Renderers
             clipEnabled = false;
         }
 
-        public override void DrawTexturedRect(Texture t, Rectangle rect, float u1 = 0, float v1 = 0, float u2 = 1,
-            float v2 = 1)
+        public override void DrawTexturedRect(Texture t, Rectangle rect, Single u1 = 0, Single v1 = 0, Single u2 = 1,
+            Single v2 = 1)
         {
             // Missing image, not loaded properly?
             if (null == t.RendererData)
@@ -132,10 +133,10 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            var tex = (int) t.RendererData;
+            var tex = (Int32) t.RendererData;
             rect = Translate(rect);
 
-            bool differentTexture = tex != lastTextureID;
+            Boolean differentTexture = tex != lastTextureID;
 
             if (!textureEnabled || differentTexture)
             {
@@ -156,11 +157,11 @@ namespace Gwen.Net.OpenTk.Renderers
             DrawRect(rect, u1, v1, u2, v2);
         }
 
-        protected abstract void DrawRect(Rectangle rect, float u1 = 0, float v1 = 0, float u2 = 1, float v2 = 1);
+        protected abstract void DrawRect(Rectangle rect, Single u1 = 0, Single v1 = 0, Single u2 = 1, Single v2 = 1);
 
-        public override bool LoadFont(Font font)
+        public override Boolean LoadFont(Font font)
         {
-            font.RealSize = (float) Math.Ceiling(font.Size * Scale);
+            font.RealSize = (Single) Math.Ceiling(font.Size * Scale);
 
             if (font.RendererData is System.Drawing.Font sysFont)
             {
@@ -227,16 +228,16 @@ namespace Gwen.Net.OpenTk.Renderers
             }
 
             // from: http://csharphelper.com/blog/2014/08/get-font-metrics-in-c
-            float emHeight = sysFont.FontFamily.GetEmHeight(sysFont.Style);
-            float emHeightPixels = ConvertToPixels(sysFont.Size, sysFont.Unit);
-            float designToPixels = emHeightPixels / emHeight;
+            Single emHeight = sysFont.FontFamily.GetEmHeight(sysFont.Style);
+            Single emHeightPixels = ConvertToPixels(sysFont.Size, sysFont.Unit);
+            Single designToPixels = emHeightPixels / emHeight;
 
-            float ascentPixels = designToPixels * sysFont.FontFamily.GetCellAscent(sysFont.Style);
-            float descentPixels = designToPixels * sysFont.FontFamily.GetCellDescent(sysFont.Style);
-            float cellHeightPixels = ascentPixels + descentPixels;
-            float internalLeadingPixels = cellHeightPixels - emHeightPixels;
-            float lineSpacingPixels = designToPixels * sysFont.FontFamily.GetLineSpacing(sysFont.Style);
-            float externalLeadingPixels = lineSpacingPixels - cellHeightPixels;
+            Single ascentPixels = designToPixels * sysFont.FontFamily.GetCellAscent(sysFont.Style);
+            Single descentPixels = designToPixels * sysFont.FontFamily.GetCellDescent(sysFont.Style);
+            Single cellHeightPixels = ascentPixels + descentPixels;
+            Single internalLeadingPixels = cellHeightPixels - emHeightPixels;
+            Single lineSpacingPixels = designToPixels * sysFont.FontFamily.GetLineSpacing(sysFont.Style);
+            Single externalLeadingPixels = lineSpacingPixels - cellHeightPixels;
 
             FontMetrics fm = new(
                 emHeightPixels,
@@ -251,7 +252,7 @@ namespace Gwen.Net.OpenTk.Renderers
             return fm;
         }
 
-        private float ConvertToPixels(float value, GraphicsUnit unit)
+        private Single ConvertToPixels(Single value, GraphicsUnit unit)
         {
             switch (unit)
             {
@@ -278,7 +279,7 @@ namespace Gwen.Net.OpenTk.Renderers
             return value;
         }
 
-        public override Size MeasureText(Font font, string text)
+        public override Size MeasureText(Font font, String text)
         {
             if (font.RendererData is not System.Drawing.Font sysFont || Math.Abs(font.RealSize - (font.Size * Scale)) > 2)
             {
@@ -287,7 +288,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 sysFont = font.RendererData as System.Drawing.Font;
             }
 
-            Tuple<string, Font> key = new(text, font);
+            Tuple<String, Font> key = new(text, font);
 
             if (stringCache.ContainsKey(key))
             {
@@ -314,7 +315,7 @@ namespace Gwen.Net.OpenTk.Renderers
             return new Size(Util.Ceil(size.Width), Util.Ceil(size.Height));
         }
 
-        public override void RenderText(Font font, Point position, string text)
+        public override void RenderText(Font font, Point position, String text)
         {
             Flush();
 
@@ -327,7 +328,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 sysFont = font.RendererData as System.Drawing.Font;
             }
 
-            Tuple<string, Font> key = new(text, font);
+            Tuple<String, Font> key = new(text, font);
 
             if (!stringCache.ContainsKey(key))
             {
@@ -373,7 +374,7 @@ namespace Gwen.Net.OpenTk.Renderers
             }
             
             // Create the opengl texture
-            GL.GenTextures(n: 1, out int glTex);
+            GL.GenTextures(n: 1, out Int32 glTex);
 
             GL.BindTexture(TextureTarget.Texture2D, glTex);
             lastTextureID = glTex;
@@ -381,12 +382,12 @@ namespace Gwen.Net.OpenTk.Renderers
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMinFilter,
-                (int) TextureMinFilter.Linear);
+                (Int32) TextureMinFilter.Linear);
 
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMagFilter,
-                (int) TextureMagFilter.Linear);
+                (Int32) TextureMagFilter.Linear);
 
             // Sort out our GWEN texture
             t.RendererData = glTex;
@@ -415,7 +416,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void LoadTexture(Texture texture, Action<Exception> errorCallback)
         {
-            bool preloaded = preloadedTextures.TryGetValue(texture.Name, out Bitmap bitmap);
+            Boolean preloaded = preloadedTextures.TryGetValue(texture.Name, out Bitmap bitmap);
 
             if (!preloaded)
             {
@@ -436,7 +437,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 bitmap.Dispose();
         }
 
-        public override void LoadTextureRaw(Texture t, byte[] pixelData)
+        public override void LoadTextureRaw(Texture t, Byte[] pixelData)
         {
             Bitmap bmp;
 
@@ -444,7 +445,7 @@ namespace Gwen.Net.OpenTk.Renderers
             {
                 unsafe
                 {
-                    fixed (byte* ptr = &pixelData[0])
+                    fixed (Byte* ptr = &pixelData[0])
                     {
                         bmp = new Bitmap(t.Width, t.Height, 4 * t.Width, PixelFormat.Format32bppArgb, (IntPtr) ptr);
                     }
@@ -457,7 +458,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            int glTex;
+            Int32 glTex;
 
             // Create the opengl texture
             GL.GenTextures(n: 1, out glTex);
@@ -467,12 +468,12 @@ namespace Gwen.Net.OpenTk.Renderers
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMinFilter,
-                (int) TextureMagFilter.Linear);
+                (Int32) TextureMagFilter.Linear);
 
             GL.TexParameter(
                 TextureTarget.Texture2D,
                 TextureParameterName.TextureMagFilter,
-                (int) TextureMagFilter.Linear);
+                (Int32) TextureMagFilter.Linear);
 
             // Sort out our GWEN texture
             t.RendererData = glTex;
@@ -511,7 +512,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 return;
             }
 
-            var tex = (int) t.RendererData;
+            var tex = (Int32) t.RendererData;
 
             if (tex == 0)
             {
@@ -522,14 +523,14 @@ namespace Gwen.Net.OpenTk.Renderers
             t.RendererData = null;
         }
 
-        public override unsafe Color PixelColor(Texture texture, uint x, uint y, Color defaultColor)
+        public override unsafe Color PixelColor(Texture texture, UInt32 x, UInt32 y, Color defaultColor)
         {
             if (texture.RendererData == null)
             {
                 return defaultColor;
             }
 
-            var tex = (int) texture.RendererData;
+            var tex = (Int32) texture.RendererData;
 
             if (tex == 0)
             {
@@ -541,10 +542,10 @@ namespace Gwen.Net.OpenTk.Renderers
             GL.BindTexture(TextureTarget.Texture2D, tex);
             lastTextureID = tex;
 
-            long offset = 4 * (x + (y * texture.Width));
-            var data = new byte[4 * texture.Width * texture.Height];
+            Int64 offset = 4 * (x + (y * texture.Width));
+            var data = new Byte[4 * texture.Width * texture.Height];
 
-            fixed (byte* ptr = &data[0])
+            fixed (Byte* ptr = &data[0])
             {
                 GL.GetTexImage(
                     TextureTarget.Texture2D,
@@ -559,6 +560,6 @@ namespace Gwen.Net.OpenTk.Renderers
             return pixel;
         }
 
-        public abstract void Resize(int width, int height);
+        public abstract void Resize(Int32 width, Int32 height);
     }
 }

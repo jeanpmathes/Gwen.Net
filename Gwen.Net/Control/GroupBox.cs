@@ -26,7 +26,7 @@ namespace Gwen.Net.Control
         /// <summary>
         ///     The text of the group box caption.
         /// </summary>
-        public virtual string Text
+        public virtual String Text
         {
             get => text.String;
             set => text.String = value;

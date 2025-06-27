@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Skin;
+﻿using System;
+using Gwen.Net.Skin;
 
 namespace Gwen.Net.Control.Internal
 {
@@ -28,25 +29,25 @@ namespace Gwen.Net.Control.Internal
             set => color = value;
         }
         
-        public int R
+        public Int32 R
         {
             get => color.R;
             set => color = new Color(color.A, value, color.G, color.B);
         }
 
-        public int G
+        public Int32 G
         {
             get => color.G;
             set => color = new Color(color.A, color.R, value, color.B);
         }
 
-        public int B
+        public Int32 B
         {
             get => color.B;
             set => color = new Color(color.A, color.R, color.G, value);
         }
 
-        public int A
+        public Int32 A
         {
             get => color.A;
             set => color = new Color(value, color.R, color.G, color.B);
@@ -54,10 +55,10 @@ namespace Gwen.Net.Control.Internal
 
         protected override void AdaptToScaleChange()
         {
-            int baseSize = BaseUnit * 2;
+            Int32 baseSize = BaseUnit * 2;
 
-            int width = Util.IsIgnore(Size.Width) ? Util.Ignore : baseSize;
-            int height = Util.IsIgnore(Size.Height) ? Util.Ignore : baseSize;
+            Int32 width = Util.IsIgnore(Size.Width) ? Util.Ignore : baseSize;
+            Int32 height = Util.IsIgnore(Size.Height) ? Util.Ignore : baseSize;
 
             Size = new Size(width, height);
         }

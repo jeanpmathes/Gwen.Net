@@ -1,4 +1,5 @@
-﻿using Gwen.Net.Control;
+﻿using System;
+using Gwen.Net.Control;
 
 namespace Gwen.Net.DragDrop
 {
@@ -6,8 +7,8 @@ namespace Gwen.Net.DragDrop
     {
         public ControlBase DrawControl { get; set; }
         public Point HoldOffset { get; set; }
-        public bool IsDraggable { get; set; }
-        public string Name { get; set; }
-        public object UserData { get; set; }
+        public Boolean IsDraggable { get; set; }
+        public String Name { get; set; }
+        public Object UserData { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Gwen.Net.Control.Internal
     /// </summary>
     public class Dragger : ControlBase
     {
-        private bool held;
+        private Boolean held;
         
         protected Point holdPos;
         protected ControlBase target;
@@ -33,15 +33,15 @@ namespace Gwen.Net.Control.Internal
         /// <summary>
         ///     Indicates if the control is being dragged.
         /// </summary>
-        public bool IsHeld => held && !holdIgnore;
+        public Boolean IsHeld => held && !holdIgnore;
         
-        private bool holdIgnore;
+        private Boolean holdIgnore;
         
         /// <summary>
         /// Set whether the control should ignore the hold state.
         /// </summary>
         /// <param name="ignore">Whether to ignore the hold state.</param>
-        internal void SetHoldIgnore(bool ignore)
+        internal void SetHoldIgnore(Boolean ignore)
         {
             holdIgnore = ignore;
         }
@@ -57,7 +57,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="x">X coordinate.</param>
         /// <param name="y">Y coordinate.</param>
         /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(int x, int y, bool down)
+        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
         {
             if (null == target)
             {
@@ -85,7 +85,7 @@ namespace Gwen.Net.Control.Internal
         /// <param name="y">Y coordinate.</param>
         /// <param name="dx">X change.</param>
         /// <param name="dy">Y change.</param>
-        protected override void OnMouseMoved(int x, int y, int dx, int dy)
+        protected override void OnMouseMoved(Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             if (null == target)
             {

@@ -13,7 +13,7 @@ namespace Gwen.Net.Control
 
             for (var i = 0; i < Enum.GetValues(typeof(T)).Length; i++)
             {
-                string name = Enum.GetNames(typeof(T))[i];
+                String name = Enum.GetNames(typeof(T))[i];
                 LabeledRadioButton lrb = AddOption(name);
                 lrb.UserData = Enum.GetValues(typeof(T)).GetValue(i);
             }

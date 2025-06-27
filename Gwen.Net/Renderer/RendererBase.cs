@@ -11,7 +11,7 @@ namespace Gwen.Net.Renderer
         private Rectangle clipRegion;
         
         private Point renderOffset;
-        private float scale;
+        private Single scale;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RendererBase" /> class.
@@ -22,12 +22,12 @@ namespace Gwen.Net.Renderer
             scale = 1.0f;
         }
 
-        public float Scale
+        public Single Scale
         {
             get => scale;
             set
             {
-                float oldScale = scale;
+                Single oldScale = scale;
                 scale = value;
                 OnScaleChanged(oldScale);
             }
@@ -59,7 +59,7 @@ namespace Gwen.Net.Renderer
         /// <summary>
         ///     Indicates whether the clip region is visible.
         /// </summary>
-        public bool ClipRegionVisible
+        public Boolean ClipRegionVisible
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Gwen.Net.Renderer
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void OnScaleChanged(float oldScale) {}
+        protected virtual void OnScaleChanged(Single oldScale) {}
         
         ~RendererBase()
         {
@@ -105,7 +105,7 @@ namespace Gwen.Net.Renderer
         /// <param name="y"></param>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        public virtual void DrawLine(int x, int y, int a, int b) {}
+        public virtual void DrawLine(Int32 x, Int32 y, Int32 a, Int32 b) {}
 
         /// <summary>
         ///     Draws a solid filled rectangle.
@@ -133,7 +133,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="texture">Texture to initialize. Dimensions need to be set.</param>
         /// <param name="pixelData">Pixel data in RGBA format.</param>
-        public virtual void LoadTextureRaw(Texture texture, byte[] pixelData) {}
+        public virtual void LoadTextureRaw(Texture texture, Byte[] pixelData) {}
 
         /// <summary>
         ///     Frees the specified texture.
@@ -150,8 +150,8 @@ namespace Gwen.Net.Renderer
         /// <param name="v1">Texture coordinate v1.</param>
         /// <param name="u2">Texture coordinate u2.</param>
         /// <param name="v2">Texture coordinate v2.</param>
-        public virtual void DrawTexturedRect(Texture texture, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1,
-            float v2 = 1) {}
+        public virtual void DrawTexturedRect(Texture texture, Rectangle targetRect, Single u1 = 0, Single v1 = 0, Single u2 = 1,
+            Single v2 = 1) {}
 
         /// <summary>
         ///     Draws "missing image" default texture.
@@ -168,7 +168,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="font">Font to load.</param>
         /// <returns>True if succeeded.</returns>
-        public virtual bool LoadFont(Font font)
+        public virtual Boolean LoadFont(Font font)
         {
             return false;
         }
@@ -195,9 +195,9 @@ namespace Gwen.Net.Renderer
         /// <param name="font">Font to use.</param>
         /// <param name="text">Text to measure.</param>
         /// <returns>Width and height of the rendered text.</returns>
-        public virtual Size MeasureText(Font font, string text)
+        public virtual Size MeasureText(Font font, String text)
         {
-            Size p = new((int) (font.Size * Scale * text.Length * 0.4f), (int) (font.Size * Scale));
+            Size p = new((Int32) (font.Size * Scale * text.Length * 0.4f), (Int32) (font.Size * Scale));
 
             return p;
         }
@@ -208,13 +208,13 @@ namespace Gwen.Net.Renderer
         /// <param name="font">Font to use.</param>
         /// <param name="position">Top-left corner of the text.</param>
         /// <param name="text">Text to render.</param>
-        public virtual void RenderText(Font font, Point position, string text)
+        public virtual void RenderText(Font font, Point position, String text)
         {
-            float size = font.Size * Scale;
+            Single size = font.Size * Scale;
 
             for (var i = 0; i < text.Length; i++)
             {
-                char chr = text[i];
+                Char chr = text[i];
 
                 if (chr == ' ')
                 {
@@ -233,8 +233,8 @@ namespace Gwen.Net.Renderer
                 }
                 else if (chr >= 'a' && chr <= 'z')
                 {
-                    r.Y = (int) (r.Y + (size * 0.5f));
-                    r.Height = (int) (r.Height - (size * 0.4f));
+                    r.Y = (Int32) (r.Y + (size * 0.5f));
+                    r.Height = (Int32) (r.Height - (size * 0.4f));
                 }
                 else if (chr == '.' || chr == ',')
                 {
@@ -284,7 +284,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="x">X.</param>
         /// <param name="y">Y.</param>
-        public virtual void DrawPixel(int x, int y)
+        public virtual void DrawPixel(Int32 x, Int32 y)
         {
             // [omeg] amazing ;)
             DrawFilledRect(new Rectangle(x, y, width: 1, height: 1));
@@ -297,7 +297,7 @@ namespace Gwen.Net.Renderer
         /// <param name="x">X.</param>
         /// <param name="y">Y.</param>
         /// <returns>Pixel color.</returns>
-        public virtual Color PixelColor(Texture texture, uint x, uint y)
+        public virtual Color PixelColor(Texture texture, UInt32 x, UInt32 y)
         {
             return PixelColor(texture, x, y, Color.White);
         }
@@ -310,7 +310,7 @@ namespace Gwen.Net.Renderer
         /// <param name="y">Y.</param>
         /// <param name="defaultColor">Color to return on failure.</param>
         /// <returns>Pixel color.</returns>
-        public virtual Color PixelColor(Texture texture, uint x, uint y, Color defaultColor)
+        public virtual Color PixelColor(Texture texture, UInt32 x, UInt32 y, Color defaultColor)
         {
             return defaultColor;
         }
@@ -320,7 +320,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="rect">Target rectangle.</param>
         /// <param name="slight"></param>
-        public virtual void DrawShavedCornerRect(Rectangle rect, bool slight = false)
+        public virtual void DrawShavedCornerRect(Rectangle rect, Boolean slight = false)
         {
             // Draw INSIDE the w/h.
             rect.Width -= 1;
@@ -350,16 +350,16 @@ namespace Gwen.Net.Renderer
             DrawFilledRect(new Rectangle(rect.X + rect.Width, rect.Y + 2, width: 1, rect.Height - 3));
         }
 
-        private int TranslateX(int x)
+        private Int32 TranslateX(Int32 x)
         {
-            int x1 = x + renderOffset.X;
+            Int32 x1 = x + renderOffset.X;
 
             return x1;
         }
 
-        private int TranslateY(int y)
+        private Int32 TranslateY(Int32 y)
         {
-            int y1 = y + renderOffset.Y;
+            Int32 y1 = y + renderOffset.Y;
 
             return y1;
         }
@@ -369,7 +369,7 @@ namespace Gwen.Net.Renderer
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void Translate(ref int x, ref int y)
+        public void Translate(ref Int32 x, ref Int32 y)
         {
             x += renderOffset.X;
             y += renderOffset.Y;
@@ -380,8 +380,8 @@ namespace Gwen.Net.Renderer
         /// </summary>
         public Point Translate(Point point)
         {
-            int x = point.X;
-            int y = point.Y;
+            Int32 x = point.X;
+            Int32 y = point.Y;
             Translate(ref x, ref y);
 
             return new Point(x, y);

@@ -3,31 +3,32 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Gwen.Net.OpenTk.Shaders;
 using OpenTK.Graphics.OpenGL;
+using Boolean = System.Boolean;
 
 namespace Gwen.Net.OpenTk.Renderers
 {
     public class OpenTkGL40Renderer : OpenTkRendererBase
     {
-        private const int MaxVerts = 4096;
-        private readonly bool restoreRenderState;
+        private const Int32 MaxVerts = 4096;
+        private readonly Boolean restoreRenderState;
         private readonly IShader shader;
-        private readonly int vertexSize;
+        private readonly Int32 vertexSize;
 
         private readonly Vertex[] vertices;
-        private int prevAlphaFunc;
-        private float prevAlphaRef;
-        private int prevBlendDst;
-        private int prevBlendSrc;
-        private int totalVertNum;
-        private int vao;
+        private Int32 prevAlphaFunc;
+        private Single prevAlphaRef;
+        private Int32 prevBlendDst;
+        private Int32 prevBlendSrc;
+        private Int32 totalVertNum;
+        private Int32 vao;
 
-        private int vbo;
-        private int vertNum;
+        private Int32 vbo;
+        private Int32 vertNum;
         
-        private bool wasBlendEnabled;
-        private bool wasDepthTestEnabled;
+        private Boolean wasBlendEnabled;
+        private Boolean wasDepthTestEnabled;
 
-        public OpenTkGL40Renderer(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback, bool restoreRenderState = true) : base(texturePreloads, errorCallback)
+        public OpenTkGL40Renderer(IEnumerable<TexturePreload> texturePreloads, Action<TexturePreload, Exception> errorCallback, Boolean restoreRenderState = true) : base(texturePreloads, errorCallback)
         {
             vertices = new Vertex[MaxVerts];
             vertexSize = Marshal.SizeOf(vertices[0]);
@@ -38,7 +39,7 @@ namespace Gwen.Net.OpenTk.Renderers
             shader = new GL40ShaderLoader().Load("gui.gl40");
         }
 
-        public override int VertexCount => totalVertNum;
+        public override Int32 VertexCount => totalVertNum;
 
         private void CreateBuffers()
         {
@@ -74,7 +75,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 VertexAttribPointerType.Float,
                 normalized: false,
                 vertexSize,
-                2 * sizeof(float));
+                2 * sizeof(Single));
 
             // Colors
             GL.EnableVertexAttribArray(index: 2);
@@ -85,7 +86,7 @@ namespace Gwen.Net.OpenTk.Renderers
                 VertexAttribPointerType.Float,
                 normalized: false,
                 vertexSize,
-                2 * (sizeof(float) + sizeof(float)));
+                2 * (sizeof(Single) + sizeof(Single)));
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, buffer: 0);
             GL.BindVertexArray(array: 0);
@@ -177,7 +178,7 @@ namespace Gwen.Net.OpenTk.Renderers
             vertNum = 0;
         }
 
-        protected override void DrawRect(Rectangle rect, float u1 = 0, float v1 = 0, float u2 = 1, float v2 = 1)
+        protected override void DrawRect(Rectangle rect, Single u1 = 0, Single v1 = 0, Single u2 = 1, Single v2 = 1)
         {
             if (vertNum + 4 >= MaxVerts)
             {
@@ -190,8 +191,8 @@ namespace Gwen.Net.OpenTk.Renderers
 
                 if (rect.Y < ClipRegion.Y)
                 {
-                    int oldHeight = rect.Height;
-                    int delta = ClipRegion.Y - rect.Y;
+                    Int32 oldHeight = rect.Height;
+                    Int32 delta = ClipRegion.Y - rect.Y;
                     rect.Y = ClipRegion.Y;
                     rect.Height -= delta;
 
@@ -200,15 +201,15 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = delta / (float) oldHeight;
+                    Single dv = delta / (Single) oldHeight;
 
                     v1 += dv * (v2 - v1);
                 }
 
                 if (rect.Y + rect.Height > ClipRegion.Y + ClipRegion.Height)
                 {
-                    int oldHeight = rect.Height;
-                    int delta = rect.Y + rect.Height - (ClipRegion.Y + ClipRegion.Height);
+                    Int32 oldHeight = rect.Height;
+                    Int32 delta = rect.Y + rect.Height - (ClipRegion.Y + ClipRegion.Height);
 
                     rect.Height -= delta;
 
@@ -217,15 +218,15 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float dv = delta / (float) oldHeight;
+                    Single dv = delta / (Single) oldHeight;
 
                     v2 -= dv * (v2 - v1);
                 }
 
                 if (rect.X < ClipRegion.X)
                 {
-                    int oldWidth = rect.Width;
-                    int delta = ClipRegion.X - rect.X;
+                    Int32 oldWidth = rect.Width;
+                    Int32 delta = ClipRegion.X - rect.X;
                     rect.X = ClipRegion.X;
                     rect.Width -= delta;
 
@@ -234,15 +235,15 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = delta / (float) oldWidth;
+                    Single du = delta / (Single) oldWidth;
 
                     u1 += du * (u2 - u1);
                 }
 
                 if (rect.X + rect.Width > ClipRegion.X + ClipRegion.Width)
                 {
-                    int oldWidth = rect.Width;
-                    int delta = rect.X + rect.Width - (ClipRegion.X + ClipRegion.Width);
+                    Int32 oldWidth = rect.Width;
+                    Int32 delta = rect.X + rect.Width - (ClipRegion.X + ClipRegion.Width);
 
                     rect.Width -= delta;
 
@@ -251,20 +252,20 @@ namespace Gwen.Net.OpenTk.Renderers
                         return;
                     }
 
-                    float du = delta / (float) oldWidth;
+                    Single du = delta / (Single) oldWidth;
 
                     u2 -= du * (u2 - u1);
                 }
             }
 
-            float cR = color.R / 255f;
-            float cG = color.G / 255f;
-            float cB = color.B / 255f;
-            float cA = color.A / 255f;
+            Single cR = color.R / 255f;
+            Single cG = color.G / 255f;
+            Single cB = color.B / 255f;
+            Single cA = color.A / 255f;
 
-            int vertexIndex = vertNum;
-            vertices[vertexIndex].x = (short) rect.X;
-            vertices[vertexIndex].y = (short) rect.Y;
+            Int32 vertexIndex = vertNum;
+            vertices[vertexIndex].x = (Int16) rect.X;
+            vertices[vertexIndex].y = (Int16) rect.Y;
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -273,8 +274,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
-            vertices[vertexIndex].y = (short) rect.Y;
+            vertices[vertexIndex].x = (Int16) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (Int16) rect.Y;
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -283,8 +284,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
-            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
+            vertices[vertexIndex].x = (Int16) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (Int16) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -293,8 +294,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short) rect.X;
-            vertices[vertexIndex].y = (short) rect.Y;
+            vertices[vertexIndex].x = (Int16) rect.X;
+            vertices[vertexIndex].y = (Int16) rect.Y;
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v1;
             vertices[vertexIndex].r = cR;
@@ -303,8 +304,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short) (rect.X + rect.Width);
-            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
+            vertices[vertexIndex].x = (Int16) (rect.X + rect.Width);
+            vertices[vertexIndex].y = (Int16) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u2;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -313,8 +314,8 @@ namespace Gwen.Net.OpenTk.Renderers
             vertices[vertexIndex].a = cA;
 
             vertexIndex++;
-            vertices[vertexIndex].x = (short) rect.X;
-            vertices[vertexIndex].y = (short) (rect.Y + rect.Height);
+            vertices[vertexIndex].x = (Int16) rect.X;
+            vertices[vertexIndex].y = (Int16) (rect.Y + rect.Height);
             vertices[vertexIndex].u = u1;
             vertices[vertexIndex].v = v2;
             vertices[vertexIndex].r = cR;
@@ -325,19 +326,19 @@ namespace Gwen.Net.OpenTk.Renderers
             vertNum += 6;
         }
 
-        public override void Resize(int width, int height)
+        public override void Resize(Int32 width, Int32 height)
         {
             GL.Viewport(x: 0, y: 0, width, height);
             GL.UseProgram(shader.Program);
-            GL.Uniform2(shader.Uniforms["uScreenSize"], width, (float) height);
+            GL.Uniform2(shader.Uniforms["uScreenSize"], width, (Single) height);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Vertex
         {
-            public float x, y;
-            public float u, v;
-            public float r, g, b, a;
+            public Single x, y;
+            public Single u, v;
+            public Single r, g, b, a;
         }
     }
 }

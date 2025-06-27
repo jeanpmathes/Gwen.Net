@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Gwen.Net.Control;
@@ -13,7 +14,7 @@ namespace Gwen.Net.Input
     public static class InputHandler
     {
         private static readonly KeyData keyData = new();
-        private static readonly float[] lastClickTime = new float[MaxMouseButtons];
+        private static readonly Single[] lastClickTime = new Single[MaxMouseButtons];
         private static Point lastClickPos;
         private static ControlBase hoveredControl;
 
@@ -52,51 +53,51 @@ namespace Gwen.Net.Input
         /// <summary>
         ///     Maximum number of mouse buttons supported.
         /// </summary>
-        public static int MaxMouseButtons => 5;
+        public static Int32 MaxMouseButtons => 5;
 
         /// <summary>
         ///     Maximum time in seconds between mouse clicks to be recognized as double click.
         /// </summary>
-        public static float DoubleClickSpeed => 0.5f;
+        public static Single DoubleClickSpeed => 0.5f;
 
         /// <summary>
         ///     Time in seconds between autorepeating of keys.
         /// </summary>
-        public static float KeyRepeatRate => 0.03f;
+        public static Single KeyRepeatRate => 0.03f;
 
         /// <summary>
         ///     Time in seconds before key starts to autorepeat.
         /// </summary>
-        public static float KeyRepeatDelay => 0.5f;
+        public static Single KeyRepeatDelay => 0.5f;
 
         /// <summary>
         ///     Indicates whether the left mouse button is down.
         /// </summary>
-        public static bool IsLeftMouseDown => keyData.LeftMouseDown;
+        public static Boolean IsLeftMouseDown => keyData.LeftMouseDown;
 
         /// <summary>
         ///     Indicates whether the right mouse button is down.
         /// </summary>
-        public static bool IsRightMouseDown => keyData.RightMouseDown;
+        public static Boolean IsRightMouseDown => keyData.RightMouseDown;
 
         /// <summary>
         ///     Indicates whether the shift key is down.
         /// </summary>
-        public static bool IsShiftDown => IsKeyDown(GwenMappedKey.Shift);
+        public static Boolean IsShiftDown => IsKeyDown(GwenMappedKey.Shift);
 
         /// <summary>
         ///     Indicates whether the control key is down.
         /// </summary>
-        public static bool IsControlDown => IsKeyDown(GwenMappedKey.Control);
+        public static Boolean IsControlDown => IsKeyDown(GwenMappedKey.Control);
 
         /// <summary>
         ///     Checks if the given key is pressed.
         /// </summary>
         /// <param name="key">Key to check.</param>
         /// <returns>True if the key is down.</returns>
-        public static bool IsKeyDown(GwenMappedKey key)
+        public static Boolean IsKeyDown(GwenMappedKey key)
         {
-            return keyData.KeyState[(int) key];
+            return keyData.KeyState[(Int32) key];
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace Gwen.Net.Input
         /// <param name="canvas">Canvas.</param>
         /// <param name="chr">Input character.</param>
         /// <returns>True if the key was handled.</returns>
-        public static bool DoSpecialKeys(ControlBase canvas, char chr)
+        public static Boolean DoSpecialKeys(ControlBase canvas, Char chr)
         {
             if (null == KeyboardFocus)
             {
@@ -164,7 +165,7 @@ namespace Gwen.Net.Input
         /// <param name="canvas">Canvas.</param>
         /// <param name="chr">Input character.</param>
         /// <returns>True if the key was handled.</returns>
-        public static bool HandleAccelerator(ControlBase canvas, char chr)
+        public static Boolean HandleAccelerator(ControlBase canvas, Char chr)
         {
             //Build the accelerator search string
             StringBuilder accelString = new();
@@ -227,12 +228,12 @@ namespace Gwen.Net.Input
                 return;
             }
 
-            float time = GwenPlatform.GetTimeInSeconds();
+            Single time = GwenPlatform.GetTimeInSeconds();
 
             //
             // Simulate Key-Repeats
             //
-            for (var i = 0; i < (int) GwenMappedKey.Count; i++)
+            for (var i = 0; i < (Int32) GwenMappedKey.Count; i++)
             {
                 if (keyData.KeyState[i] && keyData.Target != KeyboardFocus)
                 {
@@ -262,7 +263,7 @@ namespace Gwen.Net.Input
         /// <param name="dx"></param>
         /// <param name="dy"></param>
         /// <returns>True if handled.</returns>
-        public static bool OnMouseMoved(ControlBase canvas, int x, int y, int dx, int dy)
+        public static Boolean OnMouseMoved(ControlBase canvas, Int32 x, Int32 y, Int32 dx, Int32 dy)
         {
             // Send input to canvas for study
             MousePosition = new Point(x, y);
@@ -299,7 +300,7 @@ namespace Gwen.Net.Input
         /// <param name="mouseButton">Mouse button number.</param>
         /// <param name="down">Specifies if the button is down.</param>
         /// <returns>True if handled.</returns>
-        public static bool OnMouseClicked(ControlBase canvas, int mouseButton, bool down)
+        public static Boolean OnMouseClicked(ControlBase canvas, Int32 mouseButton, Boolean down)
         {
             // If we click on a control that isn't a menu we want to close
             // all the open menus. Menus are children of the canvas.
@@ -406,7 +407,7 @@ namespace Gwen.Net.Input
         /// <param name="key">Key.</param>
         /// <param name="down">True if the key is down.</param>
         /// <returns>True if handled.</returns>
-        public static bool OnKeyEvent(ControlBase canvas, GwenMappedKey key, bool down)
+        public static Boolean OnKeyEvent(ControlBase canvas, GwenMappedKey key, Boolean down)
         {
             if (null == KeyboardFocus)
             {
@@ -423,7 +424,7 @@ namespace Gwen.Net.Input
                 return false;
             }
 
-            var iKey = (int) key;
+            var iKey = (Int32) key;
 
             if (down)
             {
