@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net9.0</TargetFramework>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <LangVersion>10</LangVersion>
+      <LangVersion>14</LangVersion>
       <PackageVersion>0.5.7</PackageVersion>
       <Title>Gwen.Net</Title>
       <Description>Gwen.Net is a port of Gwen.Net which is a .Net port of GWEN. GWEN is a lightweight GUI library aimed at games. It contains rich widget collection and most functionality you'd expect from a GUI framework.
 
           This specific fork is adapted to the needs of the VoxelGame project.
       </Description>
-      <RepositoryUrl>https://github.com/pershingthesecond/Gwen.Net</RepositoryUrl>
-      <PackageLicense>https://raw.githubusercontent.com/pershingthesecond/Gwen.Net/master/LICENSE</PackageLicense>
+      <RepositoryUrl>https://github.com/jeanpmathes/Gwen.Net</RepositoryUrl>
+      <PackageLicense>https://raw.githubusercontent.com/jeanpmathes/Gwen.Net/refs/heads/main/LICENSE</PackageLicense>
       <Nullable>enable</Nullable>
   </PropertyGroup>
 

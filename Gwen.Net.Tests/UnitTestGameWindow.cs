@@ -86,7 +86,7 @@ namespace Gwen.Net.Tests
             gui.Render();
             SwapBuffers();
 
-            if (RenderFrequency == 0)
+            if (UpdateFrequency == 0)
             {
                 renderFrameTimes.Put(args.Time);
 
@@ -99,7 +99,7 @@ namespace Gwen.Net.Tests
             }
             else
             {
-                unitTestControls.RenderFps = RenderFrequency;
+                unitTestControls.RenderFps = UpdateFrequency;
             }
         }
 
@@ -111,10 +111,10 @@ namespace Gwen.Net.Tests
 
             nativeWindowSettings.Profile = ContextProfile.Core;
 
-            using UnitTestGameWindow window = new(gameWindowSettings, nativeWindowSettings)
-            {
-                Title = "Gwen.net OpenTK Unit Test", VSync = VSyncMode.Off // to measure performance
-            };
+            using UnitTestGameWindow window = new(gameWindowSettings, nativeWindowSettings);
+
+            window.Title = "Gwen.net OpenTK Unit Test";
+            window.VSync = VSyncMode.Off; // to measure performance
 
             window.Run();
         }
