@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Shaders\gui.gl40.frag" />
-    <EmbeddedResource Include="Shaders\gui.gl40.vert" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.4" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.2" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
@@ -37,18 +32,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="StringResources.Designer.cs">
+    <EmbeddedResource Include="Legacy/Shaders\gui.gl40.frag" />
+    <EmbeddedResource Include="Legacy/Shaders\gui.gl40.vert" />
+    <EmbeddedResource Update="Legacy/StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Legacy/StringResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="StringResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

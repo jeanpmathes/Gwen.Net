@@ -18,16 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DefaultSkin2.png">
+    <None Update="Legacy/DefaultSkin.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gwen.png">
+    <None Update="Legacy/DefaultSkin2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="test16.png">
+    <None Update="Legacy/gwen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="DefaultSkin.png">
+    <None Update="Legacy/test16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
