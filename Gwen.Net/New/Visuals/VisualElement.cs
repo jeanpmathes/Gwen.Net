@@ -362,14 +362,14 @@ public abstract class VisualElement : Element
     {
         PrepareRender();
         
-        Size previousOffset = renderer.AddOffset(Bounds.Location);
-
-        Rectangle previousClip = renderer.Clip;
+        renderer.PushOffset(Bounds.Location);
         
         DoRender();
 
-        renderer.Clip = previousClip;
-        renderer.Offset = previousOffset;
+        if (ShouldClip)
+            renderer.PopClip();
+        
+        renderer.PopOffset();
 
         // todo: debug outlines, maybe through context
 
@@ -377,14 +377,11 @@ public abstract class VisualElement : Element
         {
             if (ShouldClip)
             {
-                previousClip = renderer.ConstrainClipRegion(Bounds);
+                renderer.PushClip(Bounds);
             
-                if (renderer.Clip.Width <= 0 || renderer.Clip.Height <= 0)
-                {
-                    return;
-                }
+                if (renderer.IsClipEmpty()) return;
                 
-                renderer.IsClippingEnabled = true;
+                renderer.BeginClip();
             }
         
             OnRender(renderer);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Gwen.Net.New.Rendering;
@@ -17,6 +18,12 @@ public sealed class Renderer : IRenderer, IDisposable
 
     private readonly Vertex[] vertices;
     private readonly Int32 vertexSize;
+    
+    private static readonly Size initialOffset = Size.Empty;
+    private static readonly Rectangle initialClip = new(x: 0, y: 0, Int32.MaxValue, Int32.MaxValue);
+    
+    private readonly Stack<Size> offsetStack = new();
+    private readonly Stack<Rectangle> clipStack = new();
 
     private Int32 numberOfVertices;
 
@@ -146,25 +153,21 @@ public sealed class Renderer : IRenderer, IDisposable
         }
     }
 
-    public Size Offset { get; set; }
-
-    public Size AddOffset(Size offset)
+    public void PushOffset(Point offset)
     {
-        Size previousOffset = Offset;
-        Offset = offset;
-        return previousOffset;
-    }
-
-    public Size AddOffset(Point offset)
-    {
-        Size previousOffset = Offset;
+        offsetStack.Push(Offset);
+        
         Offset = new Size(Offset.Width + offset.X, Offset.Height + offset.Y);
-        return previousOffset;
     }
-
-    public Rectangle ConstrainClipRegion(Rectangle rectangle)
+    
+    public void PopOffset()
     {
-        Rectangle previousClip = Clip;
+        Offset = offsetStack.Count > 0 ? offsetStack.Pop() : initialOffset;
+    }
+    
+    public void PushClip(Rectangle rectangle)
+    {
+        clipStack.Push(Clip);
 
         rectangle = Translate(rectangle);
 
@@ -197,13 +200,33 @@ public sealed class Renderer : IRenderer, IDisposable
             Width = Math.Max(val1: 0, result.Width),
             Height = Math.Max(val1: 0, result.Height)
         };
-
-        return previousClip;
+    }
+    
+    public void PopClip()
+    {
+        Clip = clipStack.Count > 0 ? clipStack.Pop() : initialClip;
+    }
+    
+    public void BeginClip()
+    {
+        IsClippingEnabled = true;
+    }
+    
+    public void EndClip()
+    {
+        IsClippingEnabled = false;
     }
 
-    public Rectangle Clip { get; set; }
+    public Boolean IsClipEmpty()
+    {
+        return Clip.Width <= 0 || Clip.Height <= 0;
+    }
 
-    public Boolean IsClippingEnabled { get; set; }
+    private Size Offset { get; set; } = initialOffset;
+    
+    private Rectangle Clip { get; set; } = initialClip;
+
+    private Boolean IsClippingEnabled { get; set; }
 
     public void DrawFilledRectangle(Rectangle rectangle, Color color)
     {

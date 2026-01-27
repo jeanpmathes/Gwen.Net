@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Visuals.Layout;
@@ -43,13 +42,16 @@ public sealed class Canvas : Panel, IDisposable
     public override void Render(IRenderer renderer)
     {
         renderer.Begin();
-
-        renderer.Clip = Bounds;
-        renderer.Offset = Size.Empty;
+        
+        renderer.PushOffset(Point.Empty);
+        renderer.PushClip(Bounds);
         
         base.Render(renderer);
         
-        renderer.IsClippingEnabled = false;
+        renderer.EndClip();
+        
+        renderer.PopClip();
+        renderer.PopOffset();
         
         renderer.End();
     }

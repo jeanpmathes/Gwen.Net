@@ -21,36 +21,45 @@ public interface IRenderer
     // todo: offset and clipping should use a stack with push/pop operations, no get/set available
     
     /// <summary>
-    /// Get the current offset applied to all operations.
+    /// Push an offset that will be applied to all operations.
+    /// The offset is additive, meaning the previous offset will be considered.
     /// </summary>
-    public Size Offset { get; set; }
+    /// <param name="offset">The offset to push.</param>
+    public void PushOffset(Point offset);
     
     /// <summary>
-    /// Add an offset that will be added to all operations.
-    /// It will be added to the current offset.
+    /// Pop the last pushed offset. Performs no operation if no offset was previously pushed.
     /// </summary>
-    /// <param name="offset">The offset to set.</param>
-    /// <returns>The previous offset.</returns>
-    public Size AddOffset(Point offset);
+    public void PopOffset();
     
     /// <summary>
-    /// Constrain the clipping region to the specified rectangle.
-    /// If it extended beyond the current clipping region, it will be reduced accordingly.
+    /// Push a clipping rectangle that will be applied to all operations.
+    /// The clipping rectangle is intersected with the previous clipping rectangle.
+    /// Note that clipping must be enabled via <see cref="BeginClip"/> for the clipping rectangle to take effect.
     /// </summary>
-    /// <param name="rectangle">The clipping rectangle to constrain to.</param>
-    /// <returns>The previous clipping rectangle.</returns>
-    public Rectangle ConstrainClipRegion(Rectangle rectangle);
+    /// <param name="rectangle">The clipping rectangle to push.</param>
+    public void PushClip(Rectangle rectangle);
     
     /// <summary>
-    /// Get and set the current clipping rectangle.
-    /// Note that the clipping rectangle is stored with the offset applied.
+    /// Pop the last pushed clipping rectangle. Performs no operation if no clipping rectangle was previously pushed.
     /// </summary>
-    public Rectangle Clip { get; set; }
+    public void PopClip();
     
     /// <summary>
-    /// Get and set whether clipping is enabled.
+    /// Begin clipping. All rendering operations after this call will be clipped to the current clipping rectangle if clipping is enabled.
     /// </summary>
-    public Boolean IsClippingEnabled { get; set; }
+    public void BeginClip();
+    
+    /// <summary>
+    /// End clipping. All rendering operations after this call will not be clipped.
+    /// </summary>
+    public void EndClip();
+    
+    /// <summary>
+    /// Check if the current clipping rectangle is empty, meaning nothing would pass.
+    /// </summary>
+    /// <returns>>True if the clipping rectangle is empty, false otherwise.</returns>
+    public Boolean IsClipEmpty();
     
     /// <summary>
     /// Draw a filled rectangle.
