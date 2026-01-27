@@ -38,6 +38,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="New\Graphics\gui.frag" />
+    <EmbeddedResource Include="New\Graphics\gui.vert" />
   </ItemGroup>
 
   <ItemGroup>

@@ -82,7 +82,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                 .Text("\t\tLink(\"Test Link 2\", \"Test Link 2\", Color.Blue, new Color(0xFFADD8E6), f4).\n")
                 .Text("\t\tText(\").\", new Color(0xFFFF00FF));");
 
-            document.Image("Legacy/gwen.png", new Size(width: 100, height: 100));
+            document.Image("gwen.png", new Size(width: 100, height: 100));
 
             label.Document = document;
 
@@ -124,7 +124,7 @@ namespace Gwen.Net.Tests.Components.Legacy
             );
 
             document.Image(
-                "Legacy/gwen.png",
+                "gwen.png",
                 new Size(width: 60, height: 60),
                 new Rectangle(x: 32, y: 32, width: 448, height: 448),
                 Color.White,

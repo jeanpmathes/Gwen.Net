@@ -33,7 +33,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                     button.Padding = Padding.Five;
                     button.ShouldDrawBackground = false;
                     button.Text = $"Button {buttonNum++}";
-                    button.SetImage("Legacy/test16.png", ImageAlign.Above);
+                    button.SetImage("test16.png", ImageAlign.Above);
                 }
             }
 

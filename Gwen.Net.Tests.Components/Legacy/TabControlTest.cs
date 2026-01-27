@@ -52,7 +52,7 @@ namespace Gwen.Net.Tests.Components.Legacy
 
                 dragMe.AddPage("You");
                 dragMe.AddPage("Can");
-                dragMe.AddPage("Reorder").SetImage("Legacy/test16.png");
+                dragMe.AddPage("Reorder").SetImage("test16.png");
                 dragMe.AddPage("These");
                 dragMe.AddPage("Tabs");
 

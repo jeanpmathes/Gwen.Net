@@ -26,7 +26,6 @@ namespace Gwen.Net.OpenTk.Legacy.Renderers
         protected Boolean clipEnabled;
         protected Color color;
 
-        protected Int32 drawCallCount;
         protected Boolean textureEnabled;
 
         private readonly Dictionary<String, Bitmap> preloadedTextures = new();
@@ -55,10 +54,6 @@ namespace Gwen.Net.OpenTk.Legacy.Renderers
         }
 
         public Int32 TextCacheSize => stringCache.Count;
-
-        public Int32 DrawCallCount => drawCallCount;
-
-        public abstract Int32 VertexCount { get; }
 
         public Int32 GLVersion { get; }
 

@@ -17,7 +17,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                     Margin = Margin.Five,
                     Dock = Dock.Top,
                     Size = new Size(width: 100, height: 100),
-                    ImageName = "Legacy/gwen.png"
+                    ImageName = "gwen.png"
                 };
             }
 
@@ -40,7 +40,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                     Margin = Margin.Five,
                     Dock = Dock.Top,
                     Size = new Size(width: 100, height: 100),
-                    ImageName = "Legacy/test16.png"
+                    ImageName = "test16.png"
                 };
 
                 img.Clicked += Image_Clicked;

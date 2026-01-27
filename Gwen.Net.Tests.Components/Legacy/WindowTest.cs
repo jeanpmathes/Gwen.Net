@@ -108,7 +108,7 @@ namespace Gwen.Net.Tests.Components.Legacy
             /* File */
             {
                 MenuItem root = menuStrip.AddItem("File");
-                root.Menu.AddItem("Load", "Legacy/test16.png", "Ctrl+L");
+                root.Menu.AddItem("Load", "test16.png", "Ctrl+L");
                 root.Menu.AddItem("Save", String.Empty, "Ctrl+S");
                 root.Menu.AddItem("Save As..", String.Empty, "Ctrl+A");
                 root.Menu.AddItem("Quit", String.Empty, "Ctrl+Q").SetAction((_, _) => window.Close());

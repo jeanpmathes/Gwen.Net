@@ -30,10 +30,10 @@ namespace Gwen.Net.Tests.Components.Legacy
                     }
 
                     TreeNode imgnode = node.AddNode("Image");
-                    imgnode.SetImage("Legacy/test16.png");
+                    imgnode.SetImage("test16.png");
 
                     imgnode = node.AddNode("Image_Kids");
-                    imgnode.SetImage("Legacy/test16.png", new Size(width: 32, height: 32), Color.Blue);
+                    imgnode.SetImage("test16.png", new Size(width: 32, height: 32), Color.Blue);
 
                     {
                         imgnode.AddNode("Kid1");

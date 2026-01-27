@@ -40,8 +40,6 @@ namespace Gwen.Net.OpenTk.Legacy.Renderers
             shader = new GL40ShaderLoader().Load("gui.gl40");
         }
 
-        public override Int32 VertexCount => totalVertNum;
-
         private void CreateBuffers()
         {
             GL.GenVertexArrays(n: 1, out vao);
@@ -119,8 +117,6 @@ namespace Gwen.Net.OpenTk.Legacy.Renderers
             GL.Disable(EnableCap.DepthTest);
 
             vertNum = 0;
-            totalVertNum = 0;
-            drawCallCount = 0;
             clipEnabled = false;
             textureEnabled = false;
             lastTextureID = -1;
@@ -174,7 +170,6 @@ namespace Gwen.Net.OpenTk.Legacy.Renderers
 
             GL.DrawArrays(PrimitiveType.Triangles, first: 0, vertNum);
 
-            drawCallCount++;
             totalVertNum += vertNum;
             vertNum = 0;
         }

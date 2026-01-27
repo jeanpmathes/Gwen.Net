@@ -1380,9 +1380,6 @@ namespace Gwen.Net.Legacy.Control
                 currentSkin = skin;
             }
 
-            // Do think
-            Think();
-
             RenderRecursive(currentSkin, Bounds);
 
             if (DrawDebugOutlines)
@@ -2711,11 +2708,6 @@ namespace Gwen.Net.Legacy.Control
         /// </summary>
         /// <param name="currentSkin">Skin to use.</param>
         protected virtual void RenderOver(SkinBase currentSkin) {}
-
-        /// <summary>
-        ///     Called during rendering.
-        /// </summary>
-        public virtual void Think() {}
 
         /// <summary>
         ///     Handler for gaining keyboard focus.

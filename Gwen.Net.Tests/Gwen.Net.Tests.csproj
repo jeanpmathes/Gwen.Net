@@ -1,35 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-      <OutputType>WinExe</OutputType>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <PlatformTarget>x64</PlatformTarget>
-      <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PlatformTarget>x64</PlatformTarget>
+        <Prefer32Bit>false</Prefer32Bit>
+        <WarningsAsErrors>;NU1605;nullable</WarningsAsErrors>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Collections.Generic.CircularBuffer" Version="1.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Collections.Generic.CircularBuffer" Version="1.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
-    <ProjectReference Include="..\Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj" />
-    <ProjectReference Include="..\Gwen.Net.Tests.Components\Gwen.Net.Tests.Components.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Legacy/DefaultSkin.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Legacy/DefaultSkin2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Legacy/gwen.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Legacy/test16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
+        <ProjectReference Include="..\Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj" />
+        <ProjectReference Include="..\Gwen.Net.Tests.Components\Gwen.Net.Tests.Components.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Update="DefaultSkin.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DefaultSkin2.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="gwen.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="test16.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

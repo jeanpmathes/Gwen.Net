@@ -28,45 +28,45 @@ namespace Gwen.Net.Tests.Components.Legacy
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Text = "Image button (default)";
-                    button.SetImage("Legacy/test16.png");
+                    button.SetImage("test16.png");
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Text = "Image button (above)";
-                    button.SetImage("Legacy/test16.png", ImageAlign.Above);
+                    button.SetImage("test16.png", ImageAlign.Above);
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Alignment = Alignment.Left | Alignment.CenterV;
                     button.Text = "Image button (left)";
-                    button.SetImage("Legacy/test16.png");
+                    button.SetImage("test16.png");
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Alignment = Alignment.Right | Alignment.CenterV;
                     button.Text = "Image button (right)";
-                    button.SetImage("Legacy/test16.png");
+                    button.SetImage("test16.png");
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Text = "Image button (image left)";
-                    button.SetImage("Legacy/test16.png", ImageAlign.Left | ImageAlign.CenterV);
+                    button.SetImage("test16.png", ImageAlign.Left | ImageAlign.CenterV);
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Text = "Image button (image right)";
-                    button.SetImage("Legacy/test16.png", ImageAlign.Right | ImageAlign.CenterV);
+                    button.SetImage("test16.png", ImageAlign.Right | ImageAlign.CenterV);
 
                     button = new Button(vlayout);
                     button.Margin = Margin.Five;
                     button.Padding = Padding.Three;
                     button.Text = "Image button (image fill)";
-                    button.SetImage("Legacy/test16.png", ImageAlign.Fill);
+                    button.SetImage("test16.png", ImageAlign.Fill);
 
                     HorizontalLayout hlayout2 = new(vlayout);
 
@@ -75,7 +75,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                         button.HorizontalAlignment = HorizontalAlignment.Left;
                         button.Padding = Padding.Three;
                         button.Margin = Margin.Five;
-                        button.SetImage("Legacy/test16.png");
+                        button.SetImage("test16.png");
                         button.ImageSize = new Size(width: 32, height: 32);
 
                         button = new Button(hlayout2);
@@ -83,14 +83,14 @@ namespace Gwen.Net.Tests.Components.Legacy
                         button.VerticalAlignment = VerticalAlignment.Center;
                         button.Padding = Padding.Three;
                         button.Margin = Margin.Five;
-                        button.SetImage("Legacy/test16.png");
+                        button.SetImage("test16.png");
 
                         button = new Button(hlayout2);
                         button.HorizontalAlignment = HorizontalAlignment.Left;
                         button.VerticalAlignment = VerticalAlignment.Center;
                         button.Padding = Padding.Three;
                         button.Margin = Margin.Five;
-                        button.SetImage("Legacy/test16.png");
+                        button.SetImage("test16.png");
                         button.ImageTextureRect = new Rectangle(x: 4, y: 4, width: 8, height: 8);
 
                         button = new Button(hlayout2);
@@ -98,7 +98,7 @@ namespace Gwen.Net.Tests.Components.Legacy
                         button.VerticalAlignment = VerticalAlignment.Center;
                         button.Padding = Padding.Three;
                         button.Margin = Margin.Five;
-                        button.SetImage("Legacy/test16.png");
+                        button.SetImage("test16.png");
                         button.ImageColor = Color.DarkGrey;
                     }
 
