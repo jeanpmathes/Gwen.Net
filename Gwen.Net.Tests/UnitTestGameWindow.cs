@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Versioning;
 using Collections.Generic;
@@ -51,7 +52,7 @@ public class UnitTestGameWindow : GameWindow
         gui.Load();
 
         unitTestControls = new UnitTestHarnessControls();
-        gui.Root?.Content = new Border();
+        gui.Root?.Content = new Border {MinimumSize = new SizeF(width: 500f, height: 500f)};
     }
 
     protected override void OnResize(ResizeEventArgs e)

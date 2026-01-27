@@ -18,14 +18,12 @@ public interface IRenderer
     /// </summary>
     public void End();
     
-    // todo: offset and clipping should use a stack with push/pop operations, no get/set available
-    
     /// <summary>
     /// Push an offset that will be applied to all operations.
     /// The offset is additive, meaning the previous offset will be considered.
     /// </summary>
     /// <param name="offset">The offset to push.</param>
-    public void PushOffset(Point offset);
+    public void PushOffset(PointF offset);
     
     /// <summary>
     /// Pop the last pushed offset. Performs no operation if no offset was previously pushed.
@@ -38,7 +36,7 @@ public interface IRenderer
     /// Note that clipping must be enabled via <see cref="BeginClip"/> for the clipping rectangle to take effect.
     /// </summary>
     /// <param name="rectangle">The clipping rectangle to push.</param>
-    public void PushClip(Rectangle rectangle);
+    public void PushClip(RectangleF rectangle);
     
     /// <summary>
     /// Pop the last pushed clipping rectangle. Performs no operation if no clipping rectangle was previously pushed.
@@ -66,19 +64,19 @@ public interface IRenderer
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="color">The color to use.</param>
-    public void DrawFilledRectangle(Rectangle rectangle, Color color);
+    public void DrawFilledRectangle(RectangleF rectangle, Color color);
 
     /// <summary>
     /// Draw a rectangle outline.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="color">The color to use.</param>
-    public void DrawLinedRectangle(Rectangle rectangle, Color color)
+    public void DrawLinedRectangle(RectangleF rectangle, Color color)
     {
-        DrawHorizontalLine(new Point(rectangle.Left, rectangle.Top), rectangle.Width, color);
-        DrawHorizontalLine(new Point(rectangle.Left, rectangle.Bottom - 1), rectangle.Width, color);
-        DrawVerticalLine(new Point(rectangle.Left, rectangle.Top), rectangle.Height, color);
-        DrawVerticalLine(new Point(rectangle.Right - 1, rectangle.Top), rectangle.Height, color);
+        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Width, color);
+        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Bottom - 1), rectangle.Width, color);
+        DrawVerticalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Height, color);
+        DrawVerticalLine(new PointF(rectangle.Right - 1, rectangle.Top), rectangle.Height, color);
     }
 
     /// <summary>
@@ -87,9 +85,9 @@ public interface IRenderer
     /// <param name="start">The start point.</param>
     /// <param name="length">The length of the line.</param>
     /// <param name="color">The color to use.</param>
-    public void DrawVerticalLine(Point start, Int32 length, Color color)
+    public void DrawVerticalLine(PointF start, Single length, Color color)
     {
-        DrawFilledRectangle(new Rectangle(start.X, start.Y, width: 1, length), color);
+        DrawFilledRectangle(new RectangleF(start.X, start.Y, width: 1, length), color);
     }
 
     /// <summary>
@@ -98,9 +96,9 @@ public interface IRenderer
     /// <param name="start">The start point.</param>
     /// <param name="length">The length of the line.</param>
     /// <param name="color">The color to use.</param>
-    public void DrawHorizontalLine(Point start, Int32 length, Color color)
+    public void DrawHorizontalLine(PointF start, Single length, Color color)
     {
-        DrawFilledRectangle(new Rectangle(start.X, start.Y, length, height: 1), color);
+        DrawFilledRectangle(new RectangleF(start.X, start.Y, length, height: 1), color);
     }
     
     /// <summary>

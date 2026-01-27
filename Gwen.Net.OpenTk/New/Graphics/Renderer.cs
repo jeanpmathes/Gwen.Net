@@ -19,11 +19,11 @@ public sealed class Renderer : IRenderer, IDisposable
     private readonly Vertex[] vertices;
     private readonly Int32 vertexSize;
     
-    private static readonly Size initialOffset = Size.Empty;
-    private static readonly Rectangle initialClip = new(x: 0, y: 0, Int32.MaxValue, Int32.MaxValue);
+    private static readonly SizeF initialOffset = SizeF.Empty;
+    private static readonly RectangleF initialClip = new(x: 0, y: 0, Int32.MaxValue, Int32.MaxValue);
     
-    private readonly Stack<Size> offsetStack = new();
-    private readonly Stack<Rectangle> clipStack = new();
+    private readonly Stack<SizeF> offsetStack = new();
+    private readonly Stack<RectangleF> clipStack = new();
 
     private Int32 numberOfVertices;
 
@@ -153,11 +153,11 @@ public sealed class Renderer : IRenderer, IDisposable
         }
     }
 
-    public void PushOffset(Point offset)
+    public void PushOffset(PointF offset)
     {
         offsetStack.Push(Offset);
         
-        Offset = new Size(Offset.Width + offset.X, Offset.Height + offset.Y);
+        Offset = new SizeF(Offset.Width + offset.X, Offset.Height + offset.Y);
     }
     
     public void PopOffset()
@@ -165,13 +165,13 @@ public sealed class Renderer : IRenderer, IDisposable
         Offset = offsetStack.Count > 0 ? offsetStack.Pop() : initialOffset;
     }
     
-    public void PushClip(Rectangle rectangle)
+    public void PushClip(RectangleF rectangle)
     {
         clipStack.Push(Clip);
 
         rectangle = Translate(rectangle);
 
-        Rectangle result = rectangle;
+        RectangleF result = rectangle;
 
         if (rectangle.X < Clip.X)
         {
@@ -222,13 +222,13 @@ public sealed class Renderer : IRenderer, IDisposable
         return Clip.Width <= 0 || Clip.Height <= 0;
     }
 
-    private Size Offset { get; set; } = initialOffset;
+    private SizeF Offset { get; set; } = initialOffset;
     
-    private Rectangle Clip { get; set; } = initialClip;
+    private RectangleF Clip { get; set; } = initialClip;
 
     private Boolean IsClippingEnabled { get; set; }
 
-    public void DrawFilledRectangle(Rectangle rectangle, Color color)
+    public void DrawFilledRectangle(RectangleF rectangle, Color color)
     {
         if (textureEnabled)
         {
@@ -241,7 +241,7 @@ public sealed class Renderer : IRenderer, IDisposable
         DrawRectangle(rectangle, color);
     }
 
-    private void DrawRectangle(Rectangle rectangle, Color color, Vector2? uvA = null, Vector2? uvB = null)
+    private void DrawRectangle(RectangleF rectangle, Color color, Vector2? uvA = null, Vector2? uvB = null)
     {
         Vector2 uv0 = uvA ?? (0f, 0f);
         Vector2 uv1 = uvB ?? (1f, 1f);
@@ -255,8 +255,8 @@ public sealed class Renderer : IRenderer, IDisposable
         {
             if (rectangle.Y < Clip.Y)
             {
-                Int32 oldHeight = rectangle.Height;
-                Int32 delta = Clip.Y - rectangle.Y;
+                Single oldHeight = rectangle.Height;
+                Single delta = Clip.Y - rectangle.Y;
                 rectangle.Y = Clip.Y;
                 rectangle.Height -= delta;
 
@@ -265,14 +265,14 @@ public sealed class Renderer : IRenderer, IDisposable
                     return;
                 }
 
-                Single dv = delta / (Single) oldHeight;
+                Single dv = delta / oldHeight;
                 uv0.Y += dv * (uv1.Y - uv0.Y);
             }
 
             if (rectangle.Y + rectangle.Height > Clip.Y + Clip.Height)
             {
-                Int32 oldHeight = rectangle.Height;
-                Int32 delta = rectangle.Y + rectangle.Height - (Clip.Y + Clip.Height);
+                Single oldHeight = rectangle.Height;
+                Single delta = rectangle.Y + rectangle.Height - (Clip.Y + Clip.Height);
 
                 rectangle.Height -= delta;
 
@@ -281,14 +281,14 @@ public sealed class Renderer : IRenderer, IDisposable
                     return;
                 }
 
-                Single dv = delta / (Single) oldHeight;
+                Single dv = delta / oldHeight;
                 uv1.Y -= dv * (uv1.Y - uv0.Y);
             }
 
             if (rectangle.X < Clip.X)
             {
-                Int32 oldWidth = rectangle.Width;
-                Int32 delta = Clip.X - rectangle.X;
+                Single oldWidth = rectangle.Width;
+                Single delta = Clip.X - rectangle.X;
                 rectangle.X = Clip.X;
                 rectangle.Width -= delta;
 
@@ -297,14 +297,14 @@ public sealed class Renderer : IRenderer, IDisposable
                     return;
                 }
 
-                Single du = delta / (Single) oldWidth;
+                Single du = delta / oldWidth;
                 uv0.X += du * (uv1.X - uv0.X);
             }
 
             if (rectangle.X + rectangle.Width > Clip.X + Clip.Width)
             {
-                Int32 oldWidth = rectangle.Width;
-                Int32 delta = rectangle.X + rectangle.Width - (Clip.X + Clip.Width);
+                Single oldWidth = rectangle.Width;
+                Single delta = rectangle.X + rectangle.Width - (Clip.X + Clip.Width);
 
                 rectangle.Width -= delta;
 
@@ -313,7 +313,7 @@ public sealed class Renderer : IRenderer, IDisposable
                     return;
                 }
 
-                Single du = delta / (Single) oldWidth;
+                Single du = delta / oldWidth;
                 uv1.X -= du * (uv1.X - uv0.X);
             }
         }
@@ -359,14 +359,14 @@ public sealed class Renderer : IRenderer, IDisposable
         GL.Uniform2(shader.Uniforms["uScreenSize"], new Vector2(size.Width, size.Height));
     }
     
-    public Rectangle Translate(Rectangle rectangle)
+    public RectangleF Translate(RectangleF rectangle)
     {
         rectangle.Location += Offset;
 
         return rectangle;
     }
     
-    public Point Translate(Point point)
+    public PointF Translate(PointF point)
     {
         point += Offset;
 

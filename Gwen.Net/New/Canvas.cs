@@ -33,7 +33,7 @@ public sealed class Canvas : Panel, IDisposable
     }
 
     /// <inheritdoc/>
-    public override void OnBoundsChanged(Rectangle oldBounds, Rectangle newBounds)
+    public override void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
     {
         InvalidateMeasure();
     }

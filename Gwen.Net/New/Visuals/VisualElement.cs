@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Rendering;
+using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Visuals;
 
@@ -142,42 +143,42 @@ public abstract class VisualElement : Element
     /// <summary>
     /// The bounds of this element.
     /// </summary>
-    public Rectangle Bounds { get; private set; }
+    public RectangleF Bounds { get; private set; }
     
     /// <summary>
     /// The bounds with negative offset applied, zeroing them to (0,0).
     /// </summary>
-    protected Rectangle RenderBounds => new(Point.Empty, Bounds.Size);
+    protected RectangleF RenderBounds => new(PointF.Empty, Bounds.Size);
     
     /// <summary>
     ///     Location of the element. Valid after arranging.
     /// </summary>
-    public Int32 ActualLeft => Bounds.X;
+    public Single ActualLeft => Bounds.X;
 
     /// <summary>
     ///     Location of the element. Valid after arranging.
     /// </summary>
-    public Int32 ActualTop => Bounds.Y;
+    public Single ActualTop => Bounds.Y;
     
     /// <summary>
     ///     The actual location of the element. Valid after arranging.
     /// </summary>
-    public Point ActualLocation => Bounds.Location;
+    public PointF ActualLocation => Bounds.Location;
 
     /// <summary>
     ///     The actual width of the element. Valid after arranging.
     /// </summary>
-    public Int32 ActualWidth => Bounds.Width;
+    public Single ActualWidth => Bounds.Width;
 
     /// <summary>
     ///     The actual height of the element. Valid after arranging.
     /// </summary>
-    public Int32 ActualHeight => Bounds.Height;
+    public Single ActualHeight => Bounds.Height;
     
     /// <summary>
     ///     The actual size of the element. Valid after arranging.
     /// </summary>
-    public Size ActualSize => Bounds.Size;
+    public SizeF ActualSize => Bounds.Size;
     
     /// <summary>
     ///     Sets the size of the element.
@@ -185,7 +186,7 @@ public abstract class VisualElement : Element
     /// <param name="size">New size.</param>
     /// <returns>True if bounds changed.</returns>
     /// <remarks>Bounds are reset after the next layout pass.</remarks>
-    public virtual Boolean SetSize(Size size)
+    public virtual Boolean SetSize(SizeF size)
     {
         return SetBounds(Bounds with { Size = size });
     }
@@ -196,11 +197,11 @@ public abstract class VisualElement : Element
     /// <param name="newBounds">New bounds.</param>
     /// <returns>True if bounds changed.</returns>
     /// <remarks>Bounds are reset after the next layout pass.</remarks>
-    public virtual Boolean SetBounds(Rectangle newBounds)
+    public virtual Boolean SetBounds(RectangleF newBounds)
     {
         if (Bounds == newBounds) return false;
         
-        Rectangle oldBounds = Bounds;
+        RectangleF oldBounds = Bounds;
         Bounds = newBounds;
         
         OnBoundsChanged(oldBounds, newBounds);
@@ -215,7 +216,7 @@ public abstract class VisualElement : Element
     /// </summary>
     /// <param name="oldBounds">The old bounds.</param>
     /// <param name="newBounds">The new bounds.</param>
-    public virtual void OnBoundsChanged(Rectangle oldBounds, Rectangle newBounds)
+    public virtual void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
     {
         
     }
@@ -223,47 +224,68 @@ public abstract class VisualElement : Element
     #endregion POSITIONING
     
     #region LAYOUTING
+
+    /// <summary>
+    /// The minimum size of this element. Might not be respected by all layout containers.
+    /// </summary>
+    public SizeF MinimumSize { get; set; } = Sizes.One;
+    
+    /// <summary>
+    /// The maximum size of this element. Might not be respected by all layout containers.
+    /// </summary>
+    public SizeF MaximumSize { get; set; } = Sizes.Infinity;
     
     private Boolean isMeasureValid;
     private Boolean isArrangeValid;
+
+    /// <summary>
+    /// The size this element measured itself to be during the last measure pass.
+    /// This is effectively the minimum size this element requires to render itself properly.
+    /// </summary>
+    public SizeF MeasuredSize { get; private set; } = SizeF.Empty;
     
-    private Size lastAvailableSize = Size.Empty;
-    private Size measuredSize = Size.Empty;
-    
+    private SizeF lastAvailableSize = SizeF.Empty;
+
     /// <summary>
     /// Measure the desired size of this element given the available size.
     /// </summary>
     /// <param name="availableSize">The available size. The element does not have to use all of this size.</param>
     /// <returns>The desired size required by this element, might be larger than the available size.</returns>
-    public Size Measure(Size availableSize)
+    public SizeF Measure(SizeF availableSize)
     {
         if (isMeasureValid && lastAvailableSize == availableSize)
-            return measuredSize;
+            return MeasuredSize;
         
         lastAvailableSize = availableSize;
-        measuredSize = OnMeasure(availableSize);
+        
+        availableSize = Sizes.Clamp(availableSize, MinimumSize, MaximumSize);
+        
+        MeasuredSize = OnMeasure(availableSize);
+        
+        MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
+        
         isMeasureValid = true;
         isArrangeValid = false;
 
-        return measuredSize;
+        return MeasuredSize;
     }
     
     /// <summary>
-    /// Override to define custom measuring logic. See <see cref="Measure(Size)"/>.
-    /// If you override this, you will likely need to override <see cref="OnArrange(Rectangle)"/> as well and vice versa.
+    /// Override to define custom measuring logic. See <see cref="Measure(SizeF)"/>.
+    /// If you override this, you will likely need to override <see cref="OnArrange(RectangleF)"/> as well and vice versa.
     /// </summary>
     /// <param name="availableSize">The available size. The element does not have to use all of this size.</param>
     /// <returns>The desired size required by this element, might be larger than the available size.</returns>
-    public virtual Size OnMeasure(Size availableSize)
+    public virtual SizeF OnMeasure(SizeF availableSize)
     {
         if (visualChildren.Count == 0)
-            return Size.Empty;
+            return SizeF.Empty;
         
-        var desiredSize = Size.Empty;
+        var desiredSize = SizeF.Empty;
         
         foreach (VisualElement child in visualChildren)
         {
-            Size childDesiredSize = child.Measure(availableSize);
+            SizeF childDesiredSize = child.Measure(availableSize);
             
             desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
             desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
@@ -277,14 +299,19 @@ public abstract class VisualElement : Element
     /// This will set the <see cref="Bounds"/> of this element.
     /// </summary>
     /// <param name="finalRectangle">The final rectangle to arrange this element in.</param>
-    public void Arrange(Rectangle finalRectangle)
+    public void Arrange(RectangleF finalRectangle)
     {
         if (isArrangeValid) return;
         
         if (!isMeasureValid)
             Measure(finalRectangle.Size);
         
-        Rectangle arrangedRectangle = OnArrange(finalRectangle);
+        RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
+        
+        RectangleF arrangedRectangle = OnArrange(allowedRectangle);
+        
+        arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
+        
         SetBounds(arrangedRectangle);
         
         // SetBounds might invalidate something, so we set everything to valid again.
@@ -294,20 +321,18 @@ public abstract class VisualElement : Element
     }
     
     /// <summary>
-    /// Override to define custom arranging logic. See <see cref="Arrange(Rectangle)"/>.
-    /// If you have overriden <see cref="OnMeasure(Size)"/>, you will likely need to override this as well and vice versa.
+    /// Override to define custom arranging logic. See <see cref="Arrange(RectangleF)"/>.
+    /// If you have overriden <see cref="OnMeasure(SizeF)"/>, you will likely need to override this as well and vice versa.
     /// </summary>
     /// <param name="finalRectangle">The final rectangle to arrange this element in.</param>
     /// <returns>The actual rectangle used by this element after arranging.</returns>
-    public virtual Rectangle OnArrange(Rectangle finalRectangle)
+    public virtual RectangleF OnArrange(RectangleF finalRectangle)
     {
         if (visualChildren.Count == 0)
-            return finalRectangle;
+            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize);
         
         foreach (VisualElement child in visualChildren)
-        {
-            child.Arrange(finalRectangle);
-        }
+            child.Arrange(Rectangles.ConstraintSize(finalRectangle, child.MeasuredSize));
 
         return finalRectangle;
     }
