@@ -21,27 +21,20 @@ internal class GwenGui : IGwenGui
 
     public void Load()
     {
-        Root = new Canvas();
         Renderer = new Renderer();
-
-        Size size = new(Parent.Size.X, Parent.Size.Y);
-        Root.SetSize(size);
-        Renderer.Resize(size);
+        Root = new Canvas(Renderer);
+        
+        Root?.SetRenderingSize(new Size(Parent.Size.X, Parent.Size.Y));
     }
 
     public void Render()
     {
-        if (Root == null || Renderer == null)
-            return;
-        
-        Root.Render(Renderer);
+        Root?.Render();
     }
 
     public void Resize(Vector2i size)
     {
-        Size newSize = new(size.X, size.Y);
-        Renderer?.Resize(newSize);
-        Root?.SetSize(newSize);
+        Root?.SetRenderingSize(new Size(size.X, size.Y));
     }
 
     public void Dispose()

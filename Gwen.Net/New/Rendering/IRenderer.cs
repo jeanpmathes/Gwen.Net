@@ -106,4 +106,11 @@ public interface IRenderer
     /// </summary>
     /// <param name="size">The new size.</param>
     public void Resize(Size size);
+
+    /// <summary>
+    /// Scale the rendered results by the specified factor.
+    /// This affects all subsequent rendering operations and text measurements.
+    /// </summary>
+    /// <param name="newScale">The new scale factor.</param>
+    public void Scale(Single newScale);
 }

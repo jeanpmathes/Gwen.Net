@@ -34,6 +34,8 @@ public sealed class Renderer : IRenderer, IDisposable
     private Boolean textureEnabled;
 
     private RenderState previousRenderState;
+    
+    private Single scale = 1.0f;
 
     public Renderer(Boolean restoreRenderState = true)
     {
@@ -169,7 +171,7 @@ public sealed class Renderer : IRenderer, IDisposable
     {
         clipStack.Push(Clip);
 
-        rectangle = Translate(rectangle);
+        rectangle = Transform(rectangle);
 
         RectangleF result = rectangle;
 
@@ -236,7 +238,7 @@ public sealed class Renderer : IRenderer, IDisposable
             textureEnabled = false;
         }
 
-        rectangle = Translate(rectangle);
+        rectangle = Transform(rectangle);
 
         DrawRectangle(rectangle, color);
     }
@@ -358,19 +360,22 @@ public sealed class Renderer : IRenderer, IDisposable
         GL.UseProgram(shader.Program);
         GL.Uniform2(shader.Uniforms["uScreenSize"], new Vector2(size.Width, size.Height));
     }
-    
-    public RectangleF Translate(RectangleF rectangle)
+
+    public void Scale(Single newScale)
+    {
+        scale = newScale;
+    }
+
+    public RectangleF Transform(RectangleF rectangle)
     {
         rectangle.Location += Offset;
+        
+        rectangle.X *= scale;
+        rectangle.Y *= scale;
+        rectangle.Width *= scale;
+        rectangle.Height *= scale;
 
         return rectangle;
-    }
-    
-    public PointF Translate(PointF point)
-    {
-        point += Offset;
-
-        return point;
     }
 
     public void Dispose()
