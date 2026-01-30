@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Gwen.Net.New.Graphics;
 
 namespace Gwen.Net.New.Rendering;
 
@@ -63,20 +64,20 @@ public interface IRenderer
     /// Draw a filled rectangle.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
-    /// <param name="color">The color to use.</param>
-    public void DrawFilledRectangle(RectangleF rectangle, Color color);
+    /// <param name="brush">The brush to use.</param>
+    public void DrawFilledRectangle(RectangleF rectangle, Brush brush);
 
     /// <summary>
     /// Draw a rectangle outline.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
-    /// <param name="color">The color to use.</param>
-    public void DrawLinedRectangle(RectangleF rectangle, Color color)
+    /// <param name="brush">The brush to use.</param>
+    public void DrawLinedRectangle(RectangleF rectangle, Brush brush)
     {
-        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Width, color);
-        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Bottom - 1), rectangle.Width, color);
-        DrawVerticalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Height, color);
-        DrawVerticalLine(new PointF(rectangle.Right - 1, rectangle.Top), rectangle.Height, color);
+        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Width, brush);
+        DrawHorizontalLine(new PointF(rectangle.Left, rectangle.Bottom - 1), rectangle.Width, brush);
+        DrawVerticalLine(new PointF(rectangle.Left, rectangle.Top), rectangle.Height, brush);
+        DrawVerticalLine(new PointF(rectangle.Right - 1, rectangle.Top), rectangle.Height, brush);
     }
 
     /// <summary>
@@ -84,10 +85,10 @@ public interface IRenderer
     /// </summary>
     /// <param name="start">The start point.</param>
     /// <param name="length">The length of the line.</param>
-    /// <param name="color">The color to use.</param>
-    public void DrawVerticalLine(PointF start, Single length, Color color)
+    /// <param name="brush">The brush to use.</param>
+    public void DrawVerticalLine(PointF start, Single length, Brush brush)
     {
-        DrawFilledRectangle(new RectangleF(start.X, start.Y, width: 1, length), color);
+        DrawFilledRectangle(new RectangleF(start.X, start.Y, width: 1, length), brush);
     }
 
     /// <summary>
@@ -95,10 +96,10 @@ public interface IRenderer
     /// </summary>
     /// <param name="start">The start point.</param>
     /// <param name="length">The length of the line.</param>
-    /// <param name="color">The color to use.</param>
-    public void DrawHorizontalLine(PointF start, Single length, Color color)
+    /// <param name="brush">The brush to use.</param>
+    public void DrawHorizontalLine(PointF start, Single length, Brush brush)
     {
-        DrawFilledRectangle(new RectangleF(start.X, start.Y, length, height: 1), color);
+        DrawFilledRectangle(new RectangleF(start.X, start.Y, length, height: 1), brush);
     }
     
     /// <summary>

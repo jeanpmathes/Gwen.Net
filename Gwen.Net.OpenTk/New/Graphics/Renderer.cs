@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Boolean = System.Boolean;
+using Brush = Gwen.Net.New.Graphics.Brush;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
 
@@ -229,9 +231,11 @@ public sealed class Renderer : IRenderer, IDisposable
     private RectangleF Clip { get; set; } = initialClip;
 
     private Boolean IsClippingEnabled { get; set; }
-
-    public void DrawFilledRectangle(RectangleF rectangle, Color color)
+    
+    public void DrawFilledRectangle(RectangleF rectangle, Brush brush)
     {
+        if (!ConvertBrush(brush, out ColorData color)) return;
+        
         if (textureEnabled)
         {
             Flush();
@@ -243,7 +247,22 @@ public sealed class Renderer : IRenderer, IDisposable
         DrawRectangle(rectangle, color);
     }
 
-    private void DrawRectangle(RectangleF rectangle, Color color, Vector2? uvA = null, Vector2? uvB = null)
+    private static Boolean ConvertBrush(Brush brush, out ColorData color)
+    {
+        color = default;
+
+        switch (brush)
+        {
+            case SolidColorBrush solidColorBrush:
+                color = ColorData.FromColor(solidColorBrush.Color);
+                return true;
+            
+            default:
+                return false;
+        }
+    }
+    
+    private void DrawRectangle(RectangleF rectangle, in ColorData color, Vector2? uvA = null, Vector2? uvB = null)
     {
         Vector2 uv0 = uvA ?? (0f, 0f);
         Vector2 uv1 = uvB ?? (1f, 1f);
@@ -320,17 +339,15 @@ public sealed class Renderer : IRenderer, IDisposable
             }
         }
 
-        ColorData colorData = ColorData.FromColor(color);
-
         Int32 vertexIndex = numberOfVertices;
         
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in colorData);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y, (uv1.X, uv0.Y), in colorData);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in colorData);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y, (uv1.X, uv0.Y), in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
         
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in colorData);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in colorData);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y + rectangle.Height, (uv0.X, uv1.Y), in colorData);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y + rectangle.Height, (uv0.X, uv1.Y), in color);
 
         numberOfVertices = vertexIndex;
     }
@@ -414,15 +431,6 @@ public sealed class Renderer : IRenderer, IDisposable
         {
             vertex.x = x;
             vertex.y = y;
-            vertex.u = uv.X;
-            vertex.v = uv.Y;
-            vertex.color = color;
-        }
-        
-        public static void Set(ref Vertex vertex, Vector2 position, Vector2 uv, in ColorData color)
-        {
-            vertex.x = position.X;
-            vertex.y = position.Y;
             vertex.u = uv.X;
             vertex.v = uv.Y;
             vertex.color = color;

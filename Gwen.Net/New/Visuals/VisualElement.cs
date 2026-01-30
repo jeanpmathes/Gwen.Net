@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Utilities;
 
@@ -20,6 +21,24 @@ public abstract class VisualElement : Element
     {
         InvalidateMeasure();
     }
+
+    #region LOOK
+
+    /// <summary>
+    /// Gets or sets the background brush of this element.
+    /// </summary>
+    public Brush Background
+    {
+        get;
+
+        set
+        {
+            field = value;
+            InvalidateRender();
+        }
+    }
+
+    #endregion LOOK
     
     #region HIERARCHY
     
