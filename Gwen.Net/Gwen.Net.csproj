@@ -11,6 +11,7 @@
       </Description>
       <RepositoryUrl>https://github.com/jeanpmathes/Gwen.Net</RepositoryUrl>
       <PackageLicense>https://raw.githubusercontent.com/jeanpmathes/Gwen.Net/refs/heads/main/LICENSE</PackageLicense>
+      <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
 </Project>
