@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Gwen.Net.New.Graphics;
-using Gwen.Net.New.Rendering;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Boolean = System.Boolean;
@@ -11,7 +10,7 @@ using Brush = Gwen.Net.New.Graphics.Brush;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
 
-public sealed class Renderer : IRenderer, IDisposable
+public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 {
     private const Int32 MaxVerts = 4096;
 
@@ -102,7 +101,7 @@ public sealed class Renderer : IRenderer, IDisposable
         GL.BindVertexArray(array: 0);
     }
 
-    public void Begin()
+    public override void Begin()
     {
         GL.ActiveTexture(TextureUnit.Texture0);
         GL.UseProgram(shader.Program);
@@ -131,7 +130,7 @@ public sealed class Renderer : IRenderer, IDisposable
         lastTextureID = -1;
     }
 
-    public void End()
+    public override void End()
     {
         Flush();
 
@@ -157,19 +156,19 @@ public sealed class Renderer : IRenderer, IDisposable
         }
     }
 
-    public void PushOffset(PointF offset)
+    public override void PushOffset(PointF offset)
     {
         offsetStack.Push(Offset);
         
         Offset = new SizeF(Offset.Width + offset.X, Offset.Height + offset.Y);
     }
     
-    public void PopOffset()
+    public override void PopOffset()
     {
         Offset = offsetStack.Count > 0 ? offsetStack.Pop() : initialOffset;
     }
     
-    public void PushClip(RectangleF rectangle)
+    public override void PushClip(RectangleF rectangle)
     {
         clipStack.Push(Clip);
 
@@ -206,22 +205,22 @@ public sealed class Renderer : IRenderer, IDisposable
         };
     }
     
-    public void PopClip()
+    public override void PopClip()
     {
         Clip = clipStack.Count > 0 ? clipStack.Pop() : initialClip;
     }
     
-    public void BeginClip()
+    public override void BeginClip()
     {
         IsClippingEnabled = true;
     }
     
-    public void EndClip()
+    public override void EndClip()
     {
         IsClippingEnabled = false;
     }
 
-    public Boolean IsClipEmpty()
+    public override Boolean IsClipEmpty()
     {
         return Clip.Width <= 0 || Clip.Height <= 0;
     }
@@ -232,7 +231,7 @@ public sealed class Renderer : IRenderer, IDisposable
 
     private Boolean IsClippingEnabled { get; set; }
     
-    public void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
     {
         if (!ConvertBrush(brush, out ColorData color)) return;
         
@@ -371,14 +370,14 @@ public sealed class Renderer : IRenderer, IDisposable
         numberOfVertices = 0;
     }
 
-    public void Resize(Size size)
+    public override void Resize(Size size)
     {
         GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
         GL.UseProgram(shader.Program);
         GL.Uniform2(shader.Uniforms["uScreenSize"], new Vector2(size.Width, size.Height));
     }
 
-    public void Scale(Single newScale)
+    public override void Scale(Single newScale)
     {
         scale = newScale;
     }
@@ -436,8 +435,8 @@ public sealed class Renderer : IRenderer, IDisposable
             vertex.color = color;
         }
     }
-    
-    public struct RenderState
+
+    private struct RenderState
     {
         public Int32 alphaFunc;
         public Single alphaRef;
