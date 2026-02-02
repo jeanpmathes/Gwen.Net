@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Gwen.Net.New.Graphics;
@@ -19,12 +18,6 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 
     private readonly Vertex[] vertices;
     private readonly Int32 vertexSize;
-    
-    private static readonly SizeF initialOffset = SizeF.Empty;
-    private static readonly RectangleF initialClip = new(x: 0, y: 0, Int32.MaxValue, Int32.MaxValue);
-    
-    private readonly Stack<SizeF> offsetStack = new();
-    private readonly Stack<RectangleF> clipStack = new();
 
     private Int32 numberOfVertices;
 
@@ -35,8 +28,6 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     private Boolean textureEnabled;
 
     private RenderState previousRenderState;
-    
-    private Single scale = 1.0f;
 
     public Renderer(Boolean restoreRenderState = true)
     {
@@ -125,13 +116,16 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         GL.Disable(EnableCap.DepthTest);
 
         numberOfVertices = 0;
-        IsClippingEnabled = false;
         textureEnabled = false;
         lastTextureID = -1;
+        
+        base.Begin();
     }
 
     public override void End()
     {
+        base.End();
+        
         Flush();
 
         GL.BindVertexArray(array: 0);
@@ -155,81 +149,6 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             GL.Enable(EnableCap.DepthTest);
         }
     }
-
-    public override void PushOffset(PointF offset)
-    {
-        offsetStack.Push(Offset);
-        
-        Offset = new SizeF(Offset.Width + offset.X, Offset.Height + offset.Y);
-    }
-    
-    public override void PopOffset()
-    {
-        Offset = offsetStack.Count > 0 ? offsetStack.Pop() : initialOffset;
-    }
-    
-    public override void PushClip(RectangleF rectangle)
-    {
-        clipStack.Push(Clip);
-
-        rectangle = Transform(rectangle);
-
-        RectangleF result = rectangle;
-
-        if (rectangle.X < Clip.X)
-        {
-            result.Width -= Clip.X - result.X;
-            result.X = Clip.X;
-        }
-
-        if (rectangle.Y < Clip.Y)
-        {
-            result.Height -= Clip.Y - result.Y;
-            result.Y = Clip.Y;
-        }
-
-        if (rectangle.Right > Clip.Right)
-        {
-            result.Width = Clip.Right - result.X;
-        }
-
-        if (rectangle.Bottom > Clip.Bottom)
-        {
-            result.Height = Clip.Bottom - result.Y;
-        }
-
-        Clip = result with
-        {
-            Width = Math.Max(val1: 0, result.Width),
-            Height = Math.Max(val1: 0, result.Height)
-        };
-    }
-    
-    public override void PopClip()
-    {
-        Clip = clipStack.Count > 0 ? clipStack.Pop() : initialClip;
-    }
-    
-    public override void BeginClip()
-    {
-        IsClippingEnabled = true;
-    }
-    
-    public override void EndClip()
-    {
-        IsClippingEnabled = false;
-    }
-
-    public override Boolean IsClipEmpty()
-    {
-        return Clip.Width <= 0 || Clip.Height <= 0;
-    }
-
-    private SizeF Offset { get; set; } = initialOffset;
-    
-    private RectangleF Clip { get; set; } = initialClip;
-
-    private Boolean IsClippingEnabled { get; set; }
     
     public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
     {
@@ -263,90 +182,25 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     
     private void DrawRectangle(RectangleF rectangle, in ColorData color, Vector2? uvA = null, Vector2? uvB = null)
     {
-        Vector2 uv0 = uvA ?? (0f, 0f);
-        Vector2 uv1 = uvB ?? (1f, 1f);
+        (Single x, Single y) uv0 = (uvA?.X ?? 0f, uvA?.Y ?? 0f);
+        (Single x, Single y) uv1 = (uvB?.X ?? 1f, uvB?.Y ?? 1f);
         
         if (numberOfVertices + 6 >= MaxVerts)
         {
             Flush();
         }
 
-        if (IsClippingEnabled)
-        {
-            if (rectangle.Y < Clip.Y)
-            {
-                Single oldHeight = rectangle.Height;
-                Single delta = Clip.Y - rectangle.Y;
-                rectangle.Y = Clip.Y;
-                rectangle.Height -= delta;
-
-                if (rectangle.Height <= 0)
-                {
-                    return;
-                }
-
-                Single dv = delta / oldHeight;
-                uv0.Y += dv * (uv1.Y - uv0.Y);
-            }
-
-            if (rectangle.Y + rectangle.Height > Clip.Y + Clip.Height)
-            {
-                Single oldHeight = rectangle.Height;
-                Single delta = rectangle.Y + rectangle.Height - (Clip.Y + Clip.Height);
-
-                rectangle.Height -= delta;
-
-                if (rectangle.Height <= 0)
-                {
-                    return;
-                }
-
-                Single dv = delta / oldHeight;
-                uv1.Y -= dv * (uv1.Y - uv0.Y);
-            }
-
-            if (rectangle.X < Clip.X)
-            {
-                Single oldWidth = rectangle.Width;
-                Single delta = Clip.X - rectangle.X;
-                rectangle.X = Clip.X;
-                rectangle.Width -= delta;
-
-                if (rectangle.Width <= 0)
-                {
-                    return;
-                }
-
-                Single du = delta / oldWidth;
-                uv0.X += du * (uv1.X - uv0.X);
-            }
-
-            if (rectangle.X + rectangle.Width > Clip.X + Clip.Width)
-            {
-                Single oldWidth = rectangle.Width;
-                Single delta = rectangle.X + rectangle.Width - (Clip.X + Clip.Width);
-
-                rectangle.Width -= delta;
-
-                if (rectangle.Width <= 0)
-                {
-                    return;
-                }
-
-                Single du = delta / oldWidth;
-                uv1.X -= du * (uv1.X - uv0.X);
-            }
-        }
+        ClipRectangle(ref rectangle, ref uv0, ref uv1);
 
         Int32 vertexIndex = numberOfVertices;
         
         Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y, (uv1.X, uv0.Y), in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y, (uv1.x, uv0.y), in color);
         Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
         
         Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
         Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y + rectangle.Height, (uv0.X, uv1.Y), in color);
+        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y + rectangle.Height, (uv0.x, uv1.y), in color);
 
         numberOfVertices = vertexIndex;
     }
@@ -375,23 +229,6 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
         GL.UseProgram(shader.Program);
         GL.Uniform2(shader.Uniforms["uScreenSize"], new Vector2(size.Width, size.Height));
-    }
-
-    public override void Scale(Single newScale)
-    {
-        scale = newScale;
-    }
-
-    public RectangleF Transform(RectangleF rectangle)
-    {
-        rectangle.Location += Offset;
-        
-        rectangle.X *= scale;
-        rectangle.Y *= scale;
-        rectangle.Width *= scale;
-        rectangle.Height *= scale;
-
-        return rectangle;
     }
 
     public void Dispose()
