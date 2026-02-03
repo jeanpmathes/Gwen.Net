@@ -36,7 +36,7 @@ public abstract class VisualElement : Element
             field = value;
             InvalidateRender();
         }
-    }
+    } = Brushes.Transparent;
 
     #endregion LOOK
     
@@ -140,8 +140,15 @@ public abstract class VisualElement : Element
         child.Detach(isReparenting);
     }
 
-    private protected virtual void OnVisualChildAdded(VisualElement child) {}
-    private protected virtual void OnVisualChildRemoved(VisualElement child) {}
+    private protected virtual void OnVisualChildAdded(VisualElement child)
+    {
+        InvalidateMeasure();
+    }
+
+    private protected virtual void OnVisualChildRemoved(VisualElement child)
+    {
+        InvalidateMeasure();
+    }
 
     private protected sealed override void OnAttachInternal()
     {
@@ -466,7 +473,13 @@ public abstract class VisualElement : Element
     /// The control that owns the template this element is the root of, or <c>null</c> if this element is not part of a control template or is not the root of such a template.
     /// </summary>
     public Control? TemplateOwner { get; internal set; }
-    
+
+    /// <inheritdoc/>
+    protected override void OnVisualizationInvalidated(Element child)
+    {
+        VisualParent?.OnVisualizationInvalidated(child);
+    }
+
     private protected override VisualElement GetOrCreateVisualization() => this;
 
     #endregion TEMPLATING

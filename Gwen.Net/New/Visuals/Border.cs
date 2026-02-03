@@ -6,8 +6,16 @@ namespace Gwen.Net.New.Visuals;
 /// <summary>
 /// A border draws background and border around its child element.
 /// </summary>
-public class Border : VisualElement
+public class Border : VisualHost
 {
+    /// <summary>
+    /// Creates a new border element.
+    /// </summary>
+    public Border(Element? child = null) : base(child)
+    {
+        
+    }
+    
     /// <summary>
     /// Gets or sets the brush used to draw the border.
     /// </summary>

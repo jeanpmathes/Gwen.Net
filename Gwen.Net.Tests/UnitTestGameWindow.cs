@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.Versioning;
 using Collections.Generic;
-using Gwen.Net.New.Visuals;
 using Gwen.Net.OpenTk.New;
 using Gwen.Net.Tests.Components.New;
 using OpenTK.Graphics.OpenGL;
@@ -19,12 +17,12 @@ namespace Gwen.Net.Tests;
 public class UnitTestGameWindow : GameWindow
 {
     private const Int32 MaxFrameSampleSize = 10000;
-    
+
     private readonly IGwenGui gui;
-    
+
     private readonly CircularBuffer<Double> renderFrameTimes;
     private readonly CircularBuffer<Double> updateFrameTimes;
-    
+
     private UnitTestHarnessControls? unitTestControls;
 
     public UnitTestGameWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
@@ -41,18 +39,18 @@ public class UnitTestGameWindow : GameWindow
     protected override void Dispose(Boolean disposing)
     {
         gui.Dispose();
-        
+
         base.Dispose(disposing);
     }
 
     protected override void OnLoad()
     {
         GL.ClearColor(Color4.MidnightBlue);
-        
+
         gui.Load();
 
         unitTestControls = new UnitTestHarnessControls();
-        gui.Root?.Content = new Border {MinimumSize = new SizeF(width: 500f, height: 500f)};
+        gui.Root?.Content = unitTestControls;
     }
 
     protected override void OnResize(ResizeEventArgs e)
@@ -67,7 +65,7 @@ public class UnitTestGameWindow : GameWindow
             updateFrameTimes.Put(args.Time);
 
             if (updateFrameTimes.Sum(t => t) < 1) return;
-            
+
             Int32 frames = updateFrameTimes.Count();
             updateFrameTimes.Clear();
             unitTestControls?.UpdateFps = frames;
@@ -89,7 +87,7 @@ public class UnitTestGameWindow : GameWindow
             renderFrameTimes.Put(args.Time);
 
             if (renderFrameTimes.Sum(t => t) < 1) return;
-            
+
             Int32 frames = renderFrameTimes.Count();
             renderFrameTimes.Clear();
             unitTestControls?.RenderFps = frames;

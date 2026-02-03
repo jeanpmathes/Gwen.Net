@@ -184,6 +184,8 @@ public abstract class Element
     #endregion HIERARCHY
     
     #region VISUALIZATION
+
+    private VisualElement? visualization;
     
     /// <summary>
     /// The visual representation of this element, or <c>null</c> if it has no visual representation.
@@ -194,15 +196,32 @@ public abstract class Element
     {
         get
         {
-            if (field == null)
-                Visualization = GetOrCreateVisualization();
+            visualization ??= GetOrCreateVisualization();
 
             // The visualization will be parented by the visual host of the logical parent, if any.
 
-            return field;
+            return visualization;
         }
+    }
+    
+    /// <summary>
+    /// Invalidate the visualization of this element, causing it to be recreated.
+    /// This only has an effect for visualized templated controls.
+    /// </summary>
+    protected void InvalidateVisualization()
+    {
+        if (visualization == this || visualization == null) return;
+        
+        visualization.OnVisualizationInvalidated(this);
+    }
 
-        private set;
+    /// <summary>
+    /// Travels up the visual tree to the nearest visual host and notifies it that a child's visualization was invalidated.
+    /// </summary>
+    /// <param name="child">The child whose visualization was invalidated.</param>
+    protected virtual void OnVisualizationInvalidated(Element child)
+    {
+        
     }
 
     private protected abstract VisualElement GetOrCreateVisualization();
