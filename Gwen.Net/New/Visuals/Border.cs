@@ -1,4 +1,5 @@
-﻿using Gwen.Net.New.Graphics;
+﻿using Gwen.Net.New.Bindings;
+using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 
 namespace Gwen.Net.New.Visuals;
@@ -8,6 +9,23 @@ namespace Gwen.Net.New.Visuals;
 /// </summary>
 public class Border : VisualHost
 {
+    #region PROPERTIES
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Border"/> class.
+    /// </summary>
+    public Border()
+    {
+        BorderBrush = Properties.Create(this, Brushes.Black, Invalidation.InvalidateRender);
+    }
+    
+    /// <summary>
+    /// The brush used to draw the border. If <c>null</c>, no border will be drawn.
+    /// </summary>
+    public Property<Brush> BorderBrush { get; }
+    
+    #endregion PROPERTIES
+    
     /// <summary>
     /// Gets or sets the single child element.
     /// </summary>
@@ -16,20 +34,6 @@ public class Border : VisualHost
         get => LogicalChildren.Count > 0 ? LogicalChildren[0] : null;
         set => SetLogicalChild(value);
     } 
-    
-    /// <summary>
-    /// Gets or sets the brush used to draw the border.
-    /// </summary>
-    public Brush BorderBrush
-    {
-        get;
-
-        set
-        {
-            field = value;
-            InvalidateRender();
-        }
-    } = Brushes.Black;
     
     /// <inheritdoc/>
     public override void OnRender(IRenderer renderer)

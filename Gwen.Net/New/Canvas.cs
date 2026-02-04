@@ -30,18 +30,13 @@ public sealed class Canvas : Panel, IDisposable
     }
 
     /// <summary>
-    /// Gets or sets the content of the canvas.
+    /// Gets or sets the single child element.
     /// </summary>
-    public Element? Content
+    public Element? Child
     {
-        get;
-
-        set
-        {
-            SetLogicalChild(value);
-            field = value;
-        }
-    }
+        get => LogicalChildren.Count > 0 ? LogicalChildren[0] : null;
+        set => SetLogicalChild(value);
+    } 
     
     /// <inheritdoc/>
     public override void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
@@ -114,7 +109,7 @@ public sealed class Canvas : Panel, IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        if (Content != null) 
-            RemoveLogicalChild(Content);
+        if (Child != null) 
+            RemoveLogicalChild(Child);
     }
 }

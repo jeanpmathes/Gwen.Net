@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
@@ -14,31 +15,50 @@ namespace Gwen.Net.New.Visuals;
 /// </summary>
 public abstract class VisualElement : Element
 {
+    #region PROPERTIES
+
     /// <summary>
     /// Creates a new instance of the <see cref="VisualElement"/> class.
     /// </summary>
     protected VisualElement()
     {
         InvalidateMeasure();
+        
+        MinimumWidth = Properties.Create(this, defaultValue: 1f, Invalidation.InvalidateMeasure);
+        MinimumHeight = Properties.Create(this, defaultValue: 1f, Invalidation.InvalidateMeasure);
+        
+        MaximumWidth = Properties.Create(this, Single.PositiveInfinity, Invalidation.InvalidateMeasure);
+        MaximumHeight = Properties.Create(this, Single.PositiveInfinity, Invalidation.InvalidateMeasure);
+        
+        Background = Properties.Create(this, Brushes.Transparent, Invalidation.InvalidateRender);
     }
-
-    #region LOOK
-
+    
     /// <summary>
-    /// Gets or sets the background brush of this element.
+    /// The minimum width of this element. Might not be respected by all layout containers.
     /// </summary>
-    public Brush Background
-    {
-        get;
+    public Property<Single> MinimumWidth { get; }
+    
+    /// <summary>
+    /// The minimum height of this element. Might not be respected by all layout containers.
+    /// </summary>
+    public Property<Single> MinimumHeight { get; }
+    
+    /// <summary>
+    /// The maximum width of this element. Might not be respected by all layout containers.
+    /// </summary>
+    public Property<Single> MaximumWidth { get; }
+        
+    /// <summary>
+    /// The maximum height of this element. Might not be respected by all layout containers.
+    /// </summary>
+    public Property<Single> MaximumHeight { get; }
+    
+    /// <summary>
+    /// The brush used to draw the background of this element.
+    /// </summary>
+    public Property<Brush> Background { get; }
 
-        set
-        {
-            field = value;
-            InvalidateRender();
-        }
-    } = Brushes.Transparent;
-
-    #endregion LOOK
+    #endregion PROPERTIES
     
     #region HIERARCHY
     
@@ -250,16 +270,9 @@ public abstract class VisualElement : Element
     #endregion POSITIONING
     
     #region LAYOUTING
-
-    /// <summary>
-    /// The minimum size of this element. Might not be respected by all layout containers.
-    /// </summary>
-    public SizeF MinimumSize { get; set; } = Sizes.One;
     
-    /// <summary>
-    /// The maximum size of this element. Might not be respected by all layout containers.
-    /// </summary>
-    public SizeF MaximumSize { get; set; } = Sizes.Infinity;
+    private SizeF MinimumSize => new(MinimumWidth, MinimumHeight);
+    private SizeF MaximumSize => new(MaximumWidth, MaximumHeight);
     
     private Boolean isMeasureValid;
     private Boolean isArrangeValid;

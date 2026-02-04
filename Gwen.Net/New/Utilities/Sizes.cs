@@ -9,16 +9,6 @@ namespace Gwen.Net.New.Utilities;
 public static class Sizes
 {
     /// <summary>
-    /// The size with both width and height set to 1.
-    /// </summary>
-    public static readonly SizeF One = new(width: 1f, height: 1f);
-    
-    /// <summary>
-    /// The size with both width and height set to infinity.
-    /// </summary>
-    public static readonly SizeF Infinity = new(width: Single.PositiveInfinity, height: Single.PositiveInfinity);
-    
-    /// <summary>
     /// Clamp size between min and max sizes.
     /// </summary>
     /// <param name="size">The size to clamp.</param>

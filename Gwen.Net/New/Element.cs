@@ -131,6 +131,7 @@ public abstract class Element
         isAttachedToRoot = true;
 
         OnAttach();
+        AttachedToRoot?.Invoke(this, EventArgs.Empty);
 
         foreach (Element child in logicalChildren)
         {
@@ -148,6 +149,11 @@ public abstract class Element
     /// attach it to a root element, as the parent itself may not be attached to a root.
     /// </summary>
     public virtual void OnAttach() {}
+    
+    /// <summary>
+    /// Invoked when the element is attached to a tree with a root element.
+    /// </summary>
+    public event EventHandler? AttachedToRoot;
 
     private protected void Detach(Boolean isReparenting)
     {
@@ -156,6 +162,7 @@ public abstract class Element
         if (isAttachedToRoot) return;
 
         OnDetach(isReparenting);
+        DetachedFromRoot?.Invoke(this, EventArgs.Empty);
 
         foreach (Element child in logicalChildren)
         {
@@ -180,6 +187,11 @@ public abstract class Element
     ///     Indicates whether the element is being detached because it is being reparented.
     /// </param>
     public virtual void OnDetach(Boolean isReparenting) {}
+    
+    /// <summary>
+    /// Invoked when the element is detached from a tree with a root element.
+    /// </summary>
+    public event EventHandler? DetachedFromRoot;
     
     #endregion HIERARCHY
     
@@ -208,7 +220,7 @@ public abstract class Element
     /// Invalidate the visualization of this element, causing it to be recreated.
     /// This only has an effect for visualized templated controls.
     /// </summary>
-    protected void InvalidateVisualization()
+    protected internal void InvalidateVisualization()
     {
         if (visualization == this || visualization == null) return;
         

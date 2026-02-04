@@ -50,7 +50,7 @@ public class UnitTestGameWindow : GameWindow
         gui.Load();
 
         unitTestControls = new UnitTestHarnessControls();
-        gui.Root?.Content = unitTestControls;
+        gui.Root?.Child = unitTestControls;
     }
 
     protected override void OnResize(ResizeEventArgs e)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Visuals;
@@ -17,11 +16,13 @@ namespace Gwen.Net.Tests.Components.New
         {
             return ControlTemplate.Create<UnitTestHarnessControls>(static _ => new Border
             {
-                MinimumSize = new SizeF(width: 500f, height: 500f),
+                MinimumWidth = { Value = 500f },
+                MinimumHeight = { Value = 500f },
 
                 Child = new Border
                 {
-                    MinimumSize = new SizeF(width: 500f, height: 250f)
+                    MinimumWidth = { Value = 500f },
+                    MinimumHeight = { Value = 250f },
                 }
             });
         }
