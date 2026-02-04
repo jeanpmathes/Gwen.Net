@@ -10,31 +10,7 @@ namespace Gwen.Net.New.Visuals;
 public abstract class VisualHost : VisualElement
 {
     private readonly Dictionary<Element, VisualElement> visualizations = new();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VisualHost"/> class.
-    /// Children can be passed as parameters, but can also be added later.
-    /// </summary>
-    protected VisualHost(params IEnumerable<Element> children)
-    {
-        foreach (Element child in children)
-        {
-            AddLogicalChild(child);
-        }
-    }
     
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VisualHost"/> class.
-    /// A single child can be passed as parameter, but more can also be added later.
-    /// </summary>
-    protected VisualHost(Element? child)
-    {
-        if (child != null)
-        {
-            AddLogicalChild(child);
-        }
-    }
-
     private protected override void OnLogicalChildAdded(Element child)
     {
         if (IsAttachedToRoot && child.Visualization is {} visualization)

@@ -9,12 +9,13 @@ namespace Gwen.Net.New.Visuals;
 public class Border : VisualHost
 {
     /// <summary>
-    /// Creates a new border element.
+    /// Gets or sets the single child element.
     /// </summary>
-    public Border(Element? child = null) : base(child)
+    public Element? Child
     {
-        
-    }
+        get => LogicalChildren.Count > 0 ? LogicalChildren[0] : null;
+        set => SetLogicalChild(value);
+    } 
     
     /// <summary>
     /// Gets or sets the brush used to draw the border.
