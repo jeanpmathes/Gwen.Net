@@ -1,5 +1,4 @@
 ﻿using Gwen.Net.New.Bindings;
-using Gwen.Net.New.Controls;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 
@@ -17,7 +16,7 @@ public class Border : VisualHost
     /// </summary>
     public Border()
     {
-        BorderBrush = Properties.Create(this, BindToTemplateOwnerForeground(), Invalidation.Render);
+        BorderBrush = Property.Create(this, BindToTemplateOwnerForeground(), Invalidation.Render);
     }
     
     /// <summary>

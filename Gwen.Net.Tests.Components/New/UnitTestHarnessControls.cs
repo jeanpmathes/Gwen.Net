@@ -1,6 +1,8 @@
 ﻿using System;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
+using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Styles;
 using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.Tests.Components.New

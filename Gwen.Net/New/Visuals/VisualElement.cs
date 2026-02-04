@@ -24,13 +24,13 @@ public abstract class VisualElement : Element
     {
         InvalidateMeasure();
         
-        MinimumWidth = Properties.Create(this, defaultValue: 1f, Invalidation.Measure);
-        MinimumHeight = Properties.Create(this, defaultValue: 1f, Invalidation.Measure);
+        MinimumWidth = Property.Create(this, defaultValue: 1f, Invalidation.Measure);
+        MinimumHeight = Property.Create(this, defaultValue: 1f, Invalidation.Measure);
         
-        MaximumWidth = Properties.Create(this, Single.PositiveInfinity, Invalidation.Measure);
-        MaximumHeight = Properties.Create(this, Single.PositiveInfinity, Invalidation.Measure);
+        MaximumWidth = Property.Create(this, Single.PositiveInfinity, Invalidation.Measure);
+        MaximumHeight = Property.Create(this, Single.PositiveInfinity, Invalidation.Measure);
         
-        Background = Properties.Create(this, BindToTemplateOwnerBackground(), Invalidation.Render);
+        Background = Property.Create(this, BindToTemplateOwnerBackground(), Invalidation.Render);
     }
     
     /// <summary>

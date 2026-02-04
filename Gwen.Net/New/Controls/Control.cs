@@ -18,8 +18,8 @@ public abstract class Control : Element
     /// </summary>
     protected Control()
     {
-        Foreground = Properties.Create(this, Brushes.Black);
-        Background = Properties.Create(this, Brushes.Transparent);
+        Foreground = Property.Create(this, Brushes.Black);
+        Background = Property.Create(this, Brushes.Transparent);
     }
     
     /// <summary>
@@ -49,7 +49,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     /// </summary>
     protected Control()
     {
-        Template = Properties.Create(this, Binding.Computed(CreateDefaultTemplate), Invalidation.Visualization);
+        Template = Property.Create(this, Binding.Computed(CreateDefaultTemplate), Invalidation.Visualization);
     }
     
     /// <summary>

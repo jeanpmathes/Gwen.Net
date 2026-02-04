@@ -6,7 +6,7 @@ namespace Gwen.Net.New.Bindings;
 /// <summary>
 /// Utility class for defining properties.
 /// </summary>
-public static class Properties 
+public static class Property 
 {
     /// <summary>
     /// Create a new property with the given default binding.
