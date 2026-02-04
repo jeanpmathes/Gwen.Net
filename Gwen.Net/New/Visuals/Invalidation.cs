@@ -8,20 +8,25 @@ public enum Invalidation
     /// <summary>
     /// The visualization (template) is invalidated.
     /// </summary>
-    InvalidateVisualization,
+    Visualization,
     
     /// <summary>
     /// The measure (desired size) of the element is invalidated.
     /// </summary>
-    InvalidateMeasure,
+    Measure,
     
     /// <summary>
     /// The arrangement (final size and position) of the element is invalidated.
     /// </summary>
-    InvalidateArrange,
+    Arrange,
     
     /// <summary>
     /// The rendering (appearance) of the element is invalidated.
     /// </summary>
-    InvalidateRender
+    Render,
+    
+    /// <summary>
+    /// No invalidation occurs.
+    /// </summary>
+    None
 }

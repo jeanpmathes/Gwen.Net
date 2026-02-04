@@ -24,13 +24,13 @@ public abstract class VisualElement : Element
     {
         InvalidateMeasure();
         
-        MinimumWidth = Properties.Create(this, defaultValue: 1f, Invalidation.InvalidateMeasure);
-        MinimumHeight = Properties.Create(this, defaultValue: 1f, Invalidation.InvalidateMeasure);
+        MinimumWidth = Properties.Create(this, defaultValue: 1f, Invalidation.Measure);
+        MinimumHeight = Properties.Create(this, defaultValue: 1f, Invalidation.Measure);
         
-        MaximumWidth = Properties.Create(this, Single.PositiveInfinity, Invalidation.InvalidateMeasure);
-        MaximumHeight = Properties.Create(this, Single.PositiveInfinity, Invalidation.InvalidateMeasure);
+        MaximumWidth = Properties.Create(this, Single.PositiveInfinity, Invalidation.Measure);
+        MaximumHeight = Properties.Create(this, Single.PositiveInfinity, Invalidation.Measure);
         
-        Background = Properties.Create(this, Brushes.Transparent, Invalidation.InvalidateRender);
+        Background = Properties.Create(this, BindToTemplateOwnerBackground(), Invalidation.Render);
     }
     
     /// <summary>
@@ -57,6 +57,24 @@ public abstract class VisualElement : Element
     /// The brush used to draw the background of this element.
     /// </summary>
     public Property<Brush> Background { get; }
+    
+    /// <summary>
+    /// Create a binding that binds to the foreground of the template owner.
+    /// </summary>
+    /// <returns>The created binding.</returns>
+    protected Binding<Brush> BindToTemplateOwnerForeground()
+    {
+        return Binding.Transform(TemplateOwner, owner => owner?.Foreground ?? Brushes.Black);
+    }
+    
+    /// <summary>
+    /// Create a binding that binds to the background of the template owner.
+    /// </summary>
+    /// <returns>The created binding.</returns>
+    protected Binding<Brush> BindToTemplateOwnerBackground()
+    {
+        return Binding.Transform(TemplateOwner, owner => owner?.Background ?? Brushes.Transparent);
+    }
 
     #endregion PROPERTIES
     
@@ -470,22 +488,27 @@ public abstract class VisualElement : Element
         if (!isArrangeValid)
             Arrange(Bounds);
     }
-    
+
     /// <summary>
     /// Called when this element should render itself.
     /// Override this to implement custom rendering logic.
     /// </summary>
     /// <param name="renderer">The renderer to use.</param>
-    public virtual void OnRender(IRenderer renderer) {}
+    public virtual void OnRender(IRenderer renderer)
+    {
+        renderer.DrawFilledRectangle(RenderBounds, Background);
+    }
 
     #endregion RENDERING
     
     #region TEMPLATING
 
+    internal Slot<Control?> TemplateOwnerInternal { get; } = new(null);
+    
     /// <summary>
-    /// The control that owns the template this element is the root of, or <c>null</c> if this element is not part of a control template or is not the root of such a template.
+    /// The control that owns the template this element is part of.
     /// </summary>
-    public Control? TemplateOwner { get; internal set; }
+    public ReadOnlySlot<Control?> TemplateOwner => TemplateOwnerInternal;
 
     /// <inheritdoc/>
     protected override void OnVisualizationInvalidated(Element child)

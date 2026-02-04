@@ -13,14 +13,25 @@ public static class Properties
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultBinding">The default binding for the property.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Element owner, Binding<T> defaultBinding)
+    public static Property<T> Create<T>(Element owner, Binding<T> defaultBinding, Invalidation invalidation = Invalidation.None)
     {
         Property<T> property = new(defaultBinding);
         
         owner.AttachedToRoot += (_, _) => property.Activate();
         owner.DetachedFromRoot += (_, _) => property.Deactivate();
+        
+        if (invalidation == Invalidation.None) return property;
+        
+        EventHandler invalidator = invalidation switch
+        {
+            Invalidation.Visualization => (_, _) => owner.InvalidateVisualization(),
+            _ => throw new ArgumentOutOfRangeException(nameof(invalidation), invalidation, message: null)
+        };
+        
+        property.ValueChanged += invalidator;
         
         return property;
     }
@@ -30,11 +41,12 @@ public static class Properties
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultValue">The default value for the property.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Element owner, T defaultValue)
+    public static Property<T> Create<T>(Element owner, T defaultValue, Invalidation invalidation = Invalidation.None)
     {
-        return Create(owner, Bindings.Constant(defaultValue));
+        return Create(owner, Binding.Constant(defaultValue), invalidation);
     }
     
     /// <summary>
@@ -45,24 +57,26 @@ public static class Properties
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(VisualElement owner, Binding<T> defaultBinding, Invalidation invalidation)
+    public static Property<T> Create<T>(VisualElement owner, Binding<T> defaultBinding, Invalidation invalidation = Invalidation.None)
     {
         Property<T> property = new(defaultBinding);
         
         owner.AttachedToRoot += (_, _) => property.Activate();
         owner.DetachedFromRoot += (_, _) => property.Deactivate();
-        
+
+        if (invalidation == Invalidation.None) return property;
+
         EventHandler invalidator = invalidation switch
         {
-            Invalidation.InvalidateVisualization => (_, _) => owner.InvalidateVisualization(),
-            Invalidation.InvalidateMeasure => (_, _) => owner.InvalidateMeasure(),
-            Invalidation.InvalidateArrange => (_, _) => owner.InvalidateArrange(),
-            Invalidation.InvalidateRender => (_, _) => owner.InvalidateRender(),
+            Invalidation.Visualization => (_, _) => owner.InvalidateVisualization(),
+            Invalidation.Measure => (_, _) => owner.InvalidateMeasure(),
+            Invalidation.Arrange => (_, _) => owner.InvalidateArrange(),
+            Invalidation.Render => (_, _) => owner.InvalidateRender(),
             _ => throw new ArgumentOutOfRangeException(nameof(invalidation), invalidation, message: null)
         };
 
         property.ValueChanged += invalidator;
-        
+
         return property;
     }
 
@@ -74,9 +88,9 @@ public static class Properties
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(VisualElement owner, T defaultValue, Invalidation invalidation)
+    public static Property<T> Create<T>(VisualElement owner, T defaultValue, Invalidation invalidation = Invalidation.None)
     {
-        return Create(owner, Bindings.Constant(defaultValue), invalidation);
+        return Create(owner, Binding.Constant(defaultValue), invalidation);
     }
 }
 
@@ -219,7 +233,7 @@ public sealed class Property<T> : IValueSource<T>
     /// </summary>
     public T Value
     {
-        set => SetLocal(Bindings.Constant(value));
+        set => SetLocal(Bindings.Binding.Constant(value));
     }
 
     /// <summary>
@@ -240,7 +254,7 @@ public sealed class Property<T> : IValueSource<T>
     /// <param name="value">The constant value.</param>
     public void Set(T value)
     {
-        SetStyle(Bindings.Constant(value));
+        SetStyle(Bindings.Binding.Constant(value));
     }
     
     /// <summary>

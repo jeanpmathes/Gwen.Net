@@ -5,7 +5,7 @@ namespace Gwen.Net.New.Bindings;
 /// <summary>
 /// Utility class for defining bindings.
 /// </summary>
-public static class Bindings
+public static class Binding
 {
     /// <summary>
     /// Create a read-only binding that binds to a constant value.

@@ -1,4 +1,5 @@
 ﻿using Gwen.Net.New.Bindings;
+using Gwen.Net.New.Controls;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 
@@ -16,7 +17,7 @@ public class Border : VisualHost
     /// </summary>
     public Border()
     {
-        BorderBrush = Properties.Create(this, Brushes.Black, Invalidation.InvalidateRender);
+        BorderBrush = Properties.Create(this, BindToTemplateOwnerForeground(), Invalidation.Render);
     }
     
     /// <summary>
@@ -38,7 +39,8 @@ public class Border : VisualHost
     /// <inheritdoc/>
     public override void OnRender(IRenderer renderer)
     {
-        renderer.DrawFilledRectangle(RenderBounds, Background);
+        base.OnRender(renderer);
+        
         renderer.DrawLinedRectangle(RenderBounds, BorderBrush);
     }
 }
