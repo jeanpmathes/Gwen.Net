@@ -1,53 +1,68 @@
 ﻿using System;
-using Gwen.Net.New.Controls;
+using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.New.Bindings;
 
 /// <summary>
-/// Non-generic abstract base class for properties.
+/// Abstract base class for visual properties.
 /// </summary>
-public abstract class Property : IValueSource
+public class VisualProperty : IValueSource
 {
+    private readonly Visual owner;
+    private readonly Invalidation invalidation;
+    
+    protected VisualProperty(Visual owner, Invalidation invalidation)
+    {
+        this.owner = owner;
+        this.invalidation = invalidation;
+    }
+    
     /// <summary>
-    /// Create a new property with the given default binding.
+    /// Create a new property with the given default binding and invalidation behavior.
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultBinding">The default binding for the property.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Control owner, Binding<T> defaultBinding)
+    public static VisualProperty<T> Create<T>(Visual owner, Binding<T> defaultBinding, Invalidation invalidation = Invalidation.None)
     {
-        return new Property<T>(owner, defaultBinding);
-    }
-    
-    /// <summary>
-    /// Create a new property with a constant default value.
-    /// </summary>
-    /// <param name="owner">The owner element of the property.</param>
-    /// <param name="defaultValue">The default value for the property.</param>
-    /// <typeparam name="T">The type of value stored in the property.</typeparam>
-    /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Control owner, T defaultValue)
-    {
-        return Create(owner, Binding.Constant(defaultValue));
+        return new VisualProperty<T>(owner, invalidation, defaultBinding);
     }
 
     /// <summary>
-    /// Style the property with a value or binding.
+    /// Create a new property with a constant default value and invalidation behavior.
     /// </summary>
-    /// <param name="value">The value or binding, must fit the type of the property.</param>
-    internal abstract void Style(Object value);
-    
-    /// <summary>
-    /// Clear the styling of the property.
-    /// </summary>
-    internal abstract void ClearStyle();
+    /// <param name="owner">The owner element of the property.</param>
+    /// <param name="defaultValue">The default value for the property.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
+    /// <typeparam name="T">The type of value stored in the property.</typeparam>
+    /// <returns>The created property.</returns>
+    public static VisualProperty<T> Create<T>(Visual owner, T defaultValue, Invalidation invalidation = Invalidation.None)
+    {
+        return Create(owner, Binding.Constant(defaultValue), invalidation);
+    }
     
     /// <summary>
     /// Notifies subscribers that the value of the property has changed.
     /// </summary>
     protected void NotifyValueChanged()
     {
+        switch (invalidation)
+        {
+            case Invalidation.Measure:
+                owner.InvalidateMeasure();
+                break;
+            
+            case Invalidation.Arrange:
+                owner.InvalidateArrange();
+                break;
+            
+            case Invalidation.Render:
+                owner.InvalidateRender();
+                break;
+        }
+        
         ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -56,23 +71,22 @@ public abstract class Property : IValueSource
 }
 
 /// <summary>
-/// A property is a value of a <see cref="Control"/> that can be set, styled and bound to a slot.
+/// A visual property is a value of a <see cref="Visual"/> that can be set, styled and bound to a slot.
 /// </summary>
 /// <typeparam name="T">The type of value stored in the property.</typeparam>
-public sealed class Property<T> : Property, IValueSource<T>
+public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
 {
     private readonly Binding<T> defaultBinding;
-
-    private Binding<T>? styleBinding;
+    
     private Binding<T>? localBinding;
-
+    
     private Binding<T> targetBinding;
     private Boolean isActive;
     
     private T? cachedValue;
     private Boolean isCacheValid;
     
-    internal Property(Control owner, Binding<T> defaultBinding)
+    internal VisualProperty(Visual owner, Invalidation invalidation, Binding<T> defaultBinding) : base(owner, invalidation)
     {
         this.defaultBinding = defaultBinding;
         
@@ -104,10 +118,10 @@ public sealed class Property<T> : Property, IValueSource<T>
         
         DetachTargetBinding();
     }
-
+    
     private void RecomputeTargetBinding()
     {
-        Binding<T> binding = localBinding ?? styleBinding ?? defaultBinding;
+        Binding<T> binding = localBinding ?? defaultBinding;
         
         if (ReferenceEquals(binding, targetBinding))
             return;
@@ -173,7 +187,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     /// </summary>
     /// <param name="property">The property to convert.</param>
     /// <returns>The value of the property.</returns>
-    public static implicit operator T(Property<T> property) => property.GetValue();
+    public static implicit operator T(VisualProperty<T> property) => property.GetValue();
     
     #region LOCAL
     
@@ -200,55 +214,4 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
     
     #endregion LOCAL
-
-    #region STYLE
-
-    private void SetStyle(Binding<T>? newStyleBinding)
-    {
-        styleBinding = newStyleBinding;
-        RecomputeTargetBinding();
-    }
-    
-    /// <summary>
-    /// Style the property with a constant value.
-    /// </summary>
-    /// <param name="value">The constant value.</param>
-    public void Style(T value)
-    {
-        SetStyle(Bindings.Binding.Constant(value));
-    }
-    
-    /// <summary>
-    /// Style the property with a binding.
-    /// </summary>
-    /// <param name="binding">The binding.</param>
-    public void Style(Binding<T> binding)
-    {
-        SetStyle(binding);
-    }
-
-    internal override void Style(Object value)
-    {
-        switch (value)
-        {
-            case T typedValue:
-                Style(typedValue);
-                break;
-            case Binding<T> binding:
-                Style(binding);
-                break;
-            default:
-                throw new ArgumentException($"Invalid style value for property of type {typeof(T)}: {value}", nameof(value));
-        }
-    }
-
-    /// <summary>
-    /// Clear the styling of the property.
-    /// </summary>
-    internal override void ClearStyle()
-    {
-        SetStyle(null);
-    }
-
-    #endregion STYLE
 }

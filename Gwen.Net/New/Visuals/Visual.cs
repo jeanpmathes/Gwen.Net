@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Net.New.Bindings;
@@ -9,196 +10,328 @@ using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Visuals;
 
-/// <summary>
-/// The base class of all visual elements.
-/// Visual elements can be measured, arranged and rendered.
-/// </summary>
-public abstract class VisualElement : Element
-{
-    #region PROPERTIES
+// todo: use less null suppression exclamation marks here, maybe add exceptions instead or other checks
 
+/// <summary>
+/// The abstract base class of all visual elements, which form the visual tree.
+/// Visual can be measured, arranged and rendered.
+/// </summary>
+public abstract class Visual
+{
     /// <summary>
-    /// Creates a new instance of the <see cref="VisualElement"/> class.
+    /// Creates a new instance of the <see cref="Visual"/> class.
     /// </summary>
-    protected VisualElement()
+    protected Visual()
     {
         InvalidateMeasure();
         
-        MinimumWidth = Property.Create(this, defaultValue: 1f, Invalidation.Measure);
-        MinimumHeight = Property.Create(this, defaultValue: 1f, Invalidation.Measure);
+        MinimumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumWidth, defaultValue: 1f), Invalidation.Measure);
+        MinimumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumHeight, defaultValue: 1f), Invalidation.Measure);
         
-        MaximumWidth = Property.Create(this, Single.PositiveInfinity, Invalidation.Measure);
-        MaximumHeight = Property.Create(this, Single.PositiveInfinity, Invalidation.Measure);
+        MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
+        MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
         
-        Background = Property.Create(this, BindToTemplateOwnerBackground(), Invalidation.Render);
+        Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
     }
+    
+    #region PROPERTIES
     
     /// <summary>
     /// The minimum width of this element. Might not be respected by all layout containers.
     /// </summary>
-    public Property<Single> MinimumWidth { get; }
+    public VisualProperty<Single> MinimumWidth { get; }
     
     /// <summary>
     /// The minimum height of this element. Might not be respected by all layout containers.
     /// </summary>
-    public Property<Single> MinimumHeight { get; }
+    public VisualProperty<Single> MinimumHeight { get; }
     
     /// <summary>
     /// The maximum width of this element. Might not be respected by all layout containers.
     /// </summary>
-    public Property<Single> MaximumWidth { get; }
+    public VisualProperty<Single> MaximumWidth { get; }
         
     /// <summary>
     /// The maximum height of this element. Might not be respected by all layout containers.
     /// </summary>
-    public Property<Single> MaximumHeight { get; }
+    public VisualProperty<Single> MaximumHeight { get; }
     
     /// <summary>
     /// The brush used to draw the background of this element.
     /// </summary>
-    public Property<Brush> Background { get; }
+    public VisualProperty<Brush> Background { get; }
     
     /// <summary>
     /// Create a binding that binds to the foreground of the template owner.
     /// </summary>
     /// <returns>The created binding.</returns>
-    protected Binding<Brush> BindToTemplateOwnerForeground()
+    protected Binding<Brush> BindToOwnerForeground()
     {
-        return Binding.Transform(TemplateOwner, owner => owner?.Foreground ?? Brushes.Black);
+        return Binding.Transform(TemplateOwner, o => o?.Foreground ?? Brushes.Black);
     }
     
     /// <summary>
     /// Create a binding that binds to the background of the template owner.
     /// </summary>
     /// <returns>The created binding.</returns>
-    protected Binding<Brush> BindToTemplateOwnerBackground()
+    protected Binding<Brush> BindToOwnerBackground()
     {
-        return Binding.Transform(TemplateOwner, owner => owner?.Background ?? Brushes.Transparent);
+        return Binding.Transform(TemplateOwner, o => o?.Background ?? Brushes.Transparent);
     }
-
+    
+    /// <summary>
+    /// Bind to a property of the template owner if this element is an anchor, otherwise bind to a default value.
+    /// </summary>
+    /// <param name="selector">The selector function to select the property from the template owner.</param>
+    /// <param name="defaultValue">The default value to use if this element is not an anchor.</param>
+    /// <typeparam name="TValue">The type of the property to bind to.</typeparam>
+    /// <returns>>The created binding.</returns>
+    protected Binding<TValue> BindToOwnerIfAnchor<TValue>(Func<Control, TValue> selector, TValue defaultValue = default!)
+    {
+        return Binding.Transform(TemplateOwner, IsAnchor, (o, r) => r && o != null ? selector(o) : defaultValue);
+    }
+    
     #endregion PROPERTIES
     
     #region HIERARCHY
-    
-    private readonly List<VisualElement> visualChildren = [];
 
     /// <summary>
-    /// The visual parent of this element, or <c>null</c> if it has no visual parent.
+    /// Whether this element is attached to a template root (or is a template root itself).
     /// </summary>
-    public VisualElement? VisualParent { get; private set; }
-
-    /// <summary>
-    /// The visual children of this element.
-    /// </summary>
-    public IReadOnlyList<VisualElement> VisualChildren => visualChildren;
+    protected Boolean IsAttachedToTemplate { get; private set; }
     
     /// <summary>
-    /// Set the visual child of this element.
-    /// Replaces any existing visual children.
+    /// Whether this element is the root element of the tree.
+    /// </summary>
+    private protected Boolean IsRoot { get; set; }
+    
+    /// <summary>
+    /// Set this element as the root of a tree.
+    /// May only be called by the code within <see cref="Control"/>.
+    /// </summary>
+    internal void SetAsRoot()
+    {
+        IsRoot = true;
+        
+        Attach(TemplateOwner.GetValue()!);
+    }
+    
+    /// <summary>
+    /// Unset this element as the root of a tree, if it is a root.
+    /// May only be called by the code within <see cref="Control"/>.
+    /// </summary>
+    internal void UnsetAsRoot()
+    {
+        IsRoot = false;
+        
+        Detach(isReparenting: false);
+    }
+    
+    /// <summary>
+    /// Set this element as the anchor of a control template.
+    /// </summary>
+    /// <param name="control">The template owner control.</param>
+    internal void SetAsAnchor(Control control)
+    {
+        isAnchor.SetValue(true);
+        templateOwner.SetValue(control);
+    }
+    
+    /// <summary>
+    /// Unset this element as the anchor of a control template, if it is an anchor.
+    /// </summary>
+    internal void UnsetAsAnchor()
+    {
+        isAnchor.SetValue(false);
+    }
+    
+    private readonly Slot<Control?> templateOwner = new(null);
+    
+    /// <summary>
+    /// The control owning the template this element is part of, or <c>null</c> if this element is not part of a control template.
+    /// </summary>
+    protected ReadOnlySlot<Control?> TemplateOwner => templateOwner;
+    
+    private readonly Slot<Boolean> isAnchor = new(false);
+    
+    /// <summary>
+    /// Whether this element is the anchor of a control template, i.e. the first element in the template.
+    /// </summary>
+    protected ReadOnlySlot<Boolean> IsAnchor => isAnchor;
+    
+    private readonly List<Visual> children = [];
+    
+    /// <summary>
+    /// The parent of this element.
+    /// </summary>
+    public Visual? Parent { get; private set; }
+
+    /// <summary>
+    /// The children of this element.
+    /// </summary>
+    public IReadOnlyList<Visual> Children => children;
+
+    /// <summary>
+    /// Set the child of this element.
+    /// Replaces any existing children.
     /// </summary>
     /// <param name="child">
     ///     The child to set. Will be removed from its previous parent if any.
-    ///     If <c>null</c>, all existing visual children will be removed.
+    ///     If <c>null</c>, all existing children will be removed.
     /// </param>
-    protected void SetVisualChild(VisualElement? child)
+    protected void SetChild(Visual? child)
     {
-        if (child?.VisualParent == this && visualChildren.Count == 1) return;
+        if (child?.Parent == this && children.Count == 1) return;
 
-        child?.VisualParent?.RemoveVisualChild(child, isReparenting: true);
+        child?.Parent?.RemoveChild(child, isReparenting: true);
 
-        if (visualChildren.Count > 0)
+        if (children.Count > 0)
         {
-            List<VisualElement> oldChildren = new(visualChildren);
-            visualChildren.Clear();
+            List<Visual> oldChildren = new(children);
+            children.Clear();
 
-            foreach (VisualElement oldChild in oldChildren)
+            foreach (Visual oldChild in oldChildren)
             {
-                oldChild.VisualParent = null;
+                oldChild.Parent = null;
 
-                OnVisualChildRemoved(oldChild);
+                HandleChildRemoved(oldChild);
                 oldChild.Detach(isReparenting: false);
             }
         }
 
         if (child == null) return;
 
-        visualChildren.Add(child);
-        child.VisualParent = this;
+        children.Add(child);
+        child.Parent = this;
 
-        OnVisualChildAdded(child);
+        if (IsAttachedToTemplate)
+            child.Attach(TemplateOwner.GetValue()!);
 
-        if (IsAttachedToRoot) child.Attach();
+        HandleChildAdded(child);
     }
 
     /// <summary>
-    /// Remove all visual children from this element.
-    /// </summary>
-    protected void RemoveAllVisualChildren()
-    {
-        SetVisualChild(child: null);
-    }
-
-    /// <summary>
-    /// Add a visual child to this element.
+    /// Add a  child to this element.
     /// </summary>
     /// <param name="child">The child to add. Will be removed from its previous parent if any.</param>
-    protected void AddVisualChild(VisualElement child)
+    protected void AddChild(Visual child)
     {
-        if (child.VisualParent == this) return;
+        if (child.Parent == this) return;
 
-        child.VisualParent?.RemoveVisualChild(child);
+        child.Parent?.RemoveChild(child, isReparenting: true);
 
-        visualChildren.Add(child);
-        child.VisualParent = this;
+        children.Add(child);
+        child.Parent = this;
 
-        OnVisualChildAdded(child);
+        if (IsAttachedToTemplate)
+            child.Attach(TemplateOwner.GetValue()!);
 
-        if (IsAttachedToRoot) child.Attach();
+        HandleChildAdded(child);
     }
 
     /// <summary>
-    /// Remove a visual child from this element.
-    /// If the specified child is not a visual child of this element, nothing happens.
+    /// Remove a child from this element.
+    /// If the specified child is not a child of this element, nothing happens.
     /// </summary>
     /// <param name="child">The child to remove.</param>
-    protected void RemoveVisualChild(VisualElement child)
+    protected void RemoveChild(Visual child)
     {
-        RemoveVisualChild(child, isReparenting: false);
+        RemoveChild(child, isReparenting: false);
     }
 
-    private void RemoveVisualChild(VisualElement child, Boolean isReparenting)
+    private void RemoveChild(Visual child, Boolean isReparenting)
     {
-        if (child.VisualParent != this) return;
+        if (child.Parent != this) return;
 
-        if (!visualChildren.Remove(child)) return;
+        if (!children.Remove(child)) return;
 
-        child.VisualParent = null;
+        child.Parent = null;
 
-        OnVisualChildRemoved(child);
+        HandleChildRemoved(child);
         child.Detach(isReparenting);
     }
-
-    private protected virtual void OnVisualChildAdded(VisualElement child)
+    
+    private void HandleChildAdded(Visual child)
     {
         InvalidateMeasure();
+        OnChildAdded(child);
     }
-
-    private protected virtual void OnVisualChildRemoved(VisualElement child)
+    
+    private void HandleChildRemoved(Visual child)
     {
         InvalidateMeasure();
+        OnChildRemoved(child);
     }
 
-    private protected sealed override void OnAttachInternal()
+    private protected virtual void OnChildAdded(Visual child) {}
+    private protected virtual void OnChildRemoved(Visual child) {}
+
+    private void Attach(Control newOwner)
     {
-        foreach (VisualElement child in visualChildren)
-            child.Attach();
+        if (IsAttachedToTemplate) return;
+        IsAttachedToTemplate = true;
+        
+        if (IsAnchor.GetValue())
+            newOwner = TemplateOwner.GetValue()!;
+        
+        templateOwner.SetValue(newOwner);
+
+        OnAttach();
+        AttachedToRoot?.Invoke(this, EventArgs.Empty);
+
+        foreach (Visual child in children)
+        {
+            child.Attach(newOwner);
+        }
     }
 
-    private protected sealed override void OnDetachInternal(Boolean isReparenting)
+    /// <summary>
+    /// Called when the element is attached to a tree with a root element.
+    /// Note that for example giving this element a parent does not necessarily
+    /// attach it to a root element, as the parent itself may not be attached to a root.
+    /// </summary>
+    public virtual void OnAttach() {}
+    
+    /// <summary>
+    /// Invoked when this element is attached to a tree with a root element.
+    /// </summary>
+    public event EventHandler? AttachedToRoot;
+
+    private void Detach(Boolean isReparenting)
     {
-        foreach (VisualElement child in visualChildren)
+        if (!IsAttachedToTemplate) return;
+        IsAttachedToTemplate = IsRoot;
+        if (IsAttachedToTemplate) return;
+
+        OnDetach(isReparenting);
+        DetachedFromRoot?.Invoke(this, EventArgs.Empty);
+
+        templateOwner.SetValue(null);
+        
+        foreach (Visual child in children)
+        {
             child.Detach(isReparenting);
+        }
     }
+
+    /// <summary>
+    /// Called when the element is detached from a tree with a root element.
+    /// Note that being detached in most cases does not mean losing the parent,
+    /// as it may simply be that the parent or one of its ancestors was detached.
+    /// </summary>
+    /// <remarks>
+    /// Generally, disposable resources must be disposed when being detached,
+    /// unless the element is being reparented.
+    /// </remarks>
+    /// <param name="isReparenting">
+    ///     Indicates whether the element is being detached because it is being reparented.
+    /// </param>
+    public virtual void OnDetach(Boolean isReparenting) {}
+
+    /// <summary>
+    /// Invoked when this element is detached from a tree with a root element.
+    /// </summary>
+    public event EventHandler? DetachedFromRoot;
 
     #endregion HIERARCHY
     
@@ -335,12 +468,12 @@ public abstract class VisualElement : Element
     /// <returns>The desired size required by this element, might be larger than the available size.</returns>
     public virtual SizeF OnMeasure(SizeF availableSize)
     {
-        if (visualChildren.Count == 0)
+        if (children.Count == 0)
             return SizeF.Empty;
         
         var desiredSize = SizeF.Empty;
         
-        foreach (VisualElement child in visualChildren)
+        foreach (Visual child in children)
         {
             SizeF childDesiredSize = child.Measure(availableSize);
             
@@ -385,10 +518,10 @@ public abstract class VisualElement : Element
     /// <returns>The actual rectangle used by this element after arranging.</returns>
     public virtual RectangleF OnArrange(RectangleF finalRectangle)
     {
-        if (visualChildren.Count == 0)
+        if (children.Count == 0)
             return Rectangles.ConstraintSize(finalRectangle, MeasuredSize);
         
-        foreach (VisualElement child in visualChildren)
+        foreach (Visual child in children)
             child.Arrange(Rectangles.ConstraintSize(finalRectangle, child.MeasuredSize));
 
         return finalRectangle;
@@ -404,7 +537,7 @@ public abstract class VisualElement : Element
         isMeasureValid = false;
         isArrangeValid = false;
         
-        VisualParent?.InvalidateMeasure();
+        Parent?.InvalidateMeasure();
     }
 
     /// <summary>
@@ -416,20 +549,12 @@ public abstract class VisualElement : Element
         
         isArrangeValid = false;
         
-        VisualParent?.InvalidateArrange();
+        Parent?.InvalidateArrange();
     }
     
     #endregion LAYOUTING
 
     #region RENDERING
-
-    /// <summary>
-    /// Invalidate the rendering of this element, causing a re-render.
-    /// </summary>
-    public void InvalidateRender()
-    {
-        VisualParent?.InvalidateRender();
-    }
 
     /// <summary>
     ///     Determines whether the control should be clipped to its bounds while rendering.
@@ -468,7 +593,7 @@ public abstract class VisualElement : Element
         
             OnRender(renderer);
 
-            foreach (VisualElement child in visualChildren)
+            foreach (Visual child in children)
             {
                 child.Render(renderer);
             }
@@ -494,29 +619,18 @@ public abstract class VisualElement : Element
     /// Override this to implement custom rendering logic.
     /// </summary>
     /// <param name="renderer">The renderer to use.</param>
-    public virtual void OnRender(IRenderer renderer)
+    protected virtual void OnRender(IRenderer renderer)
     {
-        renderer.DrawFilledRectangle(RenderBounds, Background);
+        
+    }
+    
+    /// <summary>
+    /// Invalidate the rendering of this element, causing a re-render.
+    /// </summary>
+    public void InvalidateRender()
+    {
+        Parent?.InvalidateRender();
     }
 
     #endregion RENDERING
-    
-    #region TEMPLATING
-
-    internal Slot<Control?> TemplateOwnerInternal { get; } = new(null);
-    
-    /// <summary>
-    /// The control that owns the template this element is part of.
-    /// </summary>
-    public ReadOnlySlot<Control?> TemplateOwner => TemplateOwnerInternal;
-
-    /// <inheritdoc/>
-    protected override void OnVisualizationInvalidated(Element child)
-    {
-        VisualParent?.OnVisualizationInvalidated(child);
-    }
-
-    private protected override VisualElement GetOrCreateVisualization() => this;
-
-    #endregion TEMPLATING
 }

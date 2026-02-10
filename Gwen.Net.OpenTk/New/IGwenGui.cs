@@ -1,5 +1,6 @@
 ﻿using System;
 using Gwen.Net.New;
+using Gwen.Net.New.Controls;
 using OpenTK.Mathematics;
 
 namespace Gwen.Net.OpenTk.New;

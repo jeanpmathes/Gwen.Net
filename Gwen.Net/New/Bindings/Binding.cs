@@ -12,7 +12,7 @@ public static class Binding
     /// </summary>
     /// <param name="value">The constant value.</param>
     /// <typeparam name="T">The type of value stored in the binding.</typeparam>
-    /// <returns>>The created binding.</returns>
+    /// <returns>The created binding.</returns>
     public static Binding<T> Constant<T>(T value)
     {
         return new Binding<T>(() => value, setter: null, []);
@@ -24,7 +24,7 @@ public static class Binding
     /// </summary>
     /// <param name="getter">The getter function.</param>
     /// <typeparam name="T">The type of value stored in the binding.</typeparam>
-    /// <returns>>The created binding.</returns>
+    /// <returns>The created binding.</returns>
     public static Binding<T> Computed<T>(Func<T> getter)
     {
         return new Binding<T>(getter, setter: null, []);

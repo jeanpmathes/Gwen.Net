@@ -5,41 +5,37 @@ using Gwen.Net.New.Rendering;
 namespace Gwen.Net.New.Visuals;
 
 /// <summary>
-/// A border draws background and border around its child element.
+/// Draws a border and background around its child element.
 /// </summary>
-public class Border : VisualHost
+/// <see cref="Controls.Border"/>
+public class Border : Visual
 {
-    #region PROPERTIES
-
     /// <summary>
-    /// Creates a new instance of the <see cref="Border"/> class.
+    /// Creates a new border visual.
     /// </summary>
     public Border()
     {
-        BorderBrush = Property.Create(this, BindToTemplateOwnerForeground(), Invalidation.Render);
+        BorderBrush = VisualProperty.Create(this, BindToOwnerForeground(), Invalidation.Render);
     }
     
     /// <summary>
-    /// The brush used to draw the border. If <c>null</c>, no border will be drawn.
+    /// The brush used to draw the border.
     /// </summary>
-    public Property<Brush> BorderBrush { get; }
-    
-    #endregion PROPERTIES
+    public VisualProperty<Brush> BorderBrush { get; }
     
     /// <summary>
     /// Gets or sets the single child element.
     /// </summary>
-    public Element? Child
+    public Visual? Child
     {
-        get => LogicalChildren.Count > 0 ? LogicalChildren[0] : null;
-        set => SetLogicalChild(value);
-    } 
-    
+        get => Children.Count > 0 ? Children[0] : null;
+        set => SetChild(value);
+    }
+
     /// <inheritdoc/>
-    public override void OnRender(IRenderer renderer)
+    protected override void OnRender(IRenderer renderer)
     {
-        base.OnRender(renderer);
-        
+        renderer.DrawFilledRectangle(RenderBounds, Background);
         renderer.DrawLinedRectangle(RenderBounds, BorderBrush);
     }
 }

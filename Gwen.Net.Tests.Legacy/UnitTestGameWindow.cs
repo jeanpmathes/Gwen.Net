@@ -25,7 +25,7 @@ public class UnitTestGameWindow : GameWindow
 
     private UnitTestHarnessControls unitTestControls;
 
-    public UnitTestGameWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+    public UnitTestGameWindow(String file, GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
         UpdateFrequency = 30;
@@ -35,7 +35,7 @@ public class UnitTestGameWindow : GameWindow
             GwenGuiSettings.Default.From(settings =>
             {
                 //Have the skin come from somewhere else.
-                settings.SkinFile = new FileInfo("DefaultSkin2.png");
+                settings.SkinFile = new FileInfo(file);
             }));
 
         updateFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
@@ -103,16 +103,21 @@ public class UnitTestGameWindow : GameWindow
     }
 
     [STAThread]
-    public static void Main()
+    public static void Main(String[] args)
     {
         var gameWindowSettings = GameWindowSettings.Default;
         var nativeWindowSettings = NativeWindowSettings.Default;
 
         nativeWindowSettings.Profile = ContextProfile.Core;
+        
+        nativeWindowSettings.Location = new Vector2i(x: 0, y: 0);
+        nativeWindowSettings.ClientSize = new Vector2i(960 - 0, 540 - 32);
 
-        using UnitTestGameWindow window = new(gameWindowSettings, nativeWindowSettings);
+        String file = args.FirstOrDefault() ?? "DefaultSkin2.png";
+        
+        using UnitTestGameWindow window = new(file, gameWindowSettings, nativeWindowSettings);
 
-        window.Title = "Gwen.net OpenTK Unit Test";
+        window.Title = $"Gwen.net OpenTK Unit Test (Legacy) [{String.Join(" ", args)}]";
         window.VSync = VSyncMode.Off; // to measure performance
 
         window.Run();

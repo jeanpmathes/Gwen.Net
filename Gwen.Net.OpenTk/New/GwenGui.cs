@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
 using Gwen.Net.New;
+using Gwen.Net.New.Controls;
+using Gwen.Net.New.Resources;
 using Gwen.Net.OpenTk.New.Graphics;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
@@ -8,9 +10,13 @@ namespace Gwen.Net.OpenTk.New;
 
 internal class GwenGui : IGwenGui
 {
-    internal GwenGui(GameWindow parent)
+    private readonly ResourceRegistry registry;
+    
+    internal GwenGui(GameWindow parent, ResourceRegistry registry)
     {
         Parent = parent;
+        
+        this.registry = registry;
     }
 
     public GameWindow Parent { get; }
@@ -22,7 +28,7 @@ internal class GwenGui : IGwenGui
     public void Load()
     {
         Renderer = new Renderer();
-        Root = new Canvas(Renderer);
+        Root = Canvas.Create(Renderer, registry);
         
         Root?.SetRenderingSize(new Size(Parent.Size.X, Parent.Size.Y));
     }

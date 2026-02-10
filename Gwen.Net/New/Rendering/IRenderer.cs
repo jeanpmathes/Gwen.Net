@@ -57,7 +57,7 @@ public interface IRenderer
     /// <summary>
     /// Check if the current clipping rectangle is empty, meaning nothing would pass.
     /// </summary>
-    /// <returns>>True if the clipping rectangle is empty, false otherwise.</returns>
+    /// <returns>True if the clipping rectangle is empty, false otherwise.</returns>
     public Boolean IsClipEmpty();
     
     /// <summary>

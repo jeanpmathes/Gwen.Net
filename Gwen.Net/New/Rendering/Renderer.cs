@@ -141,7 +141,7 @@ public abstract class Renderer : IRenderer
     /// This transforms it from local element space into screen space.
     /// </summary>
     /// <param name="rectangle">The rectangle to transform.</param>
-    /// <returns>>The transformed rectangle.</returns>
+    /// <returns>The transformed rectangle.</returns>
     protected RectangleF Transform(RectangleF rectangle)
     {
         rectangle.Location += Offset;

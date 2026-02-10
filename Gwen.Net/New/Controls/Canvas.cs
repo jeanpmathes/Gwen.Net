@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Drawing;
+using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Rendering;
-using Gwen.Net.New.Visuals.Layout;
+using Gwen.Net.New.Resources;
+using Gwen.Net.New.Visuals;
 
-namespace Gwen.Net.New;
+namespace Gwen.Net.New.Controls;
 
 /// <summary>
 /// The root element for a GWEN user interface.
 /// </summary>
-public sealed class Canvas : Panel, IDisposable
+/// <seealso cref="Visuals.Canvas"/>
+public sealed class Canvas : Control<Canvas>, IDisposable
 {
     private readonly IRenderer onlyRenderer;
     
@@ -16,33 +19,44 @@ public sealed class Canvas : Panel, IDisposable
     private SizeF viewportSize = SizeF.Empty;
     
     /// <summary>
-    /// Initializes a new instance of the <see cref="Canvas"/> class.
+    /// Create a new canvas with the given renderer and registry.
     /// </summary>
     /// <param name="renderer">
     ///     The only renderer which will be used for rendering this canvas.
     ///     Will not be disposed by the canvas.
     /// </param>
-    public Canvas(IRenderer renderer)
+    /// <param name="registry">
+    ///     The registry to create the canvas context from.
+    ///     If a UI theme is used, the registry should contain the theme's styles.
+    ///     Will not be disposed by the canvas.
+    /// </param>
+    /// <returns>A new canvas instance.</returns>
+    public static Canvas Create(IRenderer renderer, ResourceRegistry registry)
+    {
+        Canvas canvas = new(renderer)
+        {
+            Context = new Context(registry)
+        };
+        
+        canvas.SetAsRoot();
+        canvas.Visualize();
+        
+        return canvas;
+    }
+    
+    private Canvas(IRenderer renderer)
     {
         onlyRenderer = renderer;
-        
-        SetAsRoot();
     }
 
     /// <summary>
     /// Gets or sets the single child element.
     /// </summary>
-    public Element? Child
+    public Control? Child
     {
-        get => LogicalChildren.Count > 0 ? LogicalChildren[0] : null;
-        set => SetLogicalChild(value);
+        get => Children.Count > 0 ? Children[0] : null;
+        set => SetChild(value);
     } 
-    
-    /// <inheritdoc/>
-    public override void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
-    {
-        InvalidateMeasure();
-    }
 
     /// <summary>
     /// Set the scale of the canvas.
@@ -56,7 +70,7 @@ public sealed class Canvas : Panel, IDisposable
         
         UpdateSize();
         
-        InvalidateRender();
+        Visualization?.InvalidateRender();
     }
     
     /// <summary>
@@ -74,7 +88,7 @@ public sealed class Canvas : Panel, IDisposable
 
     private void UpdateSize()
     {
-        SetSize(viewportSize / scale);
+        Visualization?.SetSize(viewportSize / scale);
     }
 
     /// <summary>
@@ -82,34 +96,22 @@ public sealed class Canvas : Panel, IDisposable
     /// </summary>
     public void Render()
     {
-        Render(onlyRenderer);
+        Visualization?.Render(onlyRenderer);
     }
     
-    /// <inheritdoc/>
-    public override void Render(IRenderer renderer)
-    {
-        if (renderer != onlyRenderer)
-            throw new InvalidOperationException("Canvas can only be rendered with the initial renderer it was created with.");
-        
-        renderer.Begin();
-        
-        renderer.PushOffset(Point.Empty);
-        renderer.PushClip(Bounds);
-        
-        base.Render(renderer);
-        
-        renderer.EndClip();
-        
-        renderer.PopClip();
-        renderer.PopOffset();
-        
-        renderer.End();
-    }
-
     /// <inheritdoc/>
     public void Dispose()
     {
         if (Child != null) 
-            RemoveLogicalChild(Child);
+            RemoveChild(Child);
+    }
+
+    /// <inheritdoc />
+    protected override ControlTemplate<Canvas> CreateDefaultTemplate()
+    {
+        return ControlTemplate.Create<Canvas>(_ => new Visuals.Canvas
+        {
+            Child = new ChildPresenter()
+        });
     }
 }

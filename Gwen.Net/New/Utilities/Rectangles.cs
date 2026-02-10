@@ -12,7 +12,7 @@ public static class Rectangles
     /// </summary>
     /// <param name="rectangle">The rectangle to constrain.</param>
     /// <param name="size">The maximum size.</param>
-    /// <returns>>The constrained rectangle.</returns>
+    /// <returns>The constrained rectangle.</returns>
     public static RectangleF ConstraintSize(RectangleF rectangle, SizeF size)
     {
         if (rectangle.Width > size.Width)

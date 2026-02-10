@@ -13,8 +13,8 @@ public static class ControlTemplate
     /// </summary>
     /// <param name="function">The function that creates the visual structure for the control.</param>
     /// <typeparam name="TControl">The type of the templated control.</typeparam>
-    /// <returns>>The created control template.</returns>
-    public static ControlTemplate<TControl> Create<TControl>(Func<TControl, VisualElement> function) where TControl : Control<TControl>
+    /// <returns>The created control template.</returns>
+    public static ControlTemplate<TControl> Create<TControl>(Func<TControl, Visual> function) where TControl : Control<TControl>
     {
         return new ControlTemplate<TControl>(function);
     }
@@ -26,13 +26,13 @@ public static class ControlTemplate
 /// <typeparam name="TControl">The type of the templated control.</typeparam>
 public class ControlTemplate<TControl> where TControl : Control<TControl>
 {
-    private readonly Func<TControl, VisualElement> function;
+    private readonly Func<TControl, Visual> function;
     
     /// <summary>
     /// Creates a new control template.
     /// </summary>
     /// <param name="function">The function that creates the visual structure for the control.</param>
-    public ControlTemplate(Func<TControl, VisualElement> function)
+    public ControlTemplate(Func<TControl, Visual> function)
     {
         this.function = function;
     }
@@ -41,8 +41,8 @@ public class ControlTemplate<TControl> where TControl : Control<TControl>
     /// Applies the template to the given control, creating its visual structure.
     /// </summary>
     /// <param name="control">The control to apply the template to.</param>
-    /// <returns>>The created visual structure.</returns>
-    public VisualElement Apply(TControl control)
+    /// <returns>The created visual structure.</returns>
+    public Visual Apply(TControl control)
     {
         return function(control);
     }

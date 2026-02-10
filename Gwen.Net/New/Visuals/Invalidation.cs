@@ -6,11 +6,6 @@
 public enum Invalidation
 {
     /// <summary>
-    /// The visualization (template) is invalidated.
-    /// </summary>
-    Visualization,
-    
-    /// <summary>
     /// The measure (desired size) of the element is invalidated.
     /// </summary>
     Measure,
