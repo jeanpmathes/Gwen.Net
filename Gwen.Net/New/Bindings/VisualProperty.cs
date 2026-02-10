@@ -11,6 +11,11 @@ public class VisualProperty : IValueSource
     private readonly Visual owner;
     private readonly Invalidation invalidation;
     
+    /// <summary>
+    /// Initializes a new visual property base with its owner and invalidation behavior.
+    /// </summary>
+    /// <param name="owner">The visual that owns this property.</param>
+    /// <param name="invalidation">The invalidation to trigger when the property changes.</param>
     protected VisualProperty(Visual owner, Invalidation invalidation)
     {
         this.owner = owner;
@@ -20,7 +25,7 @@ public class VisualProperty : IValueSource
     /// <summary>
     /// Create a new property with the given default binding and invalidation behavior.
     /// </summary>
-    /// <param name="owner">The owner element of the property.</param>
+    /// <param name="owner">The visual that owns the property.</param>
     /// <param name="defaultBinding">The default binding for the property.</param>
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
@@ -33,7 +38,7 @@ public class VisualProperty : IValueSource
     /// <summary>
     /// Create a new property with a constant default value and invalidation behavior.
     /// </summary>
-    /// <param name="owner">The owner element of the property.</param>
+    /// <param name="owner">The visual that owns the property.</param>
     /// <param name="defaultValue">The default value for the property.</param>
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
@@ -86,6 +91,12 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
     private T? cachedValue;
     private Boolean isCacheValid;
     
+    /// <summary>
+    /// Initializes a new visual property with default binding and invalidation behavior.
+    /// </summary>
+    /// <param name="owner">The visual that owns this property.</param>
+    /// <param name="invalidation">The invalidation to trigger when the property changes.</param>
+    /// <param name="defaultBinding">The default value binding.</param>
     internal VisualProperty(Visual owner, Invalidation invalidation, Binding<T> defaultBinding) : base(owner, invalidation)
     {
         this.defaultBinding = defaultBinding;

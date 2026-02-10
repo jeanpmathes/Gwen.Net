@@ -13,8 +13,8 @@ namespace Gwen.Net.New.Visuals;
 // todo: use less null suppression exclamation marks here, maybe add exceptions instead or other checks
 
 /// <summary>
-/// The abstract base class of all visual elements, which form the visual tree.
-/// Visual can be measured, arranged and rendered.
+/// The abstract base class for all visuals in the visual tree.
+/// A visual can be measured, arranged, and rendered.
 /// </summary>
 public abstract class Visual
 {
@@ -37,27 +37,27 @@ public abstract class Visual
     #region PROPERTIES
     
     /// <summary>
-    /// The minimum width of this element. Might not be respected by all layout containers.
+    /// The minimum width of this visual. Might not be respected by all layout containers.
     /// </summary>
     public VisualProperty<Single> MinimumWidth { get; }
     
     /// <summary>
-    /// The minimum height of this element. Might not be respected by all layout containers.
+    /// The minimum height of this visual. Might not be respected by all layout containers.
     /// </summary>
     public VisualProperty<Single> MinimumHeight { get; }
     
     /// <summary>
-    /// The maximum width of this element. Might not be respected by all layout containers.
+    /// The maximum width of this visual. Might not be respected by all layout containers.
     /// </summary>
     public VisualProperty<Single> MaximumWidth { get; }
         
     /// <summary>
-    /// The maximum height of this element. Might not be respected by all layout containers.
+    /// The maximum height of this visual. Might not be respected by all layout containers.
     /// </summary>
     public VisualProperty<Single> MaximumHeight { get; }
     
     /// <summary>
-    /// The brush used to draw the background of this element.
+    /// The brush used to draw the background of this visual.
     /// </summary>
     public VisualProperty<Brush> Background { get; }
     
@@ -80,12 +80,12 @@ public abstract class Visual
     }
     
     /// <summary>
-    /// Bind to a property of the template owner if this element is an anchor, otherwise bind to a default value.
+    /// Bind to a property of the template owner if this visual is an anchor, otherwise bind to a default value.
     /// </summary>
     /// <param name="selector">The selector function to select the property from the template owner.</param>
-    /// <param name="defaultValue">The default value to use if this element is not an anchor.</param>
+    /// <param name="defaultValue">The default value to use if this visual is not an anchor.</param>
     /// <typeparam name="TValue">The type of the property to bind to.</typeparam>
-    /// <returns>>The created binding.</returns>
+    /// <returns>The created binding.</returns>
     protected Binding<TValue> BindToOwnerIfAnchor<TValue>(Func<Control, TValue> selector, TValue defaultValue = default!)
     {
         return Binding.Transform(TemplateOwner, IsAnchor, (o, r) => r && o != null ? selector(o) : defaultValue);
@@ -96,17 +96,17 @@ public abstract class Visual
     #region HIERARCHY
 
     /// <summary>
-    /// Whether this element is attached to a template root (or is a template root itself).
+    /// Whether this visual is attached to a template root (or is a template root itself).
     /// </summary>
     protected Boolean IsAttachedToTemplate { get; private set; }
     
     /// <summary>
-    /// Whether this element is the root element of the tree.
+    /// Whether this visual is the root visual of the tree.
     /// </summary>
     private protected Boolean IsRoot { get; set; }
     
     /// <summary>
-    /// Set this element as the root of a tree.
+    /// Set this visual as the root of a tree.
     /// May only be called by the code within <see cref="Control"/>.
     /// </summary>
     internal void SetAsRoot()
@@ -117,7 +117,7 @@ public abstract class Visual
     }
     
     /// <summary>
-    /// Unset this element as the root of a tree, if it is a root.
+    /// Unset this visual as the root of a tree, if it is a root.
     /// May only be called by the code within <see cref="Control"/>.
     /// </summary>
     internal void UnsetAsRoot()
@@ -128,7 +128,7 @@ public abstract class Visual
     }
     
     /// <summary>
-    /// Set this element as the anchor of a control template.
+    /// Set this visual as the anchor of a control template.
     /// </summary>
     /// <param name="control">The template owner control.</param>
     internal void SetAsAnchor(Control control)
@@ -138,7 +138,7 @@ public abstract class Visual
     }
     
     /// <summary>
-    /// Unset this element as the anchor of a control template, if it is an anchor.
+    /// Unset this visual as the anchor of a control template, if it is an anchor.
     /// </summary>
     internal void UnsetAsAnchor()
     {
@@ -148,31 +148,31 @@ public abstract class Visual
     private readonly Slot<Control?> templateOwner = new(null);
     
     /// <summary>
-    /// The control owning the template this element is part of, or <c>null</c> if this element is not part of a control template.
+    /// The control owning the template this visual is part of, or <c>null</c> if this visual is not part of a control template.
     /// </summary>
     protected ReadOnlySlot<Control?> TemplateOwner => templateOwner;
     
     private readonly Slot<Boolean> isAnchor = new(false);
     
     /// <summary>
-    /// Whether this element is the anchor of a control template, i.e. the first element in the template.
+    /// Whether this visual is the anchor of a control template, i.e. the first visual in the template.
     /// </summary>
     protected ReadOnlySlot<Boolean> IsAnchor => isAnchor;
     
     private readonly List<Visual> children = [];
     
     /// <summary>
-    /// The parent of this element.
+    /// The parent of this visual.
     /// </summary>
     public Visual? Parent { get; private set; }
 
     /// <summary>
-    /// The children of this element.
+    /// The children of this visual.
     /// </summary>
     public IReadOnlyList<Visual> Children => children;
 
     /// <summary>
-    /// Set the child of this element.
+    /// Set the child of this visual.
     /// Replaces any existing children.
     /// </summary>
     /// <param name="child">
@@ -211,7 +211,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Add a  child to this element.
+    /// Add a child to this visual.
     /// </summary>
     /// <param name="child">The child to add. Will be removed from its previous parent if any.</param>
     protected void AddChild(Visual child)
@@ -230,8 +230,8 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Remove a child from this element.
-    /// If the specified child is not a child of this element, nothing happens.
+    /// Remove a child from this visual.
+    /// If the specified child is not a child of this visual, nothing happens.
     /// </summary>
     /// <param name="child">The child to remove.</param>
     protected void RemoveChild(Visual child)
@@ -239,6 +239,11 @@ public abstract class Visual
         RemoveChild(child, isReparenting: false);
     }
 
+    /// <summary>
+    /// Remove a child visual from this visual, optionally preserving resources for reparenting.
+    /// </summary>
+    /// <param name="child">The child visual to remove.</param>
+    /// <param name="isReparenting">Whether the child is being removed as part of reparenting.</param>
     private void RemoveChild(Visual child, Boolean isReparenting)
     {
         if (child.Parent != this) return;
@@ -251,21 +256,42 @@ public abstract class Visual
         child.Detach(isReparenting);
     }
     
+    /// <summary>
+    /// Handle common operations that should happen whenever a child visual is added.
+    /// </summary>
+    /// <param name="child">The child visual that was added.</param>
     private void HandleChildAdded(Visual child)
     {
         InvalidateMeasure();
         OnChildAdded(child);
     }
     
+    /// <summary>
+    /// Handle common operations that should happen whenever a child visual is removed.
+    /// </summary>
+    /// <param name="child">The child visual that was removed.</param>
     private void HandleChildRemoved(Visual child)
     {
         InvalidateMeasure();
         OnChildRemoved(child);
     }
 
+    /// <summary>
+    /// Called after a child visual has been added to this visual.
+    /// </summary>
+    /// <param name="child">The child visual that was added.</param>
     private protected virtual void OnChildAdded(Visual child) {}
+
+    /// <summary>
+    /// Called after a child visual has been removed from this visual.
+    /// </summary>
+    /// <param name="child">The child visual that was removed.</param>
     private protected virtual void OnChildRemoved(Visual child) {}
 
+    /// <summary>
+    /// Attach this visual and its subtree to a template owner.
+    /// </summary>
+    /// <param name="newOwner">The control that owns the template for this visual subtree.</param>
     private void Attach(Control newOwner)
     {
         if (IsAttachedToTemplate) return;
@@ -286,17 +312,21 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Called when the element is attached to a tree with a root element.
-    /// Note that for example giving this element a parent does not necessarily
-    /// attach it to a root element, as the parent itself may not be attached to a root.
+    /// Called when the visual is attached to a tree with a root visual.
+    /// Note that for example giving this visual a parent does not necessarily
+    /// attach it to a root visual, as the parent itself may not be attached to a root.
     /// </summary>
     public virtual void OnAttach() {}
     
     /// <summary>
-    /// Invoked when this element is attached to a tree with a root element.
+    /// Invoked when this visual is attached to a tree with a root visual.
     /// </summary>
     public event EventHandler? AttachedToRoot;
 
+    /// <summary>
+    /// Detach this visual and its subtree from the current template owner.
+    /// </summary>
+    /// <param name="isReparenting">Whether detaching happens as part of reparenting.</param>
     private void Detach(Boolean isReparenting)
     {
         if (!IsAttachedToTemplate) return;
@@ -315,21 +345,21 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Called when the element is detached from a tree with a root element.
+    /// Called when the visual is detached from a tree with a root visual.
     /// Note that being detached in most cases does not mean losing the parent,
     /// as it may simply be that the parent or one of its ancestors was detached.
     /// </summary>
     /// <remarks>
     /// Generally, disposable resources must be disposed when being detached,
-    /// unless the element is being reparented.
+    /// unless the visual is being reparented.
     /// </remarks>
     /// <param name="isReparenting">
-    ///     Indicates whether the element is being detached because it is being reparented.
+    ///     Indicates whether the visual is being detached because it is being reparented.
     /// </param>
     public virtual void OnDetach(Boolean isReparenting) {}
 
     /// <summary>
-    /// Invoked when this element is detached from a tree with a root element.
+    /// Invoked when this visual is detached from a tree with a root visual.
     /// </summary>
     public event EventHandler? DetachedFromRoot;
 
@@ -338,7 +368,7 @@ public abstract class Visual
     #region POSITIONING
     
     /// <summary>
-    /// The bounds of this element.
+    /// The bounds of this visual.
     /// </summary>
     public RectangleF Bounds { get; private set; }
     
@@ -348,37 +378,37 @@ public abstract class Visual
     protected RectangleF RenderBounds => new(PointF.Empty, Bounds.Size);
     
     /// <summary>
-    ///     Location of the element. Valid after arranging.
+    ///     Location of the visual. Valid after arranging.
     /// </summary>
     public Single ActualLeft => Bounds.X;
 
     /// <summary>
-    ///     Location of the element. Valid after arranging.
+    ///     Location of the visual. Valid after arranging.
     /// </summary>
     public Single ActualTop => Bounds.Y;
     
     /// <summary>
-    ///     The actual location of the element. Valid after arranging.
+    ///     The actual location of the visual. Valid after arranging.
     /// </summary>
     public PointF ActualLocation => Bounds.Location;
 
     /// <summary>
-    ///     The actual width of the element. Valid after arranging.
+    ///     The actual width of the visual. Valid after arranging.
     /// </summary>
     public Single ActualWidth => Bounds.Width;
 
     /// <summary>
-    ///     The actual height of the element. Valid after arranging.
+    ///     The actual height of the visual. Valid after arranging.
     /// </summary>
     public Single ActualHeight => Bounds.Height;
     
     /// <summary>
-    ///     The actual size of the element. Valid after arranging.
+    ///     The actual size of the visual. Valid after arranging.
     /// </summary>
     public SizeF ActualSize => Bounds.Size;
     
     /// <summary>
-    ///     Sets the size of the element.
+    ///     Sets the size of the visual.
     /// </summary>
     /// <param name="size">New size.</param>
     /// <returns>True if bounds changed.</returns>
@@ -389,7 +419,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    ///     Sets the control bounds.
+    ///     Sets the visual bounds.
     /// </summary>
     /// <param name="newBounds">New bounds.</param>
     /// <returns>True if bounds changed.</returns>
@@ -409,7 +439,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Called when the bounds of this element have changed.
+    /// Called when the bounds of this visual have changed.
     /// </summary>
     /// <param name="oldBounds">The old bounds.</param>
     /// <param name="newBounds">The new bounds.</param>
@@ -429,18 +459,18 @@ public abstract class Visual
     private Boolean isArrangeValid;
 
     /// <summary>
-    /// The size this element measured itself to be during the last measure pass.
-    /// This is effectively the minimum size this element requires to render itself properly.
+    /// The size this visual measured itself to be during the last measure pass.
+    /// This is effectively the minimum size this visual requires to render itself properly.
     /// </summary>
     public SizeF MeasuredSize { get; private set; } = SizeF.Empty;
     
     private SizeF lastAvailableSize = SizeF.Empty;
 
     /// <summary>
-    /// Measure the desired size of this element given the available size.
+    /// Measure the desired size of this visual given the available size.
     /// </summary>
-    /// <param name="availableSize">The available size. The element does not have to use all of this size.</param>
-    /// <returns>The desired size required by this element, might be larger than the available size.</returns>
+    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
+    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
     public SizeF Measure(SizeF availableSize)
     {
         if (isMeasureValid && lastAvailableSize == availableSize)
@@ -464,8 +494,8 @@ public abstract class Visual
     /// Override to define custom measuring logic. See <see cref="Measure(SizeF)"/>.
     /// If you override this, you will likely need to override <see cref="OnArrange(RectangleF)"/> as well and vice versa.
     /// </summary>
-    /// <param name="availableSize">The available size. The element does not have to use all of this size.</param>
-    /// <returns>The desired size required by this element, might be larger than the available size.</returns>
+    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
+    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
     public virtual SizeF OnMeasure(SizeF availableSize)
     {
         if (children.Count == 0)
@@ -485,10 +515,10 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Arrange this element within the given final rectangle.
-    /// This will set the <see cref="Bounds"/> of this element.
+    /// Arrange this visual within the given final rectangle.
+    /// This will set the <see cref="Bounds"/> of this visual.
     /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this element in.</param>
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
     public void Arrange(RectangleF finalRectangle)
     {
         if (isArrangeValid) return;
@@ -514,8 +544,8 @@ public abstract class Visual
     /// Override to define custom arranging logic. See <see cref="Arrange(RectangleF)"/>.
     /// If you have overriden <see cref="OnMeasure(SizeF)"/>, you will likely need to override this as well and vice versa.
     /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this element in.</param>
-    /// <returns>The actual rectangle used by this element after arranging.</returns>
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
+    /// <returns>The actual rectangle used by this visual after arranging.</returns>
     public virtual RectangleF OnArrange(RectangleF finalRectangle)
     {
         if (children.Count == 0)
@@ -528,7 +558,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Invalidate the measurement of this element, causing a re-measure and re-arrange.
+    /// Invalidate the measurement of this visual, causing a re-measure and re-arrange.
     /// </summary>
     public void InvalidateMeasure()
     {
@@ -541,7 +571,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Invalidate the arrangement of this element, causing a re-arrange.
+    /// Invalidate the arrangement of this visual, causing a re-arrange.
     /// </summary>
     public void InvalidateArrange()
     {
@@ -557,12 +587,12 @@ public abstract class Visual
     #region RENDERING
 
     /// <summary>
-    ///     Determines whether the control should be clipped to its bounds while rendering.
+    ///     Determines whether the visual should be clipped to its bounds while rendering.
     /// </summary>
     protected virtual Boolean ShouldClip => true;
     
     /// <summary>
-    /// Render this element using the specified renderer.
+    /// Render this visual using the specified renderer.
     /// </summary>
     /// <param name="renderer">The renderer to use.</param>
     public virtual void Render(IRenderer renderer)
@@ -600,6 +630,9 @@ public abstract class Visual
         }
     }
 
+    /// <summary>
+    /// Ensure measure and arrange are valid before rendering this visual.
+    /// </summary>
     private void PrepareRender()
     {
         // Generally, measure and arrange bubble up to the root, which means the measure and arrange
@@ -615,7 +648,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    /// Called when this element should render itself.
+    /// Called when this visual should render itself.
     /// Override this to implement custom rendering logic.
     /// </summary>
     /// <param name="renderer">The renderer to use.</param>
@@ -625,7 +658,7 @@ public abstract class Visual
     }
     
     /// <summary>
-    /// Invalidate the rendering of this element, causing a re-render.
+    /// Invalidate the rendering of this visual, causing a re-render.
     /// </summary>
     public void InvalidateRender()
     {

@@ -8,7 +8,7 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// The root element for a GWEN user interface.
+/// The root control for a GWEN user interface.
 /// </summary>
 /// <seealso cref="Visuals.Canvas"/>
 public sealed class Canvas : Control<Canvas>, IDisposable
@@ -50,7 +50,7 @@ public sealed class Canvas : Control<Canvas>, IDisposable
     }
 
     /// <summary>
-    /// Gets or sets the single child element.
+    /// Gets or sets the single child control.
     /// </summary>
     public Control? Child
     {

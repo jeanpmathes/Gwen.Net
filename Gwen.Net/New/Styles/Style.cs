@@ -34,6 +34,13 @@ public static class Styling
     {
         private readonly List<(Func<TControl, Property>, Object)> properties = [];
 
+        /// <summary>
+        /// Add a property assignment to the style being built.
+        /// </summary>
+        /// <param name="property">Selector for the control property to set.</param>
+        /// <param name="value">Value to assign when the style is applied.</param>
+        /// <typeparam name="TValue">The property value type.</typeparam>
+        /// <returns>The same builder instance for fluent chaining.</returns>
         public IBuilder<TControl> Set<TValue>(Func<TControl, Property<TValue>> property, TValue value)
         {
             properties.Add((property, value)!);
@@ -41,6 +48,10 @@ public static class Styling
             return this;
         }
 
+        /// <summary>
+        /// Convert a builder to a concrete <see cref="Style{T}"/> instance.
+        /// </summary>
+        /// <param name="builder">The builder containing style assignments.</param>
         public static implicit operator Style<TControl>(Builder<TControl> builder)
         {
             return new Style<TControl>(builder.properties);

@@ -4,13 +4,13 @@ using Gwen.Net.New.Rendering;
 namespace Gwen.Net.New.Visuals;
 
 /// <summary>
-/// The visual root element for a GWEN user interface.
+/// The root visual for a GWEN user interface.
 /// </summary>
 /// <seealso cref="Controls.Canvas"/>
 public class Canvas : Visual
 {
     /// <summary>
-    /// Gets or sets the single child element.
+    /// Gets or sets the single child visual.
     /// </summary>
     public Visual? Child
     {

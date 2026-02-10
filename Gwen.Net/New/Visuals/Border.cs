@@ -5,7 +5,7 @@ using Gwen.Net.New.Rendering;
 namespace Gwen.Net.New.Visuals;
 
 /// <summary>
-/// Draws a border and background around its child element.
+/// Draws a border and background around its child visual.
 /// </summary>
 /// <see cref="Controls.Border"/>
 public class Border : Visual
@@ -24,7 +24,7 @@ public class Border : Visual
     public VisualProperty<Brush> BorderBrush { get; }
     
     /// <summary>
-    /// Gets or sets the single child element.
+    /// Gets or sets the single child visual.
     /// </summary>
     public Visual? Child
     {

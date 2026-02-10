@@ -4,13 +4,13 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// A <see cref="Border"/> draws a border and background around its child element.
+/// A <see cref="Border"/> draws a border and background around its child control.
 /// </summary>
 /// <seealso cref="Visuals.Border"/>
 public class Border : Control<Border>
 {
     /// <summary>
-    /// Gets or sets the single child element.
+    /// Gets or sets the single child control.
     /// </summary>
     public Control? Child
     {

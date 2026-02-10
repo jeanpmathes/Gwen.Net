@@ -10,7 +10,7 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// The base class of all GWEN controls, meaning logical elements.
+/// The base class of all GWEN controls, meaning logical controls.
 /// </summary>
 public abstract class Control 
 {
@@ -42,22 +42,22 @@ public abstract class Control
     public Property<Brush> Background { get; }
     
     /// <summary>
-    /// The minimum width of this element. Might not be respected by all layout containers.
+    /// The minimum width of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MinimumWidth { get; }
     
     /// <summary>
-    /// The minimum height of this element. Might not be respected by all layout containers.
+    /// The minimum height of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MinimumHeight { get; }
     
     /// <summary>
-    /// The maximum width of this element. Might not be respected by all layout containers.
+    /// The maximum width of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MaximumWidth { get; }
         
     /// <summary>
-    /// The maximum height of this element. Might not be respected by all layout containers.
+    /// The maximum height of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MaximumHeight { get; }
     
@@ -66,18 +66,18 @@ public abstract class Control
     #region HIERARCHY
     
     /// <summary>
-    /// Whether this element is attached to a tree with a root element.
+    /// Whether this control is attached to a tree with a root control.
     /// </summary>
     protected Boolean IsAttachedToRoot { get; private set; }
 
     /// <summary>
-    /// Whether this element is the root element of the tree.
+    /// Whether this control is the root control of the tree.
     /// </summary>
     private protected Boolean IsRoot { get; set; }
     
     /// <summary>
-    /// Set this element as the root of a tree.
-    /// May only be called by the canvas elements.
+    /// Set this control as the root of a tree.
+    /// May only be called by the canvas controls.
     /// </summary>
     private protected void SetAsRoot()
     {
@@ -89,17 +89,17 @@ public abstract class Control
     private readonly List<Control> children = [];
     
     /// <summary>
-    /// The parent of this element.
+    /// The parent of this control.
     /// </summary>
     public Control? Parent { get; private set; }
 
     /// <summary>
-    /// The children of this element.
+    /// The children of this control.
     /// </summary>
     public IReadOnlyList<Control> Children => children;
 
     /// <summary>
-    /// Set the child of this element.
+    /// Set the child of this control.
     /// Replaces any existing children.
     /// </summary>
     /// <param name="child">
@@ -138,7 +138,7 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Add a  child to this element.
+    /// Add a  child to this control.
     /// </summary>
     /// <param name="child">The child to add. Will be removed from its previous parent if any.</param>
     protected void AddChild(Control child)
@@ -157,8 +157,8 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Remove a child from this element.
-    /// If the specified child is not a child of this element, nothing happens.
+    /// Remove a child from this control.
+    /// If the specified child is not a child of this control, nothing happens.
     /// </summary>
     /// <param name="child">The child to remove.</param>
     protected void RemoveChild(Control child)
@@ -184,7 +184,7 @@ public abstract class Control
     }
     
     /// <summary>
-    /// Invoked when a child is added to this element.
+    /// Invoked when a child is added to this control.
     /// </summary>
     public event EventHandler? ChildAdded;
     
@@ -194,7 +194,7 @@ public abstract class Control
     }
     
     /// <summary>
-    /// Invoked when a child is removed from this element.
+    /// Invoked when a child is removed from this control.
     /// </summary>
     public event EventHandler? ChildRemoved;
 
@@ -213,14 +213,14 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Called when the element is attached to a tree with a root element.
-    /// Note that for example giving this element a parent does not necessarily
-    /// attach it to a root element, as the parent itself may not be attached to a root.
+    /// Called when the control is attached to a tree with a root control.
+    /// Note that for example giving this control a parent does not necessarily
+    /// attach it to a root control, as the parent itself may not be attached to a root.
     /// </summary>
     public virtual void OnAttach() {}
 
     /// <summary>
-    /// Invoked when this element is attached to a tree with a root element.
+    /// Invoked when this control is attached to a tree with a root control.
     /// </summary>
     public event EventHandler? AttachedToRoot;
 
@@ -240,21 +240,21 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Called when the element is detached from a tree with a root element.
+    /// Called when the control is detached from a tree with a root control.
     /// Note that being detached in most cases does not mean losing the parent,
     /// as it may simply be that the parent or one of its ancestors was detached.
     /// </summary>
     /// <remarks>
     /// Generally, disposable resources must be disposed when being detached,
-    /// unless the element is being reparented.
+    /// unless the control is being reparented.
     /// </remarks>
     /// <param name="isReparenting">
-    ///     Indicates whether the element is being detached because it is being reparented.
+    ///     Indicates whether the control is being detached because it is being reparented.
     /// </param>
     public virtual void OnDetach(Boolean isReparenting) {}
 
     /// <summary>
-    /// Invoked when this element is detached from a tree with a root element.
+    /// Invoked when this control is detached from a tree with a root control.
     /// </summary>
     public event EventHandler? DetachedFromRoot;
 
@@ -265,6 +265,9 @@ public abstract class Control
     private readonly Context? localContext;
     private Context? cachedContext;
     
+    /// <summary>
+    /// Rebuild the cached context for this control and reapply styling.
+    /// </summary>
     private protected void InvalidateContext()
     {
         UpdateCachedContext();
@@ -283,7 +286,7 @@ public abstract class Control
     }
 
     /// <summary>
-    /// The context of this element, which is used for example to determine styling.
+    /// The context of this control, which is used for example to determine styling.
     /// </summary>
     public Context Context
     {
@@ -309,6 +312,10 @@ public abstract class Control
     
     #region VISUALIZATION / TEMPLATING
     
+    /// <summary>
+    /// Build or refresh the visual tree that represents this control.
+    /// </summary>
+    /// <returns>The root visual used to render this control.</returns>
     internal abstract Visual Visualize();
     
     #endregion VISUALIZATION / TEMPLATING
@@ -316,7 +323,7 @@ public abstract class Control
     #region STYLE
     
     /// <summary>
-    /// Invalidate styling of this element, causing it to be reapplied.
+    /// Invalidate styling of this control, causing it to be reapplied.
     /// </summary>
     protected abstract void InvalidateStyling();
     
@@ -324,7 +331,7 @@ public abstract class Control
 }
 
 /// <summary>
-/// The generic base class of all GWEN controls, meaning logical elements.
+/// The generic base class of all GWEN controls, meaning logical controls.
 /// The generic variant is needed for templating.
 /// </summary>
 /// <typeparam name="TSelf">The type of the control itself.</typeparam>
@@ -343,7 +350,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     }
     
     /// <summary>
-    /// Get this element as its own type.
+    /// Get this control as its own type.
     /// </summary>
     protected TSelf Self => (TSelf) this;
     
@@ -354,8 +361,15 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     /// </summary>
     public Property<ControlTemplate<TSelf>> Template { get; }
     
+    /// <summary>
+    /// The current root visual that represents this control, if it has been visualized.
+    /// </summary>
     internal Visual? Visualization { get; private set; }
 
+    /// <summary>
+    /// Build or refresh the visual tree for this control and apply current styling.
+    /// </summary>
+    /// <returns>The root visual used to render this control.</returns>
     internal override Visual Visualize()
     {
         UnanchorVisualization();
@@ -416,8 +430,8 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     private Boolean IsStyled => usedOuterStyles != null || usedLocalStyle != null;
     
     /// <summary>
-    /// Set a specific style just for this element, which overrides any styling from the context.
-    /// This style does not affect any other elements.
+    /// Set a specific style just for this control, which overrides any styling from the context.
+    /// This style does not affect any other controls.
     /// </summary>
     public Property<Style<TSelf>?> Style { get; }
     
