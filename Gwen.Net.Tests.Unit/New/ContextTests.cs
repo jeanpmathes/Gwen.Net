@@ -105,7 +105,7 @@ public class ContextTests
         
         var context = Context.Create(registry =>
         {
-            template = registry.AddContentTemplate<String>(_ => new Border());
+            template = registry.AddContentTemplate<String>(_ => new MockControl());
         });
 
         IContentTemplate<String> result = context.GetContentTemplate<String>();
@@ -118,7 +118,7 @@ public class ContextTests
     {
         var context = Context.Create(registry =>
         {
-            registry.AddContentTemplate<Object>(_ => new Border());
+            registry.AddContentTemplate<Object>(_ => new MockControl());
         });
 
         IContentTemplate<String> result = context.GetContentTemplate<String>();
@@ -133,7 +133,7 @@ public class ContextTests
         
         var parentContext = Context.Create(registry =>
         {
-            template = registry.AddContentTemplate<String>(_ => new Border());
+            template = registry.AddContentTemplate<String>(_ => new MockControl());
         });
 
         var childContext = Context.Default;

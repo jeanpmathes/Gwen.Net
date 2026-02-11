@@ -53,7 +53,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
         registry.AddContentTemplate<String>(content =>
         {
             templatedContent = content;
-            return new Border();
+            return new MockControl();
         });
         
         var canvas = Canvas.Create(new MockRenderer(), registry);
@@ -66,7 +66,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
         Assert.Equal(contentString, templatedContent);
         
         Assert.Single(control.Children);
-        Assert.IsType<Border>(control.Children[0]);
+        Assert.IsType<MockControl>(control.Children[0]);
     }
 
     [Fact]
