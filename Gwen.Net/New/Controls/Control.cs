@@ -270,9 +270,21 @@ public abstract class Control
     /// <summary>
     /// Rebuild the cached context for this control and reapply styling.
     /// </summary>
-    private protected void InvalidateContext()
+    private void InvalidateContext()
     {
         UpdateCachedContext();
+        
+        InvalidateStyling();
+        
+        OnInvalidateContext();
+    }
+    
+    /// <summary>
+    /// Override to react to context changes.
+    /// </summary>
+    protected virtual void OnInvalidateContext()
+    {
+        
     }
     
     [MemberNotNull(nameof(cachedContext))]
@@ -283,8 +295,6 @@ public abstract class Control
         cachedContext = localContext == null
             ? parentContext
             : new Context(localContext, parentContext);
-        
-        InvalidateStyling();
     }
 
     /// <summary>
@@ -398,11 +408,11 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     {
         if (Visualization == null) return;
 
+        if (IsRoot)
+            Visualization.UnsetAsRoot();
+        
         Visualization.UnsetAsAnchor();
         Visualization = null;
-        
-        if (IsRoot)
-            Visualization?.UnsetAsRoot();
     }
     
     /// <summary>
@@ -443,7 +453,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     }
 
     /// <inheritdoc/>
-    protected override void InvalidateStyling()
+    protected sealed override void InvalidateStyling()
     {
         if (!IsStyled) return;
         

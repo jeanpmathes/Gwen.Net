@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Styles;
 
@@ -16,6 +17,7 @@ public class Context
     private readonly Context? parent;
 
     private readonly Dictionary<Type, Style>? styles;
+    private readonly Dictionary<Type, ContentTemplate>? contentTemplates;
 
     /// <summary>
     /// Create an inheriting context with the given parent.
@@ -28,6 +30,7 @@ public class Context
         this.parent = parent;
         
         styles = self.styles;
+        contentTemplates = self.contentTemplates;
     }
 
     /// <summary>
@@ -41,6 +44,13 @@ public class Context
         foreach (Style style in registry.Styles)
         {
             styles[style.StyledType] = style;
+        }
+
+        contentTemplates = new Dictionary<Type, ContentTemplate>();
+        
+        foreach (ContentTemplate content in registry.ContentTemplates)
+        {
+            contentTemplates[content.ContentType] = content;
         }
     }
     
@@ -86,6 +96,19 @@ public class Context
         result.Reverse();
         
         return result;
+    }
+    
+    /// <summary>
+    /// Get a content template for the given content type.
+    /// </summary>
+    /// <typeparam name="TContent">The content type to get the template for.</typeparam>
+    /// <returns>The content template for the given type, or null if none is registered.</returns>
+    public IContentTemplate<TContent> GetContentTemplate<TContent>() where TContent : class
+    {
+        if (contentTemplates != null && contentTemplates.TryGetValue(typeof(TContent), out ContentTemplate? potentialTemplate) && potentialTemplate is IContentTemplate<TContent> template)
+            return template;
+        
+        return parent?.GetContentTemplate<TContent>() ?? ContentTemplate.Default;
     }
     
     /// <summary>

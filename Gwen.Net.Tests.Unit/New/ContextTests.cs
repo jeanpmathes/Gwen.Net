@@ -1,5 +1,6 @@
 ﻿using Gwen.Net.New;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Styles;
 using Gwen.Net.Tests.Unit.New.Controls;
 
@@ -95,5 +96,51 @@ public class ContextTests
         Assert.Equal(expected: 2, styles.Count);
         Assert.Same(parentStyle1, styles[0]);
         Assert.Same(childStyle, styles[1]);
+    }
+    
+    [Fact]
+    public void GetContentTemplate_ReturnsRegisteredTemplate()
+    {
+        ContentTemplate<String>? template = null;
+        
+        var context = Context.Create(registry =>
+        {
+            template = registry.AddContentTemplate<String>(_ => new Border());
+        });
+
+        IContentTemplate<String> result = context.GetContentTemplate<String>();
+
+        Assert.Same(template, result);
+    }
+    
+    [Fact]
+    public void GetContentTemplate_DoesNotReturnTemplateOfMoreGeneralType()
+    {
+        var context = Context.Create(registry =>
+        {
+            registry.AddContentTemplate<Object>(_ => new Border());
+        });
+
+        IContentTemplate<String> result = context.GetContentTemplate<String>();
+
+        Assert.Same(ContentTemplate.Default, result);
+    }
+
+    [Fact]
+    public void GetContentTemplate_UsesParentContextWhenChildContextIsEmpty()
+    {
+        ContentTemplate<String>? template = null;
+        
+        var parentContext = Context.Create(registry =>
+        {
+            template = registry.AddContentTemplate<String>(_ => new Border());
+        });
+
+        var childContext = Context.Default;
+        
+        var context = new Context(childContext, parentContext);
+        IContentTemplate<String> result = context.GetContentTemplate<String>();
+        
+        Assert.Same(template, result);
     }
 }
