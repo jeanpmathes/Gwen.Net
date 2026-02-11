@@ -25,11 +25,11 @@ public abstract class Visual
     {
         InvalidateMeasure();
         
-        MinimumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumWidth, defaultValue: 1f), Invalidation.Measure);
-        MinimumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumHeight, defaultValue: 1f), Invalidation.Measure);
+        MinimumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumWidth.GetValue(), defaultValue: 1f), Invalidation.Measure);
+        MinimumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumHeight.GetValue(), defaultValue: 1f), Invalidation.Measure);
         
-        MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
-        MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
+        MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
+        MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
         
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
     }
@@ -67,7 +67,7 @@ public abstract class Visual
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerForeground()
     {
-        return Binding.Transform(TemplateOwner, o => o?.Foreground ?? Brushes.Black);
+        return Binding.Transform(TemplateOwner, o => o?.Foreground.GetValue() ?? Brushes.Black);
     }
     
     /// <summary>
@@ -76,7 +76,7 @@ public abstract class Visual
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerBackground()
     {
-        return Binding.Transform(TemplateOwner, o => o?.Background ?? Brushes.Transparent);
+        return Binding.Transform(TemplateOwner, o => o?.Background.GetValue() ?? Brushes.Transparent);
     }
     
     /// <summary>
@@ -452,8 +452,8 @@ public abstract class Visual
     
     #region LAYOUTING
     
-    private SizeF MinimumSize => new(MinimumWidth, MinimumHeight);
-    private SizeF MaximumSize => new(MaximumWidth, MaximumHeight);
+    private SizeF MinimumSize => new(MinimumWidth.GetValue(), MinimumHeight.GetValue());
+    private SizeF MaximumSize => new(MaximumWidth.GetValue(), MaximumHeight.GetValue());
     
     private Boolean isMeasureValid;
     private Boolean isArrangeValid;

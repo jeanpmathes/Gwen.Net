@@ -388,8 +388,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
         
         ApplyStyling();
         
-        ControlTemplate<TSelf> template = Template;
-        Visualization = template.Apply(Self);
+        Visualization = Template.GetValue().Apply(Self);
         
         AnchorVisualization();
         

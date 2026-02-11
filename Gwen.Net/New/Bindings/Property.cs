@@ -168,13 +168,6 @@ public sealed class Property<T> : Property, IValueSource<T>
         return cachedValue!;
     }
     
-    /// <summary>
-    /// Implicitly converts the property to its value by calling <see cref="GetValue"/>.
-    /// </summary>
-    /// <param name="property">The property to convert.</param>
-    /// <returns>The value of the property.</returns>
-    public static implicit operator T(Property<T> property) => property.GetValue();
-    
     #region LOCAL
     
     private void SetLocal(Binding<T> newLocalBinding)

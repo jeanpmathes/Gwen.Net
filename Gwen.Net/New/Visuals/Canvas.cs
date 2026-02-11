@@ -45,6 +45,6 @@ public class Canvas : Visual
     /// <inheritdoc/>
     protected override void OnRender(IRenderer renderer)
     {
-        renderer.DrawFilledRectangle(RenderBounds, Background);
+        renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
     }
 }
