@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Gwen.Net.New.Controls.Bases;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Resources;
@@ -11,7 +12,7 @@ namespace Gwen.Net.New.Controls;
 /// The root control for a GWEN user interface.
 /// </summary>
 /// <seealso cref="Visuals.Canvas"/>
-public sealed class Canvas : Control<Canvas>, IDisposable
+public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
 {
     private readonly IRenderer onlyRenderer;
     
@@ -48,15 +49,6 @@ public sealed class Canvas : Control<Canvas>, IDisposable
     {
         onlyRenderer = renderer;
     }
-
-    /// <summary>
-    /// Gets or sets the single child control.
-    /// </summary>
-    public Control? Child
-    {
-        get => Children.Count > 0 ? Children[0] : null;
-        set => SetChild(value);
-    } 
 
     /// <summary>
     /// Set the scale of the canvas.

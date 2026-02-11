@@ -203,6 +203,7 @@ public abstract class Control
         if (IsAttachedToRoot) return;
         IsAttachedToRoot = true;
 
+        InvalidateContext();
         OnAttach();
         AttachedToRoot?.Invoke(this, EventArgs.Empty);
 
@@ -230,6 +231,7 @@ public abstract class Control
         IsAttachedToRoot = IsRoot;
         if (IsAttachedToRoot) return;
 
+        InvalidateContext();
         OnDetach(isReparenting);
         DetachedFromRoot?.Invoke(this, EventArgs.Empty);
 
@@ -452,17 +454,17 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     {
         ClearStyling();
         
-        usedLocalStyle = Style.GetValue();
         usedOuterStyles = Context.GetStyling<TSelf>();
-
-        usedLocalStyle?.Apply(Self);
-
-        if (usedOuterStyles.Count <= 0) return;
-
-        foreach (IStyle<TSelf> style in usedOuterStyles)
+        if (usedOuterStyles.Count > 0)
         {
-            style.Apply(Self);
+            foreach (IStyle<TSelf> style in usedOuterStyles)
+            {
+                style.Apply(Self);
+            }
         }
+
+        usedLocalStyle = Style.GetValue();
+        usedLocalStyle?.Apply(Self);
     }
 
     private void ClearStyling()

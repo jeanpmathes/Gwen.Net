@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Styles;
-using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New;
 
@@ -16,14 +15,15 @@ public class Context
 {
     private readonly Context? parent;
 
-    private readonly TypeDictionary<Style>? styles;
+    private readonly Dictionary<Type, Style>? styles;
 
     /// <summary>
     /// Create an inheriting context with the given parent.
+    /// When creating a context for a control, using this is not necessary as the control will automatically parent its local context to the context of the parent element when attached.
     /// </summary>
     /// <param name="self">The overriding context, which is the local context of the element.</param>
     /// <param name="parent">The parent context to inherit values from.</param>
-    internal Context(Context self, Context parent)
+    public Context(Context self, Context parent)
     {
         this.parent = parent;
         
@@ -36,7 +36,7 @@ public class Context
     /// <param name="registry">The registry to create the context from.</param>
     internal Context(ResourceRegistry registry)
     {
-        styles = new TypeDictionary<Style>();
+        styles = new Dictionary<Type, Style>();
         
         foreach (Style style in registry.Styles)
         {
@@ -52,7 +52,7 @@ public class Context
     
     private IStyle<T>? GetStyleForType<T>(Type type) where T : Control
     {
-        if (styles?[type] is IStyle<T> style)
+        if (styles != null && styles.TryGetValue(type, out Style? potentialStyle) && potentialStyle is IStyle<T> style)
             return style;
         
         return parent?.GetStyleForType<T>(type);

@@ -118,7 +118,7 @@ public abstract class Renderer : IRenderer
     /// <inheritdoc/>
     public virtual Boolean IsClipEmpty()
     {
-        return Clip.Width <= 0 || Clip.Height <= 0;
+        return Clip.IsEmpty;
     }
     
     /// <inheritdoc/>
@@ -174,6 +174,8 @@ public abstract class Renderer : IRenderer
 
             if (rectangle.Height <= 0)
             {
+                rectangle = RectangleF.Empty;
+                
                 return;
             }
 
@@ -190,6 +192,8 @@ public abstract class Renderer : IRenderer
 
             if (rectangle.Height <= 0)
             {
+                rectangle = RectangleF.Empty;
+                
                 return;
             }
 
@@ -206,6 +210,8 @@ public abstract class Renderer : IRenderer
 
             if (rectangle.Width <= 0)
             {
+                rectangle = RectangleF.Empty;
+                
                 return;
             }
 
@@ -222,6 +228,8 @@ public abstract class Renderer : IRenderer
 
             if (rectangle.Width <= 0)
             {
+                rectangle = RectangleF.Empty;
+                
                 return;
             }
 

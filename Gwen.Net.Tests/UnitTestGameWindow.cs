@@ -20,6 +20,7 @@ public class UnitTestGameWindow : GameWindow
 {
     private const Int32 MaxFrameSampleSize = 10000;
 
+    private readonly ResourceRegistry registry;
     private readonly IGwenGui gui;
 
     private readonly CircularBuffer<Double> renderFrameTimes;
@@ -39,7 +40,7 @@ public class UnitTestGameWindow : GameWindow
     {
         UpdateFrequency = 30;
 
-        ResourceRegistry registry = new();
+        registry = new ResourceRegistry();
 
         switch (theme)
         {
@@ -61,6 +62,7 @@ public class UnitTestGameWindow : GameWindow
     protected override void Dispose(Boolean disposing)
     {
         gui.Dispose();
+        registry.Dispose();
 
         base.Dispose(disposing);
     }
