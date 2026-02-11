@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using Collections.Generic;
+using Gwen.Net.New.Controls;
+using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Themes;
 using Gwen.Net.OpenTk.New;
@@ -26,7 +28,7 @@ public class UnitTestGameWindow : GameWindow
     private readonly CircularBuffer<Double> renderFrameTimes;
     private readonly CircularBuffer<Double> updateFrameTimes;
 
-    private UnitTestHarnessControls? unitTestControls;
+    private UnitTestHarness? harness;
     
     public enum Theme
     {
@@ -73,8 +75,13 @@ public class UnitTestGameWindow : GameWindow
 
         gui.Load();
 
-        unitTestControls = new UnitTestHarnessControls();
-        gui.Root?.Child = unitTestControls;
+        harness = new UnitTestHarness();
+
+        gui.Root?.Child = new ContentControl<UnitTestHarness>
+        {
+            Content = {Value = harness},
+            ContentTemplate = {Value = ContentTemplate.Create<UnitTestHarness>(UnitTestHarnessView.Create)}
+        };
     }
 
     protected override void OnResize(ResizeEventArgs e)
@@ -92,11 +99,11 @@ public class UnitTestGameWindow : GameWindow
 
             Int32 frames = updateFrameTimes.Count();
             updateFrameTimes.Clear();
-            unitTestControls?.UpdateFps = frames;
+            harness?.UpdateFps.SetValue(frames);
         }
         else
         {
-            unitTestControls?.UpdateFps = UpdateFrequency;
+            harness?.UpdateFps.SetValue(UpdateFrequency);
         }
     }
 
@@ -114,11 +121,11 @@ public class UnitTestGameWindow : GameWindow
 
             Int32 frames = renderFrameTimes.Count();
             renderFrameTimes.Clear();
-            unitTestControls?.RenderFps = frames;
+            harness?.RenderFps.SetValue(frames);
         }
         else
         {
-            unitTestControls?.RenderFps = UpdateFrequency;
+            harness?.RenderFps.SetValue(UpdateFrequency);
         }
     }
 
