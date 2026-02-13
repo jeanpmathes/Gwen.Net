@@ -34,4 +34,9 @@ public static class Brushes
     /// Gets a brush that is solid blue.
     /// </summary>
     public static Brush Blue { get; } = new SolidColorBrush(System.Drawing.Color.Blue);
+
+    /// <summary>
+    /// Get a brush to draw debug bounds with.
+    /// </summary>
+    public static Brush DebugBounds => Red;
 }

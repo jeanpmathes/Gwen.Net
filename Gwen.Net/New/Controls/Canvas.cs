@@ -77,6 +77,15 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
         
         UpdateSize();
     }
+    
+    /// <summary>
+    /// Whether to draw debug outlines for controls.
+    /// </summary>
+    /// <param name="enabled">True to draw debug outlines, false to disable them.</param>
+    public void SetDebugOutlines(Boolean enabled)
+    {
+        Visualization?.DrawDebugOutlines = enabled;
+    }
 
     private void UpdateSize()
     {

@@ -262,6 +262,8 @@ public abstract class Visual
     /// <param name="child">The child visual that was added.</param>
     private void HandleChildAdded(Visual child)
     {
+        child.UpdateDrawDebugOutlinesEffectiveValue();
+        
         InvalidateMeasure();
         OnChildAdded(child);
     }
@@ -272,6 +274,8 @@ public abstract class Visual
     /// <param name="child">The child visual that was removed.</param>
     private void HandleChildRemoved(Visual child)
     {
+        child.UpdateDrawDebugOutlinesEffectiveValue();
+        
         InvalidateMeasure();
         OnChildRemoved(child);
     }
@@ -609,7 +613,8 @@ public abstract class Visual
         
         renderer.PopOffset();
 
-        // todo: debug outlines, maybe through context
+        if (drawDebugOutlinesEffective)
+            renderer.DrawLinedRectangle(Bounds, Brushes.DebugBounds);
 
         void DoRender()
         {
@@ -667,4 +672,45 @@ public abstract class Visual
     }
 
     #endregion RENDERING
+    
+    #region DEBUG
+
+    private Boolean drawDebugOutlinesLocal;
+    private Boolean drawDebugOutlinesEffective;
+    
+    /// <summary>
+    /// Whether this visual should render debug outlines.
+    /// The value is inherited downwards the visual tree, i.e. if this is set to true, all descendants of this visual will also render debug outlines.
+    /// </summary>
+    internal Boolean DrawDebugOutlines
+    {
+        get => drawDebugOutlinesEffective;
+        set
+        {
+            if (drawDebugOutlinesLocal == value) return;
+
+            drawDebugOutlinesLocal = value;
+            UpdateDrawDebugOutlinesEffectiveValue();
+        }
+    }
+
+    /// <summary>
+    /// Update the effective debug-outline flag and propagate to children if needed.
+    /// </summary>
+    private void UpdateDrawDebugOutlinesEffectiveValue()
+    {
+        Boolean newValue = drawDebugOutlinesLocal || Parent?.drawDebugOutlinesEffective == true;
+        if (drawDebugOutlinesEffective == newValue) return;
+
+        drawDebugOutlinesEffective = newValue;
+
+        InvalidateRender();
+
+        foreach (Visual child in children)
+        {
+            child.UpdateDrawDebugOutlinesEffectiveValue();
+        }
+    }
+    
+    #endregion DEBUG
 }
