@@ -365,8 +365,22 @@ public abstract class Visual
 
     #endregion HIERARCHY
     
-    #region POSITIONING
+    #region LAYOUTING
     
+    private SizeF MinimumSize => new(MinimumWidth.GetValue(), MinimumHeight.GetValue());
+    private SizeF MaximumSize => new(MaximumWidth.GetValue(), MaximumHeight.GetValue());
+    
+    private Boolean isMeasureValid;
+    private Boolean isArrangeValid;
+
+    /// <summary>
+    /// The size this visual measured itself to be during the last measure pass.
+    /// This is effectively the minimum size this visual requires to render itself properly.
+    /// </summary>
+    public SizeF MeasuredSize { get; private set; } = SizeF.Empty;
+    
+    private SizeF lastAvailableSize = SizeF.Empty;
+
     /// <summary>
     /// The bounds of this visual.
     /// </summary>
@@ -376,6 +390,127 @@ public abstract class Visual
     /// The bounds with negative offset applied, zeroing them to (0,0).
     /// </summary>
     protected RectangleF RenderBounds => new(PointF.Empty, Bounds.Size);
+    
+    private RectangleF lastFinalRectangle = RectangleF.Empty;
+    
+    /// <summary>
+    /// Measure the desired size of this visual given the available size.
+    /// </summary>
+    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
+    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
+    public SizeF Measure(SizeF availableSize)
+    {
+        if (isMeasureValid && lastAvailableSize == availableSize)
+            return MeasuredSize;
+        
+        lastAvailableSize = availableSize;
+        
+        availableSize = Sizes.Clamp(availableSize, MinimumSize, MaximumSize);
+        
+        MeasuredSize = OnMeasure(availableSize);
+        
+        MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
+        
+        isMeasureValid = true;
+        isArrangeValid = false;
+
+        return MeasuredSize;
+    }
+    
+    /// <summary>
+    /// Override to define custom measuring logic. See <see cref="Measure(SizeF)"/>.
+    /// If you override this, you will likely need to override <see cref="OnArrange(RectangleF)"/> as well and vice versa.
+    /// </summary>
+    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
+    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
+    public virtual SizeF OnMeasure(SizeF availableSize)
+    {
+        if (children.Count == 0)
+            return SizeF.Empty;
+        
+        var desiredSize = SizeF.Empty;
+        
+        foreach (Visual child in children)
+        {
+            SizeF childDesiredSize = child.Measure(availableSize);
+            
+            desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
+            desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
+        }
+        
+        return desiredSize;
+    }
+
+    /// <summary>
+    /// Arrange this visual within the given final rectangle.
+    /// This will set the <see cref="Bounds"/> of this visual.
+    /// </summary>
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
+    public void Arrange(RectangleF finalRectangle)
+    {
+        if (isArrangeValid && lastFinalRectangle == finalRectangle)
+            return;
+        
+        lastFinalRectangle = finalRectangle;
+        
+        if (!isMeasureValid)
+            Measure(finalRectangle.Size);
+        
+        RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
+        
+        RectangleF arrangedRectangle = OnArrange(allowedRectangle);
+        
+        arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
+        
+        SetBounds(arrangedRectangle);
+        
+        // SetBounds might invalidate something, so we set everything to valid again.
+        
+        isArrangeValid = true;
+        isMeasureValid = true;
+    }
+    
+    /// <summary>
+    /// Override to define custom arranging logic. See <see cref="Arrange(RectangleF)"/>.
+    /// If you have overriden <see cref="OnMeasure(SizeF)"/>, you will likely need to override this as well and vice versa.
+    /// </summary>
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
+    /// <returns>The actual rectangle used by this visual after arranging.</returns>
+    public virtual RectangleF OnArrange(RectangleF finalRectangle)
+    {
+        if (children.Count == 0)
+            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize);
+        
+        foreach (Visual child in children)
+            child.Arrange(Rectangles.ConstraintSize(finalRectangle, child.MeasuredSize));
+
+        return finalRectangle;
+    }
+
+    /// <summary>
+    /// Invalidate the measurement of this visual, causing a re-measure and re-arrange.
+    /// </summary>
+    public void InvalidateMeasure()
+    {
+        if (!isMeasureValid) return;
+        
+        isMeasureValid = false;
+        isArrangeValid = false;
+        
+        Parent?.InvalidateMeasure();
+    }
+
+    /// <summary>
+    /// Invalidate the arrangement of this visual, causing a re-arrange.
+    /// </summary>
+    public void InvalidateArrange()
+    {
+        if (!isArrangeValid) return;
+        
+        isArrangeValid = false;
+        
+        Parent?.InvalidateArrange();
+    }
     
     /// <summary>
     ///     Location of the visual. Valid after arranging.
@@ -446,140 +581,6 @@ public abstract class Visual
     public virtual void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
     {
         
-    }
-    
-    #endregion POSITIONING
-    
-    #region LAYOUTING
-    
-    private SizeF MinimumSize => new(MinimumWidth.GetValue(), MinimumHeight.GetValue());
-    private SizeF MaximumSize => new(MaximumWidth.GetValue(), MaximumHeight.GetValue());
-    
-    private Boolean isMeasureValid;
-    private Boolean isArrangeValid;
-
-    /// <summary>
-    /// The size this visual measured itself to be during the last measure pass.
-    /// This is effectively the minimum size this visual requires to render itself properly.
-    /// </summary>
-    public SizeF MeasuredSize { get; private set; } = SizeF.Empty;
-    
-    private SizeF lastAvailableSize = SizeF.Empty;
-
-    /// <summary>
-    /// Measure the desired size of this visual given the available size.
-    /// </summary>
-    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
-    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
-    public SizeF Measure(SizeF availableSize)
-    {
-        if (isMeasureValid && lastAvailableSize == availableSize)
-            return MeasuredSize;
-        
-        lastAvailableSize = availableSize;
-        
-        availableSize = Sizes.Clamp(availableSize, MinimumSize, MaximumSize);
-        
-        MeasuredSize = OnMeasure(availableSize);
-        
-        MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
-        
-        isMeasureValid = true;
-        isArrangeValid = false;
-
-        return MeasuredSize;
-    }
-    
-    /// <summary>
-    /// Override to define custom measuring logic. See <see cref="Measure(SizeF)"/>.
-    /// If you override this, you will likely need to override <see cref="OnArrange(RectangleF)"/> as well and vice versa.
-    /// </summary>
-    /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
-    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
-    public virtual SizeF OnMeasure(SizeF availableSize)
-    {
-        if (children.Count == 0)
-            return SizeF.Empty;
-        
-        var desiredSize = SizeF.Empty;
-        
-        foreach (Visual child in children)
-        {
-            SizeF childDesiredSize = child.Measure(availableSize);
-            
-            desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
-            desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
-        }
-        
-        return desiredSize;
-    }
-
-    /// <summary>
-    /// Arrange this visual within the given final rectangle.
-    /// This will set the <see cref="Bounds"/> of this visual.
-    /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
-    public void Arrange(RectangleF finalRectangle)
-    {
-        if (isArrangeValid) return;
-        
-        if (!isMeasureValid)
-            Measure(finalRectangle.Size);
-        
-        RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
-        
-        RectangleF arrangedRectangle = OnArrange(allowedRectangle);
-        
-        arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
-        
-        SetBounds(arrangedRectangle);
-        
-        // SetBounds might invalidate something, so we set everything to valid again.
-        
-        isArrangeValid = true;
-        isMeasureValid = true;
-    }
-    
-    /// <summary>
-    /// Override to define custom arranging logic. See <see cref="Arrange(RectangleF)"/>.
-    /// If you have overriden <see cref="OnMeasure(SizeF)"/>, you will likely need to override this as well and vice versa.
-    /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
-    /// <returns>The actual rectangle used by this visual after arranging.</returns>
-    public virtual RectangleF OnArrange(RectangleF finalRectangle)
-    {
-        if (children.Count == 0)
-            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize);
-        
-        foreach (Visual child in children)
-            child.Arrange(Rectangles.ConstraintSize(finalRectangle, child.MeasuredSize));
-
-        return finalRectangle;
-    }
-
-    /// <summary>
-    /// Invalidate the measurement of this visual, causing a re-measure and re-arrange.
-    /// </summary>
-    public void InvalidateMeasure()
-    {
-        if (!isMeasureValid) return;
-        
-        isMeasureValid = false;
-        isArrangeValid = false;
-        
-        Parent?.InvalidateMeasure();
-    }
-
-    /// <summary>
-    /// Invalidate the arrangement of this visual, causing a re-arrange.
-    /// </summary>
-    public void InvalidateArrange()
-    {
-        if (!isArrangeValid) return;
-        
-        isArrangeValid = false;
-        
-        Parent?.InvalidateArrange();
     }
     
     #endregion LAYOUTING

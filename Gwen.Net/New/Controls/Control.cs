@@ -91,7 +91,7 @@ public abstract class Control
     /// <summary>
     /// The parent of this control.
     /// </summary>
-    public Control? Parent { get; private set; }
+    public Control? Parent { get; private set; } // todo: make read only slot
 
     /// <summary>
     /// The children of this control.

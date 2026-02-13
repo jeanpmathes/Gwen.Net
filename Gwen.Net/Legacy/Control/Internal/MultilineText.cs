@@ -68,7 +68,7 @@ namespace Gwen.Net.Legacy.Control.Internal
         }
 
         /// <summary>
-        ///     Gets and sets the text to display to the user. Each line is seperated by
+        ///     Gets and sets the text to display to the user. Each line is separated by
         ///     an Environment.NetLine character.
         /// </summary>
         public String Text

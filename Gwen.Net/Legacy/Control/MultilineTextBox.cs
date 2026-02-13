@@ -146,7 +146,7 @@ namespace Gwen.Net.Legacy.Control
         private Int32 LineHeight => text.LineHeight;
 
         /// <summary>
-        ///     Gets and sets the text to display to the user. Each line is seperated by
+        ///     Gets and sets the text to display to the user. Each line is separated by
         ///     an Environment.NetLine character.
         /// </summary>
         public String Text
