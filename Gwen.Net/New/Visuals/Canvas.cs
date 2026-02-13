@@ -41,10 +41,4 @@ public class Canvas : Visual
         
         renderer.End();
     }
-    
-    /// <inheritdoc/>
-    protected override void OnRender(IRenderer renderer)
-    {
-        renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
-    }
 }

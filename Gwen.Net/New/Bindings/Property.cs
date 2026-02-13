@@ -19,7 +19,7 @@ public abstract class Property : IValueSource
     {
         return new Property<T>(owner, defaultBinding);
     }
-    
+
     /// <summary>
     /// Create a new property with a constant default value.
     /// </summary>
@@ -37,12 +37,12 @@ public abstract class Property : IValueSource
     /// </summary>
     /// <param name="value">The value or binding, must fit the type of the property.</param>
     internal abstract void Style(Object value);
-    
+
     /// <summary>
     /// Clear the styling of the property.
     /// </summary>
     internal abstract void ClearStyle();
-    
+
     /// <summary>
     /// Notifies subscribers that the value of the property has changed.
     /// </summary>
@@ -68,20 +68,20 @@ public sealed class Property<T> : Property, IValueSource<T>
 
     private Binding<T> targetBinding;
     private Boolean isActive;
-    
+
     private T? cachedValue;
     private Boolean isCacheValid;
-    
+
     internal Property(Control owner, Binding<T> defaultBinding)
     {
         this.defaultBinding = defaultBinding;
-        
+
         targetBinding = defaultBinding;
-        
+
         owner.AttachedToRoot += (_, _) => Activate();
         owner.DetachedFromRoot += (_, _) => Deactivate();
     }
-    
+
     /// <summary>
     /// Activates the property, causing it to subscribe to changes in its active binding.
     /// </summary>
@@ -89,11 +89,11 @@ public sealed class Property<T> : Property, IValueSource<T>
     {
         if (isActive) return;
         isActive = true;
-        
+
         AttachTargetBinding();
         UpdateCachedValue(notify: true);
     }
-    
+
     /// <summary>
     /// Deactivates the property, causing it to unsubscribe from changes in its active binding.
     /// </summary>
@@ -101,14 +101,14 @@ public sealed class Property<T> : Property, IValueSource<T>
     {
         if (!isActive) return;
         isActive = false;
-        
+
         DetachTargetBinding();
     }
 
     private void RecomputeTargetBinding()
     {
         Binding<T> binding = localBinding ?? styleBinding ?? defaultBinding;
-        
+
         if (ReferenceEquals(binding, targetBinding))
             return;
 
@@ -116,7 +116,7 @@ public sealed class Property<T> : Property, IValueSource<T>
         {
             DetachTargetBinding();
         }
-        
+
         targetBinding = binding;
         isCacheValid = false;
 
@@ -126,56 +126,56 @@ public sealed class Property<T> : Property, IValueSource<T>
             UpdateCachedValue(notify: true);
         }
     }
-    
+
     private void AttachTargetBinding()
     {
         targetBinding.ValueChanged += OnTargetBindingValueChanged;
     }
-    
+
     private void DetachTargetBinding()
     {
         targetBinding.ValueChanged -= OnTargetBindingValueChanged;
     }
-    
+
     private void OnTargetBindingValueChanged(Object? sender, EventArgs e)
     {
         UpdateCachedValue(notify: true);
     }
-    
+
     private void UpdateCachedValue(Boolean notify)
     {
         T value = targetBinding.GetValue();
-        
+
         if (isCacheValid && Equals(cachedValue, value))
             return;
-        
+
         cachedValue = value;
         isCacheValid = true;
-        
+
         if (notify)
             NotifyValueChanged();
     }
-    
+
     /// <inheritdoc/>
     public T GetValue()
     {
         if (!isActive)
             return targetBinding.GetValue();
-        
+
         if (!isCacheValid)
             UpdateCachedValue(notify: false);
-        
+
         return cachedValue!;
     }
-    
+
     #region LOCAL
-    
+
     private void SetLocal(Binding<T> newLocalBinding)
     {
         localBinding = newLocalBinding;
         RecomputeTargetBinding();
     }
-    
+
     /// <summary>
     /// Binds the property to a constant value locally.
     /// </summary>
@@ -191,7 +191,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     {
         set => SetLocal(value);
     }
-    
+
     #endregion LOCAL
 
     #region STYLE
@@ -201,7 +201,7 @@ public sealed class Property<T> : Property, IValueSource<T>
         styleBinding = newStyleBinding;
         RecomputeTargetBinding();
     }
-    
+
     /// <summary>
     /// Style the property with a constant value.
     /// </summary>
@@ -210,7 +210,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     {
         SetStyle(Bindings.Binding.Constant(value));
     }
-    
+
     /// <summary>
     /// Style the property with a binding.
     /// </summary>
@@ -244,4 +244,10 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     #endregion STYLE
+
+    /// <inheritdoc/>
+    public override String? ToString()
+    {
+        return $"{{{GetValue()?.ToString()}}}";
+    }
 }

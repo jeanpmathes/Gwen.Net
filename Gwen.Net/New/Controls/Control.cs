@@ -5,6 +5,7 @@ using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Styles;
+using Gwen.Net.New.Utilities;
 using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.New.Controls;
@@ -27,6 +28,9 @@ public abstract class Control
         
         MaximumWidth = Property.Create(this, defaultValue: Single.PositiveInfinity);
         MaximumHeight = Property.Create(this, defaultValue: Single.PositiveInfinity);
+        
+        Margin = Property.Create(this, ThicknessF.Zero);
+        Padding = Property.Create(this, ThicknessF.Zero);
     }
     
     #region PROPERTIES
@@ -60,6 +64,18 @@ public abstract class Control
     /// The maximum height of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MaximumHeight { get; }
+    
+    /// <summary>
+    /// The margin of this control, which is space around the control that the layout system should try to respect.
+    /// </summary>
+    public Property<ThicknessF> Margin { get; }
+    
+    /// <summary>
+    /// The padding of this control, which is space inside the control that the layout system should try to respect.
+    /// If a control defines custom layout logic, it decides if and how to respect the padding.
+    /// As such, padding is less strictly enforced than margin.
+    /// </summary>
+    public Property<ThicknessF> Padding { get; }
     
     #endregion PROPERTIES
     

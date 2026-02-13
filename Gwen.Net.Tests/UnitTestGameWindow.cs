@@ -83,7 +83,7 @@ public class UnitTestGameWindow : GameWindow
             ContentTemplate = {Value = ContentTemplate.Create<UnitTestHarness>(UnitTestHarnessView.Create)}
         };
         
-        gui.Root?.SetDebugOutlines(true);
+        gui.Root?.SetDebugOutlines(false);
     }
 
     protected override void OnResize(ResizeEventArgs e)

@@ -1,4 +1,4 @@
-﻿namespace Gwen.Net.New.Graphics;
+namespace Gwen.Net.New.Graphics;
 
 /// <summary>
 /// A utility to access useful predefined brushes.
@@ -39,4 +39,14 @@ public static class Brushes
     /// Get a brush to draw debug bounds with.
     /// </summary>
     public static Brush DebugBounds => Red;
+
+    /// <summary>
+    /// Get a brush to draw debug margin outlines with.
+    /// </summary>
+    public static Brush DebugMargin => Blue;
+
+    /// <summary>
+    /// Get a brush to draw debug padding outlines with.
+    /// </summary>
+    public static Brush DebugPadding => Green;
 }

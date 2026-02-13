@@ -218,4 +218,10 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
     }
     
     #endregion LOCAL
+
+    /// <inheritdoc/>
+    public override String? ToString()
+    {
+        return $"{{{GetValue()?.ToString()}}}";
+    }
 }

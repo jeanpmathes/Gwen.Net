@@ -1,4 +1,3 @@
-﻿
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,6 +30,9 @@ public abstract class Visual
         MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
         MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
         
+        Margin = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Margin.GetValue()), Invalidation.Measure);
+        Padding = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Padding.GetValue()), Invalidation.Measure);
+        
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
     }
     
@@ -55,6 +57,18 @@ public abstract class Visual
     /// The maximum height of this visual. Might not be respected by all layout containers.
     /// </summary>
     public VisualProperty<Single> MaximumHeight { get; }
+    
+    /// <summary>
+    /// The margin of this visual, which is space around the visual that the layout system should try to respect.
+    /// </summary>
+    public VisualProperty<ThicknessF> Margin { get; }
+    
+    /// <summary>
+    /// The padding of this visual, which is space inside the visual that the layout system should try to respect.
+    /// If a visual defines custom layout logic, it decides if and how to respect the padding.
+    /// As such, padding is less strictly enforced than margin.
+    /// </summary>
+    public VisualProperty<ThicknessF> Padding { get; }
     
     /// <summary>
     /// The brush used to draw the background of this visual.
@@ -378,8 +392,9 @@ public abstract class Visual
     private Boolean isArrangeValid;
 
     /// <summary>
-    /// The size this visual measured itself to be during the last measure pass.
-    /// This is effectively the minimum size this visual requires to render itself properly.
+    /// The size this visual measured itself to be during the last measure pass, including its margins.
+    /// This represents the total space this visual requires for layout, i.e. the minimum area that
+    /// must be reserved by its parent so it can render itself properly.
     /// </summary>
     public SizeF MeasuredSize { get; private set; } = SizeF.Empty;
     
@@ -408,12 +423,20 @@ public abstract class Visual
             return MeasuredSize;
         
         lastAvailableSize = availableSize;
+
+        availableSize -= Margin.GetValue();
         
-        availableSize = Sizes.Clamp(availableSize, MinimumSize, MaximumSize);
+        if (availableSize.IsEmpty)
+        {
+            MeasuredSize = SizeF.Empty + Margin.GetValue();
+        }
+        else
+        {
+            MeasuredSize = OnMeasure(availableSize);
         
-        MeasuredSize = OnMeasure(availableSize);
-        
-        MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
+            MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
+            MeasuredSize += Margin.GetValue();
+        }
         
         isMeasureValid = true;
         isArrangeValid = false;
@@ -433,7 +456,12 @@ public abstract class Visual
             return SizeF.Empty;
         
         var desiredSize = SizeF.Empty;
-        
+
+        availableSize -= Padding.GetValue();
+
+        if (availableSize.IsEmpty)
+            return SizeF.Empty + Padding.GetValue();
+
         foreach (Visual child in children)
         {
             SizeF childDesiredSize = child.Measure(availableSize);
@@ -441,6 +469,8 @@ public abstract class Visual
             desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
             desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
         }
+        
+        desiredSize += Padding.GetValue();
         
         return desiredSize;
     }
@@ -460,16 +490,25 @@ public abstract class Visual
         if (!isMeasureValid)
             Measure(finalRectangle.Size);
         
-        RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
-        
-        RectangleF arrangedRectangle = OnArrange(allowedRectangle);
-        
-        arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
-        
-        SetBounds(arrangedRectangle);
-        
+        finalRectangle -= Margin.GetValue();
+
+        if (finalRectangle.IsEmpty)
+        {
+            SetBounds(finalRectangle);
+        }
+        else
+        {
+            RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
+
+            RectangleF arrangedRectangle = OnArrange(allowedRectangle);
+
+            arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
+
+            SetBounds(arrangedRectangle);
+        }
+
         // SetBounds might invalidate something, so we set everything to valid again.
-        
+
         isArrangeValid = true;
         isMeasureValid = true;
     }
@@ -483,10 +522,15 @@ public abstract class Visual
     public virtual RectangleF OnArrange(RectangleF finalRectangle)
     {
         if (children.Count == 0)
-            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize);
-        
+            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize - Margin.GetValue());
+
+        RectangleF contentArea = new RectangleF(PointF.Empty, finalRectangle.Size) - Padding.GetValue();
+
+        if (contentArea.IsEmpty)
+            return finalRectangle;
+
         foreach (Visual child in children)
-            child.Arrange(Rectangles.ConstraintSize(finalRectangle, child.MeasuredSize));
+            child.Arrange(Rectangles.ConstraintSize(contentArea, child.MeasuredSize));
 
         return finalRectangle;
     }
@@ -517,36 +561,6 @@ public abstract class Visual
     }
     
     /// <summary>
-    ///     Location of the visual. Valid after arranging.
-    /// </summary>
-    public Single ActualLeft => Bounds.X;
-
-    /// <summary>
-    ///     Location of the visual. Valid after arranging.
-    /// </summary>
-    public Single ActualTop => Bounds.Y;
-    
-    /// <summary>
-    ///     The actual location of the visual. Valid after arranging.
-    /// </summary>
-    public PointF ActualLocation => Bounds.Location;
-
-    /// <summary>
-    ///     The actual width of the visual. Valid after arranging.
-    /// </summary>
-    public Single ActualWidth => Bounds.Width;
-
-    /// <summary>
-    ///     The actual height of the visual. Valid after arranging.
-    /// </summary>
-    public Single ActualHeight => Bounds.Height;
-    
-    /// <summary>
-    ///     The actual size of the visual. Valid after arranging.
-    /// </summary>
-    public SizeF ActualSize => Bounds.Size;
-    
-    /// <summary>
     ///     Sets the size of the visual.
     /// </summary>
     /// <param name="size">New size.</param>
@@ -558,7 +572,7 @@ public abstract class Visual
     }
 
     /// <summary>
-    ///     Sets the visual bounds.
+    ///     Sets the visual bounds, relative to the parent visual.
     /// </summary>
     /// <param name="newBounds">New bounds.</param>
     /// <returns>True if bounds changed.</returns>
@@ -591,13 +605,16 @@ public abstract class Visual
 
     #region RENDERING
 
+    private Boolean isRenderValid;
+    
     /// <summary>
     ///     Determines whether the visual should be clipped to its bounds while rendering.
     /// </summary>
-    protected virtual Boolean ShouldClip => true;
+    protected virtual Boolean ShouldClip => true; // todo: make true
     
     /// <summary>
     /// Render this visual using the specified renderer.
+    /// For custom rendering, generally override <see cref="OnRender(IRenderer)"/> instead of this method, as this method handles important setup and teardown logic.
     /// </summary>
     /// <param name="renderer">The renderer to use.</param>
     public virtual void Render(IRenderer renderer)
@@ -612,15 +629,28 @@ public abstract class Visual
             renderer.PopClip();
         
         renderer.PopOffset();
+        
+        isRenderValid = true;
 
         if (drawDebugOutlinesEffective)
+        {
+            ThicknessF margin = Margin.GetValue();
+            ThicknessF padding = Padding.GetValue();
+
+            if (margin != ThicknessF.Zero)
+                renderer.DrawLinedRectangle(Bounds + margin, Brushes.DebugMargin);
+
             renderer.DrawLinedRectangle(Bounds, Brushes.DebugBounds);
+
+            if (padding != ThicknessF.Zero)
+                renderer.DrawLinedRectangle(Bounds - padding, Brushes.DebugPadding);
+        }
 
         void DoRender()
         {
             if (ShouldClip)
             {
-                renderer.PushClip(Bounds);
+                renderer.PushClip(RenderBounds);
             
                 if (renderer.IsClipEmpty()) return;
                 
@@ -660,7 +690,7 @@ public abstract class Visual
     /// <param name="renderer">The renderer to use.</param>
     protected virtual void OnRender(IRenderer renderer)
     {
-        
+        renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
     }
     
     /// <summary>
@@ -668,6 +698,8 @@ public abstract class Visual
     /// </summary>
     public void InvalidateRender()
     {
+        if (!isRenderValid) return;
+        
         Parent?.InvalidateRender();
     }
 
