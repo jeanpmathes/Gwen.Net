@@ -432,6 +432,8 @@ public abstract class Visual
         }
         else
         {
+            availableSize = Sizes.Clamp(availableSize, SizeF.Empty, MaximumSize);
+            
             MeasuredSize = OnMeasure(availableSize);
         
             MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
