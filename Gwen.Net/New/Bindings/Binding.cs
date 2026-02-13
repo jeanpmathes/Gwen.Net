@@ -29,6 +29,17 @@ public static class Binding
     {
         return new Binding<T>(getter, setter: null, []);
     }
+
+    /// <summary>
+    /// Bind directly to a value source.
+    /// </summary>
+    /// <param name="source">The value source.</param>
+    /// <typeparam name="T">The type of value stored in the binding.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<T> Direct<T>(IValueSource<T> source)
+    {
+        return new Binding<T>(source.GetValue, setter: null, [source]);
+    }
     
     /// <summary>
     /// Transforms a value source into another value source using the provided transformer function.

@@ -610,7 +610,7 @@ public abstract class Visual
     /// <summary>
     ///     Determines whether the visual should be clipped to its bounds while rendering.
     /// </summary>
-    protected virtual Boolean ShouldClip => true; // todo: make true
+    protected virtual Boolean ShouldClip => true;
     
     /// <summary>
     /// Render this visual using the specified renderer.

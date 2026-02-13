@@ -16,6 +16,7 @@ public static class UnitTestHarnessView
 
             Child = new Border
             {
+                BorderThickness = { Value = new ThicknessF(3)},
                 MinimumWidth = { Value = 500f },
                 MinimumHeight = { Value = 250f },
             }
