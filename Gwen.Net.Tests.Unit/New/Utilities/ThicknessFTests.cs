@@ -59,7 +59,7 @@ public class ThicknessFTests
 
         Assert.Equal(new SizeF(width: 96f, height: 44f), result);
     }
-    
+
     [Fact]
     public void RectanglePlusThickness_ExpandsRectangleOutward()
     {
@@ -87,7 +87,7 @@ public class ThicknessFTests
         Assert.Equal(expected: 96f, result.Width);
         Assert.Equal(expected: 44f, result.Height);
     }
-    
+
     [Fact]
     public void Equals_ReturnsTrueForIdenticalThicknesses()
     {
@@ -106,5 +106,25 @@ public class ThicknessFTests
         Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 0f, right: 3f, bottom: 4f)));
         Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 2f, right: 0f, bottom: 4f)));
         Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 0f)));
+    }
+
+    [Fact]
+    public void Equals_AlignsWithEqualityOperator()
+    {
+        var a = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        var b = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        var c = new ThicknessF(left: 0f, top: 0f, right: 0f, bottom: 0f);
+
+        Assert.True(a == b);
+        Assert.False(a == c);
+    }
+
+    [Fact]
+    public void GetHashCode_ReturnsSameValueForEqualThicknesses()
+    {
+        var a = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        var b = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+
+        Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }
 }

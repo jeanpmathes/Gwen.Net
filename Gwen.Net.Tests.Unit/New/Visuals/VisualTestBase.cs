@@ -40,6 +40,9 @@ public abstract class VisualTestBase<TVisual>(Func<TVisual> factory) where TVisu
         canvas.SetScale(2.39f);
         canvas.Render();
         
+        canvas.SetDebugOutlines(true);
+        canvas.Render();
+        
         Assert.True(isCreated);
     }
     

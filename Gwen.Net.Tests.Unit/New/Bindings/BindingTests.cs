@@ -13,6 +13,20 @@ public class BindingTests
     }
 
     [Fact]
+    public void Transform_WithSingleSource_EqualDependencyValue_DoesNotRaiseValueChanged()
+    {
+        var source = new Slot<Int32>(3);
+        Binding<Int32> binding = Binding.Transform(source, value => value * 2);
+        var events = 0;
+        binding.ValueChanged += (_, _) => events++;
+
+        source.SetValue(3);
+
+        Assert.Equal(expected: 6, binding.GetValue());
+        Assert.Equal(expected: 0, events);
+    }
+    
+    [Fact]
     public void Transform_WithSingleSource_ReactsToDependencyChanges()
     {
         var source = new Slot<Int32>(3);
