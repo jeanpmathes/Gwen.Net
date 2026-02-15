@@ -20,7 +20,7 @@ public class ChildPresenter : Visual
         templateOwner.ChildAdded += OnTemplateOwnerChildAdded;
         templateOwner.ChildRemoved += OnTemplateOwnerChildRemoved;
         
-        if (templateOwner.Children.Count == 0) return;
+        if (templateOwner.Children.Count.GetValue() == 0) return;
         
         Control child = templateOwner.Children[0];
         UpdateVisualization(child);
@@ -39,7 +39,7 @@ public class ChildPresenter : Visual
     private void OnTemplateOwnerChildAdded(Object? sender, EventArgs e)
     {
         if (sender is not Control templateOwner) return;
-        if (templateOwner.Children.Count == 0) return;
+        if (templateOwner.Children.Count.GetValue() == 0) return;
         
         Control child = templateOwner.Children[0];
         UpdateVisualization(child);
@@ -49,7 +49,7 @@ public class ChildPresenter : Visual
     {
         if (sender is not Control templateOwner) return;
 
-        if (templateOwner.Children.Count > 0)
+        if (templateOwner.Children.Count.GetValue() > 0)
         {
             Control child = templateOwner.Children[0];
             UpdateVisualization(child);

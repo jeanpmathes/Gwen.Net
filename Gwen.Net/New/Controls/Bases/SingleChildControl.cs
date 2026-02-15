@@ -11,7 +11,7 @@ public abstract class SingleChildControl<TControl> : Control<TControl> where TCo
     /// </summary>
     public Control? Child
     {
-        get => Children.Count > 0 ? Children[0] : null;
+        get => Children.Count.GetValue() > 0 ? Children[0] : null;
         set => SetChild(value);
-    } 
+    }
 }

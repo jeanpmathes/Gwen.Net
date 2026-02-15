@@ -115,7 +115,7 @@ public abstract class Control
         Attach();
     }
 
-    private readonly List<Control> children = [];
+    private readonly ListSlot<Control> children = [];
     
     /// <summary>
     /// The parent of this control.
@@ -125,7 +125,7 @@ public abstract class Control
     /// <summary>
     /// The children of this control.
     /// </summary>
-    public IReadOnlyList<Control> Children => children;
+    public ReadOnlyListSlot<Control> Children => children;
 
     /// <summary>
     /// Set the child of this control.
@@ -137,11 +137,11 @@ public abstract class Control
     /// </param>
     protected void SetChild(Control? child)
     {
-        if (child?.Parent == this && children.Count == 1) return;
+        if (child?.Parent == this && children.Count.GetValue() == 1) return;
 
         child?.Parent?.RemoveChild(child, isReparenting: true);
 
-        if (children.Count > 0)
+        if (children.Count.GetValue() > 0)
         {
             List<Control> oldChildren = new(children);
             children.Clear();
@@ -150,7 +150,7 @@ public abstract class Control
             {
                 oldChild.Parent = null;
 
-                OnChildRemoved();
+                OnChildRemoved(oldChild);
                 oldChild.Detach(isReparenting: false);
             }
         }
@@ -163,7 +163,7 @@ public abstract class Control
         if (IsAttachedToRoot)
             child.Attach();
 
-        OnChildAdded();
+        OnChildAdded(child);
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public abstract class Control
         if (IsAttachedToRoot)
             child.Attach();
 
-        OnChildAdded();
+        OnChildAdded(child);
     }
 
     /// <summary>
@@ -203,29 +203,53 @@ public abstract class Control
 
         child.Parent = null;
 
-        OnChildRemoved();
+        OnChildRemoved(child);
         child.Detach(isReparenting);
     }
 
-    private void OnChildAdded()
+    private void OnChildAdded(Control child)
     {
-        ChildAdded?.Invoke(this, EventArgs.Empty);
+        ChildAdded?.Invoke(this, new ChildAddedEventArgs(child));
+    }
+    
+    /// <summary>
+    /// Event arguments for the <see cref="ChildAdded"/> event.
+    /// </summary>
+    /// <param name="child">The child that was added.</param>
+    public class ChildAddedEventArgs(Control child) : EventArgs
+    {
+        /// <summary>
+        /// The child that was added to this control.
+        /// </summary>
+        public Control Child { get; } = child;
     }
     
     /// <summary>
     /// Invoked when a child is added to this control.
     /// </summary>
-    public event EventHandler? ChildAdded;
+    public event EventHandler<ChildAddedEventArgs>? ChildAdded;
     
-    private void OnChildRemoved()
+    private void OnChildRemoved(Control child)
     {
-        ChildRemoved?.Invoke(this, EventArgs.Empty);
+        ChildRemoved?.Invoke(this, new ChildRemovedEventArgs(child));
+    }
+    
+    /// <summary>
+    /// Event arguments for the <see cref="ChildRemoved"/> event.
+    /// </summary>
+    /// <param name="child">The child that was removed.</param>
+    public class ChildRemovedEventArgs(Control child) : EventArgs
+    {
+        /// <summary>
+        /// The child that was removed from this control.
+        /// </summary>
+        public Control Child { get; } = child;
     }
     
     /// <summary>
     /// Invoked when a child is removed from this control.
     /// </summary>
-    public event EventHandler? ChildRemoved;
+    public event EventHandler<ChildRemovedEventArgs>? ChildRemoved;
 
     private void Attach()
     {
