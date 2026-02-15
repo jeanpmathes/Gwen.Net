@@ -52,7 +52,7 @@ public class Border : Visual
         availableSize -= borderThickness;
 
         if (availableSize.IsEmpty)
-            return SizeF.Empty + borderThickness;
+            return SizeF.Empty + borderThickness + Padding.GetValue();
 
         SizeF desiredSize = base.OnMeasure(availableSize);
 
@@ -74,7 +74,7 @@ public class Border : Visual
             return finalRectangle;
 
         foreach (Visual child in Children)
-            child.Arrange(Rectangles.ConstraintSize(contentArea, child.MeasuredSize));
+            child.Arrange(contentArea);
 
         return finalRectangle;
     }

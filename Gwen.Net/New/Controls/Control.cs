@@ -31,6 +31,9 @@ public abstract class Control
         
         Margin = Property.Create(this, ThicknessF.Zero);
         Padding = Property.Create(this, ThicknessF.Zero);
+        
+        HorizontalAlignment = Property.Create(this, New.HorizontalAlignment.Stretch);
+        VerticalAlignment = Property.Create(this, New.VerticalAlignment.Stretch);
     }
     
     #region PROPERTIES
@@ -76,6 +79,16 @@ public abstract class Control
     /// As such, padding is less strictly enforced than margin.
     /// </summary>
     public Property<ThicknessF> Padding { get; }
+    
+    /// <summary>
+    /// The horizontal alignment of this control within its parent. Might not be respected by all layout containers.
+    /// </summary>
+    public Property<HorizontalAlignment> HorizontalAlignment { get; }
+    
+    /// <summary>
+    /// The vertical alignment of this control within its parent. Might not be respected by all layout containers.
+    /// </summary>
+    public Property<VerticalAlignment> VerticalAlignment { get; }
     
     #endregion PROPERTIES
     

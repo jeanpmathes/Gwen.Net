@@ -33,6 +33,9 @@ public abstract class Visual
         Margin = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Margin.GetValue()), Invalidation.Measure);
         Padding = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Padding.GetValue()), Invalidation.Measure);
         
+        HorizontalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.HorizontalAlignment.GetValue(), defaultValue: New.HorizontalAlignment.Stretch), Invalidation.Arrange);
+        VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment.GetValue(), defaultValue: New.VerticalAlignment.Stretch), Invalidation.Arrange);
+        
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
     }
     
@@ -69,6 +72,16 @@ public abstract class Visual
     /// As such, padding is less strictly enforced than margin.
     /// </summary>
     public VisualProperty<ThicknessF> Padding { get; }
+    
+    /// <summary>
+    /// The horizontal alignment of this visual, which is used by layout containers to determine how to position this visual within its layout slot.
+    /// </summary>
+    public VisualProperty<HorizontalAlignment> HorizontalAlignment { get; }
+    
+    /// <summary>
+    /// The vertical alignment of this visual, which is used by layout containers to determine how to position this visual within its layout slot.
+    /// </summary>
+    public VisualProperty<VerticalAlignment> VerticalAlignment { get; }
     
     /// <summary>
     /// The brush used to draw the background of this visual.
@@ -424,17 +437,19 @@ public abstract class Visual
         
         lastAvailableSize = availableSize;
 
-        availableSize -= Margin.GetValue();
+        SizeF usableSize = availableSize;
+
+        usableSize -= Margin.GetValue();
         
-        if (availableSize.IsEmpty)
+        if (usableSize.IsEmpty)
         {
             MeasuredSize = SizeF.Empty + Margin.GetValue();
         }
         else
         {
-            availableSize = Sizes.Clamp(availableSize, SizeF.Empty, MaximumSize);
+            usableSize = Sizes.Clamp(usableSize, SizeF.Empty, MaximumSize);
             
-            MeasuredSize = OnMeasure(availableSize);
+            MeasuredSize = OnMeasure(usableSize);
         
             MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
             MeasuredSize += Margin.GetValue();
@@ -459,14 +474,16 @@ public abstract class Visual
         
         var desiredSize = SizeF.Empty;
 
-        availableSize -= Padding.GetValue();
+        SizeF usableSize = availableSize;
+        
+        usableSize -= Padding.GetValue();
 
-        if (availableSize.IsEmpty)
+        if (usableSize.IsEmpty)
             return SizeF.Empty + Padding.GetValue();
 
         foreach (Visual child in children)
         {
-            SizeF childDesiredSize = child.Measure(availableSize);
+            SizeF childDesiredSize = child.Measure(usableSize);
             
             desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
             desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
@@ -492,20 +509,46 @@ public abstract class Visual
         if (!isMeasureValid)
             Measure(finalRectangle.Size);
         
-        finalRectangle -= Margin.GetValue();
+        RectangleF usableRectangle = finalRectangle;
 
-        if (finalRectangle.IsEmpty)
+        if (HorizontalAlignment.GetValue() != New.HorizontalAlignment.Stretch)
+            usableRectangle.Width = Math.Min(usableRectangle.Width, MeasuredSize.Width);
+        
+        if (VerticalAlignment.GetValue() != New.VerticalAlignment.Stretch)
+            usableRectangle.Height = Math.Min(usableRectangle.Height, MeasuredSize.Height);
+        
+        usableRectangle -= Margin.GetValue();
+
+        if (usableRectangle.IsEmpty)
         {
-            SetBounds(finalRectangle);
+            SetBounds(usableRectangle);
         }
         else
         {
-            RectangleF allowedRectangle = Rectangles.ConstraintSize(finalRectangle, MaximumSize);
+            RectangleF allowedRectangle = Rectangles.ConstraintSize(usableRectangle, MaximumSize);
 
             RectangleF arrangedRectangle = OnArrange(allowedRectangle);
+            
+            if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Stretch)
+                arrangedRectangle.Width = usableRectangle.Width;
+            
+            if (VerticalAlignment.GetValue() == New.VerticalAlignment.Stretch)
+                arrangedRectangle.Height = usableRectangle.Height;
 
             arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
+            
+            SizeF positioningSize = finalRectangle.Size - Margin.GetValue();
 
+            if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Center)
+                arrangedRectangle.X += (positioningSize.Width - arrangedRectangle.Width) / 2;
+            else if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Right)
+                arrangedRectangle.X += positioningSize.Width - arrangedRectangle.Width;
+            
+            if (VerticalAlignment.GetValue() == New.VerticalAlignment.Center)
+                arrangedRectangle.Y += (positioningSize.Height - arrangedRectangle.Height) / 2;
+            else if (VerticalAlignment.GetValue() == New.VerticalAlignment.Bottom)
+                arrangedRectangle.Y += positioningSize.Height - arrangedRectangle.Height;
+            
             SetBounds(arrangedRectangle);
         }
 
@@ -532,7 +575,7 @@ public abstract class Visual
             return finalRectangle;
 
         foreach (Visual child in children)
-            child.Arrange(Rectangles.ConstraintSize(contentArea, child.MeasuredSize));
+            child.Arrange(contentArea);
 
         return finalRectangle;
     }

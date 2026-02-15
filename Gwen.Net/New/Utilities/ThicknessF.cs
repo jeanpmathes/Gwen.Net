@@ -130,6 +130,8 @@ public readonly struct ThicknessF : IEquatable<ThicknessF>
     /// <inheritdoc/>
     public override String ToString()
     {
-        return $"ThicknessF(Left: {Left}, Top: {Top}, Right: {Right}, Bottom: {Bottom})";
+        return this == Zero 
+            ? "ThicknessF.Zero" 
+            : $"ThicknessF(Left: {Left}, Top: {Top}, Right: {Right}, Bottom: {Bottom})";
     }
 }

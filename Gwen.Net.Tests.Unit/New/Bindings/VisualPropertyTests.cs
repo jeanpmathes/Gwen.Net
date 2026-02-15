@@ -53,7 +53,7 @@ public class VisualPropertyTests
         source.SetValue(3);
         source.SetValue(10);
 
-        Assert.Equal(expected: 2, events); // activation + change to 10
+        Assert.Equal(expected: 2, events);
         Assert.Equal(expected: 10, property.GetValue());
     }
 
