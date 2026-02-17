@@ -13,7 +13,7 @@ public static class Brushes
     /// <summary>
     /// Gets a brush that is solid white.
     /// </summary>
-    public static Brush White { get; } = new SolidColorBrush(System.Drawing.Color.Transparent);
+    public static Brush White { get; } = new SolidColorBrush(System.Drawing.Color.White);
     
     /// <summary>
     /// Gets a brush that is solid black.
