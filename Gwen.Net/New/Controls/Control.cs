@@ -213,18 +213,6 @@ public abstract class Control
     }
     
     /// <summary>
-    /// Event arguments for the <see cref="ChildAdded"/> event.
-    /// </summary>
-    /// <param name="child">The child that was added.</param>
-    public class ChildAddedEventArgs(Control child) : EventArgs
-    {
-        /// <summary>
-        /// The child that was added to this control.
-        /// </summary>
-        public Control Child { get; } = child;
-    }
-    
-    /// <summary>
     /// Invoked when a child is added to this control.
     /// </summary>
     public event EventHandler<ChildAddedEventArgs>? ChildAdded;
@@ -232,18 +220,6 @@ public abstract class Control
     private void OnChildRemoved(Control child)
     {
         ChildRemoved?.Invoke(this, new ChildRemovedEventArgs(child));
-    }
-    
-    /// <summary>
-    /// Event arguments for the <see cref="ChildRemoved"/> event.
-    /// </summary>
-    /// <param name="child">The child that was removed.</param>
-    public class ChildRemovedEventArgs(Control child) : EventArgs
-    {
-        /// <summary>
-        /// The child that was removed from this control.
-        /// </summary>
-        public Control Child { get; } = child;
     }
     
     /// <summary>
@@ -547,4 +523,28 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     }
 
     #endregion STYLE
+}
+
+/// <summary>
+/// Event arguments for the <see cref="Control.ChildAdded"/> event.
+/// </summary>
+/// <param name="child">The child that was added.</param>
+public class ChildAddedEventArgs(Control child) : EventArgs
+{
+    /// <summary>
+    /// The child that was added to this control.
+    /// </summary>
+    public Control Child { get; } = child;
+}
+
+/// <summary>
+/// Event arguments for the <see cref="Control.ChildRemoved"/> event.
+/// </summary>
+/// <param name="child">The child that was removed.</param>
+public class ChildRemovedEventArgs(Control child) : EventArgs
+{
+    /// <summary>
+    /// The child that was removed from this control.
+    /// </summary>
+    public Control Child { get; } = child;
 }

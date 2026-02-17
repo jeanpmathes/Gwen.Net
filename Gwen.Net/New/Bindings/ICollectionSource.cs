@@ -4,6 +4,17 @@ using System.Collections.Generic;
 namespace Gwen.Net.New.Bindings;
 
 /// <summary>
+/// Interface for a collection-valued value source which allows to observe changes to the collection.
+/// </summary>
+public interface ICollectionSource<TItem> : IReadOnlyCollection<TItem>
+{
+    /// <summary>
+    /// Event raised when the collection changes. The event args will contain information about the change.
+    /// </summary>
+    public event EventHandler<CollectionChangedEventArgs<TItem>>? CollectionChanged;
+}
+
+/// <summary>
 /// Actions that can occur that cause a collection to change.
 /// </summary>
 public enum CollectionChangeAction
@@ -148,15 +159,4 @@ public sealed class CollectionChangedEventArgs<TItem> : EventArgs
             OldIndex = -1
         };
     }
-}
-
-/// <summary>
-/// Interface for a collection-valued value source which allows to observe changes to the collection.
-/// </summary>
-public interface ICollectionSource<TItem> : IReadOnlyCollection<TItem>
-{
-    /// <summary>
-    /// Event raised when the collection changes. The event args will contain information about the change.
-    /// </summary>
-    public event EventHandler<CollectionChangedEventArgs<TItem>>? CollectionChanged;
 }

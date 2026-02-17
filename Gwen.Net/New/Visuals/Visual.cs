@@ -414,7 +414,7 @@ public abstract class Visual
     private SizeF lastAvailableSize = SizeF.Empty;
 
     /// <summary>
-    /// The bounds of this visual.
+    /// The bounds of this visual, excluding margins, relative to the parent visual.
     /// </summary>
     public RectangleF Bounds { get; private set; }
     
@@ -437,23 +437,15 @@ public abstract class Visual
         
         lastAvailableSize = availableSize;
 
-        SizeF usableSize = availableSize;
+        SizeF usableSize = availableSize - Margin.GetValue();
+        
+        usableSize = Sizes.Max(SizeF.Empty, usableSize);
 
-        usableSize -= Margin.GetValue();
-        
-        if (usableSize.IsEmpty)
-        {
-            MeasuredSize = SizeF.Empty + Margin.GetValue();
-        }
-        else
-        {
-            usableSize = Sizes.Clamp(usableSize, SizeF.Empty, MaximumSize);
+        SizeF measuredSize = OnMeasure(usableSize);
             
-            MeasuredSize = OnMeasure(usableSize);
+        measuredSize = Sizes.Clamp(measuredSize, MinimumSize, MaximumSize);
         
-            MeasuredSize = Sizes.Clamp(MeasuredSize, MinimumSize, MaximumSize);
-            MeasuredSize += Margin.GetValue();
-        }
+        MeasuredSize = measuredSize + Margin.GetValue();
         
         isMeasureValid = true;
         isArrangeValid = false;
@@ -466,7 +458,10 @@ public abstract class Visual
     /// If you override this, you will likely need to override <see cref="OnArrange(RectangleF)"/> as well and vice versa.
     /// </summary>
     /// <param name="availableSize">The available size. The visual does not have to use all of this size.</param>
-    /// <returns>The desired size required by this visual, might be larger than the available size.</returns>
+    /// <returns>
+    ///     The desired size required by this visual, might be larger than the available size.
+    ///     Must never return an infinite size.
+    /// </returns>
     public virtual SizeF OnMeasure(SizeF availableSize)
     {
         if (children.Count == 0)
@@ -477,9 +472,6 @@ public abstract class Visual
         SizeF usableSize = availableSize;
         
         usableSize -= Padding.GetValue();
-
-        if (usableSize.IsEmpty)
-            return SizeF.Empty + Padding.GetValue();
 
         foreach (Visual child in children)
         {
@@ -498,7 +490,7 @@ public abstract class Visual
     /// Arrange this visual within the given final rectangle.
     /// This will set the <see cref="Bounds"/> of this visual.
     /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in, in the coordinate space of the parent visual.</param>
     public void Arrange(RectangleF finalRectangle)
     {
         if (isArrangeValid && lastFinalRectangle == finalRectangle)
@@ -508,48 +500,39 @@ public abstract class Visual
         
         if (!isMeasureValid)
             Measure(finalRectangle.Size);
-        
-        RectangleF usableRectangle = finalRectangle;
 
-        if (HorizontalAlignment.GetValue() != New.HorizontalAlignment.Stretch)
-            usableRectangle.Width = Math.Min(usableRectangle.Width, MeasuredSize.Width);
+        finalRectangle -= Margin.GetValue();
         
-        if (VerticalAlignment.GetValue() != New.VerticalAlignment.Stretch)
-            usableRectangle.Height = Math.Min(usableRectangle.Height, MeasuredSize.Height);
-        
-        usableRectangle -= Margin.GetValue();
-
-        if (usableRectangle.IsEmpty)
+        if (finalRectangle.IsEmpty)
         {
-            SetBounds(usableRectangle);
+            SetBounds(finalRectangle);
         }
         else
         {
-            RectangleF allowedRectangle = Rectangles.ConstraintSize(usableRectangle, MaximumSize);
-
-            RectangleF arrangedRectangle = OnArrange(allowedRectangle);
+            SizeF size = finalRectangle.Size;
             
-            if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Stretch)
-                arrangedRectangle.Width = usableRectangle.Width;
+            if (HorizontalAlignment.GetValue() != New.HorizontalAlignment.Stretch)
+                size.Width = Math.Min(finalRectangle.Width, MeasuredSize.Width - Margin.GetValue().Width);
+        
+            if (VerticalAlignment.GetValue() != New.VerticalAlignment.Stretch)
+                size.Height = Math.Min(finalRectangle.Height, MeasuredSize.Height - Margin.GetValue().Height);
             
-            if (VerticalAlignment.GetValue() == New.VerticalAlignment.Stretch)
-                arrangedRectangle.Height = usableRectangle.Height;
-
-            arrangedRectangle = Rectangles.ConstraintSize(arrangedRectangle, allowedRectangle.Size);
+            size = Sizes.Clamp(size, MinimumSize, MaximumSize);
             
-            SizeF positioningSize = finalRectangle.Size - Margin.GetValue();
-
+            PointF location = finalRectangle.Location;
+        
             if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Center)
-                arrangedRectangle.X += (positioningSize.Width - arrangedRectangle.Width) / 2;
+                location.X += (finalRectangle.Width - size.Width) / 2;
             else if (HorizontalAlignment.GetValue() == New.HorizontalAlignment.Right)
-                arrangedRectangle.X += positioningSize.Width - arrangedRectangle.Width;
+                location.X += finalRectangle.Width - size.Width;
             
             if (VerticalAlignment.GetValue() == New.VerticalAlignment.Center)
-                arrangedRectangle.Y += (positioningSize.Height - arrangedRectangle.Height) / 2;
+                location.Y += (finalRectangle.Height - size.Height) / 2;
             else if (VerticalAlignment.GetValue() == New.VerticalAlignment.Bottom)
-                arrangedRectangle.Y += positioningSize.Height - arrangedRectangle.Height;
+                location.Y += finalRectangle.Height - size.Height;
             
-            SetBounds(arrangedRectangle);
+            OnArrange(new RectangleF(PointF.Empty, size));
+            SetBounds(new RectangleF(location, size));
         }
 
         // SetBounds might invalidate something, so we set everything to valid again.
@@ -562,22 +545,19 @@ public abstract class Visual
     /// Override to define custom arranging logic. See <see cref="Arrange(RectangleF)"/>.
     /// If you have overriden <see cref="OnMeasure(SizeF)"/>, you will likely need to override this as well and vice versa.
     /// </summary>
-    /// <param name="finalRectangle">The final rectangle to arrange this visual in.</param>
-    /// <returns>The actual rectangle used by this visual after arranging.</returns>
-    public virtual RectangleF OnArrange(RectangleF finalRectangle)
+    /// <param name="finalRectangle">The final rectangle to arrange this visual in, in the coordinate space of this visual.</param>
+    public virtual void OnArrange(RectangleF finalRectangle)
     {
         if (children.Count == 0)
-            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize - Margin.GetValue());
+            return;
 
-        RectangleF contentArea = new RectangleF(PointF.Empty, finalRectangle.Size) - Padding.GetValue();
+        finalRectangle -= Padding.GetValue();
 
-        if (contentArea.IsEmpty)
-            return finalRectangle;
+        if (finalRectangle.IsEmpty)
+            return;
 
         foreach (Visual child in children)
-            child.Arrange(contentArea);
-
-        return finalRectangle;
+            child.Arrange(finalRectangle);
     }
 
     /// <summary>

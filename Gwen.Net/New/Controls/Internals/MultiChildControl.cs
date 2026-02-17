@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gwen.Net.New.Bindings;
 
-namespace Gwen.Net.New.Controls.Bases;
+namespace Gwen.Net.New.Controls.Internals;
 
 /// <summary>
 /// A control which can have multiple child controls.

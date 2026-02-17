@@ -10,18 +10,32 @@ public static class UnitTestHarnessView
     {
         return new Border
         {
-            HorizontalAlignment = { Value = HorizontalAlignment.Stretch },
-            VerticalAlignment = { Value = VerticalAlignment.Stretch },
-            Margin = { Value = new ThicknessF(5)},
-            Padding = {  Value = new ThicknessF(5) },
+            HorizontalAlignment = {Value = HorizontalAlignment.Stretch},
+            VerticalAlignment = {Value = VerticalAlignment.Stretch},
+            Margin = {Value = new ThicknessF(5)},
+            Padding = {Value = new ThicknessF(5)},
 
-            Child = new Border
+            Child = new LinearLayout
             {
-                BorderThickness = { Value = new ThicknessF(3)},
-                MinimumWidth = { Value = 500f },
-                MinimumHeight = { Value = 250f },
-                HorizontalAlignment = { Value = HorizontalAlignment.Center },
-                VerticalAlignment = { Value = VerticalAlignment.Center },
+                Children =
+                {
+                    new Border
+                    {
+                        BorderThickness = {Value = new ThicknessF(3)},
+                        MinimumWidth = {Value = 500f},
+                        MinimumHeight = {Value = 250f},
+                        HorizontalAlignment = {Value = HorizontalAlignment.Center},
+                        VerticalAlignment = {Value = VerticalAlignment.Center},
+                    },
+                    new Border
+                    {
+                        BorderThickness = {Value = new ThicknessF(3)},
+                        MinimumWidth = {Value = 500f},
+                        MinimumHeight = {Value = 250f},
+                        HorizontalAlignment = {Value = HorizontalAlignment.Center},
+                        VerticalAlignment = {Value = VerticalAlignment.Center},
+                    }
+                }
             }
         };
     }

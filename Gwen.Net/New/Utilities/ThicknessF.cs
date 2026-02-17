@@ -58,6 +58,16 @@ public readonly struct ThicknessF : IEquatable<ThicknessF>
     public Single Bottom { get; init; }
 
     /// <summary>
+    /// The total width of the thickness, which is the sum of the left and right thicknesses.
+    /// </summary>
+    public Single Width => Left + Right;
+    
+    /// <summary>
+    /// The total height of the thickness, which is the sum of the top and bottom thicknesses.
+    /// </summary>
+    public Single Height => Top + Bottom;
+    
+    /// <summary>
     /// Add a thickness to a size, resulting in a new size that is increased by the thickness on all sides.
     /// </summary>
     public static SizeF operator +(SizeF size, ThicknessF thickness)
@@ -76,17 +86,17 @@ public readonly struct ThicknessF : IEquatable<ThicknessF>
     /// <summary>
     /// Add a thickness to a rectangle, resulting in a new rectangle that is increased by the thickness on all sides.
     /// </summary>
-    public static RectangleF operator +(RectangleF rect, ThicknessF thickness)
+    public static RectangleF operator +(RectangleF rectangle, ThicknessF thickness)
     {
-        return new RectangleF(rect.X - thickness.Left, rect.Y - thickness.Top, rect.Width + thickness.Left + thickness.Right, rect.Height + thickness.Top + thickness.Bottom);
+        return new RectangleF(rectangle.X - thickness.Left, rectangle.Y - thickness.Top, rectangle.Width + thickness.Left + thickness.Right, rectangle.Height + thickness.Top + thickness.Bottom);
     }
     
     /// <summary>
     /// Subtract a thickness from a rectangle, resulting in a new rectangle that is decreased by the thickness on all sides.
     /// </summary>
-    public static RectangleF operator -(RectangleF rect, ThicknessF thickness)
+    public static RectangleF operator -(RectangleF rectangle, ThicknessF thickness)
     {
-        return new RectangleF(rect.X + thickness.Left, rect.Y + thickness.Top, rect.Width - thickness.Left - thickness.Right, rect.Height - thickness.Top - thickness.Bottom);
+        return new RectangleF(rectangle.X + thickness.Left, rectangle.Y + thickness.Top, rectangle.Width - thickness.Left - thickness.Right, rectangle.Height - thickness.Top - thickness.Bottom);
     }
 
     #region EQUALITY

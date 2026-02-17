@@ -1,4 +1,5 @@
 using Gwen.Net.New.Bindings;
+using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Controls.Bases;
@@ -17,8 +18,12 @@ public abstract class BorderBase<TControl> : SingleChildControl<TControl> where 
         BorderThickness = Property.Create(this, ThicknessF.One);
     }
 
+    #region PROPERTIES
+    
     /// <summary>
     /// The thickness of the border drawn around the child control.
     /// </summary>
     public Property<ThicknessF> BorderThickness { get; }
+    
+    #endregion PROPERTIES
 }

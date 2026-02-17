@@ -50,10 +50,7 @@ public class Border : Visual
         ThicknessF borderThickness = BorderThickness.GetValue();
 
         availableSize -= borderThickness;
-
-        if (availableSize.IsEmpty)
-            return SizeF.Empty + borderThickness + Padding.GetValue();
-
+        
         SizeF desiredSize = base.OnMeasure(availableSize);
 
         desiredSize += borderThickness;
@@ -62,21 +59,16 @@ public class Border : Visual
     }
 
     /// <inheritdoc/>
-    public override RectangleF OnArrange(RectangleF finalRectangle)
+    public override void OnArrange(RectangleF finalRectangle)
     {
-        if (Children.Count == 0)
-            return Rectangles.ConstraintSize(finalRectangle, MeasuredSize - Margin.GetValue());
-
-        ThicknessF borderThickness = BorderThickness.GetValue();
-        RectangleF contentArea = new RectangleF(PointF.Empty, finalRectangle.Size) - borderThickness - Padding.GetValue();
-
-        if (contentArea.IsEmpty)
-            return finalRectangle;
-
+        finalRectangle -= BorderThickness.GetValue();
+        finalRectangle -= Padding.GetValue();
+        
+        if (finalRectangle.IsEmpty)
+            return;
+        
         foreach (Visual child in Children)
-            child.Arrange(contentArea);
-
-        return finalRectangle;
+            child.Arrange(finalRectangle);
     }
 
     /// <inheritdoc/>

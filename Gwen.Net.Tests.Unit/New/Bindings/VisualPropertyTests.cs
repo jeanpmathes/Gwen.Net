@@ -68,10 +68,9 @@ public class VisualPropertyTests
             return new SizeF(width: 5, height: 5);
         }
 
-        public override RectangleF OnArrange(RectangleF finalRectangle)
+        public override void OnArrange(RectangleF finalRectangle)
         {
             ArrangeCalls++;
-            return finalRectangle;
         }
     }
 }

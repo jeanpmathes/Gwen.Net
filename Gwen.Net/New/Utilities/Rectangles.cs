@@ -8,19 +8,15 @@ namespace Gwen.Net.New.Utilities;
 public static class Rectangles
 {
     /// <summary>
-    /// Limit the size of the rectangle to the specified size.
+    /// Clamp the size of the rectangle to the specified minimum and maximum sizes.
     /// </summary>
-    /// <param name="rectangle">The rectangle to constrain.</param>
-    /// <param name="size">The maximum size.</param>
-    /// <returns>The constrained rectangle.</returns>
-    public static RectangleF ConstraintSize(RectangleF rectangle, SizeF size)
+    /// <param name="rectangle">The rectangle to clamp.</param>
+    /// <param name="minSize">The minimum size.</param>
+    /// <param name="maxSize">The maximum size.</param>
+    /// <returns>The clamped rectangle.</returns>
+    public static RectangleF ClampSize(RectangleF rectangle, SizeF minSize, SizeF maxSize)
     {
-        if (rectangle.Width > size.Width)
-            rectangle.Width = size.Width;
-        
-        if (rectangle.Height > size.Height)
-            rectangle.Height = size.Height;
-        
+        rectangle.Size = Sizes.Clamp(rectangle.Size, minSize, maxSize);
         return rectangle;
     }
 }

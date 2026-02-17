@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Gwen.Net.New.Controls.Bases;
+using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Resources;

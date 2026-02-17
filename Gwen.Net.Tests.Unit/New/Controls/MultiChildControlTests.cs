@@ -1,6 +1,7 @@
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Bases;
+using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Resources;
 using Gwen.Net.Tests.Unit.New.Rendering;

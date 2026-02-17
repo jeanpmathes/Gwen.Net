@@ -1,4 +1,4 @@
-﻿namespace Gwen.Net.New.Controls.Bases;
+﻿namespace Gwen.Net.New.Controls.Internals;
 
 /// <summary>
 /// A control which has at most one child control. Setting the <see cref="Child"/> property will replace any existing child control.
