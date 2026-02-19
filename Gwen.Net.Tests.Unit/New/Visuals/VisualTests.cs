@@ -490,4 +490,42 @@ public class VisualTests
     }
 
     #endregion ALIGNMENT
+
+    #region COORDINATE TRANSFORMS
+
+    [Fact]
+    public void LocalPointToRoot_NestedChild_AccumulatesParentOffsets()
+    {
+        var parent = new MockVisual();
+        var child = new MockVisual();
+
+        parent.SetChildVisual(child);
+
+        parent.Measure(new SizeF(width: 200f, height: 200f));
+        parent.Arrange(new RectangleF(x: 10f, y: 20f, width: 200f, height: 200f));
+
+        PointF rootPoint = child.LocalPointToRoot(new PointF(x: 5f, y: 5f));
+
+        Assert.Equal(expected: 15f, actual: rootPoint.X);
+        Assert.Equal(expected: 25f, actual: rootPoint.Y);
+    }
+
+    [Fact]
+    public void RootPointToLocal_NestedChild_SubtractsAccumulatedOffsets()
+    {
+        var parent = new MockVisual();
+        var child = new MockVisual();
+
+        parent.SetChildVisual(child);
+
+        parent.Measure(new SizeF(width: 200f, height: 200f));
+        parent.Arrange(new RectangleF(x: 10f, y: 20f, width: 200f, height: 200f));
+
+        PointF localPoint = child.RootPointToLocal(new PointF(x: 15f, y: 25f));
+
+        Assert.Equal(expected: 5f, actual: localPoint.X);
+        Assert.Equal(expected: 5f, actual: localPoint.Y);
+    }
+
+    #endregion COORDINATE TRANSFORMS
 }
