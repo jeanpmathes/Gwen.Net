@@ -401,11 +401,13 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     /// The template used to visualize this control.
     /// </summary>
     public Property<ControlTemplate<TSelf>> Template { get; }
+
+    private readonly Slot<Visual?> visualization = new(null);
     
     /// <summary>
     /// The current root visual that represents this control, if it has been visualized.
     /// </summary>
-    internal Visual? Visualization { get; private set; }
+    internal ReadOnlySlot<Visual?> Visualization => visualization;
 
     /// <summary>
     /// Build or refresh the visual tree for this control and apply current styling.
@@ -416,31 +418,33 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
         UnanchorVisualization();
         
         ApplyStyling();
-        
-        Visualization = Template.GetValue().Apply(Self);
+
+        Visual currentVisualization = Template.GetValue().Apply(Self);
+        visualization.SetValue(currentVisualization);
         
         AnchorVisualization();
         
-        return Visualization;
+        return currentVisualization;
     }
     
     private void AnchorVisualization()
     {
-        Visualization?.SetAsAnchor(this);
+        Visualization.GetValue()?.SetAsAnchor(this);
         
         if (IsRoot)
-            Visualization?.SetAsRoot();
+            Visualization.GetValue()?.SetAsRoot();
     }
 
     private void UnanchorVisualization()
     {
-        if (Visualization == null) return;
+        if (Visualization.GetValue() is not {} currentVisualization) return;
 
         if (IsRoot)
-            Visualization.UnsetAsRoot();
+            currentVisualization.UnsetAsRoot();
         
-        Visualization.UnsetAsAnchor();
-        Visualization = null;
+        currentVisualization.UnsetAsAnchor();
+        
+        visualization.SetValue(null);
     }
     
     /// <summary>
@@ -456,8 +460,9 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     
     private void InvalidateVisualization()
     {
-        if (Visualization != null)
-            Visualize();
+        if (Visualization.GetValue() == null) return;
+        
+        Visualize();
     }
     
     #endregion VISUALIZATION / TEMPLATING

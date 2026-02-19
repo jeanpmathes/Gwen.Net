@@ -4,6 +4,7 @@ using System.Drawing;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Utilities;
 
@@ -425,6 +426,8 @@ public abstract class Visual
     
     private RectangleF lastFinalRectangle = RectangleF.Empty;
     
+    private PointF offsetToRoot = PointF.Empty;
+    
     /// <summary>
     /// Measure the desired size of this visual given the available size.
     /// </summary>
@@ -531,8 +534,9 @@ public abstract class Visual
             else if (VerticalAlignment.GetValue() == New.VerticalAlignment.Bottom)
                 location.Y += finalRectangle.Height - size.Height;
             
-            OnArrange(new RectangleF(PointF.Empty, size));
             SetBounds(new RectangleF(location, size));
+            
+            OnArrange(new RectangleF(PointF.Empty, size));
         }
 
         // SetBounds might invalidate something, so we set everything to valid again.
@@ -591,7 +595,7 @@ public abstract class Visual
     /// <param name="size">New size.</param>
     /// <returns>True if bounds changed.</returns>
     /// <remarks>Bounds are reset after the next layout pass.</remarks>
-    public virtual Boolean SetSize(SizeF size)
+    public Boolean SetSize(SizeF size)
     {
         return SetBounds(Bounds with { Size = size });
     }
@@ -608,7 +612,9 @@ public abstract class Visual
         
         RectangleF oldBounds = Bounds;
         Bounds = newBounds;
-        
+
+        UpdateOffsetToRoot();
+
         OnBoundsChanged(oldBounds, newBounds);
         
         InvalidateRender();
@@ -624,6 +630,40 @@ public abstract class Visual
     public virtual void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)
     {
         
+    }
+    
+    private void UpdateOffsetToRoot()
+    {
+        PointF newOffset = Parent != null
+            ? new PointF(Parent.offsetToRoot.X + Bounds.X, Parent.offsetToRoot.Y + Bounds.Y)
+            : Bounds.Location;
+
+        if (offsetToRoot == newOffset) return;
+
+        offsetToRoot = newOffset;
+
+        foreach (Visual child in children)
+            child.UpdateOffsetToRoot();
+    }
+
+    /// <summary>
+    /// Transform a point from the local coordinate space of this visual to the coordinate space of the root visual.
+    /// </summary>
+    /// <param name="localPoint">The point in the local coordinate space of this visual.</param>
+    /// <returns>The point transformed to the coordinate space of the root visual.</returns>
+    public PointF LocalPointToRoot(PointF localPoint)
+    {
+        return new PointF(localPoint.X + offsetToRoot.X, localPoint.Y + offsetToRoot.Y);
+    }
+    
+    /// <summary>
+    /// Transform a point from the coordinate space of the root visual to the local coordinate space of this visual.
+    /// </summary>
+    /// <param name="rootPoint">The point in the coordinate space of the root visual.</param>
+    /// <returns>The point transformed to the local coordinate space of this visual.</returns>
+    public PointF RootPointToLocal(PointF rootPoint)
+    {
+        return new PointF(rootPoint.X - offsetToRoot.X, rootPoint.Y - offsetToRoot.Y);
     }
     
     #endregion LAYOUTING
@@ -729,6 +769,30 @@ public abstract class Visual
     }
 
     #endregion RENDERING
+    
+    #region INPUT
+    
+    /// <summary>
+    /// Called when an input event tunnels down the visual tree towards the target visual.
+    /// Use this to intercept input events before they reach the target visual.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    public virtual void OnInputPreview(InputEvent inputEvent)
+    {
+        
+    }
+    
+    /// <summary>
+    /// Called when an input event bubbles up the visual tree from the target visual.
+    /// Use this to handle inputs.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    public virtual void OnInput(InputEvent inputEvent)
+    {
+        
+    }
+    
+    #endregion INPUT
     
     #region DEBUG
 

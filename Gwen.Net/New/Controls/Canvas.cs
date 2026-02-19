@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using Gwen.Net.New.Controls.Bases;
+using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Controls.Templates;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Visuals;
@@ -16,8 +17,9 @@ namespace Gwen.Net.New.Controls;
 public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
 {
     private readonly IRenderer onlyRenderer;
-    
-    private Single scale = 1.0f;
+
+    private readonly Binding<InputHandler?> inputBinding;
+
     private SizeF viewportSize = SizeF.Empty;
     
     /// <summary>
@@ -49,7 +51,27 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     private Canvas(IRenderer renderer)
     {
         onlyRenderer = renderer;
+
+        inputBinding = Binding.Transform(Visualization,
+            visualization =>
+            {
+                if (visualization is Visuals.Canvas canvas)
+                    return canvas.Input;
+                
+                return null;
+            });
     }
+
+    /// <summary>
+    /// Get the input handler for this canvas, or null if the canvas is not visualized.
+    /// </summary>
+    public InputHandler? Input => inputBinding.GetValue();
+
+    /// <summary>
+    /// Get the current scale of the canvas.
+    /// Use <see cref="SetScale"/> to change the scale.
+    /// </summary>
+    public Single Scale { get; private set; } = 1.0f;
 
     /// <summary>
     /// Set the scale of the canvas.
@@ -57,13 +79,13 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// <param name="newScale">The scale factor.</param>
     public void SetScale(Single newScale)
     {
-        scale = newScale;
+        Scale = newScale;
         
         onlyRenderer.Scale(newScale);
         
         UpdateSize();
         
-        Visualization?.InvalidateRender();
+        Visualization.GetValue()?.InvalidateRender();
     }
     
     /// <summary>
@@ -85,12 +107,12 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// <param name="enabled">True to draw debug outlines, false to disable them.</param>
     public void SetDebugOutlines(Boolean enabled)
     {
-        Visualization?.DrawDebugOutlines = enabled;
+        Visualization.GetValue()?.DrawDebugOutlines = enabled;
     }
 
     private void UpdateSize()
     {
-        Visualization?.SetSize(viewportSize / scale);
+        Visualization.GetValue()?.SetSize(viewportSize / Scale);
     }
 
     /// <summary>
@@ -98,7 +120,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// </summary>
     public void Render()
     {
-        Visualization?.Render(onlyRenderer);
+        Visualization.GetValue()?.Render(onlyRenderer);
     }
     
     /// <inheritdoc/>

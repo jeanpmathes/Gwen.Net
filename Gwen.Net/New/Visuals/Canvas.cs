@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Rendering;
 
 namespace Gwen.Net.New.Visuals;
@@ -9,6 +10,19 @@ namespace Gwen.Net.New.Visuals;
 /// <seealso cref="Controls.Canvas"/>
 public class Canvas : Visual
 {
+    /// <summary>
+    /// The input handler for this canvas, responsible for processing input events and determining which visual should receive them.
+    /// </summary>
+    public InputHandler Input { get; }
+
+    /// <summary>
+    /// Creates a new <see cref="Canvas"/> instance.
+    /// </summary>
+    public Canvas()
+    {
+        Input = new InputHandler(this);
+    }
+    
     /// <summary>
     /// Gets or sets the single child visual.
     /// </summary>

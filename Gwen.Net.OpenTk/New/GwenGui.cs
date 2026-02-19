@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
-using Gwen.Net.New;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Resources;
 using Gwen.Net.OpenTk.New.Graphics;
+using Gwen.Net.OpenTk.New.Input;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 
@@ -11,6 +11,8 @@ namespace Gwen.Net.OpenTk.New;
 internal class GwenGui : IGwenGui
 {
     private readonly ResourceRegistry registry;
+
+    private InputTranslator? input;
     
     internal GwenGui(GameWindow parent, ResourceRegistry registry)
     {
@@ -30,7 +32,9 @@ internal class GwenGui : IGwenGui
         Renderer = new Renderer();
         Root = Canvas.Create(Renderer, registry);
         
-        Root?.SetRenderingSize(new Size(Parent.Size.X, Parent.Size.Y));
+        input = new InputTranslator(Parent, Root);
+        
+        Root.SetRenderingSize(new Size(Parent.Size.X, Parent.Size.Y));
     }
 
     public void Render()
@@ -45,6 +49,8 @@ internal class GwenGui : IGwenGui
 
     public void Dispose()
     {
+        input?.Dispose();
+        
         Root?.Dispose();
         Renderer?.Dispose();
     }
