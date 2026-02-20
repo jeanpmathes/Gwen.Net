@@ -6,22 +6,58 @@ namespace Gwen.Net.Tests.Unit.New.Rendering;
 
 public class MockRenderer : Renderer
 {
-    public RectangleF LastDrawnRectangle { get; private set; }
-    public Brush LastUsedBrush { get; private set; } = null!;
-    
-    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    public override void Begin()
     {
-        LastDrawnRectangle = Transform(rectangle);
-        LastUsedBrush = brush;
+        
     }
     
-    public RectangleF ClipRectangle(RectangleF rectangle)
+    public override void End()
     {
-        (Single x, Single y) uv0 = (0, 0);
-        (Single x, Single y) uv1 = (1, 1);
         
-        base.ClipRectangle(ref rectangle, ref uv0, ref uv1);
+    }
+
+    public override void PushOffset(PointF offset)
+    {
         
-        return rectangle;
+    }
+    
+    public override void PopOffset()
+    {
+        
+    }
+    
+    public override void PushClip(RectangleF rectangle)
+    {
+        
+    }
+    
+    public override void PopClip()
+    {
+        
+    }
+    
+    public override void BeginClip()
+    {
+        
+    }
+    
+    public override void EndClip()
+    {
+        
+    }
+    
+    public override Boolean IsClipEmpty()
+    {
+        return false;
+    }
+
+    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    {
+        
+    }
+
+    public override void Resize(Size size)
+    {
+        throw new NotImplementedException();
     }
 }

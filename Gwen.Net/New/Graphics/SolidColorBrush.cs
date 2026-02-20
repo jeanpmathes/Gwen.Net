@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace Gwen.Net.New.Graphics;
 
@@ -11,4 +12,16 @@ public class SolidColorBrush(Color color) : Brush
     /// The color of the brush.
     /// </summary>
     public Color Color { get; } = color;
+
+    /// <inheritdoc />
+    public override Boolean Equals(Object? obj)
+    {
+        return obj is SolidColorBrush solidColorBrush && Color.Equals(solidColorBrush.Color);
+    }
+
+    /// <inheritdoc />
+    public override Int32 GetHashCode()
+    {
+        return Color.GetHashCode();
+    }
 }

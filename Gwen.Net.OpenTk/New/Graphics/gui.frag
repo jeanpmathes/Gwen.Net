@@ -1,19 +1,12 @@
 ﻿#version 400
 
-in vec2 frag_uv;
-in vec4 frag_color;
+in vec2 TextureCoordinates;
 
-uniform sampler2D tex;
+uniform sampler2D Texture;
 
-out vec4 out_frag_color;
-
-uniform float uUseTexture = 0.0;
+out vec4 Color;
 
 void main(void)
 {
-	vec4 texColor = texture(tex, frag_uv);
-	if (uUseTexture > 0.0)
-		out_frag_color = texColor * frag_color;
-	else
-		out_frag_color = frag_color;
+	Color = texture(Texture, TextureCoordinates);
 }

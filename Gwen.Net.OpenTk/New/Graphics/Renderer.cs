@@ -1,31 +1,23 @@
-﻿using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
 using Gwen.Net.New.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
 using Boolean = System.Boolean;
-using Brush = Gwen.Net.New.Graphics.Brush;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
 
 public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 {
-    private const Int32 MaxVerts = 4096;
-
     private readonly Shader shader;
     private readonly Boolean restoreRenderState;
 
-    private readonly Vertex[] vertices;
-    private readonly Int32 vertexSize;
-
-    private Int32 numberOfVertices;
+    private readonly Dictionary<Brush, System.Drawing.Brush> brushes = [];
 
     private Int32 vao;
-    private Int32 vbo;
-
-    private Int32 lastTextureID;
-    private Boolean textureEnabled;
+    private Int32 texture;
+    
+    private System.Drawing.Bitmap? bitmap;
+    private System.Drawing.Graphics? graphics; 
 
     private RenderState previousRenderState;
 
@@ -33,73 +25,70 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     {
         this.restoreRenderState = restoreRenderState;
 
-        vertices = new Vertex[MaxVerts];
-        vertexSize = Marshal.SizeOf(vertices[0]);
-
-        CreateBuffers();
+        CreateTargets(System.Drawing.Size.Empty);
 
         shader = ShaderLoader.Load("gui");
     }
-
-    private void CreateBuffers()
+    
+    #region TARGETS
+    
+    private void CreateTargets(System.Drawing.Size size)
     {
-        GL.GenVertexArrays(n: 1, out vao);
+        GL.CreateVertexArrays(n: 1, out vao);
+
+        ResizeTargets(size);
+    }
+
+    private void ResizeTargets(System.Drawing.Size size)
+    {
+        if (texture != 0)
+            GL.DeleteTexture(texture);
+
+        GL.CreateTextures(TextureTarget.Texture2D, n: 1, out texture);
+        GL.TextureParameter(texture, TextureParameterName.TextureMinFilter, (Int32) TextureMinFilter.Nearest);
+        GL.TextureParameter(texture, TextureParameterName.TextureMagFilter, (Int32) TextureMagFilter.Nearest);
+        GL.TextureParameter(texture, TextureParameterName.TextureWrapS, (Int32) TextureWrapMode.ClampToEdge);
+        GL.TextureParameter(texture, TextureParameterName.TextureWrapT, (Int32) TextureWrapMode.ClampToEdge);
+
+        if (size is {Width: > 0, Height: > 0})
+            GL.TextureStorage2D(texture, levels: 1, SizedInternalFormat.Rgba8, size.Width, size.Height);
+
+        graphics?.Dispose();
+        bitmap?.Dispose();
+
+        bitmap = null;
+        graphics = null;
+
+        if (size is not {Width: > 0, Height: > 0}) return;
+
+        bitmap = new System.Drawing.Bitmap(size.Width, size.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        graphics = System.Drawing.Graphics.FromImage(bitmap);
+        
+        if (offsetStack.Count > 0)
+        {
+            System.Drawing.PointF offset = offsetStack.Peek();
+            graphics.TranslateTransform(offset.X, offset.Y);
+        }
+        
+        if (isClipping && clipStack.Count > 0)
+            graphics.SetClip(clipStack.Peek(), System.Drawing.Drawing2D.CombineMode.Replace);
+    }
+
+    private void Draw()
+    {
+        if (bitmap == null || graphics == null) return;
+
+        System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(System.Drawing.Point.Empty, bitmap.Size), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        GL.TextureSubImage2D(texture, level: 0, xoffset: 0, yoffset: 0, width: data.Width, height: data.Height, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+        bitmap.UnlockBits(data);
+
         GL.BindVertexArray(vao);
-
-        GL.GenBuffers(n: 1, out vbo);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-
-        GL.BufferData(
-            BufferTarget.ArrayBuffer,
-            (IntPtr) (vertexSize * MaxVerts),
-            IntPtr.Zero,
-            BufferUsageHint.StreamDraw);
-
-        // Positions (x, y):
-        GL.EnableVertexAttribArray(index: 0);
-
-        GL.VertexAttribPointer(
-            index: 0,
-            size: 2,
-            VertexAttribPointerType.Float,
-            normalized: false,
-            vertexSize,
-            offset: 0);
-
-        // Texture Coordinates (u, v):
-        GL.EnableVertexAttribArray(index: 1);
-
-        GL.VertexAttribPointer(
-            index: 1,
-            size: 2,
-            VertexAttribPointerType.Float,
-            normalized: false,
-            vertexSize,
-            2 * sizeof(Single));
-
-        // Colors (r, g, b, a):
-        GL.EnableVertexAttribArray(index: 2);
-
-        GL.VertexAttribPointer(
-            index: 2,
-            size: 4,
-            VertexAttribPointerType.Float,
-            normalized: false,
-            vertexSize,
-            2 * (sizeof(Single) + sizeof(Single)));
-
-        GL.BindBuffer(BufferTarget.ArrayBuffer, buffer: 0);
-        GL.BindVertexArray(array: 0);
+        GL.DrawArrays(PrimitiveType.Triangles, first: 0, count: 3);
+        GL.BindVertexArray(0);
     }
 
     public override void Begin()
     {
-        GL.ActiveTexture(TextureUnit.Texture0);
-        GL.UseProgram(shader.Program);
-
-        GL.BindVertexArray(vao);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-
         if (restoreRenderState)
         {
             GL.GetInteger(GetPName.BlendSrc, out previousRenderState.blendSrc);
@@ -114,28 +103,25 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         GL.Enable(EnableCap.Blend);
         GL.Disable(EnableCap.DepthTest);
-
-        numberOfVertices = 0;
-        textureEnabled = false;
-        lastTextureID = -1;
         
-        base.Begin();
+        GL.UseProgram(shader.Program);
+        
+        GL.BindTextureUnit(unit: 0, texture);
+        
+        EndClip();
     }
 
     public override void End()
     {
-        base.End();
+        EndClip();
         
-        Flush();
-
-        GL.BindVertexArray(array: 0);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, buffer: 0);
+        Draw();
+        
+        GL.BindTextureUnit(unit: 0, texture: 0);
+        GL.UseProgram(program: 0);
 
         if (!restoreRenderState) return;
-
-        GL.BindTexture(TextureTarget.Texture2D, texture: 0);
-        lastTextureID = 0;
-
+        
         GL.BlendFunc((BlendingFactor) previousRenderState.blendSrc, (BlendingFactor) previousRenderState.blendDst);
         GL.AlphaFunc((AlphaFunction) previousRenderState.alphaFunc, previousRenderState.alphaRef);
 
@@ -149,128 +135,161 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             GL.Enable(EnableCap.DepthTest);
         }
     }
+
+    #endregion TARGETS
     
-    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    #region TRANSFORM & CLIP
+    
+    private readonly Stack<System.Drawing.PointF> offsetStack = new();
+    private readonly Stack<System.Drawing.RectangleF> clipStack = new();
+    
+    private Boolean isClipping;
+    
+    public override void PushOffset(System.Drawing.PointF offset)
     {
-        if (!ConvertBrush(brush, out ColorData color)) return;
+        offset = Scale(offset);
         
-        if (textureEnabled)
+        graphics?.TranslateTransform(offset.X, offset.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
+        
+        if (offsetStack.Count > 0)
         {
-            Flush();
-            textureEnabled = false;
+            System.Drawing.PointF previousOffset = offsetStack.Peek();
+            offset = new System.Drawing.PointF(previousOffset.X + offset.X, previousOffset.Y + offset.Y);
         }
-
-        rectangle = Transform(rectangle);
-
-        DrawRectangle(rectangle, color);
+        
+        offsetStack.Push(offset);
     }
-
-    private static Boolean ConvertBrush(Brush brush, out ColorData color)
+    
+    public override void PopOffset()
     {
-        color = default;
-
-        switch (brush)
+        offsetStack.Pop();
+        
+        graphics?.ResetTransform();
+        
+        if (offsetStack.Count > 0)
         {
-            case SolidColorBrush solidColorBrush:
-                color = ColorData.FromColor(solidColorBrush.Color);
-                return true;
+            System.Drawing.PointF offset = offsetStack.Peek();
+            graphics?.TranslateTransform(offset.X, offset.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
+        }
+    }
+    
+    public override void PushClip(System.Drawing.RectangleF rectangle)
+    {
+        rectangle = Scale(rectangle);
+        
+        if (isClipping)
+            graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Intersect);
+        
+        if (clipStack.Count > 0)
+        {
+            System.Drawing.RectangleF previousClip = clipStack.Peek();
+            rectangle = System.Drawing.RectangleF.Intersect(previousClip, rectangle);
+        }
+        
+        clipStack.Push(rectangle);
+    }
+    
+    public override void PopClip()
+    {
+        clipStack.Pop();
+        
+        if (isClipping)
+            graphics?.ResetClip();
+        
+        if (clipStack.Count > 0)
+        {
+            System.Drawing.RectangleF rectangle = clipStack.Peek();
             
-            default:
-                return false;
+            if (isClipping)
+                graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Replace);
         }
     }
     
-    private void DrawRectangle(RectangleF rectangle, in ColorData color, Vector2? uvA = null, Vector2? uvB = null)
+    public override void BeginClip()
     {
-        (Single x, Single y) uv0 = (uvA?.X ?? 0f, uvA?.Y ?? 0f);
-        (Single x, Single y) uv1 = (uvB?.X ?? 1f, uvB?.Y ?? 1f);
+        if (isClipping) return;
         
-        if (numberOfVertices + 6 >= MaxVerts)
+        isClipping = true;
+        
+        if (clipStack.Count > 0)
         {
-            Flush();
+            System.Drawing.RectangleF rectangle = clipStack.Peek();
+            graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Replace);
         }
-
-        ClipRectangle(ref rectangle, ref uv0, ref uv1);
-
-        Int32 vertexIndex = numberOfVertices;
+    }
+    
+    public override void EndClip() // todo: check when this is ever called, maybe this can be simplified
+    {
+        if (!isClipping) return;
         
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y, (uv1.x, uv0.y), in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
+        isClipping = false;
         
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y, uv0, in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, uv1, in color);
-        Vertex.Set(ref vertices[vertexIndex++], rectangle.X, rectangle.Y + rectangle.Height, (uv0.x, uv1.y), in color);
+        graphics?.ResetClip();
+    }
+    
+    public override Boolean IsClipEmpty()
+    {
+        if (graphics == null) return true;
+        
+        System.Drawing.Region clip = graphics.Clip;
+        return clip.IsEmpty(graphics);
+    }
+    
+    #endregion TRANSFORM & CLIP
+    
+    public override void DrawFilledRectangle(System.Drawing.RectangleF rectangle, Brush brush)
+    {
+        System.Drawing.Brush? systemBrush = GetBrush(brush);
+        
+        if (systemBrush == null) return;
 
-        numberOfVertices = vertexIndex;
+        rectangle = Scale(rectangle);
+
+        DrawRectangle(rectangle, systemBrush);
     }
 
-    private void Flush()
+    private void DrawRectangle(System.Drawing.RectangleF rectangle, System.Drawing.Brush systemBrush)
     {
-        if (numberOfVertices == 0)
-        {
-            return;
-        }
-
-        GL.InvalidateBufferData(vbo);
-
-        GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, (IntPtr) (numberOfVertices * vertexSize), vertices);
-
-        //GL.Uniform1(shader.Uniforms["uUseTexture"], textureEnabled ? 1.0f : 0.0f);
-        // todo: bring the above comment back
-
-        GL.DrawArrays(PrimitiveType.Triangles, first: 0, numberOfVertices);
-
-        numberOfVertices = 0;
+        graphics?.FillRectangle(systemBrush, rectangle);
     }
 
-    public override void Resize(Size size)
+    private System.Drawing.Brush? GetBrush(Brush brush)
+    {
+        if (brushes.TryGetValue(brush, out System.Drawing.Brush? systemBrush))
+            return systemBrush;
+
+        systemBrush = brush switch
+        {
+            SolidColorBrush solidColorBrush => new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B)),
+            TransparentBrush => null,
+            _ => systemBrush
+        };
+        
+        if (systemBrush != null)
+            brushes[brush] = systemBrush;
+        
+        return systemBrush;
+    }
+    
+    public override void Resize(System.Drawing.Size size)
     {
         GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
-        GL.UseProgram(shader.Program);
-        GL.Uniform2(shader.Uniforms["uScreenSize"], new Vector2(size.Width, size.Height));
+        
+        ResizeTargets(size);
     }
 
     public void Dispose()
     {
-        GL.DeleteBuffer(vbo);
+        foreach (System.Drawing.Brush brush in brushes.Values)
+            brush.Dispose();
+        
+        GL.DeleteTexture(texture);
         GL.DeleteVertexArray(vao);
 
         shader.Dispose();
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ColorData
-    {
-        public Single r, g, b, a;
-
-        public static ColorData FromColor(Color color)
-        {
-            return new ColorData
-            {
-                r = color.R / 255f,
-                g = color.G / 255f,
-                b = color.B / 255f,
-                a = color.A / 255f
-            };
-        }
-    }
-    
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Vertex
-    {
-        public Single x, y;
-        public Single u, v;
-        public ColorData color;
         
-        public static void Set(ref Vertex vertex, Single x, Single y, Vector2 uv, in ColorData color)
-        {
-            vertex.x = x;
-            vertex.y = y;
-            vertex.u = uv.X;
-            vertex.v = uv.Y;
-            vertex.color = color;
-        }
+        graphics?.Dispose();
+        bitmap?.Dispose();
     }
 
     private struct RenderState
