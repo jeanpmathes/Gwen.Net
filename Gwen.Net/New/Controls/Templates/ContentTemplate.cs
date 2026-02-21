@@ -39,7 +39,7 @@ public abstract class ContentTemplate
 
     private static Control CreateStringContent(String content)
     {
-        return new Border {Foreground = {Value = Brushes.Red}}; // todo: should put a text element here instead of border
+        return new Text {Content = {Value = content}};
     }
     
     /// <summary>
