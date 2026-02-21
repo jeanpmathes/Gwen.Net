@@ -121,6 +121,23 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     }
 
     [Fact]
+    public void ContentControl_WithStringContent_HasTextElement()
+    {
+        var registry = new ResourceRegistry();
+        registry.AddContentTemplate<String>(content => new Text { Content = { Value = content } });
+
+        var canvas = Canvas.Create(new MockRenderer(), registry);
+        var control = new ContentControl<String>
+        {
+            Content = { Value = "hello" }
+        };
+        canvas.Child = control;
+
+        Assert.Single(control.Children);
+        Assert.IsType<Text>(control.Children[0]);
+    }
+
+    [Fact]
     public void ContentControl_ChangingContentTemplate_UpdatesChild()
     {
         var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
