@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Texts;
+using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Rendering;
 
@@ -44,6 +45,9 @@ public abstract class Renderer : IRenderer
     
     /// <inheritdoc/>
     public abstract void DrawFilledRectangle(RectangleF rectangle, Brush brush);
+
+    /// <inheritdoc/>
+    public abstract void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush);
 
     /// <inheritdoc/>
     public abstract void Resize(Size size);
@@ -96,6 +100,20 @@ public abstract class Renderer : IRenderer
     }
     
     /// <summary>
+    /// Apply the scale factor to a thickness, scaling each edge accordingly.
+    /// </summary>
+    /// <param name="thickness">The thickness to scale.</param>
+    /// <returns>The scaled thickness.</returns>
+    protected ThicknessF ApplyScale(ThicknessF thickness)
+    {
+        return new ThicknessF(
+            thickness.Left * scale,
+            thickness.Top * scale,
+            thickness.Right * scale,
+            thickness.Bottom * scale);
+    }
+    
+    /// <summary>
     /// Apply the inverse of the scale factor to a point, effectively unscaling it.
     /// </summary>
     /// <param name="point">The point to unscale.</param>
@@ -134,5 +152,19 @@ public abstract class Renderer : IRenderer
         rectangle.Height /= scale;
 
         return rectangle;
+    }
+
+    /// <summary>
+    /// Apply the inverse of the scale factor to a thickness, effectively unscaling it.
+    /// </summary>
+    /// <param name="thickness">The thickness to unscale.</param>
+    /// <returns>The unscaled thickness.</returns>
+    protected ThicknessF ApplyInverseScale(ThicknessF thickness)
+    {
+        return new ThicknessF(
+            thickness.Left / scale,
+            thickness.Top / scale,
+            thickness.Right / scale,
+            thickness.Bottom / scale);
     }
 }

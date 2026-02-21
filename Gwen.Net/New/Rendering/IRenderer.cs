@@ -78,28 +78,19 @@ public interface IRenderer
     public void DrawFilledRectangle(RectangleF rectangle, Brush brush);
 
     /// <summary>
-    /// Draw a rectangle outline with a 1-unit wide border.
-    /// </summary>
-    /// <param name="rectangle">The rectangle to draw.</param>
-    /// <param name="brush">The brush to use.</param>
-    public void DrawLinedRectangle(RectangleF rectangle, Brush brush)
-    {
-        DrawLinedRectangle(rectangle, ThicknessF.One, brush);
-    }
-
-    /// <summary>
     /// Draw a rectangle outline with the specified border thickness.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="thickness">The thickness of each edge.</param>
     /// <param name="brush">The brush to use.</param>
-    public void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush)
-    {
-        DrawFilledRectangle(new RectangleF(rectangle.Left, rectangle.Top, rectangle.Width, thickness.Top), brush);
-        DrawFilledRectangle(new RectangleF(rectangle.Left, rectangle.Bottom - thickness.Bottom, rectangle.Width, thickness.Bottom), brush);
-        DrawFilledRectangle(new RectangleF(rectangle.Left, rectangle.Top + thickness.Top, thickness.Left, rectangle.Height - thickness.Top - thickness.Bottom), brush);
-        DrawFilledRectangle(new RectangleF(rectangle.Right - thickness.Right, rectangle.Top + thickness.Top, thickness.Right, rectangle.Height - thickness.Top - thickness.Bottom), brush);
-    }
+    public void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush);
+    
+    /// <summary>
+    /// Draw a rectangle outline with a default border thickness of 1 unit.
+    /// </summary>
+    /// <param name="rectangle">The rectangle to draw.</param>
+    /// <param name="brush">The brush to use.</param>
+    public void DrawLinedRectangle(RectangleF rectangle, Brush brush) => DrawLinedRectangle(rectangle, ThicknessF.One, brush);
     
     /// <summary>
     /// Resize the renderer's internal buffers to the specified size.

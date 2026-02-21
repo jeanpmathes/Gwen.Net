@@ -2,6 +2,7 @@ using System.Drawing;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Texts;
+using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.Tests.Unit.New.Rendering;
 
@@ -58,6 +59,11 @@ public class MockRenderer : Renderer
     }
 
     public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    {
+        
+    }
+
+    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush)
     {
         
     }

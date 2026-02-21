@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Texts;
+using Gwen.Net.New.Utilities;
 using OpenTK.Graphics.OpenGL;
 using Boolean = System.Boolean;
+using Brush = Gwen.Net.New.Graphics.Brush;
 using Font = Gwen.Net.New.Texts.Font;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
@@ -14,6 +16,7 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     private readonly Boolean restoreRenderState;
 
     private readonly Dictionary<Brush, System.Drawing.Brush> systemBrushes = [];
+    private readonly Dictionary<Brush, System.Drawing.Pen> systemPens = [];
     private readonly Dictionary<Font, System.Drawing.Font> systemFonts = [];
 
     private Int32 vao;
@@ -69,9 +72,7 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         
         if (isClipping && clipStack.Count > 0)
         {
-            // SetClipInDeviceSpace resets the transform and restores it from offsetStack,
-            // so no separate TranslateTransform call is needed here.
-            SetClipInDeviceSpace(clipStack.Peek());
+            ApplyClippingRectangle(clipStack.Peek());
         }
         else if (offsetStack.Count > 0)
         {
@@ -201,26 +202,23 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     {
         rectangle = ApplyScale(rectangle);
 
-        // Convert from local world-space to absolute device space by adding the current
-        // accumulated offset. This ensures intersections between clips from different
-        // ancestors are always computed in the same coordinate space.
         System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
             ? offsetStack.Peek()
-            : new System.Drawing.PointF(0f, 0f);
+            : new System.Drawing.PointF(x: 0f, y: 0f);
 
-        System.Drawing.RectangleF deviceRect = new(
-            rectangle.X + absoluteOffset.X,
-            rectangle.Y + absoluteOffset.Y,
-            rectangle.Width,
-            rectangle.Height);
+        System.Drawing.RectangleF effectiveRectangle = rectangle with
+        {
+            X = rectangle.X + absoluteOffset.X,
+            Y = rectangle.Y + absoluteOffset.Y
+        };
 
         if (clipStack.Count > 0)
-            deviceRect = System.Drawing.RectangleF.Intersect(clipStack.Peek(), deviceRect);
+            effectiveRectangle = System.Drawing.RectangleF.Intersect(clipStack.Peek(), effectiveRectangle);
 
-        clipStack.Push(deviceRect);
+        clipStack.Push(effectiveRectangle);
 
         if (isClipping)
-            SetClipInDeviceSpace(deviceRect);
+            ApplyClippingRectangle(effectiveRectangle);
     }
 
     public override void PopClip()
@@ -232,7 +230,7 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         graphics?.ResetClip();
 
         if (clipStack.Count > 0)
-            SetClipInDeviceSpace(clipStack.Peek());
+            ApplyClippingRectangle(clipStack.Peek());
     }
 
     public override void BeginClip()
@@ -242,15 +240,15 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         isClipping = true;
 
         if (clipStack.Count > 0)
-            SetClipInDeviceSpace(clipStack.Peek());
+            ApplyClippingRectangle(clipStack.Peek());
     }
 
-    private void SetClipInDeviceSpace(System.Drawing.RectangleF deviceRect)
+    private void ApplyClippingRectangle(System.Drawing.RectangleF effectiveRectangle)
     {
         if (graphics == null) return;
         
         graphics.ResetTransform();
-        graphics.SetClip(deviceRect, System.Drawing.Drawing2D.CombineMode.Replace);
+        graphics.SetClip(effectiveRectangle, System.Drawing.Drawing2D.CombineMode.Replace);
 
         System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
             ? offsetStack.Peek()
@@ -324,14 +322,35 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 
         rectangle = ApplyScale(rectangle);
 
-        DrawRectangle(rectangle, systemBrush);
-    }
-
-    private void DrawRectangle(System.Drawing.RectangleF rectangle, System.Drawing.Brush systemBrush)
-    {
         graphics?.FillRectangle(systemBrush, rectangle);
     }
-    
+
+    public override void DrawLinedRectangle(System.Drawing.RectangleF rectangle, ThicknessF thickness, Brush brush)
+    {
+        System.Drawing.Brush? systemBrush = GetBrush(brush);
+        
+        if (systemBrush == null) return;
+
+        rectangle = ApplyScale(rectangle);
+        thickness = ApplyScale(thickness);
+        
+        if (thickness.IsUniform)
+        {
+            System.Drawing.Pen? systemPen = GetPen(brush, thickness.Left);
+            if (systemPen == null) return;
+
+            Single halfT = thickness.Left / 2f;
+            graphics?.DrawRectangle(systemPen, rectangle.X + halfT, rectangle.Y + halfT, rectangle.Width - thickness.Left, rectangle.Height - thickness.Left);
+        }
+        else
+        {
+            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y, thickness.Left, rectangle.Height);
+            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y, rectangle.Width, thickness.Top);
+            graphics?.FillRectangle(systemBrush, rectangle.X + rectangle.Width - thickness.Right, rectangle.Y, thickness.Right, rectangle.Height);
+            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y + rectangle.Height - thickness.Bottom, rectangle.Width, thickness.Bottom);
+        }
+    }
+
     #endregion RECTANGLES
 
     #region MAPPINGS
@@ -352,6 +371,24 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             systemBrushes[brush] = systemBrush;
         
         return systemBrush;
+    }
+    
+    private System.Drawing.Pen? GetPen(Brush brush, Single thickness)
+    {
+        if (systemPens.TryGetValue(brush, out System.Drawing.Pen? systemPen))
+        {
+            systemPen.Width = thickness;
+            return systemPen;
+        }
+
+        System.Drawing.Brush? systemBrush = GetBrush(brush);
+        
+        if (systemBrush == null) return null;
+
+        systemPen = new System.Drawing.Pen(systemBrush, thickness);
+        systemPens[brush] = systemPen;
+        
+        return systemPen;
     }
     
     private System.Drawing.Font GetFont(Font font)
