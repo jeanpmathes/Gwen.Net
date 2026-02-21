@@ -76,9 +76,12 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// <summary>
     /// Set the scale of the canvas.
     /// </summary>
-    /// <param name="newScale">The scale factor.</param>
+    /// <param name="newScale">The scale factor, must be greater than zero.</param>
     public void SetScale(Single newScale)
     {
+        if (newScale <= 0)
+            throw new ArgumentOutOfRangeException(nameof(newScale), newScale, "Scale must be greater than zero.");
+        
         Scale = newScale;
         
         onlyRenderer.Scale(newScale);
