@@ -279,9 +279,9 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     
     #region TEXT
 
-    public override IFormattedText CreateFormattedText(String text, Font font)
+    public override IFormattedText CreateFormattedText(String text, Font font, TextOptions options)
     {
-        return new FormattedText(this, text, font);
+        return new FormattedText(this, text, font, options);
     }
 
     public System.Drawing.SizeF MeasureText(FormattedText text, System.Drawing.SizeF availableSize)

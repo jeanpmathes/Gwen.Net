@@ -41,7 +41,7 @@ public abstract class Renderer : IRenderer
     public abstract Boolean IsClipEmpty();
     
     /// <inheritdoc/>
-    public abstract IFormattedText CreateFormattedText(String text, Font font);
+    public abstract IFormattedText CreateFormattedText(String text, Font font, TextOptions options);
     
     /// <inheritdoc/>
     public abstract void DrawFilledRectangle(RectangleF rectangle, Brush brush);

@@ -20,7 +20,12 @@ public class Text : TextBase<Text>
             FontStyle = {Binding = Binding.Direct(control.FontStyle)},
             FontWeight = {Binding = Binding.Direct(control.FontWeight)},
             FontStretch = {Binding = Binding.Direct(control.FontStretch)},
-            
+
+            Wrapping = {Binding = Binding.Direct(control.TextWrapping)},
+            Alignment = {Binding = Binding.Direct(control.TextAlignment)},
+            Trimming = {Binding = Binding.Direct(control.TextTrimming)},
+            LineHeight = {Binding = Binding.Direct(control.LineHeight)},
+
             Content = {Binding = Binding.Direct(control.Content)}
         });
     }

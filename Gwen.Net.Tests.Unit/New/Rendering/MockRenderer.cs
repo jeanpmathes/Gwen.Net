@@ -53,7 +53,7 @@ public class MockRenderer : Renderer
         return false;
     }
 
-    public override IFormattedText CreateFormattedText(String text, Font font)
+    public override IFormattedText CreateFormattedText(String text, Font font, TextOptions options)
     {
         return new MockFormattedText();
     }

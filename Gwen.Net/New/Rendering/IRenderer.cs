@@ -63,12 +63,13 @@ public interface IRenderer
     public Boolean IsClipEmpty();
 
     /// <summary>
-    /// Create a formatted text object for the given text and font.
+    /// Create a formatted text object for the given text, font, and layout options.
     /// </summary>
     /// <param name="text">The text to format.</param>
     /// <param name="font">The font to use for formatting the text.</param>
+    /// <param name="options">The layout options such as wrapping, alignment, trimming, and line height.</param>
     /// <returns>The formatted text object.</returns>
-    IFormattedText CreateFormattedText(String text, Font font);
+    IFormattedText CreateFormattedText(String text, Font font, TextOptions options);
     
     /// <summary>
     /// Draw a filled rectangle.

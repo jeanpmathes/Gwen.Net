@@ -22,7 +22,7 @@ public class TextTests() : VisualTestBase<Gwen.Net.New.Visuals.Text>(() => new G
     {
         public TrackableFormattedText? LastCreatedText { get; private set; }
 
-        public override IFormattedText CreateFormattedText(String text, Font font)
+        public override IFormattedText CreateFormattedText(String text, Font font, TextOptions options)
         {
             LastCreatedText = new TrackableFormattedText();
             return LastCreatedText;
