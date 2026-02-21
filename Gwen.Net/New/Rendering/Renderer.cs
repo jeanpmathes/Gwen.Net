@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Texts;
 
 namespace Gwen.Net.New.Rendering;
 
@@ -39,6 +40,9 @@ public abstract class Renderer : IRenderer
     public abstract Boolean IsClipEmpty();
     
     /// <inheritdoc/>
+    public abstract IFormattedText CreateFormattedText(String text, Font font);
+    
+    /// <inheritdoc/>
     public abstract void DrawFilledRectangle(RectangleF rectangle, Brush brush);
 
     /// <inheritdoc/>
@@ -55,7 +59,7 @@ public abstract class Renderer : IRenderer
     /// </summary>
     /// <param name="point">The point to scale.</param>
     /// <returns>>The scaled point.</returns>
-    protected PointF Scale(PointF point)
+    protected PointF ApplyScale(PointF point)
     {
         point.X *= scale;
         point.Y *= scale;
@@ -64,16 +68,70 @@ public abstract class Renderer : IRenderer
     }
     
     /// <summary>
+    /// Scale a size by applying the scale factor.
+    /// </summary>
+    /// <param name="size">The size to scale.</param>
+    /// <returns>The scaled size.</returns>
+    protected SizeF ApplyScale(SizeF size)
+    {
+        size.Width *= scale;
+        size.Height *= scale;
+
+        return size;
+    }
+    
+    /// <summary>
     /// Scale a rectangle by applying the scale factor.
     /// </summary>
     /// <param name="rectangle">The rectangle to scale.</param>
     /// <returns>The scaled rectangle.</returns>
-    protected RectangleF Scale(RectangleF rectangle)
+    protected RectangleF ApplyScale(RectangleF rectangle)
     {
         rectangle.X *= scale;
         rectangle.Y *= scale;
         rectangle.Width *= scale;
         rectangle.Height *= scale;
+
+        return rectangle;
+    }
+    
+    /// <summary>
+    /// Apply the inverse of the scale factor to a point, effectively unscaling it.
+    /// </summary>
+    /// <param name="point">The point to unscale.</param>
+    /// <returns>The unscaled point.</returns>
+    protected PointF ApplyInverseScale(PointF point)
+    {
+        point.X /= scale;
+        point.Y /= scale;
+
+        return point;
+    }
+    
+    /// <summary>
+    /// Apply the inverse of the scale factor to a size, effectively unscaling it.
+    /// </summary>
+    /// <param name="size">The size to unscale.</param>
+    /// <returns>The unscaled size.</returns>
+    protected SizeF ApplyInverseScale(SizeF size)
+    {
+        size.Width /= scale;
+        size.Height /= scale;
+
+        return size;
+    }
+    
+    /// <summary>
+    /// Apply the inverse of the scale factor to a rectangle, effectively unscaling it.
+    /// </summary>
+    /// <param name="rectangle">The rectangle to unscale.</param>
+    /// <returns>The unscaled rectangle.</returns>
+    protected RectangleF ApplyInverseScale(RectangleF rectangle)
+    {
+        rectangle.X /= scale;
+        rectangle.Y /= scale;
+        rectangle.Width /= scale;
+        rectangle.Height /= scale;
 
         return rectangle;
     }

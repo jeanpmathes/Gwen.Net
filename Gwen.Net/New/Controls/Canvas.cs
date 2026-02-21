@@ -42,7 +42,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
             Context = new Context(registry)
         };
         
-        canvas.SetAsRoot();
+        canvas.SetAsRoot(renderer);
         canvas.Visualize();
         
         return canvas;
@@ -123,7 +123,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// </summary>
     public void Render()
     {
-        Visualization.GetValue()?.Render(onlyRenderer);
+        Visualization.GetValue()?.Render();
     }
     
     /// <inheritdoc/>

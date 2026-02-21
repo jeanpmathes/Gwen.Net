@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Texts;
 using OpenTK.Graphics.OpenGL;
 using Boolean = System.Boolean;
+using Font = Gwen.Net.New.Texts.Font;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
 
@@ -11,7 +13,8 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     private readonly Shader shader;
     private readonly Boolean restoreRenderState;
 
-    private readonly Dictionary<Brush, System.Drawing.Brush> brushes = [];
+    private readonly Dictionary<Brush, System.Drawing.Brush> systemBrushes = [];
+    private readonly Dictionary<Font, System.Drawing.Font> systemFonts = [];
 
     private Int32 vao;
     private Int32 texture;
@@ -64,14 +67,17 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         bitmap = new System.Drawing.Bitmap(size.Width, size.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         graphics = System.Drawing.Graphics.FromImage(bitmap);
         
-        if (offsetStack.Count > 0)
+        if (isClipping && clipStack.Count > 0)
+        {
+            // SetClipInDeviceSpace resets the transform and restores it from offsetStack,
+            // so no separate TranslateTransform call is needed here.
+            SetClipInDeviceSpace(clipStack.Peek());
+        }
+        else if (offsetStack.Count > 0)
         {
             System.Drawing.PointF offset = offsetStack.Peek();
             graphics.TranslateTransform(offset.X, offset.Y);
         }
-        
-        if (isClipping && clipStack.Count > 0)
-            graphics.SetClip(clipStack.Peek(), System.Drawing.Drawing2D.CombineMode.Replace);
     }
 
     private void Draw()
@@ -135,7 +141,25 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             GL.Enable(EnableCap.DepthTest);
         }
     }
+    
+    public override void Resize(System.Drawing.Size size)
+    {
+        GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
+        
+        ResizeTargets(size);
+    }
 
+    private struct RenderState
+    {
+        public Int32 alphaFunc;
+        public Single alphaRef;
+        public Int32 blendDst;
+        public Int32 blendSrc;
+
+        public Boolean depthTestEnabled;
+        public Boolean blendEnabled;
+    }
+    
     #endregion TARGETS
     
     #region TRANSFORM & CLIP
@@ -147,7 +171,7 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     
     public override void PushOffset(System.Drawing.PointF offset)
     {
-        offset = Scale(offset);
+        offset = ApplyScale(offset);
         
         graphics?.TranslateTransform(offset.X, offset.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
         
@@ -175,47 +199,65 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     
     public override void PushClip(System.Drawing.RectangleF rectangle)
     {
-        rectangle = Scale(rectangle);
-        
-        if (isClipping)
-            graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Intersect);
-        
+        rectangle = ApplyScale(rectangle);
+
+        // Convert from local world-space to absolute device space by adding the current
+        // accumulated offset. This ensures intersections between clips from different
+        // ancestors are always computed in the same coordinate space.
+        System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
+            ? offsetStack.Peek()
+            : new System.Drawing.PointF(0f, 0f);
+
+        System.Drawing.RectangleF deviceRect = new(
+            rectangle.X + absoluteOffset.X,
+            rectangle.Y + absoluteOffset.Y,
+            rectangle.Width,
+            rectangle.Height);
+
         if (clipStack.Count > 0)
-        {
-            System.Drawing.RectangleF previousClip = clipStack.Peek();
-            rectangle = System.Drawing.RectangleF.Intersect(previousClip, rectangle);
-        }
-        
-        clipStack.Push(rectangle);
+            deviceRect = System.Drawing.RectangleF.Intersect(clipStack.Peek(), deviceRect);
+
+        clipStack.Push(deviceRect);
+
+        if (isClipping)
+            SetClipInDeviceSpace(deviceRect);
     }
-    
+
     public override void PopClip()
     {
         clipStack.Pop();
-        
-        if (isClipping)
-            graphics?.ResetClip();
-        
+
+        if (!isClipping) return;
+
+        graphics?.ResetClip();
+
         if (clipStack.Count > 0)
-        {
-            System.Drawing.RectangleF rectangle = clipStack.Peek();
-            
-            if (isClipping)
-                graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Replace);
-        }
+            SetClipInDeviceSpace(clipStack.Peek());
     }
-    
+
     public override void BeginClip()
     {
         if (isClipping) return;
-        
+
         isClipping = true;
-        
+
         if (clipStack.Count > 0)
-        {
-            System.Drawing.RectangleF rectangle = clipStack.Peek();
-            graphics?.SetClip(rectangle, System.Drawing.Drawing2D.CombineMode.Replace);
-        }
+            SetClipInDeviceSpace(clipStack.Peek());
+    }
+
+    private void SetClipInDeviceSpace(System.Drawing.RectangleF deviceRect)
+    {
+        if (graphics == null) return;
+        
+        graphics.ResetTransform();
+        graphics.SetClip(deviceRect, System.Drawing.Drawing2D.CombineMode.Replace);
+
+        System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
+            ? offsetStack.Peek()
+            : new System.Drawing.PointF(x: 0f, y: 0f);
+
+        if (absoluteOffset.X != 0f || absoluteOffset.Y != 0f)
+            graphics.TranslateTransform(absoluteOffset.X, absoluteOffset.Y);
     }
     
     public override void EndClip() // todo: check when this is ever called, maybe this can be simplified
@@ -237,13 +279,50 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     
     #endregion TRANSFORM & CLIP
     
+    #region TEXT
+
+    public override IFormattedText CreateFormattedText(String text, Font font)
+    {
+        return new FormattedText(this, text, font);
+    }
+
+    public System.Drawing.SizeF MeasureText(FormattedText text, System.Drawing.SizeF availableSize)
+    {
+        availableSize = ApplyScale(availableSize);
+        
+        if (graphics == null) return System.Drawing.SizeF.Empty;
+
+        System.Drawing.Font systemFont = GetFont(text.Font);
+        
+        System.Drawing.SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
+        
+        return ApplyInverseScale(measuredSize);
+    }
+    
+    public void DrawText(FormattedText text, System.Drawing.RectangleF rectangle, Brush brush)
+    {
+        rectangle = ApplyScale(rectangle);
+        
+        System.Drawing.Brush? systemBrush = GetBrush(brush);
+        
+        if (systemBrush == null) return;
+        
+        System.Drawing.Font systemFont = GetFont(text.Font);
+        
+        graphics?.DrawString(text.Text, systemFont, systemBrush, rectangle, text.StringFormat);
+    }
+    
+    #endregion TEXT
+    
+    #region RECTANGLES
+    
     public override void DrawFilledRectangle(System.Drawing.RectangleF rectangle, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
         
         if (systemBrush == null) return;
 
-        rectangle = Scale(rectangle);
+        rectangle = ApplyScale(rectangle);
 
         DrawRectangle(rectangle, systemBrush);
     }
@@ -252,10 +331,14 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     {
         graphics?.FillRectangle(systemBrush, rectangle);
     }
+    
+    #endregion RECTANGLES
 
+    #region MAPPINGS
+    
     private System.Drawing.Brush? GetBrush(Brush brush)
     {
-        if (brushes.TryGetValue(brush, out System.Drawing.Brush? systemBrush))
+        if (systemBrushes.TryGetValue(brush, out System.Drawing.Brush? systemBrush))
             return systemBrush;
 
         systemBrush = brush switch
@@ -266,22 +349,47 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         };
         
         if (systemBrush != null)
-            brushes[brush] = systemBrush;
+            systemBrushes[brush] = systemBrush;
         
         return systemBrush;
     }
     
-    public override void Resize(System.Drawing.Size size)
+    private System.Drawing.Font GetFont(Font font)
     {
-        GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
+        if (systemFonts.TryGetValue(font, out System.Drawing.Font? systemFont))
+            return systemFont;
+
+        systemFont = new System.Drawing.Font(font.Family, font.Size, GetFontStyleFromTextsStyle(font.Style) | GetFontStyleFromTextsWeight(font.Weight));
         
-        ResizeTargets(size);
+        systemFonts[font] = systemFont;
+        
+        return systemFont;
     }
+    
+    private static System.Drawing.FontStyle GetFontStyleFromTextsStyle(Style style)
+    {
+        return style switch
+        {
+            Style.Normal => System.Drawing.FontStyle.Regular,
+            Style.Italic or Style.Oblique => System.Drawing.FontStyle.Italic,
+            _ => System.Drawing.FontStyle.Regular
+        };
+    }
+    
+    private static System.Drawing.FontStyle GetFontStyleFromTextsWeight(Weight weight)
+    {
+        return weight >= Weight.SemiBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+    }
+    
+    #endregion MAPPINGS
 
     public void Dispose()
     {
-        foreach (System.Drawing.Brush brush in brushes.Values)
+        foreach (System.Drawing.Brush brush in systemBrushes.Values)
             brush.Dispose();
+        
+        foreach (System.Drawing.Font font in systemFonts.Values)
+            font.Dispose();
         
         GL.DeleteTexture(texture);
         GL.DeleteVertexArray(vao);
@@ -290,16 +398,5 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         
         graphics?.Dispose();
         bitmap?.Dispose();
-    }
-
-    private struct RenderState
-    {
-        public Int32 alphaFunc;
-        public Single alphaRef;
-        public Int32 blendDst;
-        public Int32 blendSrc;
-
-        public Boolean depthTestEnabled;
-        public Boolean blendEnabled;
     }
 }

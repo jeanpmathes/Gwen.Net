@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Texts;
 using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Rendering;
@@ -60,6 +61,14 @@ public interface IRenderer
     /// </summary>
     /// <returns>True if the clipping rectangle is empty, false otherwise.</returns>
     public Boolean IsClipEmpty();
+
+    /// <summary>
+    /// Create a formatted text object for the given text and font.
+    /// </summary>
+    /// <param name="text">The text to format.</param>
+    /// <param name="font">The font to use for formatting the text.</param>
+    /// <returns>The formatted text object.</returns>
+    IFormattedText CreateFormattedText(String text, Font font);
     
     /// <summary>
     /// Draw a filled rectangle.
@@ -90,52 +99,6 @@ public interface IRenderer
         DrawFilledRectangle(new RectangleF(rectangle.Left, rectangle.Bottom - thickness.Bottom, rectangle.Width, thickness.Bottom), brush);
         DrawFilledRectangle(new RectangleF(rectangle.Left, rectangle.Top + thickness.Top, thickness.Left, rectangle.Height - thickness.Top - thickness.Bottom), brush);
         DrawFilledRectangle(new RectangleF(rectangle.Right - thickness.Right, rectangle.Top + thickness.Top, thickness.Right, rectangle.Height - thickness.Top - thickness.Bottom), brush);
-    }
-
-    /// <summary>
-    /// Draw a vertical line starting at the specified point with the specified length and color.
-    /// </summary>
-    /// <param name="start">The start point.</param>
-    /// <param name="length">The length of the line.</param>
-    /// <param name="brush">The brush to use.</param>
-    public void DrawVerticalLine(PointF start, Single length, Brush brush)
-    {
-        DrawVerticalLine(start, length, width: 1, brush);
-    }
-
-    /// <summary>
-    /// Draw a vertical line starting at the specified point with the specified length, width, and color.
-    /// </summary>
-    /// <param name="start">The start point.</param>
-    /// <param name="length">The length of the line.</param>
-    /// <param name="width">The width of the line.</param>
-    /// <param name="brush">The brush to use.</param>
-    public void DrawVerticalLine(PointF start, Single length, Single width, Brush brush)
-    {
-        DrawFilledRectangle(new RectangleF(start.X, start.Y, width, length), brush);
-    }
-
-    /// <summary>
-    /// Draw a horizontal line starting at the specified point with the specified length and color.
-    /// </summary>
-    /// <param name="start">The start point.</param>
-    /// <param name="length">The length of the line.</param>
-    /// <param name="brush">The brush to use.</param>
-    public void DrawHorizontalLine(PointF start, Single length, Brush brush)
-    {
-        DrawHorizontalLine(start, length, width: 1, brush);
-    }
-
-    /// <summary>
-    /// Draw a horizontal line starting at the specified point with the specified length, width, and color.
-    /// </summary>
-    /// <param name="start">The start point.</param>
-    /// <param name="length">The length of the line.</param>
-    /// <param name="width">The width (height) of the line.</param>
-    /// <param name="brush">The brush to use.</param>
-    public void DrawHorizontalLine(PointF start, Single length, Single width, Brush brush)
-    {
-        DrawFilledRectangle(new RectangleF(start.X, start.Y, length, width), brush);
     }
     
     /// <summary>

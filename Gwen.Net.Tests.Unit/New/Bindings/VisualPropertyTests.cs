@@ -44,7 +44,7 @@ public class VisualPropertyTests
     {
         var visual = new CountingVisual();
         var source = new Slot<Int32>(3);
-        VisualProperty<Int32> property = VisualProperty.Create(visual, Binding.Transform(source, x => x));
+        VisualProperty<Int32> property = VisualProperty.Create(visual, Binding.Transform(source, x => x), Invalidation.None);
 
         var events = 0;
         property.ValueChanged += (_, _) => events++;

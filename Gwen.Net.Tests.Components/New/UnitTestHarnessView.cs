@@ -27,13 +27,13 @@ public static class UnitTestHarnessView
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},
                         VerticalAlignment = {Value = VerticalAlignment.Center},
                     },
-                    new Border
+                    new Text
                     {
-                        BorderThickness = {Value = new ThicknessF(3)},
-                        MinimumWidth = {Value = 500f},
-                        MinimumHeight = {Value = 250f},
-                        HorizontalAlignment = {Value = HorizontalAlignment.Center},
-                        VerticalAlignment = {Value = VerticalAlignment.Center},
+                        Content = {Value = "Hello, World!"}
+                    },
+                    new Text
+                    {
+                        Content = {Value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
                     }
                 }
             }

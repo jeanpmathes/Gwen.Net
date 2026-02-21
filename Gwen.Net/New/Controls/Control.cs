@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Styles;
 using Gwen.Net.New.Utilities;
 using Gwen.Net.New.Visuals;
@@ -97,7 +98,7 @@ public abstract class Control
     /// <summary>
     /// Whether this control is attached to a tree with a root control.
     /// </summary>
-    protected Boolean IsAttachedToRoot { get; private set; }
+    protected Boolean IsAttached { get; private set; }
 
     /// <summary>
     /// Whether this control is the root control of the tree.
@@ -105,11 +106,14 @@ public abstract class Control
     private protected Boolean IsRoot { get; set; }
     
     /// <summary>
-    /// Set this control as the root of a tree.
+    /// Set this control as the root of the tree.
     /// May only be called by the canvas controls.
     /// </summary>
-    private protected void SetAsRoot()
+    /// <param name="uiRenderer">The renderer that will be used to render the visuals of this control and its children.</param>
+    private protected void SetAsRoot(IRenderer uiRenderer)
     {
+        renderer = uiRenderer;
+        
         IsRoot = true;
 
         Attach();
@@ -160,7 +164,7 @@ public abstract class Control
         children.Add(child);
         child.Parent = this;
 
-        if (IsAttachedToRoot)
+        if (IsAttached)
             child.Attach();
 
         OnChildAdded(child);
@@ -179,7 +183,7 @@ public abstract class Control
         children.Add(child);
         child.Parent = this;
 
-        if (IsAttachedToRoot)
+        if (IsAttached)
             child.Attach();
 
         OnChildAdded(child);
@@ -229,8 +233,8 @@ public abstract class Control
 
     private void Attach()
     {
-        if (IsAttachedToRoot) return;
-        IsAttachedToRoot = true;
+        if (IsAttached) return;
+        IsAttached = true;
 
         InvalidateContext();
         OnAttach();
@@ -256,9 +260,9 @@ public abstract class Control
 
     private void Detach(Boolean isReparenting)
     {
-        if (!IsAttachedToRoot) return;
-        IsAttachedToRoot = IsRoot;
-        if (IsAttachedToRoot) return;
+        if (!IsAttached) return;
+        IsAttached = IsRoot;
+        if (IsAttached) return;
 
         InvalidateContext();
         OnDetach(isReparenting);
@@ -352,6 +356,8 @@ public abstract class Control
     #endregion CONTEXT
     
     #region VISUALIZATION / TEMPLATING
+
+    private protected IRenderer? renderer;
     
     /// <summary>
     /// Build or refresh the visual tree that represents this control.
@@ -430,9 +436,9 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     private void AnchorVisualization()
     {
         Visualization.GetValue()?.SetAsAnchor(this);
-        
+
         if (IsRoot)
-            Visualization.GetValue()?.SetAsRoot();
+            Visualization.GetValue()?.SetAsRoot(renderer!);
     }
 
     private void UnanchorVisualization()

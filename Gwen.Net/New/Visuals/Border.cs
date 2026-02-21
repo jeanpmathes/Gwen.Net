@@ -72,9 +72,9 @@ public class Border : Visual
     }
 
     /// <inheritdoc/>
-    protected override void OnRender(IRenderer renderer)
+    protected override void OnRender()
     {
-        renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
-        renderer.DrawLinedRectangle(RenderBounds, BorderThickness.GetValue(), BorderBrush.GetValue());
+        Renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
+        Renderer.DrawLinedRectangle(RenderBounds, BorderThickness.GetValue(), BorderBrush.GetValue());
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using Gwen.Net.New.Input;
-using Gwen.Net.New.Rendering;
 
 namespace Gwen.Net.New.Visuals;
 
@@ -39,20 +38,20 @@ public class Canvas : Visual
     }
     
     /// <inheritdoc/>
-    public override void Render(IRenderer renderer)
+    public override void Render()
     {
-        renderer.Begin();
+        Renderer.Begin();
         
-        renderer.PushOffset(Point.Empty);
-        renderer.PushClip(Bounds);
+        Renderer.PushOffset(Point.Empty);
+        Renderer.PushClip(Bounds);
         
-        base.Render(renderer);
+        base.Render();
         
-        renderer.EndClip();
+        Renderer.EndClip();
         
-        renderer.PopClip();
-        renderer.PopOffset();
+        Renderer.PopClip();
+        Renderer.PopOffset();
         
-        renderer.End();
+        Renderer.End();
     }
 }

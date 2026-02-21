@@ -30,7 +30,7 @@ public class VisualProperty : IValueSource
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static VisualProperty<T> Create<T>(Visual owner, Binding<T> defaultBinding, Invalidation invalidation = Invalidation.None)
+    public static VisualProperty<T> Create<T>(Visual owner, Binding<T> defaultBinding, Invalidation invalidation)
     {
         return new VisualProperty<T>(owner, invalidation, defaultBinding);
     }
@@ -43,9 +43,41 @@ public class VisualProperty : IValueSource
     /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static VisualProperty<T> Create<T>(Visual owner, T defaultValue, Invalidation invalidation = Invalidation.None)
+    public static VisualProperty<T> Create<T>(Visual owner, T defaultValue, Invalidation invalidation)
     {
         return Create(owner, Binding.Constant(defaultValue), invalidation);
+    }
+    
+    /// <summary>
+    /// Create a new property with the given default binding, invalidation behavior and a callback for when the value changes.
+    /// </summary>
+    /// <param name="owner">The visual that owns the property.</param>
+    /// <param name="defaultBinding">The default binding for the property.</param>
+    /// <param name="onChanged">A callback that is invoked when the property value changes. The new value is passed as an argument.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
+    /// <typeparam name="T">The type of value stored in the property.</typeparam>
+    /// <returns>The created property.</returns>
+    public static VisualProperty<T> Create<T>(Visual owner, Binding<T> defaultBinding, Action<T> onChanged, Invalidation invalidation = Invalidation.None)
+    {
+        VisualProperty<T> property = Create(owner, defaultBinding, invalidation);
+        property.ValueChanged += (_, _) => onChanged(property.GetValue());
+        return property;
+    }
+    
+    /// <summary>
+    /// Create a new property with a constant default value, invalidation behavior and a callback for when the value changes.
+    /// </summary>
+    /// <param name="owner">The visual that owns the property.</param>
+    /// <param name="defaultValue">The default value for the property.</param>
+    /// <param name="onChanged">A callback that is invoked when the property value changes. The new value is passed as an argument.</param>
+    /// <param name="invalidation">The invalidation behavior when the property value changes.</param>
+    /// <typeparam name="T">The type of value stored in the property.</typeparam>
+    /// <returns>The created property.</returns>
+    public static VisualProperty<T> Create<T>(Visual owner, T defaultValue, Action<T> onChanged, Invalidation invalidation = Invalidation.None)
+    {
+        VisualProperty<T> property = Create(owner, defaultValue, invalidation);
+        property.ValueChanged += (_, _) => onChanged(property.GetValue());
+        return property;
     }
     
     /// <summary>
@@ -220,7 +252,7 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
     #endregion LOCAL
 
     /// <inheritdoc/>
-    public override String? ToString()
+    public override String ToString()
     {
         return $"{{{GetValue()?.ToString()}}}";
     }

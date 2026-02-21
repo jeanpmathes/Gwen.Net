@@ -124,9 +124,9 @@ public abstract class Visual
     #region HIERARCHY
 
     /// <summary>
-    /// Whether this visual is attached to a template root (or is a template root itself).
+    /// Whether this visual is attached to the visual root.
     /// </summary>
-    protected Boolean IsAttachedToTemplate { get; private set; }
+    protected Boolean IsAttached { get; private set; }
     
     /// <summary>
     /// Whether this visual is the root visual of the tree.
@@ -137,8 +137,11 @@ public abstract class Visual
     /// Set this visual as the root of a tree.
     /// May only be called by the code within <see cref="Control"/>.
     /// </summary>
-    internal void SetAsRoot()
+    /// <param name="uiRenderer">The renderer to use for this visual and its subtree.</param>
+    internal void SetAsRoot(IRenderer uiRenderer)
     {
+        renderer = uiRenderer;
+        
         IsRoot = true;
         
         Attach(TemplateOwner.GetValue()!);
@@ -150,6 +153,8 @@ public abstract class Visual
     /// </summary>
     internal void UnsetAsRoot()
     {
+        renderer = null;
+        
         IsRoot = false;
         
         Detach(isReparenting: false);
@@ -232,7 +237,7 @@ public abstract class Visual
         children.Add(child);
         child.Parent = this;
 
-        if (IsAttachedToTemplate)
+        if (IsAttached)
             child.Attach(TemplateOwner.GetValue()!);
 
         HandleChildAdded(child);
@@ -251,7 +256,7 @@ public abstract class Visual
         children.Add(child);
         child.Parent = this;
 
-        if (IsAttachedToTemplate)
+        if (IsAttached)
             child.Attach(TemplateOwner.GetValue()!);
 
         HandleChildAdded(child);
@@ -326,13 +331,14 @@ public abstract class Visual
     /// <param name="newOwner">The control that owns the template for this visual subtree.</param>
     private void Attach(Control newOwner)
     {
-        if (IsAttachedToTemplate) return;
-        IsAttachedToTemplate = true;
+        if (IsAttached) return;
+        IsAttached = true;
         
         if (IsAnchor.GetValue())
             newOwner = TemplateOwner.GetValue()!;
         
         templateOwner.SetValue(newOwner);
+        renderer ??= Parent?.renderer;
 
         OnAttach();
         AttachedToRoot?.Invoke(this, EventArgs.Empty);
@@ -361,14 +367,15 @@ public abstract class Visual
     /// <param name="isReparenting">Whether detaching happens as part of reparenting.</param>
     private void Detach(Boolean isReparenting)
     {
-        if (!IsAttachedToTemplate) return;
-        IsAttachedToTemplate = IsRoot;
-        if (IsAttachedToTemplate) return;
+        if (!IsAttached) return;
+        IsAttached = IsRoot;
+        if (IsAttached) return;
 
         OnDetach(isReparenting);
         DetachedFromRoot?.Invoke(this, EventArgs.Empty);
 
         templateOwner.SetValue(null);
+        renderer = null;
         
         foreach (Visual child in children)
         {
@@ -670,20 +677,23 @@ public abstract class Visual
 
     #region RENDERING
 
+    private IRenderer? renderer;
+    
     private Boolean isRenderValid;
     
     /// <summary>
     ///     Determines whether the visual should be clipped to its bounds while rendering.
     /// </summary>
     protected virtual Boolean ShouldClip => true;
-    
+
     /// <summary>
     /// Render this visual using the specified renderer.
-    /// For custom rendering, generally override <see cref="OnRender(IRenderer)"/> instead of this method, as this method handles important setup and teardown logic.
+    /// For custom rendering, generally override <see cref="OnRender()"/> instead of this method, as this method handles important setup and teardown logic.
     /// </summary>
-    /// <param name="renderer">The renderer to use.</param>
-    public virtual void Render(IRenderer renderer)
+    public virtual void Render()
     {
+        if (renderer == null) return;
+        
         PrepareRender();
         
         renderer.PushOffset(Bounds.Location);
@@ -722,11 +732,11 @@ public abstract class Visual
                 renderer.BeginClip();
             }
         
-            OnRender(renderer);
+            OnRender();
 
             foreach (Visual child in children)
             {
-                child.Render(renderer);
+                child.Render();
             }
         }
     }
@@ -747,15 +757,20 @@ public abstract class Visual
         if (!isArrangeValid)
             Arrange(Bounds);
     }
-
+    
+    /// <summary>
+    /// Get the renderer to render this visual with.
+    /// Is guaranteed to be non-null in <see cref="OnRender"/> and when attached.
+    /// </summary>
+    protected IRenderer Renderer => renderer!;
+    
     /// <summary>
     /// Called when this visual should render itself.
     /// Override this to implement custom rendering logic.
     /// </summary>
-    /// <param name="renderer">The renderer to use.</param>
-    protected virtual void OnRender(IRenderer renderer)
+    protected virtual void OnRender()
     {
-        renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
+        Renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
     }
     
     /// <summary>
