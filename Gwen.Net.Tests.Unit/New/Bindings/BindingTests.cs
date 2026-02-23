@@ -85,4 +85,129 @@ public class BindingTests
         Assert.Equal(expected: 210, binding.GetValue());
         Assert.Equal(expected: 3, events);
     }
+    
+    [Fact]
+    public void FlatTransform_ReturnsValueFromInitialInnerSource()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner = new(42);
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, _ => inner);
+
+        Assert.Equal(expected: 42, binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_WhenOuterChanges_SwitchesToNewInnerSource()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner1 = new(10);
+        Slot<Int32> inner2 = new(20);
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+
+        outer.SetValue(1);
+
+        Assert.Equal(expected: 20, binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_WhenCurrentInnerChanges_RaisesValueChanged()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner = new(0);
+        var events = 0;
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, _ => inner);
+        binding.ValueChanged += (_, _) => events++;
+
+        inner.SetValue(99);
+
+        Assert.Equal(expected: 1, events);
+        Assert.Equal(expected: 99, binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_WhenOuterChanges_RaisesValueChanged()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner1 = new(10);
+        Slot<Int32> inner2 = new(20);
+        var events = 0;
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+        binding.ValueChanged += (_, _) => events++;
+
+        outer.SetValue(1);
+
+        Assert.Equal(expected: 1, events);
+    }
+
+    [Fact]
+    public void FlatTransform_AfterOuterChanges_NoLongerReactsToOldInner()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner1 = new(10);
+        Slot<Int32> inner2 = new(20);
+        var events = 0;
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+
+        outer.SetValue(1);
+
+        binding.ValueChanged += (_, _) => events++;
+        inner1.SetValue(99);
+
+        Assert.Equal(expected: 0, events);
+        Assert.Equal(expected: 20, binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_AfterOuterChanges_ReactsToNewInner()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<Int32> inner1 = new(10);
+        Slot<Int32> inner2 = new(20);
+
+        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+
+        outer.SetValue(1);
+        inner2.SetValue(30);
+
+        Assert.Equal(expected: 30, binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_Nullable_ReturnsDefaultWhenSelectorReturnsNull()
+    {
+        Slot<Int32> outer = new(0);
+
+        Binding<String> binding = Binding.FlatTransform<Int32, String>(outer, _ => null, defaultValue: "default");
+
+        Assert.Equal(expected: "default", binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_Nullable_WhenSelectorReturnsSource_ReturnsItsValue()
+    {
+        Slot<Int32> outer = new(0);
+        Slot<String> inner = new("hello");
+
+        Binding<String> binding = Binding.FlatTransform<Int32, String>(outer, _ => inner, defaultValue: "default");
+
+        Assert.Equal(expected: "hello", binding.GetValue());
+    }
+
+    [Fact]
+    public void FlatTransform_Nullable_WhenSelectorBecomesNull_ReturnsDefault()
+    {
+        Slot<Boolean> outer = new(true);
+        Slot<String> inner = new("hello");
+
+        Binding<String> binding = Binding.FlatTransform<Boolean, String>(outer, v => v ? inner : null, defaultValue: "default");
+
+        outer.SetValue(false);
+
+        Assert.Equal(expected: "default", binding.GetValue());
+    }
 }

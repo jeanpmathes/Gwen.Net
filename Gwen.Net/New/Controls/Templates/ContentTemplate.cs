@@ -1,5 +1,4 @@
 ﻿using System;
-using Gwen.Net.New.Graphics;
 
 namespace Gwen.Net.New.Controls.Templates;
 

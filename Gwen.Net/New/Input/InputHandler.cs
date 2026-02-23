@@ -11,16 +11,16 @@ namespace Gwen.Net.New.Input;
 public sealed class InputHandler
 {
     private readonly Visual root;
+
+    /// <summary>
+    /// The keyboard focus.
+    /// </summary>
+    public Focus KeyboardFocus { get; } = new();
     
     /// <summary>
-    /// The visual that currently has keyboard focus.
+    /// The pointer (mouse) focus.
     /// </summary>
-    public Visual? KeyboardFocus { get; private set; }
-    
-    /// <summary>
-    /// The visual that currently has pointer focus.
-    /// </summary>
-    public Visual? PointerFocus { get; private set; }
+    public Focus PointerFocus { get; } = new();
 
     /// <summary>
     /// Creates a new <seealso cref="InputHandler"/> with the specified root visual.
@@ -42,9 +42,9 @@ public sealed class InputHandler
         {
             var foundChild = false;
             
-            for (Int32 i = current.Children.Count - 1; i >= 0; i--)
+            for (Int32 index = current.Children.Count - 1; index >= 0; index--)
             {
-                Visual child = current.Children[i];
+                Visual child = current.Children[index];
 
                 if (!child.Bounds.Contains(child.RootPointToLocal(point))) 
                     continue;
@@ -62,12 +62,12 @@ public sealed class InputHandler
 
     private Visual? GetKeyboardTarget()
     {
-        return KeyboardFocus;
+        return KeyboardFocus.GetFocused();
     } 
     
     private Visual? GetPointerTarget(PointF point)
     {
-        return PointerFocus ?? PerformHitTest(point);
+        return PointerFocus.GetFocused() ?? PerformHitTest(point);
     }
 
     private static List<Visual> GetEventRoute(Visual target)
@@ -94,7 +94,7 @@ public sealed class InputHandler
             Visual visual = route[index];
             
             inputEvent.SetTarget(visual);
-            visual.OnInputPreview(inputEvent);
+            visual.HandleInputPreview(inputEvent);
             
             if (inputEvent.Handled) return;
         }
@@ -104,7 +104,7 @@ public sealed class InputHandler
             Visual visual = route[index];
             
             inputEvent.SetTarget(visual);
-            visual.OnInput(inputEvent);
+            visual.HandleInput(inputEvent);
 
             if (inputEvent.Handled) return;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Styles;
 
@@ -15,6 +16,7 @@ namespace Gwen.Net.New;
 public class Context
 {
     private readonly Context? parent;
+    private readonly Canvas? canvas;
 
     private readonly Dictionary<Type, Style>? styles;
     private readonly Dictionary<Type, ContentTemplate>? contentTemplates;
@@ -29,6 +31,8 @@ public class Context
     {
         this.parent = parent;
         
+        canvas = self.canvas ?? parent.canvas;
+        
         styles = self.styles;
         contentTemplates = self.contentTemplates;
     }
@@ -37,8 +41,11 @@ public class Context
     /// Create a context from a registry.
     /// </summary>
     /// <param name="registry">The registry to create the context from.</param>
-    internal Context(ResourceRegistry registry)
+    /// <param name="canvas">The root canvas.</param>
+    internal Context(ResourceRegistry registry, Canvas? canvas)
     {
+        this.canvas = canvas;
+        
         styles = new Dictionary<Type, Style>();
         
         foreach (Style style in registry.Styles)
@@ -59,7 +66,21 @@ public class Context
     /// While this scope is not parented, that is not an issue as elements will parent their local context when attached.
     /// </summary>
     private Context() {}
-    
+
+    /// <summary>
+    /// Get the keyboard focus for this context.
+    /// </summary>
+    /// <value>The keyboard focus for this context.</value>
+    /// <exception cref="InvalidOperationException">Thrown if the context is not attached to a root canvas.</exception>
+    public Focus KeyboardFocus => canvas?.Input?.KeyboardFocus ?? throw new InvalidOperationException("Cannot access keyboard focus on an unattached context.");
+
+    /// <summary>
+    /// Get the pointer (mouse) focus for this context.
+    /// </summary>
+    /// <value>The pointer focus for this context.</value>
+    /// <exception cref="InvalidOperationException">Thrown if the context is not attached to a root canvas.</exception>
+    public Focus PointerFocus => canvas?.Input?.PointerFocus ?? throw new InvalidOperationException("Cannot access pointer focus on an unattached context.");
+
     private IStyle<T>? GetStyleForType<T>(Type type) where T : Control
     {
         if (styles != null && styles.TryGetValue(type, out Style? potentialStyle) && potentialStyle is IStyle<T> style)
@@ -117,7 +138,7 @@ public class Context
     public static Context Default { get; } = new();
     
     /// <summary>
-    /// Create a context from a registry.
+    /// Create a context from a registry. Use this to create contexts for visuals in a single expression.
     /// </summary>
     /// <param name="build">The action to build the registry for the context.</param>
     /// <returns>A new instance of the <see cref="Context"/> class.</returns>
@@ -127,6 +148,6 @@ public class Context
         
         build(registry);
         
-        return new Context(registry);
+        return new Context(registry, canvas: null);
     }
 }

@@ -71,7 +71,7 @@ public class UnitTestGameWindow : GameWindow
 
     protected override void OnLoad()
     {
-        GL.ClearColor(Color4.MidnightBlue);
+        GL.ClearColor(Color4.White);
 
         gui.Load();
 

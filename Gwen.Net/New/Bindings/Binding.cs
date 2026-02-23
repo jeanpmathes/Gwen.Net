@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Gwen.Net.New.Bindings;
 
@@ -85,6 +85,89 @@ public static class Binding
     {
         return new Binding<TResult>(() => transformer(source1.GetValue(), source2.GetValue(), source3.GetValue()), setter: null, [source1, source2, source3]);
     }
+
+    /// <summary>
+    /// Like <see cref="Transform{TSource,TResult}"/>, but the selector returns an <see cref="IValueSource{T}"/>
+    /// instead of a plain value. The binding dynamically subscribes to whichever inner source the selector
+    /// currently points to, switching subscriptions whenever the outer source changes.
+    /// This makes it composable: the inner source may itself be a <see cref="Binding{T}"/>, a
+    /// <see cref="Property{T}"/>, or another <c>FlatTransform</c>.
+    /// </summary>
+    /// <param name="source">The outer value source to observe.</param>
+    /// <param name="selector">A function that selects an inner value source from the current outer value.</param>
+    /// <typeparam name="TSource">The type of the outer source value.</typeparam>
+    /// <typeparam name="TResult">The type of the result value.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<TResult> FlatTransform<TSource, TResult>(
+        IValueSource<TSource> source,
+        Func<TSource, IValueSource<TResult>> selector)
+    {
+        FlatTransformer<TResult> relay = new();
+
+        source.ValueChanged += (_, _) => relay.SetInner(selector(source.GetValue()));
+        relay.SetInner(selector(source.GetValue()));
+
+        return new Binding<TResult>(() => relay.Inner!.GetValue(), setter: null, [relay]);
+    }
+
+    /// <summary>
+    /// Variant of the non-nullable overload where the selector may return <c>null</c>,
+    /// in which case <paramref name="defaultValue"/> is used.
+    /// </summary>
+    /// <param name="source">The outer value source to observe.</param>
+    /// <param name="selector">
+    ///     A function that selects an inner value source from the current outer value.
+    ///     May return <c>null</c>, in which case <paramref name="defaultValue"/> is used.
+    /// </param>
+    /// <param name="defaultValue">The value to return when the selected inner source is <c>null</c>.</param>
+    /// <typeparam name="TSource">The type of the outer source value.</typeparam>
+    /// <typeparam name="TResult">The type of the result value.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<TResult> FlatTransform<TSource, TResult>(
+        IValueSource<TSource> source,
+        Func<TSource, IValueSource<TResult>?> selector,
+        TResult defaultValue)
+    {
+        FlatTransformer<TResult> relay = new();
+
+        source.ValueChanged += (_, _) => relay.SetInner(selector(source.GetValue()));
+        relay.SetInner(selector(source.GetValue()));
+
+        return new Binding<TResult>(() => relay.Inner != null ? relay.Inner.GetValue() : defaultValue, setter: null, [relay]);
+    }
+}
+
+/// <summary>
+/// Internal relay used by <c>Binding.FlatTransform</c> to manage a dynamic inner subscription
+/// that switches whenever the outer source value changes.
+/// </summary>
+internal sealed class FlatTransformer<T> : IValueSource<T>
+{
+    internal IValueSource<T>? Inner { get; private set; }
+
+    internal void SetInner(IValueSource<T>? newInner)
+    {
+        if (ReferenceEquals(Inner, newInner)) return;
+
+        if (Inner != null)
+            Inner.ValueChanged -= OnInnerValueChanged;
+
+        Inner = newInner;
+
+        if (Inner != null)
+            Inner.ValueChanged += OnInnerValueChanged;
+
+        ValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnInnerValueChanged(Object? sender, EventArgs e)
+    {
+        ValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    T IValueSource<T>.GetValue() => Inner != null ? Inner.GetValue() : default!;
+
+    public event EventHandler? ValueChanged;
 }
 
 /// <summary>
@@ -95,14 +178,12 @@ public class Binding<T> : IValueSource<T>
 {
     private readonly Func<T> getter;
     private readonly Action<T>? setter;
-    private readonly IValueSource[] dependencies;
-    
+
     internal Binding(Func<T> getter, Action<T>? setter, IValueSource[] dependencies)
     {
         this.getter = getter;
         this.setter = setter;
-        this.dependencies = dependencies;
-        
+
         foreach (IValueSource dependency in dependencies)
             dependency.ValueChanged += OnDependencyValueChanged;
     }

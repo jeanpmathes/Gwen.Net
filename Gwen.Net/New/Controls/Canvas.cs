@@ -37,10 +37,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     /// <returns>A new canvas instance.</returns>
     public static Canvas Create(IRenderer renderer, ResourceRegistry registry)
     {
-        Canvas canvas = new(renderer)
-        {
-            Context = new Context(registry)
-        };
+        Canvas canvas = new(renderer, registry);
         
         canvas.SetAsRoot(renderer);
         canvas.Visualize();
@@ -48,7 +45,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
         return canvas;
     }
     
-    private Canvas(IRenderer renderer)
+    private Canvas(IRenderer renderer, ResourceRegistry registry)
     {
         onlyRenderer = renderer;
 
@@ -60,6 +57,8 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
                 
                 return null;
             });
+        
+        Context = new Context(registry, this);
     }
 
     /// <summary>

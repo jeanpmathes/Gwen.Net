@@ -95,16 +95,16 @@ public abstract class Visual
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerForeground()
     {
-        return Binding.Transform(TemplateOwner, o => o?.Foreground.GetValue() ?? Brushes.Black);
+        return Binding.FlatTransform(TemplateOwner, o => o?.Foreground, Brushes.Black);
     }
-    
+
     /// <summary>
     /// Create a binding that binds to the background of the template owner.
     /// </summary>
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerBackground()
     {
-        return Binding.Transform(TemplateOwner, o => o?.Background.GetValue() ?? Brushes.Transparent);
+        return Binding.FlatTransform(TemplateOwner, o => o?.Background, Brushes.Transparent);
     }
     
     /// <summary>
@@ -433,6 +433,10 @@ public abstract class Visual
     
     private RectangleF lastFinalRectangle = RectangleF.Empty;
     
+    /// <summary>
+    /// Offset from this visual to the root visual.
+    /// Applying this to a root position transforms it into the child coordinate space of this visual, not the local coordinate space.
+    /// </summary>
     private PointF offsetToRoot = PointF.Empty;
     
     /// <summary>
@@ -660,7 +664,7 @@ public abstract class Visual
     /// <returns>The point transformed to the coordinate space of the root visual.</returns>
     public PointF LocalPointToRoot(PointF localPoint)
     {
-        return new PointF(localPoint.X + offsetToRoot.X, localPoint.Y + offsetToRoot.Y);
+        return new PointF(localPoint.X + offsetToRoot.X - Bounds.X, localPoint.Y + offsetToRoot.Y - Bounds.Y);
     }
     
     /// <summary>
@@ -670,7 +674,7 @@ public abstract class Visual
     /// <returns>The point transformed to the local coordinate space of this visual.</returns>
     public PointF RootPointToLocal(PointF rootPoint)
     {
-        return new PointF(rootPoint.X - offsetToRoot.X, rootPoint.Y - offsetToRoot.Y);
+        return new PointF(rootPoint.X - offsetToRoot.X + Bounds.X, rootPoint.Y - offsetToRoot.Y + Bounds.Y);
     }
     
     #endregion LAYOUTING
@@ -786,6 +790,18 @@ public abstract class Visual
     #endregion RENDERING
     
     #region INPUT
+
+    /// <summary>
+    /// Handle an input event that is tunneling.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    internal void HandleInputPreview(InputEvent inputEvent)
+    {
+        OnInputPreview(inputEvent);
+
+        if (isAnchor.GetValue())
+            templateOwner.GetValue()?.OnInputPreview(inputEvent);
+    }
     
     /// <summary>
     /// Called when an input event tunnels down the visual tree towards the target visual.
@@ -795,6 +811,18 @@ public abstract class Visual
     public virtual void OnInputPreview(InputEvent inputEvent)
     {
         
+    }
+    
+    /// <summary>
+    /// Handle an input event that is bubbling.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    internal void HandleInput(InputEvent inputEvent)
+    {
+        OnInput(inputEvent);
+        
+        if (isAnchor.GetValue())
+            templateOwner.GetValue()?.OnInput(inputEvent);
     }
     
     /// <summary>

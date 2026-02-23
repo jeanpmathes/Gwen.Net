@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Styles;
 using Gwen.Net.New.Utilities;
@@ -365,6 +366,11 @@ public abstract class Control
     /// <returns>The root visual used to render this control.</returns>
     internal abstract Visual Visualize();
     
+    /// <summary>
+    /// The current root visual that represents this control, if it has been visualized.
+    /// </summary>
+    public abstract ReadOnlySlot<Visual?> Visualization { get; }
+    
     #endregion VISUALIZATION / TEMPLATING
     
     #region STYLE
@@ -375,6 +381,30 @@ public abstract class Control
     protected abstract void InvalidateStyling();
     
     #endregion
+    
+    #region INPUT 
+    
+    /// <summary>
+    /// Called when an input event tunnels down the visual tree towards the target visual and reaches the template anchor of this control.
+    /// Use this to intercept input events before they reach the target visual.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    public virtual void OnInputPreview(InputEvent inputEvent)
+    {
+        
+    }
+    
+    /// <summary>
+    /// Called when an input event bubbles up the visual tree from the target visual and reaches the template anchor of this control.
+    /// Use this to handle inputs.
+    /// </summary>
+    /// <param name="inputEvent">The input event.</param>
+    public virtual void OnInput(InputEvent inputEvent)
+    {
+        
+    }
+    
+    #endregion INPUT
 }
 
 /// <summary>
@@ -413,7 +443,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     /// <summary>
     /// The current root visual that represents this control, if it has been visualized.
     /// </summary>
-    internal ReadOnlySlot<Visual?> Visualization => visualization;
+    public override ReadOnlySlot<Visual?> Visualization => visualization;
 
     /// <summary>
     /// Build or refresh the visual tree for this control and apply current styling.

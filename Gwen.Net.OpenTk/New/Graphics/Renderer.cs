@@ -116,6 +116,8 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         GL.BindTextureUnit(unit: 0, texture);
         
         EndClip();
+        
+        graphics?.Clear(System.Drawing.Color.Transparent);
     }
 
     public override void End()

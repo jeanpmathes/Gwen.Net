@@ -40,4 +40,10 @@ public class ReadOnlySlot<T> : IValueSource<T>
     
     /// <inheritdoc/>
     public event EventHandler? ValueChanged;
+
+    /// <inheritdoc/>
+    public override String ToString()
+    {
+        return $"{{{GetValue()?.ToString()}}}";
+    }
 }

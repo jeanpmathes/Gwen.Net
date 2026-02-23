@@ -1,4 +1,6 @@
-﻿using Gwen.Net.New;
+﻿using System;
+using Gwen.Net.New;
+using Gwen.Net.New.Commands;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Texts;
 using Gwen.Net.New.Utilities;
@@ -27,6 +29,12 @@ public static class UnitTestHarnessView
                         MinimumHeight = {Value = 250f},
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},
                         VerticalAlignment = {Value = VerticalAlignment.Center},
+                    },
+                    new Button<String>
+                    {
+                        Content = {Value = "Click Me"},
+                        
+                        Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
                     },
                     new Text
                     {

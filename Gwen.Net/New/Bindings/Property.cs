@@ -61,7 +61,7 @@ public abstract class Property : IValueSource
 /// <typeparam name="T">The type of value stored in the property.</typeparam>
 public sealed class Property<T> : Property, IValueSource<T>
 {
-    private readonly Binding<T> defaultBinding;
+    private Binding<T> defaultBinding;
 
     private Binding<T>? styleBinding;
     private Binding<T>? localBinding;
@@ -167,6 +167,17 @@ public sealed class Property<T> : Property, IValueSource<T>
 
         return cachedValue!;
     }
+    
+    /// <summary>
+    /// Overrides the default binding of the property.
+    /// This is used for child controls to override the default bindings of their parent controls.
+    /// </summary>
+    /// <param name="builder">A function that takes the current default binding and returns the new default binding.</param>
+    internal void OverrideDefaultBinding(Func<Binding<T>, Binding<T>> builder)
+    {
+        defaultBinding = builder(defaultBinding);
+        RecomputeTargetBinding();
+    }
 
     #region LOCAL
 
@@ -246,7 +257,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     #endregion STYLE
 
     /// <inheritdoc/>
-    public override String? ToString()
+    public override String ToString()
     {
         return $"{{{GetValue()?.ToString()}}}";
     }
