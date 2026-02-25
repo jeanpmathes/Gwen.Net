@@ -22,9 +22,10 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     /// </summary>
     public Button()
     {
-        Background.OverrideDefaultBinding(old => Binding.Transform(old, IsPressed,
-            (@default, isPressed) => isPressed ? ButtonDefaults.PressedBackground : @default));
-        
+        Background.OverrideDefaultBinding(old => old
+            .Combine(IsPressed)
+            .Compute((background, isPressed) => isPressed ? ButtonDefaults.PressedBackground : background));
+
         // todo: use light gray for hover
     }
     

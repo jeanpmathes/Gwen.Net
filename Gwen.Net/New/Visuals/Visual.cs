@@ -25,17 +25,17 @@ public abstract class Visual
     {
         InvalidateMeasure();
         
-        MinimumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumWidth.GetValue(), defaultValue: 1f), Invalidation.Measure);
-        MinimumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumHeight.GetValue(), defaultValue: 1f), Invalidation.Measure);
+        MinimumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumWidth, defaultValue: 1f), Invalidation.Measure);
+        MinimumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MinimumHeight, defaultValue: 1f), Invalidation.Measure);
         
-        MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
-        MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight.GetValue(), defaultValue: Single.PositiveInfinity), Invalidation.Measure);
+        MaximumWidth = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumWidth, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
+        MaximumHeight = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.MaximumHeight, defaultValue: Single.PositiveInfinity), Invalidation.Measure);
         
-        Margin = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Margin.GetValue()), Invalidation.Measure);
-        Padding = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Padding.GetValue()), Invalidation.Measure);
+        Margin = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Margin), Invalidation.Measure);
+        Padding = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Padding), Invalidation.Measure);
         
-        HorizontalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.HorizontalAlignment.GetValue(), defaultValue: New.HorizontalAlignment.Stretch), Invalidation.Arrange);
-        VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment.GetValue(), defaultValue: New.VerticalAlignment.Stretch), Invalidation.Arrange);
+        HorizontalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.HorizontalAlignment, defaultValue: New.HorizontalAlignment.Stretch), Invalidation.Arrange);
+        VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment, defaultValue: New.VerticalAlignment.Stretch), Invalidation.Arrange);
         
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
     }
@@ -95,7 +95,7 @@ public abstract class Visual
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerForeground()
     {
-        return Binding.FlatTransform(TemplateOwner, o => o?.Foreground, Brushes.Black);
+        return Binding.To(TemplateOwner).Select(o => o?.Foreground, Brushes.Black);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public abstract class Visual
     /// <returns>The created binding.</returns>
     protected Binding<Brush> BindToOwnerBackground()
     {
-        return Binding.FlatTransform(TemplateOwner, o => o?.Background, Brushes.Transparent);
+        return Binding.To(TemplateOwner).Select(o => o?.Background, Brushes.Transparent);
     }
     
     /// <summary>
@@ -114,9 +114,10 @@ public abstract class Visual
     /// <param name="defaultValue">The default value to use if this visual is not an anchor.</param>
     /// <typeparam name="TValue">The type of the property to bind to.</typeparam>
     /// <returns>The created binding.</returns>
-    protected Binding<TValue> BindToOwnerIfAnchor<TValue>(Func<Control, TValue> selector, TValue defaultValue = default!)
+    protected Binding<TValue> BindToOwnerIfAnchor<TValue>(Func<Control, IValueSource<TValue>> selector, TValue defaultValue = default!)
     {
-        return Binding.Transform(TemplateOwner, IsAnchor, (o, r) => r && o != null ? selector(o) : defaultValue);
+        return Binding.To(TemplateOwner, IsAnchor)
+            .Select((owner, anchor) => anchor && owner != null ? selector(owner) : null, defaultValue);
     }
     
     #endregion PROPERTIES

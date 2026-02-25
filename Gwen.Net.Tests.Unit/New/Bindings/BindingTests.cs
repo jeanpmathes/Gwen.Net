@@ -13,10 +13,10 @@ public class BindingTests
     }
 
     [Fact]
-    public void Transform_WithSingleSource_EqualDependencyValue_DoesNotRaiseValueChanged()
+    public void BindTo_WithSingleSource_EqualDependencyValue_DoesNotRaiseValueChanged()
     {
         var source = new Slot<Int32>(3);
-        Binding<Int32> binding = Binding.Transform(source, value => value * 2);
+        Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
         var events = 0;
         binding.ValueChanged += (_, _) => events++;
 
@@ -27,10 +27,10 @@ public class BindingTests
     }
     
     [Fact]
-    public void Transform_WithSingleSource_ReactsToDependencyChanges()
+    public void BindTo_WithSingleSource_ReactsToDependencyChanges()
     {
         var source = new Slot<Int32>(3);
-        Binding<Int32> binding = Binding.Transform(source, value => value * 2);
+        Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
         var events = 0;
         binding.ValueChanged += (_, _) => events++;
 
@@ -41,11 +41,11 @@ public class BindingTests
     }
 
     [Fact]
-    public void Transform_WithTwoSources_ReactsToDependencyChanges()
+    public void BindTo_WithTwoSources_ReactsToDependencyChanges()
     {
         var source1 = new Slot<Int32>(3);
         var source2 = new Slot<Int32>(4);
-        Binding<Int32> binding = Binding.Transform(source1, source2, (value1, value2) => value1 * value2);
+        Binding<Int32> binding = Binding.To(source1, source2).Compute((v1, v2) => v1 * v2);
         var events = 0;
         binding.ValueChanged += (_, _) => events++;
 
@@ -61,12 +61,12 @@ public class BindingTests
     }
     
     [Fact]
-    public void Transform_WithThreeSources_ReactsToDependencyChanges()
+    public void BindTo_WithThreeSources_ReactsToDependencyChanges()
     {
         var source1 = new Slot<Int32>(2);
         var source2 = new Slot<Int32>(3);
         var source3 = new Slot<Int32>(4);
-        Binding<Int32> binding = Binding.Transform(source1, source2, source3, (value1, value2, value3) => value1 * value2 * value3);
+        Binding<Int32> binding = Binding.To(source1, source2, source3).Compute((v1, v2, v3) => v1 * v2 * v3);
         var events = 0;
         binding.ValueChanged += (_, _) => events++;
 
@@ -87,24 +87,24 @@ public class BindingTests
     }
     
     [Fact]
-    public void FlatTransform_ReturnsValueFromInitialInnerSource()
+    public void Select_ReturnsValueFromInitialInnerSource()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner = new(42);
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, _ => inner);
+        Binding<Int32> binding = Binding.To(outer).Select(_ => inner);
 
         Assert.Equal(expected: 42, binding.GetValue());
     }
 
     [Fact]
-    public void FlatTransform_WhenOuterChanges_SwitchesToNewInnerSource()
+    public void Select_WhenOuterChanges_SwitchesToNewInnerSource()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+        Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
 
         outer.SetValue(1);
 
@@ -112,13 +112,13 @@ public class BindingTests
     }
 
     [Fact]
-    public void FlatTransform_WhenCurrentInnerChanges_RaisesValueChanged()
+    public void Select_WhenCurrentInnerChanges_RaisesValueChanged()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner = new(0);
         var events = 0;
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, _ => inner);
+        Binding<Int32> binding = Binding.To(outer).Select(_ => inner);
         binding.ValueChanged += (_, _) => events++;
 
         inner.SetValue(99);
@@ -128,14 +128,14 @@ public class BindingTests
     }
 
     [Fact]
-    public void FlatTransform_WhenOuterChanges_RaisesValueChanged()
+    public void Select_WhenOuterChanges_RaisesValueChanged()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
         var events = 0;
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+        Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
         binding.ValueChanged += (_, _) => events++;
 
         outer.SetValue(1);
@@ -144,14 +144,14 @@ public class BindingTests
     }
 
     [Fact]
-    public void FlatTransform_AfterOuterChanges_NoLongerReactsToOldInner()
+    public void Select_AfterOuterChanges_NoLongerReactsToOldInner()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
         var events = 0;
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+        Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
 
         outer.SetValue(1);
 
@@ -163,13 +163,13 @@ public class BindingTests
     }
 
     [Fact]
-    public void FlatTransform_AfterOuterChanges_ReactsToNewInner()
+    public void Select_AfterOuterChanges_ReactsToNewInner()
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
 
-        Binding<Int32> binding = Binding.FlatTransform(outer, v => v == 0 ? inner1 : inner2);
+        Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
 
         outer.SetValue(1);
         inner2.SetValue(30);
@@ -178,33 +178,33 @@ public class BindingTests
     }
 
     [Fact]
-    public void FlatTransform_Nullable_ReturnsDefaultWhenSelectorReturnsNull()
+    public void Select_Nullable_ReturnsDefaultWhenSelectorReturnsNull()
     {
         Slot<Int32> outer = new(0);
 
-        Binding<String> binding = Binding.FlatTransform<Int32, String>(outer, _ => null, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(_ => null, defaultValue: "default");
 
         Assert.Equal(expected: "default", binding.GetValue());
     }
 
     [Fact]
-    public void FlatTransform_Nullable_WhenSelectorReturnsSource_ReturnsItsValue()
+    public void Select_Nullable_WhenSelectorReturnsSource_ReturnsItsValue()
     {
         Slot<Int32> outer = new(0);
         Slot<String> inner = new("hello");
 
-        Binding<String> binding = Binding.FlatTransform<Int32, String>(outer, _ => inner, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(_ => inner, defaultValue: "default");
 
         Assert.Equal(expected: "hello", binding.GetValue());
     }
 
     [Fact]
-    public void FlatTransform_Nullable_WhenSelectorBecomesNull_ReturnsDefault()
+    public void Select_Nullable_WhenSelectorBecomesNull_ReturnsDefault()
     {
         Slot<Boolean> outer = new(true);
         Slot<String> inner = new("hello");
 
-        Binding<String> binding = Binding.FlatTransform<Boolean, String>(outer, v => v ? inner : null, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(v => v ? inner : null, defaultValue: "default");
 
         outer.SetValue(false);
 

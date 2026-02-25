@@ -15,7 +15,7 @@ public class LinearLayout : LinearLayoutBase<LinearLayout>
     {
         return ControlTemplate.Create<LinearLayout>(control => new Visuals.LinearLayout
         {
-            Orientation = {Binding = Binding.Direct(control.Orientation)}
+            Orientation = {Binding = Binding.To(control.Orientation)}
         });
     }
 }

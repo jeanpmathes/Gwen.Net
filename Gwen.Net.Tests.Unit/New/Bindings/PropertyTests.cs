@@ -11,7 +11,7 @@ public class PropertyTests
         var owner = new MockControl();
         var source = new Slot<Int32>(10);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
-        property.Binding = Binding.Transform(source, x => x);
+        property.Binding = Binding.To(source);
 
         source.SetValue(11);
 
@@ -24,7 +24,7 @@ public class PropertyTests
         var owner = new MockControl();
         var source = new Slot<Int32>(2);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
-        property.Binding = Binding.Transform(source, x => x);
+        property.Binding = Binding.To(source);
 
         var events = 0;
         property.ValueChanged += (_, _) => events++;
@@ -43,7 +43,7 @@ public class PropertyTests
         var owner = new MockControl();
         var source = new Slot<Int32>(1);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
-        property.Binding = Binding.Transform(source, x => x);
+        property.Binding = Binding.To(source);
 
         var events = 0;
         property.ValueChanged += (_, _) => events++;

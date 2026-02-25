@@ -49,14 +49,13 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     {
         onlyRenderer = renderer;
 
-        inputBinding = Binding.Transform(Visualization,
-            visualization =>
-            {
-                if (visualization is Visuals.Canvas canvas)
-                    return canvas.Input;
+        inputBinding = Binding.To(Visualization).Compute(visualization =>
+        {
+            if (visualization is Visuals.Canvas canvas)
+                return canvas.Input;
                 
-                return null;
-            });
+            return null;
+        });
         
         Context = new Context(registry, this);
     }

@@ -15,18 +15,18 @@ public class Text : TextBase<Text>
     {
         return ControlTemplate.Create<Text>(control => new Visuals.Text
         {
-            FontFamily = {Binding = Binding.Direct(control.FontFamily)},
-            FontSize = {Binding = Binding.Direct(control.FontSize)},
-            FontStyle = {Binding = Binding.Direct(control.FontStyle)},
-            FontWeight = {Binding = Binding.Direct(control.FontWeight)},
-            FontStretch = {Binding = Binding.Direct(control.FontStretch)},
+            FontFamily = {Binding = Binding.To(control.FontFamily)},
+            FontSize = {Binding = Binding.To(control.FontSize)},
+            FontStyle = {Binding = Binding.To(control.FontStyle)},
+            FontWeight = {Binding = Binding.To(control.FontWeight)},
+            FontStretch = {Binding = Binding.To(control.FontStretch)},
 
-            Wrapping = {Binding = Binding.Direct(control.TextWrapping)},
-            Alignment = {Binding = Binding.Direct(control.TextAlignment)},
-            Trimming = {Binding = Binding.Direct(control.TextTrimming)},
-            LineHeight = {Binding = Binding.Direct(control.LineHeight)},
+            Wrapping = {Binding = Binding.To(control.TextWrapping)},
+            Alignment = {Binding = Binding.To(control.TextAlignment)},
+            Trimming = {Binding = Binding.To(control.TextTrimming)},
+            LineHeight = {Binding = Binding.To(control.LineHeight)},
 
-            Content = {Binding = Binding.Direct(control.Content)}
+            Content = {Binding = Binding.To(control.Content)}
         });
     }
 }

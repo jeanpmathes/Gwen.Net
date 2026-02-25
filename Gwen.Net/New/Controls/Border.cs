@@ -16,7 +16,7 @@ public class Border : BorderBase<Border>
     {
         return ControlTemplate.Create<Border>(control => new Visuals.Border
         {
-            BorderThickness = { Binding = Binding.Direct(control.BorderThickness) },
+            BorderThickness = { Binding = Binding.To(control.BorderThickness) },
             Child = new ChildPresenter()
         });
     }
