@@ -5,9 +5,26 @@ namespace Gwen.Net.New.Texts;
 /// <summary>
 /// The weight of a font.
 /// </summary>
-/// <param name="Value">The weight value, an integer between 1 and 999.</param>
-public record struct Weight(Int16 Value = 400)
+public readonly record struct Weight
 {
+    /// <summary>
+    /// The weight value, an integer between 1 and 999.
+    /// </summary>
+    public Int16 Value { get; }
+
+    /// <summary>
+    /// Create a new font weight.
+    /// </summary>
+    /// <param name="value">The weight value, an integer between 1 and 999.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is outside the valid range.</exception>
+    public Weight(Int16 value = 400)
+    {
+        if (value is < 1 or > 999)
+            throw new ArgumentOutOfRangeException(nameof(value), value, "Weight value must be between 1 and 999.");
+
+        Value = value;
+    }
+
     /// <summary>
     /// Thin, with a value of <c>100</c>.
     /// </summary>
