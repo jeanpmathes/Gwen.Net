@@ -210,4 +210,54 @@ public class BindingTests
 
         Assert.Equal(expected: "default", binding.GetValue());
     }
+
+    [Fact]
+    public void Select_TwoSourceTuple_ReturnsValueFromInnerSourceSelectedByDeconstructedValues()
+    {
+        Slot<Int32> source1 = new(2);
+        Slot<Int32> source2 = new(3);
+        Slot<String> inner1 = new("two-three");
+        Slot<String> inner2 = new("other");
+
+        Binding<String> binding = Binding.To(source1, source2).Select((v1, v2) => v1 == 2 && v2 == 3 ? inner1 : inner2);
+
+        Assert.Equal(expected: "two-three", binding.GetValue());
+    }
+
+    [Fact]
+    public void Select_TwoSourceTuple_Nullable_ReturnsDefaultWhenSelectorReturnsNull()
+    {
+        Slot<Int32> source1 = new(1);
+        Slot<Int32> source2 = new(2);
+
+        Binding<String> binding = Binding.To(source1, source2).Select((_, _) => null, defaultValue: "default");
+
+        Assert.Equal(expected: "default", binding.GetValue());
+    }
+
+    [Fact]
+    public void Select_ThreeSourceTuple_ReturnsValueFromInnerSourceSelectedByDeconstructedValues()
+    {
+        Slot<Int32> source1 = new(1);
+        Slot<Int32> source2 = new(2);
+        Slot<Int32> source3 = new(3);
+        Slot<String> inner1 = new("one-two-three");
+        Slot<String> inner2 = new("other");
+
+        Binding<String> binding = Binding.To(source1, source2, source3).Select((v1, v2, v3) => v1 == 1 && v2 == 2 && v3 == 3 ? inner1 : inner2);
+
+        Assert.Equal(expected: "one-two-three", binding.GetValue());
+    }
+
+    [Fact]
+    public void Select_ThreeSourceTuple_Nullable_ReturnsDefaultWhenSelectorReturnsNull()
+    {
+        Slot<Int32> source1 = new(1);
+        Slot<Int32> source2 = new(2);
+        Slot<Int32> source3 = new(3);
+
+        Binding<String> binding = Binding.To(source1, source2, source3).Select((_, _, _) => null, defaultValue: "default");
+
+        Assert.Equal(expected: "default", binding.GetValue());
+    }
 }
