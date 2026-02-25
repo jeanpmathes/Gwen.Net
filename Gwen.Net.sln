@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net.Tests", "Gwen.Net.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net.Tests.Unit", "Gwen.Net.Tests.Unit\Gwen.Net.Tests.Unit.csproj", "{81437AE0-C572-4EC4-A6BB-5C0D4BF9C73E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net.Analyzers", "Gwen.Net.Analyzers\Gwen.Net.Analyzers.csproj", "{780A649B-FD64-4345-B6ED-361647B0BDE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{81437AE0-C572-4EC4-A6BB-5C0D4BF9C73E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81437AE0-C572-4EC4-A6BB-5C0D4BF9C73E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81437AE0-C572-4EC4-A6BB-5C0D4BF9C73E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{780A649B-FD64-4345-B6ED-361647B0BDE9}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{780A649B-FD64-4345-B6ED-361647B0BDE9}.Debug|Any CPU.Build.0 = Debug|x64
+		{780A649B-FD64-4345-B6ED-361647B0BDE9}.Release|Any CPU.ActiveCfg = Release|x64
+		{780A649B-FD64-4345-B6ED-361647B0BDE9}.Release|Any CPU.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{DA9F8CB7-2196-4515-AEEB-B4044FF30995} = {5DF9662C-433B-464B-A970-C0F54093779C}
 		{185F0EE4-4A2F-471D-9A87-1A5D2325B46A} = {648CCDE0-5133-40A4-AB9A-980EFB3E91E8}
 		{81437AE0-C572-4EC4-A6BB-5C0D4BF9C73E} = {648CCDE0-5133-40A4-AB9A-980EFB3E91E8}
+		{780A649B-FD64-4345-B6ED-361647B0BDE9} = {5DF9662C-433B-464B-A970-C0F54093779C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5657524E-9349-4227-B100-CAF53AB31CEE}
