@@ -54,5 +54,14 @@ public static class ControlInputHelper
         {
             translator.PointerButtonUp(GetHitPoint(control));
         }
+
+        /// <summary>
+        /// Simulates a pointer move event to the center of the control.
+        /// </summary>
+        /// <param name="control">The control to move the pointer to.</param>
+        public void PointerMove(Control control)
+        {
+            translator.PointerMove(GetHitPoint(control));
+        }
     }
 }

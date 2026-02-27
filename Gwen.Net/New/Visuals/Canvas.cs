@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Gwen.Net.New.Input;
 
 namespace Gwen.Net.New.Visuals;
@@ -9,18 +10,12 @@ namespace Gwen.Net.New.Visuals;
 /// <seealso cref="Controls.Canvas"/>
 public class Canvas : Visual
 {
+    private InputHandler? input;
+
     /// <summary>
     /// The input handler for this canvas, responsible for processing input events and determining which visual should receive them.
     /// </summary>
-    public InputHandler Input { get; }
-
-    /// <summary>
-    /// Creates a new <see cref="Canvas"/> instance.
-    /// </summary>
-    public Canvas()
-    {
-        Input = new InputHandler(this);
-    }
+    public InputHandler Input => input!;
     
     /// <summary>
     /// Gets or sets the single child visual.
@@ -29,7 +24,23 @@ public class Canvas : Visual
     {
         get => Children.Count > 0 ? Children[0] : null;
         set => SetChild(value);
-    } 
+    }
+
+    /// <inheritdoc/>
+    public override void OnAttach()
+    {
+        input ??= new InputHandler(this);
+    }
+
+    /// <inheritdoc/>
+    public override void OnDetach(Boolean isReparenting)    
+    {
+        if (isReparenting)
+            return;
+        
+        input?.Dispose();
+        input = null;
+    }
     
     /// <inheritdoc/>
     public override void OnBoundsChanged(RectangleF oldBounds, RectangleF newBounds)

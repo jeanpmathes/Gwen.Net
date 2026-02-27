@@ -382,8 +382,13 @@ public abstract class Control
     
     #endregion
     
-    #region INPUT 
-    
+    #region INPUT
+
+    /// <summary>
+    /// Whether the pointer (mouse) is currently hovering over the anchor visual of this control.
+    /// </summary>
+    public abstract IValueSource<Boolean> IsHovered { get; }
+
     /// <summary>
     /// Called when an input event tunnels down the visual tree towards the target visual and reaches the template anchor of this control.
     /// Use this to intercept input events before they reach the target visual.
@@ -404,6 +409,8 @@ public abstract class Control
         
     }
     
+    
+    
     #endregion INPUT
 }
 
@@ -421,9 +428,11 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     {
         Template = Property.Create(this, Binding.Computed(CreateDefaultTemplate));
         Template.ValueChanged += OnTemplateChanged;
-        
+
         Style = Property.Create(this,(Style<TSelf>?)null);
         Style.ValueChanged += OnStyleChanged;
+
+        IsHovered = Binding.To(visualization).Select(v => v?.IsHovered, defaultValue: false);
     }
     
     /// <summary>
@@ -564,6 +573,13 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     }
 
     #endregion STYLE
+
+    #region INPUT
+
+    /// <inheritdoc/>
+    public override IValueSource<Boolean> IsHovered { get; }
+
+    #endregion INPUT
 }
 
 /// <summary>

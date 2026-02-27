@@ -220,11 +220,30 @@ public class Binding<T> : IValueSource<T>
     /// Create a new binding that combines this binding with another value source, creating a tuple of their values.
     /// </summary>
     /// <param name="other">The other value source to combine with this binding.</param>
-    /// <typeparam name="TSelected">The type of the value in the other source.</typeparam>
+    /// <typeparam name="TOther">The type of the value in the other source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<(T, TSelected)> Combine<TSelected>(IValueSource<TSelected> other)
+    public Binding<(T, TOther)> Combine<TOther>(IValueSource<TOther> other)
     {
-        return new Binding<(T, TSelected)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
+        return new Binding<(T, TOther)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
+    }
+    
+    /// <summary>
+    /// Combine this binding with two other value sources, creating a tuple of their values.
+    /// </summary>
+    /// <param name="other1">The first other value source to combine with this binding.</param>
+    /// <param name="other2">The second other value source to combine with this binding.</param>
+    /// <typeparam name="TOther1">The type of the value in the first other source.</typeparam>
+    /// <typeparam name="TOther2">The type of the value in the second other source.</typeparam>
+    /// <returns>The created binding.</returns>
+    public Binding<(T, TOther1, TOther2)> Combine<TOther1, TOther2>(IValueSource<TOther1> other1, IValueSource<TOther2> other2)
+    {
+        return new Binding<(T, TOther1, TOther2)>(() => (GetValue(), other1.GetValue(), other2.GetValue()), setter: null, [this, other1, other2]);
+    }
+    
+    /// <inheritdoc/>
+    public override String ToString()
+    {
+        return $"{{{GetValue()?.ToString()}}}";
     }
 }
 

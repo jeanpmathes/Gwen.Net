@@ -9,7 +9,8 @@ namespace Gwen.Net.New.Controls;
 
 internal static class ButtonDefaults
 {
-    public static readonly Brush PressedBackground = new SolidColorBrush(Color.LightGray);
+    public static readonly Brush HoveredBackground = new SolidColorBrush(Color.LightGray);
+    public static readonly Brush PressedBackground = new SolidColorBrush(Color.Gray);
 }
 
 /// <summary>
@@ -23,10 +24,12 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     public Button()
     {
         Background.OverrideDefaultBinding(old => old
-            .Combine(IsPressed)
-            .Compute((background, isPressed) => isPressed ? ButtonDefaults.PressedBackground : background));
-
-        // todo: use light gray for hover
+            .Combine(IsPressed, IsHovered)
+            .Compute((background, isPressed, isHovered) => isPressed 
+                    ? ButtonDefaults.PressedBackground 
+                    : isHovered 
+                        ? ButtonDefaults.HoveredBackground 
+                        : background));
     }
     
     /// <inheritdoc />

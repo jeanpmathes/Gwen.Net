@@ -791,6 +791,13 @@ public abstract class Visual
     #endregion RENDERING
     
     #region INPUT
+    
+    private readonly Slot<Boolean> isHovered = new(false);
+    
+    /// <summary>
+    /// Whether the pointer (mouse) is currently hovering over this visual.
+    /// </summary>
+    public ReadOnlySlot<Boolean> IsHovered => isHovered;
 
     /// <summary>
     /// Handle an input event that is tunneling.
@@ -832,6 +839,36 @@ public abstract class Visual
     /// </summary>
     /// <param name="inputEvent">The input event.</param>
     public virtual void OnInput(InputEvent inputEvent)
+    {
+        
+    }
+    
+    public void HandlePointerEnter()
+    {
+        isHovered.SetValue(true);
+
+        OnPointerEnter();
+    }
+    
+    /// <summary>
+    /// Called when the pointer enters the bounds of this visual.
+    /// </summary>
+    public virtual void OnPointerEnter()
+    {
+        
+    }
+    
+    public void HandlePointerLeave()
+    {
+        isHovered.SetValue(false);
+
+        OnPointerLeave();
+    }
+    
+    /// <summary>
+    /// Called when the pointer leaves the bounds of this visual.
+    /// </summary>
+    public virtual void OnPointerLeave()
     {
         
     }

@@ -9,9 +9,20 @@ namespace Gwen.Net.New.Input;
 /// </summary>
 public sealed class Focus
 {
+    private readonly Action onFocusChanged;
+    
     private Control? focusedControl;
     private Visual? focusedVisual;
 
+    /// <summary>
+    /// Create a new <seealso cref="Focus"/> instance with the specified callback for when the focus changes. The callback will be invoked whenever the focused visual or control changes, including when it is cleared.
+    /// </summary>
+    /// <param name="onFocusChanged">Callback to invoke when the focus changes, either the control or visual.</param>
+    public Focus(Action onFocusChanged)
+    {
+        this.onFocusChanged = onFocusChanged;
+    }
+    
     /// <summary>
     /// Set the focused visual.
     /// </summary>
@@ -20,6 +31,8 @@ public sealed class Focus
     {
         ClearFocusedControl();
         focusedVisual = visual;
+        
+        onFocusChanged.Invoke();
     }
 
     /// <summary>
@@ -30,6 +43,8 @@ public sealed class Focus
     {
         ClearFocusedControl();
         SetFocusedControl(control);
+        
+        onFocusChanged.Invoke();
     }
     
     /// <summary>
@@ -42,6 +57,8 @@ public sealed class Focus
             return;
         
         Clear();
+        
+        // The callback is already invoked in clear.
     }
     
     /// <summary>
@@ -54,6 +71,8 @@ public sealed class Focus
             return;
         
         Clear();
+        
+        // The callback is already invoked in clear.
     }
     
     /// <summary>
@@ -63,6 +82,8 @@ public sealed class Focus
     {
         ClearFocusedControl();
         focusedVisual = null;
+        
+        onFocusChanged.Invoke();
     }
     
     /// <summary>
@@ -93,5 +114,7 @@ public sealed class Focus
     private void OnVisualizationChanged(Object? sender, EventArgs e)
     {
         focusedVisual = focusedControl?.Visualization.GetValue();
+        
+        onFocusChanged.Invoke();
     }
 }

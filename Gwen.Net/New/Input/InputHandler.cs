@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using Gwen.Net.New.Visuals;
 
@@ -8,19 +7,24 @@ namespace Gwen.Net.New.Input;
 /// <summary>
 /// Handles input events and translates them into GWEN events.
 /// </summary>
-public sealed class InputHandler
+public sealed class InputHandler : IDisposable
 {
     private readonly Visual root;
+    
+    private Visual? hoveredVisual;
+    private Route hoverRoute = Route.Empty;
+    
+    private PointF lastPointerPosition;
 
     /// <summary>
     /// The keyboard focus.
     /// </summary>
-    public Focus KeyboardFocus { get; } = new();
+    public Focus KeyboardFocus { get; }
     
     /// <summary>
     /// The pointer (mouse) focus.
     /// </summary>
-    public Focus PointerFocus { get; } = new();
+    public Focus PointerFocus { get; }
 
     /// <summary>
     /// Creates a new <seealso cref="InputHandler"/> with the specified root visual.
@@ -29,6 +33,19 @@ public sealed class InputHandler
     public InputHandler(Visual root)
     {
         this.root = root;
+        
+        KeyboardFocus = new Focus(OnKeyboardFocusChanged);
+        PointerFocus = new Focus(OnPointerFocusChanged);
+    }
+    
+    private void OnKeyboardFocusChanged()
+    {
+        // Nothing to do.
+    }
+    
+    private void OnPointerFocusChanged()
+    {
+        UpdateHoveredVisual(PointerFocus.GetFocused() ?? PerformHitTest(lastPointerPosition));
     }
     
     private Visual? PerformHitTest(PointF point)
@@ -70,28 +87,13 @@ public sealed class InputHandler
         return PointerFocus.GetFocused() ?? PerformHitTest(point);
     }
 
-    private static List<Visual> GetEventRoute(Visual target)
-    {
-        var route = new List<Visual>(); // todo: store and reuse this list to avoid allocations
-        
-        Visual? current = target;
-        
-        while (current != null)
-        {
-            route.Add(current);
-            current = current.Parent;
-        }
-        
-        return route;
-    }
-
     private static void HandleEvent(InputEvent inputEvent)
     {
-        List<Visual> route = GetEventRoute(inputEvent.Target);
+        using var route = Route.Create(inputEvent.Target);
 
-        for (Int32 index = route.Count - 1; index >= 0; index--)
+        for (var index = 0; index < route.Count; index++)
         {
-            Visual visual = route[index];
+            Visual visual = route.GetFromTop(index);
             
             inputEvent.SetTarget(visual);
             visual.HandleInputPreview(inputEvent);
@@ -99,9 +101,9 @@ public sealed class InputHandler
             if (inputEvent.Handled) return;
         }
         
-        for (Int32 index = 0; index < route.Count; index++)
+        for (var index = 0; index < route.Count; index++)
         {
-            Visual visual = route[index];
+            Visual visual = route.GetFromBottom(index);
             
             inputEvent.SetTarget(visual);
             visual.HandleInput(inputEvent);
@@ -144,14 +146,38 @@ public sealed class InputHandler
     
     internal void HandlePointerMoveEvent(PointF position, Single deltaX, Single deltaY)
     {
-        Visual? target = GetPointerTarget(position);
+        lastPointerPosition = position;
         
-        if (target == null) 
-            return;
+        Visual? target = GetPointerTarget(position);
 
-        HandleEvent(new PointerMoveEvent(target, position, deltaX, deltaY));
+        if (target != null)
+        {
+            HandleEvent(new PointerMoveEvent(target, position, deltaX, deltaY));
+        }
+        
+        UpdateHoveredVisual(PointerFocus.GetFocused() ?? target);
     }
-    
+
+    private void UpdateHoveredVisual(Visual? visual)
+    {
+        if (visual == hoveredVisual) 
+            return;
+        
+        var newHoverRoute = Route.Create(visual);
+        Int32 firstDifferentIndex = Route.FindFirstDifferenceFromTop(hoverRoute, newHoverRoute);
+
+        for (Int32 index = firstDifferentIndex; index < hoverRoute.Count; index++)
+            hoverRoute.GetFromTop(index).HandlePointerLeave();
+        
+        for (Int32 index = firstDifferentIndex; index < newHoverRoute.Count; index++)
+            newHoverRoute.GetFromTop(index).HandlePointerEnter();
+        
+        hoverRoute.Dispose();
+        hoverRoute = newHoverRoute;
+        
+        hoveredVisual = visual;
+    }
+
     internal void HandleScrollEvent(PointF position, Single deltaX, Single deltaY)
     {
         Visual? target = GetPointerTarget(position);
@@ -163,4 +189,10 @@ public sealed class InputHandler
     }
 
     #endregion EVENTS
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        hoverRoute.Dispose();
+    }
 }
