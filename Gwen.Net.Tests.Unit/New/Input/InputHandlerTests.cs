@@ -163,6 +163,145 @@ public sealed class InputHandlerTests : IDisposable
 
         Assert.True(receivedByOuter);
     }
+    
+    [Fact]
+    public void Tab_OnEmptyCanvas_DoesNotSetFocus()
+    {
+        using var emptyCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator emptyTranslator = new(emptyCanvas);
+        emptyCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        emptyCanvas.Render();
+
+        emptyTranslator.KeyDown(Key.Tab);
+
+        Assert.Null(emptyCanvas.Input!.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_WithNoNavigableVisuals_DoesNotSetFocus()
+    {
+        translator.KeyDown(Key.Tab);
+
+        Assert.Null(canvas.Input!.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void ShiftTab_WithNoNavigableVisuals_DoesNotSetFocus()
+    {
+        translator.KeyDown(Key.Tab, modifiers: ModifierKeys.Shift);
+
+        Assert.Null(canvas.Input!.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_WithSingleNavigable_FocusesIt()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        SingleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.Same(localControl.Navigable, localCanvas.Input!.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_Forward_MovesFocusToNext()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localCanvas.Input!.KeyboardFocus.Set(localControl.A!);
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.Same(localControl.B, localCanvas.Input.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_Backward_MovesFocusToPrevious()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localCanvas.Input!.KeyboardFocus.Set(localControl.C!);
+        localTranslator.KeyDown(Key.Tab, modifiers: ModifierKeys.Shift);
+
+        Assert.Same(localControl.B, localCanvas.Input.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_ForwardFromLast_WrapsToFirst()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localCanvas.Input!.KeyboardFocus.Set(localControl.C!);
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.Same(localControl.A, localCanvas.Input.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void ShiftTab_BackwardFromFirst_WrapsToLast()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localCanvas.Input!.KeyboardFocus.Set(localControl.A!);
+        localTranslator.KeyDown(Key.Tab, modifiers: ModifierKeys.Shift);
+
+        Assert.Same(localControl.C, localCanvas.Input.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_FocusedVisual_IsKeyboardFocused()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.True(localControl.A!.IsKeyboardFocused.GetValue());
+    }
+
+    [Fact]
+    public void Tab_PreviouslyFocusedVisual_IsNoLongerKeyboardFocused()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localTranslator.KeyDown(Key.Tab);
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.False(localControl.A!.IsKeyboardFocused.GetValue());
+    }
 
     private sealed class MockControl : Control<MockControl>
     {
@@ -193,6 +332,47 @@ public sealed class InputHandlerTests : IDisposable
                 OuterVisual.SetChildVisual(InnerVisual);
 
                 return OuterVisual;
+            });
+        }
+    }
+
+    private sealed class SingleNavigableControl : Control<SingleNavigableControl>
+    {
+        public MockVisual? Navigable { get; private set; }
+
+        protected override ControlTemplate<SingleNavigableControl> CreateDefaultTemplate()
+        {
+            return ControlTemplate.Create<SingleNavigableControl>(_ =>
+            {
+                MockVisual container = new();
+                Navigable = new MockVisual {IsNavigable = {Value = true}};
+                container.AddChildVisual(Navigable);
+                container.AddChildVisual(new MockVisual());
+
+                return container;
+            });
+        }
+    }
+
+    private sealed class MultipleNavigableControl : Control<MultipleNavigableControl>
+    {
+        public MockVisual? A { get; private set; }
+        public MockVisual? B { get; private set; }
+        public MockVisual? C { get; private set; }
+
+        protected override ControlTemplate<MultipleNavigableControl> CreateDefaultTemplate()
+        {
+            return ControlTemplate.Create<MultipleNavigableControl>(_ =>
+            {
+                MockVisual container = new();
+                A = new MockVisual {IsNavigable = {Value = true}};
+                B = new MockVisual {IsNavigable = {Value = true}};
+                C = new MockVisual {IsNavigable = {Value = true}};
+                container.AddChildVisual(A);
+                container.AddChildVisual(B);
+                container.AddChildVisual(C);
+
+                return container;
             });
         }
     }

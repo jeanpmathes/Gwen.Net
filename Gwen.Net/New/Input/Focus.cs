@@ -9,7 +9,7 @@ namespace Gwen.Net.New.Input;
 /// </summary>
 public sealed class Focus
 {
-    private readonly Action onFocusChanged;
+    private readonly Action<Visual?, Visual?> onFocusChanged;
     
     private Control? focusedControl;
     private Visual? focusedVisual;
@@ -18,7 +18,7 @@ public sealed class Focus
     /// Create a new <seealso cref="Focus"/> instance with the specified callback for when the focus changes. The callback will be invoked whenever the focused visual or control changes, including when it is cleared.
     /// </summary>
     /// <param name="onFocusChanged">Callback to invoke when the focus changes, either the control or visual.</param>
-    public Focus(Action onFocusChanged)
+    public Focus(Action<Visual?, Visual?> onFocusChanged)
     {
         this.onFocusChanged = onFocusChanged;
     }
@@ -29,10 +29,12 @@ public sealed class Focus
     /// <param name="visual">The visual to set as focused.</param>
     public void Set(Visual visual)
     {
+        Visual? previousFocusedVisual = focusedVisual;
+        
         ClearFocusedControl();
         focusedVisual = visual;
         
-        onFocusChanged.Invoke();
+        onFocusChanged(previousFocusedVisual, focusedVisual);
     }
 
     /// <summary>
@@ -41,10 +43,12 @@ public sealed class Focus
     /// <param name="control">The control to set as focused.</param>
     public void Set(Control control)
     {
+        Visual? previousFocusedVisual = focusedVisual;
+        
         ClearFocusedControl();
         SetFocusedControl(control);
         
-        onFocusChanged.Invoke();
+        onFocusChanged(previousFocusedVisual, focusedVisual);
     }
     
     /// <summary>
@@ -80,10 +84,12 @@ public sealed class Focus
     /// </summary>
     public void Clear()
     {
+        Visual? previousFocusedVisual = focusedVisual;
+        
         ClearFocusedControl();
         focusedVisual = null;
         
-        onFocusChanged.Invoke();
+        onFocusChanged.Invoke(previousFocusedVisual, focusedVisual);
     }
     
     /// <summary>
@@ -113,8 +119,10 @@ public sealed class Focus
 
     private void OnVisualizationChanged(Object? sender, EventArgs e)
     {
+        Visual? previousFocusedVisual = focusedVisual;
+        
         focusedVisual = focusedControl?.Visualization.GetValue();
         
-        onFocusChanged.Invoke();
+        onFocusChanged(previousFocusedVisual, focusedVisual);
     }
 }

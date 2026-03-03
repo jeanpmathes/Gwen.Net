@@ -38,6 +38,8 @@ public abstract class Visual
         VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment, defaultValue: New.VerticalAlignment.Stretch), Invalidation.Arrange);
         
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
+        
+        IsNavigable = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.IsNavigable, defaultValue: false), Invalidation.None);
     }
     
     #region PROPERTIES
@@ -88,6 +90,13 @@ public abstract class Visual
     /// The brush used to draw the background of this visual.
     /// </summary>
     public VisualProperty<Brush> Background { get; }
+    
+    /// <summary>
+    /// Whether this visual allows to navigate to it, which is used to move the keyboard focus using the keyboard.
+    /// A non-navigable visual might still receive keyboard focus through other means, but will be skipped during keyboard navigation.
+    /// Children of non-navigable visuals can still be navigable and will not be skipped.
+    /// </summary>
+    public VisualProperty<Boolean> IsNavigable { get; }
     
     /// <summary>
     /// Create a binding that binds to the foreground of the template owner.
@@ -402,6 +411,30 @@ public abstract class Visual
     /// Invoked when this visual is detached from a tree with a root visual.
     /// </summary>
     public event EventHandler? DetachedFromRoot;
+    
+    /// <summary>
+    /// Get the child visual after the specified child visual, or <c>null</c> if no such child exists.
+    /// </summary>
+    /// <param name="child">The child visual to get the next sibling of. If this is not a child of this visual, the result is also <c>null</c>.</param>
+    /// <returns>The child visual after the specified child visual, or <c>null</c> if no such child exists.</returns>
+    public Visual? GetChildAfter(Visual child)
+    {
+        Int32 index = children.IndexOf(child);
+        if (index == -1 || index == children.Count - 1) return null;
+        return children[index + 1];
+    }
+    
+    /// <summary>
+    /// Get the child visual before the specified child visual, or <c>null</c> if no such child exists.
+    /// </summary>
+    /// <param name="child">The child visual to get the previous sibling of. If this is not a child of this visual, the result is also <c>null</c>.</param>
+    /// <returns>The child visual before the specified child visual, or <c>null</c> if no such child exists.</returns>
+    public Visual? GetChildBefore(Visual child)
+    {
+        Int32 index = children.IndexOf(child);
+        if (index <= 0) return null;
+        return children[index - 1];
+    }
 
     #endregion HIERARCHY
     
@@ -798,6 +831,20 @@ public abstract class Visual
     /// Whether the pointer (mouse) is currently hovering over this visual.
     /// </summary>
     public ReadOnlySlot<Boolean> IsHovered => isHovered;
+    
+    private readonly Slot<Boolean> isKeyboardFocused = new(false);
+    
+    /// <summary>
+    /// Whether this visual currently has keyboard focus.
+    /// </summary>
+    public ReadOnlySlot<Boolean> IsKeyboardFocused => isKeyboardFocused;
+    
+    private readonly Slot<Boolean> isPointerFocused = new(false);
+    
+    /// <summary>
+    /// Whether this visual currently has pointer (mouse) focus.
+    /// </summary>
+    public ReadOnlySlot<Boolean> IsPointerFocused => isPointerFocused;
 
     /// <summary>
     /// Handle an input event that is tunneling.
@@ -843,7 +890,7 @@ public abstract class Visual
         
     }
     
-    public void HandlePointerEnter()
+    internal void HandlePointerEnter()
     {
         isHovered.SetValue(true);
 
@@ -858,7 +905,7 @@ public abstract class Visual
         
     }
     
-    public void HandlePointerLeave()
+    internal void HandlePointerLeave()
     {
         isHovered.SetValue(false);
 
@@ -871,6 +918,26 @@ public abstract class Visual
     public virtual void OnPointerLeave()
     {
         
+    }
+    
+    internal void HandleKeyboardFocusGained()
+    {
+        isKeyboardFocused.SetValue(true);
+    }
+    
+    internal void HandleKeyboardFocusLost()
+    {
+        isKeyboardFocused.SetValue(false);
+    }
+    
+    internal void HandlePointerFocusGained()
+    {
+        isPointerFocused.SetValue(true);
+    }
+    
+    internal void HandlePointerFocusLost()
+    {
+        isPointerFocused.SetValue(false);
     }
     
     #endregion INPUT

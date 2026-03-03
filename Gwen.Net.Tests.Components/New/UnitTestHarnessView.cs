@@ -30,11 +30,37 @@ public static class UnitTestHarnessView
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},
                         VerticalAlignment = {Value = VerticalAlignment.Center},
                     },
-                    new Button<String>
+                    new LinearLayout
                     {
-                        Content = {Value = "Click Me"},
+                        Orientation = { Value = Orientation.Vertical },
                         
-                        Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+                        Children =
+                        {
+                            new Button<String>
+                            {
+                                Content = {Value = "Click Me"},
+                        
+                                Margin = { Value = new ThicknessF(30)},
+                        
+                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+                            },
+                            new Button<String>
+                            {
+                                Content = {Value = "Click Me"},
+                        
+                                Margin = { Value = new ThicknessF(30)},
+                        
+                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+                            },
+                            new Button<String>
+                            {
+                                Content = {Value = "Click Me"},
+                        
+                                Margin = { Value = new ThicknessF(30)},
+                        
+                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+                            },
+                        }
                     },
                     new Text
                     {

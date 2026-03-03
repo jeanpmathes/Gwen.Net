@@ -38,13 +38,17 @@ public sealed class InputHandler : IDisposable
         PointerFocus = new Focus(OnPointerFocusChanged);
     }
     
-    private void OnKeyboardFocusChanged()
+    private void OnKeyboardFocusChanged(Visual? previousFocusedVisual, Visual? newFocusedVisual)
     {
-        // Nothing to do.
+        previousFocusedVisual?.HandleKeyboardFocusLost();
+        newFocusedVisual?.HandleKeyboardFocusGained();
     }
     
-    private void OnPointerFocusChanged()
+    private void OnPointerFocusChanged(Visual? previousFocusedVisual, Visual? newFocusedVisual)
     {
+        previousFocusedVisual?.HandlePointerFocusLost();
+        newFocusedVisual?.HandlePointerFocusGained();
+        
         UpdateHoveredVisual(PointerFocus.GetFocused() ?? PerformHitTest(lastPointerPosition));
     }
     
@@ -117,11 +121,18 @@ public sealed class InputHandler : IDisposable
     internal void HandleKeyEvent(Key key, Boolean isDown, Boolean isRepeat, ModifierKeys modifiers)
     {
         Visual? target = GetKeyboardTarget();
+
+        if (target != null)
+        {
+            KeyEvent @event = new(target, key, isDown, isRepeat, modifiers);
         
-        if (target == null) 
-            return;
-        
-        HandleEvent(new KeyEvent(target, key, isDown, isRepeat, modifiers));
+            HandleEvent(@event);
+            
+            if (@event.Handled) return;
+        }
+
+        if (isDown && key == Key.Tab)
+            MoveKeyboardFocus(!modifiers.HasFlag(ModifierKeys.Shift));
     }
     
     internal void HandleTextEvent(String text)
@@ -158,6 +169,18 @@ public sealed class InputHandler : IDisposable
         UpdateHoveredVisual(PointerFocus.GetFocused() ?? target);
     }
 
+    internal void HandleScrollEvent(PointF position, Single deltaX, Single deltaY)
+    {
+        Visual? target = GetPointerTarget(position);
+        
+        if (target == null) 
+            return;
+
+        HandleEvent(new ScrollEvent(target, position, deltaX, deltaY));
+    }
+
+    #endregion EVENTS
+    
     private void UpdateHoveredVisual(Visual? visual)
     {
         if (visual == hoveredVisual) 
@@ -178,17 +201,102 @@ public sealed class InputHandler : IDisposable
         hoveredVisual = visual;
     }
 
-    internal void HandleScrollEvent(PointF position, Single deltaX, Single deltaY)
+    private void MoveKeyboardFocus(Boolean forward)
     {
-        Visual? target = GetPointerTarget(position);
-        
-        if (target == null) 
+        Visual? current = GetKeyboardTarget();
+        Visual start = current ?? root;
+
+        if (current == null && CanMoveFocusTo(start))
+        {
+            KeyboardFocus.Set(start);
             return;
-
-        HandleEvent(new ScrollEvent(target, position, deltaX, deltaY));
+        }
+        
+        if (forward)
+            MoveKeyboardFocusForward(start);
+        else
+            MoveKeyboardFocusBackward(start);
     }
+    
+    private void MoveKeyboardFocusForward(Visual start)
+    {        
+        Visual? current = start;
 
-    #endregion EVENTS
+        do
+        {
+            Visual? next = null;
+
+            if (current.Children.Count > 0)
+            {
+                next = current.Children[0];
+            }
+            else if (current.Parent != null)
+            {
+                next = current.Parent.GetChildAfter(current);
+                
+                Visual? climb = current;
+                
+                while (next == null && climb.Parent != null)
+                {
+                    climb = climb.Parent;
+                    next = climb.Parent?.GetChildAfter(climb);
+                }
+
+                if (next == null && climb.Parent == null)
+                    next = root;
+            }
+            
+            if (next != null && CanMoveFocusTo(next))
+            {
+                KeyboardFocus.Set(next);
+                return;
+            }
+            
+            current = next;
+        }
+        while (current != null && current != start);
+    }
+    
+    private void MoveKeyboardFocusBackward(Visual start)
+    {
+        Visual? current = start;
+        
+        do
+        {
+            Visual? next = null;
+
+            if (current.Parent != null)
+            {
+                next = current.Parent.GetChildBefore(current);
+                
+                while (next is {Children.Count: > 0})
+                    next = next.Children[^1];
+                
+                next ??= current.Parent;
+            }
+            else
+            {
+                next = root;
+                
+                while (next.Children.Count > 0)
+                    next = next.Children[^1];
+            }
+
+            if (next != null && CanMoveFocusTo(next))
+            {
+                KeyboardFocus.Set(next);
+                return;
+            }
+            
+            current = next;
+        }
+        while (current != null && current != start);
+    }
+    
+    private static Boolean CanMoveFocusTo(Visual visual)
+    {
+        return visual.IsNavigable.GetValue();
+    }
 
     /// <inheritdoc/>
     public void Dispose()

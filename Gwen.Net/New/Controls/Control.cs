@@ -36,6 +36,8 @@ public abstract class Control
         
         HorizontalAlignment = Property.Create(this, New.HorizontalAlignment.Stretch);
         VerticalAlignment = Property.Create(this, New.VerticalAlignment.Stretch);
+        
+        IsNavigable = Property.Create(this, defaultValue: false);
     }
     
     #region PROPERTIES
@@ -91,6 +93,11 @@ public abstract class Control
     /// The vertical alignment of this control within its parent. Might not be respected by all layout containers.
     /// </summary>
     public Property<VerticalAlignment> VerticalAlignment { get; }
+    
+    /// <summary>
+    /// Whether this control allows to navigate to it, which is used to move the keyboard focus using the keyboard.
+    /// </summary>
+    public Property<Boolean> IsNavigable { get; }
     
     #endregion PROPERTIES
     
@@ -390,6 +397,16 @@ public abstract class Control
     public abstract IValueSource<Boolean> IsHovered { get; }
 
     /// <summary>
+    /// Whether this control is currently focused for keyboard input, meaning that its anchor visual is the target of the keyboard focus.
+    /// </summary>
+    public abstract IValueSource<Boolean> IsKeyboardFocused { get; }
+    
+    /// <summary>
+    /// Whether this control is currently focused for pointer input, meaning that its anchor visual is the target of the pointer focus.
+    /// </summary>
+    public abstract IValueSource<Boolean> IsPointerFocused { get; }
+    
+    /// <summary>
     /// Called when an input event tunnels down the visual tree towards the target visual and reaches the template anchor of this control.
     /// Use this to intercept input events before they reach the target visual.
     /// </summary>
@@ -433,6 +450,9 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
         Style.ValueChanged += OnStyleChanged;
 
         IsHovered = Binding.To(visualization).Select(v => v?.IsHovered, defaultValue: false);
+        
+        IsKeyboardFocused = Binding.To(visualization).Select(v => v?.IsKeyboardFocused, defaultValue: false);
+        IsPointerFocused = Binding.To(visualization).Select(v => v?.IsPointerFocused, defaultValue: false);
     }
     
     /// <summary>
@@ -577,8 +597,14 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
     #region INPUT
 
     /// <inheritdoc/>
-    public override IValueSource<Boolean> IsHovered { get; }
+    public sealed override IValueSource<Boolean> IsHovered { get; }
+    
+    /// <inheritdoc/>
+    public sealed override IValueSource<Boolean> IsKeyboardFocused { get; }
 
+    /// <inheritdoc/>
+    public sealed override IValueSource<Boolean> IsPointerFocused { get; }
+    
     #endregion INPUT
 }
 

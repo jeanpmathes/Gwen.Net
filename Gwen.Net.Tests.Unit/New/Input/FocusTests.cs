@@ -11,7 +11,7 @@ namespace Gwen.Net.Tests.Unit.New.Input;
 
 public sealed class FocusTests
 {
-    private readonly Focus focus = new(() => {});
+    private readonly Focus focus = new((_, _) => {});
     
     #region SET / GET VISUAL
 
@@ -145,7 +145,7 @@ public sealed class FocusTests
     public void Set_Visual_InvokesCallback()
     {
         var callbackCount = 0;
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual visual = new();
 
         callbackFocus.Set(visual);
@@ -157,7 +157,7 @@ public sealed class FocusTests
     public void Set_Visual_TwiceCalls_InvokesCallbackTwice()
     {
         var callbackCount = 0;
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual first = new();
         MockVisual second = new();
 
@@ -171,7 +171,7 @@ public sealed class FocusTests
     public void Clear_InvokesCallback()
     {
         var callbackCount = 0;
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
 
         callbackFocus.Clear();
 
@@ -183,7 +183,7 @@ public sealed class FocusTests
     {
         var callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual visual = new();
 
         callbackFocus.Set(visual);
@@ -199,7 +199,7 @@ public sealed class FocusTests
     {
         var callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual focused = new();
         MockVisual other = new();
 
@@ -215,7 +215,7 @@ public sealed class FocusTests
     public void Set_Control_InvokesCallback()
     {
         var callbackCount = 0;
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
 
         using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();
@@ -233,7 +233,7 @@ public sealed class FocusTests
     {
         var callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
-        Focus callbackFocus = new(() => callbackCount++);
+        Focus callbackFocus = new((_, _) => callbackCount++);
 
         using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();

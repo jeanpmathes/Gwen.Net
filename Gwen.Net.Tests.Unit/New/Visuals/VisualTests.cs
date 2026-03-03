@@ -528,4 +528,70 @@ public class VisualTests
     }
 
     #endregion COORDINATE TRANSFORMS
+
+    #region HIERARCHY
+
+    [Fact]
+    public void GetChildAfter_WithNonChild_ReturnsNull()
+    {
+        var parent = new MockVisual();
+        var other = new MockVisual();
+
+        Assert.Null(parent.GetChildAfter(other));
+    }
+
+    [Fact]
+    public void GetChildAfter_WithOnlyChild_ReturnsNull()
+    {
+        var parent = new MockVisual();
+        var child = new MockVisual();
+        parent.AddChildVisual(child);
+
+        Assert.Null(parent.GetChildAfter(child));
+    }
+
+    [Fact]
+    public void GetChildAfter_WithFirstOfTwo_ReturnsSecond()
+    {
+        var parent = new MockVisual();
+        var first = new MockVisual();
+        var second = new MockVisual();
+        parent.AddChildVisual(first);
+        parent.AddChildVisual(second);
+
+        Assert.Same(second, parent.GetChildAfter(first));
+    }
+
+    [Fact]
+    public void GetChildBefore_WithNonChild_ReturnsNull()
+    {
+        var parent = new MockVisual();
+        var other = new MockVisual();
+
+        Assert.Null(parent.GetChildBefore(other));
+    }
+
+    [Fact]
+    public void GetChildBefore_WithOnlyChild_ReturnsNull()
+    {
+        var parent = new MockVisual();
+        var child = new MockVisual();
+        parent.AddChildVisual(child);
+
+        Assert.Null(parent.GetChildBefore(child));
+    }
+
+    [Fact]
+    public void GetChildBefore_WithSecondOfTwo_ReturnsFirst()
+    {
+        var parent = new MockVisual();
+        var first = new MockVisual();
+        var second = new MockVisual();
+        parent.AddChildVisual(first);
+        parent.AddChildVisual(second);
+
+        Assert.Same(first, parent.GetChildBefore(second));
+    }
+
+    #endregion HIERARCHY
 }

@@ -173,10 +173,20 @@ public sealed class Property<T> : Property, IValueSource<T>
     /// This is used for child controls to override the default bindings of their parent controls.
     /// </summary>
     /// <param name="builder">A function that takes the current default binding and returns the new default binding.</param>
-    internal void OverrideDefaultBinding(Func<Binding<T>, Binding<T>> builder)
+    internal void OverrideDefault(Func<Binding<T>, Binding<T>> builder)
     {
         defaultBinding = builder(defaultBinding);
         RecomputeTargetBinding();
+    }
+    
+    /// <summary>
+    /// Overrides the default binding of the property with a constant value.
+    /// This is a convenience method for <see cref="OverrideDefault(Func{Binding{T}, Binding{T}})"/> when the new default binding is a constant value.
+    /// </summary>
+    /// <param name="defaultValue">The new default value.</param>
+    internal void OverrideDefault(T defaultValue)
+    {
+        OverrideDefault(_ => Bindings.Binding.Constant(defaultValue));
     }
 
     #region LOCAL
