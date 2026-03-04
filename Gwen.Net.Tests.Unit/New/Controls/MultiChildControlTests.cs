@@ -1,6 +1,5 @@
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
-using Gwen.Net.New.Controls.Bases;
 using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Resources;
@@ -42,7 +41,7 @@ public class MultiChildControlTests
 
         control.Children.Add(child);
 
-        Assert.Equal(control, child.Parent);
+        Assert.Equal(control, child.Parent.GetValue());
     }
 
     [Fact]
@@ -115,7 +114,7 @@ public class MultiChildControlTests
 
         Assert.Single(control.Children);
         Assert.Equal(child, control.Children[0]);
-        Assert.Equal(control, child.Parent);
+        Assert.Equal(control, child.Parent.GetValue());
     }
 
     [Fact]
@@ -144,7 +143,7 @@ public class MultiChildControlTests
 
         Assert.Single(control.Children);
         Assert.Equal(child, control.Children[0]);
-        Assert.Equal(control, child.Parent);
+        Assert.Equal(control, child.Parent.GetValue());
     }
 
     [Fact]
@@ -172,8 +171,8 @@ public class MultiChildControlTests
         control.Children = plainList;
 
         Assert.Equal(expected: 2, control.Children.Count);
-        Assert.Equal(control, child1.Parent);
-        Assert.Equal(control, child2.Parent);
+        Assert.Equal(control, child1.Parent.GetValue());
+        Assert.Equal(control, child2.Parent.GetValue());
     }
 
     [Fact]
@@ -188,7 +187,7 @@ public class MultiChildControlTests
 
         Assert.Empty(parent1.Children);
         Assert.Single(parent2.Children);
-        Assert.Equal(parent2, child.Parent);
+        Assert.Equal(parent2, child.Parent.GetValue());
     }
 
     [Fact]
@@ -200,7 +199,7 @@ public class MultiChildControlTests
         control.Children.Add(child);
         control.Children.Add(child);
 
-        Assert.Equal(control, child.Parent);
+        Assert.Equal(control, child.Parent.GetValue());
     }
 
     [Fact]
@@ -213,7 +212,7 @@ public class MultiChildControlTests
         control.Children.Add(child);
 
         Assert.Single(control.Children);
-        Assert.Equal(control, child.Parent);
+        Assert.Equal(control, child.Parent.GetValue());
     }
 
     [Fact]
@@ -247,7 +246,7 @@ public class MultiChildControlTests
         externalChildren.Add(child1);
         externalChildren.Add(child2);
 
-        Assert.Throws<NotSupportedException>(() => externalChildren.Sort((a, b) => 0));
+        Assert.Throws<NotSupportedException>(() => externalChildren.Sort((_, _) => 0));
         Assert.Throws<NotSupportedException>(() => externalChildren.Move(oldIndex: 0, newIndex: 1));
         Assert.Throws<NotSupportedException>(() => externalChildren[0] = new MockControl());
     }

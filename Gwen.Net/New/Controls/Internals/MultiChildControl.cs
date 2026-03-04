@@ -70,7 +70,7 @@ public abstract class MultiChildControl<TControl> : Control<TControl> where TCon
                 case CollectionChangeAction.Add:
                     foreach (Control child in e.NewItems)
                     {
-                        if (child.Parent == this)
+                        if (child.Parent.GetValue() == this)
                         {
                             localChildren.Remove(child);
                             continue;

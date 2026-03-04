@@ -127,12 +127,13 @@ public abstract class Control
         Attach();
     }
 
+    private readonly Slot<Control?> parent = new(null);
     private readonly ListSlot<Control> children = [];
     
     /// <summary>
     /// The parent of this control.
     /// </summary>
-    public Control? Parent { get; private set; } // todo: make read only slot
+    public ReadOnlySlot<Control?> Parent => parent;
 
     /// <summary>
     /// The children of this control.
@@ -149,9 +150,9 @@ public abstract class Control
     /// </param>
     protected void SetChild(Control? child)
     {
-        if (child?.Parent == this && children.Count.GetValue() == 1) return;
+        if (child?.Parent.GetValue() == this && children.Count.GetValue() == 1) return;
 
-        child?.Parent?.RemoveChild(child, isReparenting: true);
+        child?.Parent.GetValue()?.RemoveChild(child, isReparenting: true);
 
         if (children.Count.GetValue() > 0)
         {
@@ -160,7 +161,7 @@ public abstract class Control
 
             foreach (Control oldChild in oldChildren)
             {
-                oldChild.Parent = null;
+                oldChild.parent.SetValue(null);
 
                 OnChildRemoved(oldChild);
                 oldChild.Detach(isReparenting: false);
@@ -170,7 +171,7 @@ public abstract class Control
         if (child == null) return;
 
         children.Add(child);
-        child.Parent = this;
+        child.parent.SetValue(this);
 
         if (IsAttached)
             child.Attach();
@@ -184,12 +185,12 @@ public abstract class Control
     /// <param name="child">The child to add. Will be removed from its previous parent if any.</param>
     protected void AddChild(Control child)
     {
-        if (child.Parent == this) return;
+        if (child.Parent.GetValue() == this) return;
 
-        child.Parent?.RemoveChild(child, isReparenting: true);
+        child.Parent.GetValue()?.RemoveChild(child, isReparenting: true);
 
         children.Add(child);
-        child.Parent = this;
+        child.parent.SetValue(this);
 
         if (IsAttached)
             child.Attach();
@@ -209,11 +210,11 @@ public abstract class Control
 
     private void RemoveChild(Control child, Boolean isReparenting)
     {
-        if (child.Parent != this) return;
+        if (child.Parent.GetValue() != this) return;
 
         if (!children.Remove(child)) return;
 
-        child.Parent = null;
+        child.parent.SetValue(null);
 
         OnChildRemoved(child);
         child.Detach(isReparenting);
@@ -331,7 +332,7 @@ public abstract class Control
     [MemberNotNull(nameof(cachedContext))]
     private void UpdateCachedContext()
     {
-        Context parentContext = Parent?.Context ?? Context.Default;
+        Context parentContext = Parent.GetValue()?.Context ?? Context.Default;
         
         cachedContext = localContext == null
             ? parentContext
