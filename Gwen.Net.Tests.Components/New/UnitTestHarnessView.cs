@@ -32,33 +32,33 @@ public static class UnitTestHarnessView
                     },
                     new LinearLayout
                     {
-                        Orientation = { Value = Orientation.Vertical },
-                        
+                        Orientation = {Value = Orientation.Vertical},
+
                         Children =
                         {
                             new Button<String>
                             {
                                 Content = {Value = "Click Me"},
-                        
-                                Margin = { Value = new ThicknessF(30)},
-                        
-                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+
+                                Margin = {Value = new ThicknessF(30)},
+
+                                Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
                             },
                             new Button<String>
                             {
                                 Content = {Value = "Click Me"},
-                        
-                                Margin = { Value = new ThicknessF(30)},
-                        
-                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+
+                                Margin = {Value = new ThicknessF(30)},
+
+                                Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
                             },
                             new Button<String>
                             {
                                 Content = {Value = "Click Me"},
-                        
-                                Margin = { Value = new ThicknessF(30)},
-                        
-                                Command = { Value = Command.FromAction(() => Console.WriteLine("Button clicked!")) }
+
+                                Margin = {Value = new ThicknessF(30)},
+
+                                Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
                             },
                         }
                     },
@@ -68,10 +68,14 @@ public static class UnitTestHarnessView
                     },
                     new Text
                     {
-                        MaximumWidth = { Value = 100f},
-                        TextTrimming = { Value = TextTrimming.CharacterEllipsis},
-                        
-                        Content = {Value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
+                        MaximumWidth = {Value = 100f},
+                        TextTrimming = {Value = TextTrimming.CharacterEllipsis},
+
+                        Content =
+                        {
+                            Value =
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                        }
                     }
                 }
             }

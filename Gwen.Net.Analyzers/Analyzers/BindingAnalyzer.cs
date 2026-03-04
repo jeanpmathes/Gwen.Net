@@ -40,7 +40,7 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
             return;
 
         if (!IsContainingTypeBindingType(methodSymbol) && !IsReceiverBindingType(invocationSyntax, context.SemanticModel))
-            return; // todo: remove New from namespace when deleting Legacy
+            return; 
 
         foreach (ArgumentSyntax argument in invocationSyntax.ArgumentList.Arguments)
         {
@@ -68,10 +68,6 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
     
     private static Boolean IsBindingType(ITypeSymbol? typeSymbol)
     {
-        if (typeSymbol == null)
-            return false;
-        
-        return typeSymbol.OriginalDefinition.ToDisplayString() == "Gwen.Net.New.Bindings.Binding<T>"
-               || typeSymbol.OriginalDefinition.ToDisplayString() == "Gwen.Net.New.Bindings.Binding";
+        return typeSymbol != null && typeSymbol.OriginalDefinition.ToDisplayString().StartsWith("Gwen.Net.New.Bindings.Binding"); // todo: remove New from namespace when deleting Legacy, test that it still works
     }
 }

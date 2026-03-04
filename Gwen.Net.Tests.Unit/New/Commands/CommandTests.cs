@@ -4,6 +4,8 @@ namespace Gwen.Net.Tests.Unit.New.Commands;
 
 public class CommandTests
 {
+    private static readonly Object placeholder = new();
+    
     [Fact]
     public void Succeeded_HasSucceededStatus()
     {
@@ -15,18 +17,18 @@ public class CommandTests
     [Fact]
     public void FromAction_CanExecute_IsTrue()
     {
-        ICommand command = Command.FromAction(() => { });
+        ICommand<Object> command = Command.FromAction(() => { });
 
-        Assert.True(command.CanExecute.GetValue());
+        Assert.True(command.CanExecute.GetValue(placeholder));
     }
 
     [Fact]
     public void FromAction_Execute_InvokesAction()
     {
         var invoked = false;
-        ICommand command = Command.FromAction(() => invoked = true);
+        ICommand<Object> command = Command.FromAction(() => invoked = true);
 
-        command.Execute();
+        command.Execute(placeholder);
 
         Assert.True(invoked);
     }
@@ -35,12 +37,24 @@ public class CommandTests
     public void FromAction_Execute_CanBeCalledMultipleTimes()
     {
         var count = 0;
-        ICommand command = Command.FromAction(() => count++);
+        ICommand<Object> command = Command.FromAction(() => count++);
 
-        command.Execute();
-        command.Execute();
-        command.Execute();
+        command.Execute(placeholder);
+        command.Execute(placeholder);
+        command.Execute(placeholder);
 
         Assert.Equal(expected: 3, count);
+    }
+
+    [Fact]
+    public void FromActionWithArgument_Execute_PassesArgumentToAction()
+    {
+        Object? receivedArgument = null;
+        ICommand<String> command = Command.FromAction<String>(arg => receivedArgument = arg);
+        
+        const String argument = "Test Argument";
+        command.Execute(argument);
+        
+        Assert.Equal(argument, receivedArgument);
     }
 }

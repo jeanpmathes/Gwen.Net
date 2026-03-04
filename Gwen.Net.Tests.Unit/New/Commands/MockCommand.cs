@@ -4,9 +4,9 @@ using Gwen.Net.New.Commands;
 namespace Gwen.Net.Tests.Unit.New.Commands;
 
 /// <summary>
-/// A test double for <see cref="ICommand"/> that records how many times it has been executed.
+/// A test double for <see cref="ICommand{TArgument}"/> that records how many times it has been executed.
 /// </summary>
-public sealed class MockCommand : ICommand
+public sealed class MockCommand : ICommand<Object>
 {
     /// <summary>
     /// The number of times <see cref="Execute"/> has been called.
@@ -14,10 +14,9 @@ public sealed class MockCommand : ICommand
     public Int32 ExecuteCount { get; private set; }
 
     /// <inheritdoc />
-    public ReadOnlySlot<Boolean> CanExecute { get; } = new(true);
+    public IValueSource<Object, Boolean> CanExecute { get; } = Binding.Constant<Object, Boolean>(true);
 
-    /// <inheritdoc />
-    public ICommandExecution Execute()
+    public ICommandExecution Execute(Object argument)
     {
         ExecuteCount++;
 

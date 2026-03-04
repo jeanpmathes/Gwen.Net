@@ -19,6 +19,18 @@ public static class Binding
     }
     
     /// <summary>
+    /// Create a read-only parametrized binding that ignores its input and always returns a constant value.
+    /// </summary>
+    /// <param name="value">The constant value.</param>
+    /// <typeparam name="TIn">The type of the input parameter (ignored).</typeparam>
+    /// <typeparam name="TOut">The type of value stored in the binding.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<TIn, TOut> Constant<TIn, TOut>(TOut value)
+    {
+        return new Binding<TIn, TOut>(_ => value, []);
+    }
+
+    /// <summary>
     /// Create a read-only computed binding. Note that using other value sources inside the getter will not automatically
     /// trigger change notifications.
     /// </summary>
@@ -30,6 +42,32 @@ public static class Binding
         return new Binding<T>(getter, setter: null, []);
     }
 
+    /// <summary>
+    /// Bind directly to a parametrized value source, using a constant value as input.
+    /// </summary>
+    /// <param name="source">The parametrized value source.</param>
+    /// <param name="input">The constant value to supply as input.</param>
+    /// <typeparam name="TIn">The type of the input parameter of the value source.</typeparam>
+    /// <typeparam name="TOut">The type of value stored in the binding, which must match the output type of the value source.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<TOut> To<TIn, TOut>(IValueSource<TIn, TOut> source, TIn input)
+    {
+        return new Binding<TOut>(() => source.GetValue(input), setter: null, [source]);
+    }
+    
+    /// <summary>
+    /// Bind directly to a parametrized value source, using another value source as input.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="inputSource"></param>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
+    /// <returns></returns>
+    public static Binding<TOut> To<TIn, TOut>(IValueSource<TIn, TOut> source, IValueSource<TIn> inputSource)
+    {
+        return new Binding<TOut>(() => source.GetValue(inputSource.GetValue()), setter: null, [source, inputSource]);
+    }
+    
     /// <summary>
     /// Bind directly to a value source.
     /// </summary>
@@ -129,13 +167,13 @@ public static class Binding
 /// <summary>
 /// Binds a property to a slot.
 /// </summary>
-/// <typeparam name="T">The type of value stored in the binding.</typeparam>
-public class Binding<T> : IValueSource<T>
+/// <typeparam name="TValue">The type of value stored in the binding.</typeparam>
+public sealed class Binding<TValue> : IValueSource<TValue>
 {
-    private readonly Func<T> getter;
-    private readonly Action<T>? setter;
+    private readonly Func<TValue> getter;
+    private readonly Action<TValue>? setter;
 
-    internal Binding(Func<T> getter, Action<T>? setter, IValueSource[] dependencies)
+    internal Binding(Func<TValue> getter, Action<TValue>? setter, IValueSource[] dependencies)
     {
         this.getter = getter;
         this.setter = setter;
@@ -150,7 +188,7 @@ public class Binding<T> : IValueSource<T>
     }
 
     /// <inheritdoc/>
-    public T GetValue()
+    public TValue GetValue()
     {
         return getter();
     }
@@ -168,7 +206,7 @@ public class Binding<T> : IValueSource<T>
     /// </param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>>The created binding.</returns>
-    public Binding<TSelected> Select<TSelected>(Func<T, IValueSource<TSelected>> selector)
+    public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>> selector)
     {
         BindingRelay<TSelected> relay = new();
         
@@ -191,7 +229,7 @@ public class Binding<T> : IValueSource<T>
     /// <param name="defaultValue">The value to return when the selected inner source is <c>null</c>.</param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TSelected> Select<TSelected>(Func<T, IValueSource<TSelected>?> selector, TSelected defaultValue)
+    public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>?> selector, TSelected defaultValue)
     {
         BindingRelay<TSelected> relay = new();
 
@@ -211,7 +249,7 @@ public class Binding<T> : IValueSource<T>
     /// </param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TSelected> Compute<TSelected>(Func<T, TSelected> computer)
+    public Binding<TSelected> Compute<TSelected>(Func<TValue, TSelected> computer)
     {
         return new Binding<TSelected>(() => computer(GetValue()), setter: null, [this]);
     }
@@ -222,9 +260,9 @@ public class Binding<T> : IValueSource<T>
     /// <param name="other">The other value source to combine with this binding.</param>
     /// <typeparam name="TOther">The type of the value in the other source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<(T, TOther)> Combine<TOther>(IValueSource<TOther> other)
+    public Binding<(TValue, TOther)> Combine<TOther>(IValueSource<TOther> other)
     {
-        return new Binding<(T, TOther)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
+        return new Binding<(TValue, TOther)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
     }
     
     /// <summary>
@@ -235,9 +273,21 @@ public class Binding<T> : IValueSource<T>
     /// <typeparam name="TOther1">The type of the value in the first other source.</typeparam>
     /// <typeparam name="TOther2">The type of the value in the second other source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<(T, TOther1, TOther2)> Combine<TOther1, TOther2>(IValueSource<TOther1> other1, IValueSource<TOther2> other2)
+    public Binding<(TValue, TOther1, TOther2)> Combine<TOther1, TOther2>(IValueSource<TOther1> other1, IValueSource<TOther2> other2)
     {
-        return new Binding<(T, TOther1, TOther2)>(() => (GetValue(), other1.GetValue(), other2.GetValue()), setter: null, [this, other1, other2]);
+        return new Binding<(TValue, TOther1, TOther2)>(() => (GetValue(), other1.GetValue(), other2.GetValue()), setter: null, [this, other1, other2]);
+    }
+    
+    /// <summary>
+    /// Introduce an input parameter to this binding, creating a new parametrized binding.
+    /// </summary>
+    /// <param name="operation">The operation to perform using the input value and the current value of this binding.</param>
+    /// <typeparam name="TIn">The type of the input parameter.</typeparam>
+    /// <typeparam name="TOut">The type of value stored in the created binding.</typeparam>
+    /// <returns>The created binding.</returns>
+    public Binding<TIn, TOut> With<TIn, TOut>(Func<TIn, TValue, TOut> operation)
+    {
+        return new Binding<TIn, TOut>(input => operation(input, GetValue()), [this]);
     }
     
     /// <inheritdoc/>
@@ -245,6 +295,38 @@ public class Binding<T> : IValueSource<T>
     {
         return $"{{{GetValue()?.ToString()}}}";
     }
+}
+
+/// <summary>
+/// A special parametrized binding that can only provide a value given an input value.
+/// </summary>
+/// <typeparam name="TIn">The type of the input value.</typeparam>
+/// <typeparam name="TOut">The type of the output value.</typeparam>
+public sealed class Binding<TIn, TOut> : IValueSource<TIn, TOut>
+{
+    private readonly Func<TIn, TOut> getter;
+    
+    internal Binding(Func<TIn, TOut> getter, IValueSource[] dependencies)
+    {
+        this.getter = getter;
+        
+        foreach (IValueSource dependency in dependencies)
+            dependency.ValueChanged += OnDependencyValueChanged;
+    }
+    
+    /// <inheritdoc/>
+    public TOut GetValue(TIn input)
+    {
+        return getter(input); 
+    }
+    
+    private void OnDependencyValueChanged(Object? sender, EventArgs e)
+    {
+        ValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+    
+    /// <inheritdoc/>
+    public event EventHandler? ValueChanged;
 }
 
 /// <summary>

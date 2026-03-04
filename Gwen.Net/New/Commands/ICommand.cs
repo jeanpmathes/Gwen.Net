@@ -6,15 +6,16 @@ namespace Gwen.Net.New.Commands;
 /// <summary>
 /// Interface for commands. Commands are used to bind actions to controls.
 /// </summary>
-public interface ICommand
+/// <typeparam name="TArgument">The type of argument passed to the command when executed.</typeparam>
+public interface ICommand<in TArgument>
 {
     /// <summary>
     /// Whether the command can be executed.
     /// </summary>
-    public ReadOnlySlot<Boolean> CanExecute { get; }
+    public IValueSource<TArgument, Boolean> CanExecute { get; }
     
     /// <summary>
     /// Execute the command.
     /// </summary>
-    public ICommandExecution Execute();
+    public ICommandExecution Execute(TArgument argument);
 }

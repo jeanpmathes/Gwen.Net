@@ -168,6 +168,8 @@ public sealed class Property<T> : Property, IValueSource<T>
         return cachedValue!;
     }
     
+    #region DEFAULT 
+    
     /// <summary>
     /// Overrides the default binding of the property.
     /// This is used for child controls to override the default bindings of their parent controls.
@@ -188,6 +190,8 @@ public sealed class Property<T> : Property, IValueSource<T>
     {
         OverrideDefault(_ => Bindings.Binding.Constant(defaultValue));
     }
+    
+    #endregion DEFAULT
 
     #region LOCAL
 

@@ -17,7 +17,7 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     /// </summary>
     protected ButtonBase()
     {
-        Command = Property.Create(this, default(ICommand?));
+        Command = Property.Create(this, default(ICommand<TContent>?));
     }
     
     #region PROPERTIES
@@ -25,7 +25,7 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     /// <summary>
     /// The command to execute when the button is clicked.
     /// </summary>
-    public Property<ICommand?> Command { get; }
+    public Property<ICommand<TContent>?> Command { get; }
     
     #endregion PROPERTIES
     
@@ -87,6 +87,7 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     
     private void ExecuteCommand()
     {
-        Command.GetValue()?.Execute();
+        if (Content.GetValue() is {} content)
+            Command.GetValue()?.Execute(content);
     }
 }
