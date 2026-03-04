@@ -53,7 +53,7 @@ public class MultiChildControlTests
         control.Children.Add(child);
         control.Children.Remove(child);
 
-        Assert.Null(child.Parent);
+        Assert.Null(child.Parent.GetValue());
         Assert.Empty(control.Children);
     }
 
@@ -99,7 +99,7 @@ public class MultiChildControlTests
         Assert.Equal(expected: 2, control.Children.Count);
         Assert.Contains(newChild1, control.Children);
         Assert.Contains(newChild2, control.Children);
-        Assert.Null(oldChild.Parent);
+        Assert.Null(oldChild.Parent.GetValue());
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class MultiChildControlTests
         externalChildren.Remove(child);
 
         Assert.Empty(control.Children);
-        Assert.Null(child.Parent);
+        Assert.Null(child.Parent.GetValue());
     }
 
     [Fact]
