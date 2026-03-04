@@ -1,4 +1,4 @@
-﻿using Gwen.Net.New.Bindings;
+using Gwen.Net.New.Bindings;
 using Gwen.Net.Tests.Unit.New.Controls;
 
 namespace Gwen.Net.Tests.Unit.New.Bindings;
@@ -66,5 +66,64 @@ public class PropertyTests
         property.Value = 8;
 
         Assert.Equal(expected: 8, property.GetValue());
+    }
+
+    [Fact]
+    public void CoercionBinding_IsAppliedToDefaultValue()
+    {
+        var owner = new MockControl();
+        Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
+        Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
+
+        Assert.Equal(expected: 3, property.GetValue());
+    }
+
+    [Fact]
+    public void CoercionBinding_IsAppliedToLocalValue()
+    {
+        var owner = new MockControl();
+        Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
+        Property<Int32> property = Property.Create(owner, defaultValue: 0, coercionBinding: clamp);
+
+        property.Value = 7;
+
+        Assert.Equal(expected: 3, property.GetValue());
+    }
+
+    [Fact]
+    public void CoercionBinding_TriggersValueChangedWhenCoercedResultChanges()
+    {
+        var owner = new MockControl();
+        var maxSlot = new Slot<Int32>(10);
+        Binding<Int32, Int32> clamp = Binding.To(maxSlot).With<Int32, Int32>((input, max) => Math.Clamp(input, min: 0, max));
+        Property<Int32> property = Property.Create(owner, defaultValue: 15, coercionBinding: clamp);
+
+        property.Activate();
+
+        var events = 0;
+        property.ValueChanged += (_, _) => events++;
+
+        maxSlot.SetValue(5);
+
+        Assert.Equal(expected: 1, events);
+        Assert.Equal(expected: 5, property.GetValue());
+    }
+
+    [Fact]
+    public void CoercionBinding_DoesNotTriggerValueChangedWhenCoercedResultIsUnchanged()
+    {
+        var owner = new MockControl();
+        Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
+        Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
+
+        property.Activate();
+
+        var events = 0;
+        property.ValueChanged += (_, _) => events++;
+
+        property.Value = 7; // Still clamps to 3, no actual change.
+
+        Assert.Equal(expected: 0, events);
+        Assert.Equal(expected: 3, property.GetValue());
     }
 }

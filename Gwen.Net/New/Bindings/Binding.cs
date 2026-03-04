@@ -43,6 +43,19 @@ public static class Binding
     }
 
     /// <summary>
+    /// Create a read-only parametrized computed binding. Note that using other value sources inside the getter will not
+    /// automatically trigger change notifications.
+    /// </summary>
+    /// <param name="getter">The getter function taking the input value and returning the output value.</param>
+    /// <typeparam name="TIn">The type of the input parameter.</typeparam>
+    /// <typeparam name="TOut">The type of value stored in the binding.</typeparam>
+    /// <returns>The created binding.</returns>
+    public static Binding<TIn, TOut> Computed<TIn, TOut>(Func<TIn, TOut> getter)
+    {
+        return new Binding<TIn, TOut>(getter, []);
+    }
+
+    /// <summary>
     /// Bind directly to a parametrized value source, using a constant value as input.
     /// </summary>
     /// <param name="source">The parametrized value source.</param>
@@ -208,7 +221,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <returns>>The created binding.</returns>
     public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>> selector)
     {
-        BindingRelay<TSelected> relay = new();
+        Relay<TSelected> relay = new();
         
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
@@ -231,7 +244,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <returns>The created binding.</returns>
     public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>?> selector, TSelected defaultValue)
     {
-        BindingRelay<TSelected> relay = new();
+        Relay<TSelected> relay = new();
 
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
@@ -295,6 +308,35 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     {
         return $"{{{GetValue()?.ToString()}}}";
     }
+    
+    private sealed class Relay<T> : IValueSource<T>
+    {
+        internal IValueSource<T>? Inner { get; private set; }
+
+        internal void SetInner(IValueSource<T>? newInner)
+        {
+            if (ReferenceEquals(Inner, newInner)) return;
+
+            if (Inner != null)
+                Inner.ValueChanged -= OnInnerValueChanged;
+
+            Inner = newInner;
+
+            if (Inner != null)
+                Inner.ValueChanged += OnInnerValueChanged;
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnInnerValueChanged(Object? sender, EventArgs e)
+        {
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        T IValueSource<T>.GetValue() => Inner != null ? Inner.GetValue() : default!;
+
+        public event EventHandler? ValueChanged;
+    }
 }
 
 /// <summary>
@@ -326,37 +368,5 @@ public sealed class Binding<TIn, TOut> : IValueSource<TIn, TOut>
     }
     
     /// <inheritdoc/>
-    public event EventHandler? ValueChanged;
-}
-
-/// <summary>
-/// Internal relay used to manage a dynamic inner subscription that switches whenever the outer source value changes.
-/// </summary>
-internal sealed class BindingRelay<T> : IValueSource<T>
-{
-    internal IValueSource<T>? Inner { get; private set; }
-
-    internal void SetInner(IValueSource<T>? newInner)
-    {
-        if (ReferenceEquals(Inner, newInner)) return;
-
-        if (Inner != null)
-            Inner.ValueChanged -= OnInnerValueChanged;
-
-        Inner = newInner;
-
-        if (Inner != null)
-            Inner.ValueChanged += OnInnerValueChanged;
-
-        ValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnInnerValueChanged(Object? sender, EventArgs e)
-    {
-        ValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    T IValueSource<T>.GetValue() => Inner != null ? Inner.GetValue() : default!;
-
     public event EventHandler? ValueChanged;
 }

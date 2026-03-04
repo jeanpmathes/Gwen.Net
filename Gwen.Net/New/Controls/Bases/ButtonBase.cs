@@ -87,6 +87,8 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     
     private void ExecuteCommand()
     {
+        // todo: button should be shown as disabled if no content, if command not executable and if no command
+        
         if (Content.GetValue() is {} content)
             Command.GetValue()?.Execute(content);
     }

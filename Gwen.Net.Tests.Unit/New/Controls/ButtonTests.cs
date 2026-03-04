@@ -24,8 +24,10 @@ public sealed class ButtonTests : ControlTestBase<Button<String>>, IDisposable
 
         button = new Button<String>();
         command = new MockCommand();
+        
         button.Command.Value = command;
-
+        button.Content.Value = "Click me";
+        
         canvas.Child = button;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
         canvas.Render();

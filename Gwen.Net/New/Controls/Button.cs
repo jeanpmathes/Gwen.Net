@@ -25,7 +25,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     /// </summary>
     public Button()
     {
-        BorderBrush = new Property<Brush>(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute(
+        BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute(
             (foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
         
         Background.OverrideDefault(old => old

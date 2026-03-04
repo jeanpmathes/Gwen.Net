@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using Gwen.Net.New.Controls;
 
 namespace Gwen.Net.New.Bindings;
@@ -13,11 +14,12 @@ public abstract class Property : IValueSource
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultBinding">The default binding for the property.</param>
+    /// <param name="coercionBinding">An optional coercion binding to coerce the bound value.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Control owner, Binding<T> defaultBinding)
+    public static Property<T> Create<T>(Control owner, Binding<T> defaultBinding, Binding<T, T>? coercionBinding = null)
     {
-        return new Property<T>(owner, defaultBinding);
+        return new Property<T>(owner, defaultBinding, coercionBinding);
     }
 
     /// <summary>
@@ -25,11 +27,12 @@ public abstract class Property : IValueSource
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultValue">The default value for the property.</param>
+    /// <param name="coercionBinding">An optional coercion binding to coerce the bound value.</param>
     /// <typeparam name="T">The type of value stored in the property.</typeparam>
     /// <returns>The created property.</returns>
-    public static Property<T> Create<T>(Control owner, T defaultValue)
+    public static Property<T> Create<T>(Control owner, T defaultValue, Binding<T, T>? coercionBinding = null)
     {
-        return Create(owner, Binding.Constant(defaultValue));
+        return Create(owner, Binding.Constant(defaultValue), coercionBinding);
     }
 
     /// <summary>
@@ -62,24 +65,36 @@ public abstract class Property : IValueSource
 public sealed class Property<T> : Property, IValueSource<T>
 {
     private Binding<T> defaultBinding;
+    private readonly Binding<T, T>? coercionBinding;
 
     private Binding<T>? styleBinding;
     private Binding<T>? localBinding;
 
-    private Binding<T> targetBinding;
+    private Binding<T> selectedBinding;
+    private Binding<T> effectiveBinding;
     private Boolean isActive;
 
     private T? cachedValue;
     private Boolean isCacheValid;
 
-    internal Property(Control owner, Binding<T> defaultBinding)
+    internal Property(Control owner, Binding<T> defaultBinding, Binding<T, T>? coercionBinding)
     {
         this.defaultBinding = defaultBinding;
+        this.coercionBinding = coercionBinding;
 
-        targetBinding = defaultBinding;
+        selectedBinding = defaultBinding;
+        SetEffectiveBinding();
 
         owner.AttachedToRoot += (_, _) => Activate();
         owner.DetachedFromRoot += (_, _) => Deactivate();
+    }
+
+    [MemberNotNull(nameof(effectiveBinding))]
+    private void SetEffectiveBinding()
+    {
+        effectiveBinding = coercionBinding != null
+            ? Bindings.Binding.To(coercionBinding, selectedBinding)
+            : selectedBinding;
     }
 
     /// <summary>
@@ -90,7 +105,7 @@ public sealed class Property<T> : Property, IValueSource<T>
         if (isActive) return;
         isActive = true;
 
-        AttachTargetBinding();
+        AttachEffectiveBinding();
         UpdateCachedValue(notify: true);
     }
 
@@ -102,49 +117,53 @@ public sealed class Property<T> : Property, IValueSource<T>
         if (!isActive) return;
         isActive = false;
 
-        DetachTargetBinding();
+        DetachEffectiveBinding();
     }
 
-    private void RecomputeTargetBinding()
+    private void RecomputeSelectedBinding()
     {
-        Binding<T> binding = localBinding ?? styleBinding ?? defaultBinding;
+        Binding<T> newSelectedBinding = localBinding ?? styleBinding ?? defaultBinding;
 
-        if (ReferenceEquals(binding, targetBinding))
+        if (ReferenceEquals(newSelectedBinding, selectedBinding))
             return;
 
         if (isActive)
         {
-            DetachTargetBinding();
+            DetachEffectiveBinding();
         }
 
-        targetBinding = binding;
-        isCacheValid = false;
+        selectedBinding = newSelectedBinding;
+        SetEffectiveBinding();
 
         if (isActive)
         {
-            AttachTargetBinding();
+            AttachEffectiveBinding();
             UpdateCachedValue(notify: true);
+        }
+        else
+        {
+            isCacheValid = false;
         }
     }
 
-    private void AttachTargetBinding()
+    private void AttachEffectiveBinding()
     {
-        targetBinding.ValueChanged += OnTargetBindingValueChanged;
+        effectiveBinding.ValueChanged += OnEffectiveBindingValueChanged;
     }
 
-    private void DetachTargetBinding()
+    private void DetachEffectiveBinding()
     {
-        targetBinding.ValueChanged -= OnTargetBindingValueChanged;
+        effectiveBinding.ValueChanged -= OnEffectiveBindingValueChanged;
     }
 
-    private void OnTargetBindingValueChanged(Object? sender, EventArgs e)
+    private void OnEffectiveBindingValueChanged(Object? sender, EventArgs e)
     {
         UpdateCachedValue(notify: true);
     }
 
     private void UpdateCachedValue(Boolean notify)
     {
-        T value = targetBinding.GetValue();
+        T value = effectiveBinding.GetValue();
 
         if (isCacheValid && Equals(cachedValue, value))
             return;
@@ -160,7 +179,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     public T GetValue()
     {
         if (!isActive)
-            return targetBinding.GetValue();
+            return effectiveBinding.GetValue();
 
         if (!isCacheValid)
             UpdateCachedValue(notify: false);
@@ -178,7 +197,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     internal void OverrideDefault(Func<Binding<T>, Binding<T>> builder)
     {
         defaultBinding = builder(defaultBinding);
-        RecomputeTargetBinding();
+        RecomputeSelectedBinding();
     }
     
     /// <summary>
@@ -198,7 +217,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     private void SetLocal(Binding<T> newLocalBinding)
     {
         localBinding = newLocalBinding;
-        RecomputeTargetBinding();
+        RecomputeSelectedBinding();
     }
 
     /// <summary>
@@ -224,7 +243,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     private void SetStyle(Binding<T>? newStyleBinding)
     {
         styleBinding = newStyleBinding;
-        RecomputeTargetBinding();
+        RecomputeSelectedBinding();
     }
 
     /// <summary>

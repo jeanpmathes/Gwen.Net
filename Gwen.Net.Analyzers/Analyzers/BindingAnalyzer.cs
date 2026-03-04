@@ -68,6 +68,11 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
     
     private static Boolean IsBindingType(ITypeSymbol? typeSymbol)
     {
-        return typeSymbol != null && typeSymbol.OriginalDefinition.ToDisplayString().StartsWith("Gwen.Net.New.Bindings.Binding"); // todo: remove New from namespace when deleting Legacy, test that it still works
+        if (typeSymbol == null) return false;
+        
+        ITypeSymbol original = typeSymbol.OriginalDefinition;
+        
+        return original.Name == "Binding"
+            && original.ContainingNamespace?.ToDisplayString() == "Gwen.Net.New.Bindings"; // todo: remove New from namespace when deleting Legacy, test that it still works
     }
 }
