@@ -1,5 +1,6 @@
 using System.Drawing;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Visuals;
 using Canvas = Gwen.Net.New.Controls.Canvas;
@@ -108,5 +109,13 @@ public sealed class ButtonTests : ControlTestBase<Button<String>>, IDisposable
         Visual? focused = canvas.Input!.PointerFocus.GetFocused();
 
         Assert.Null(focused);
+    }
+    
+    [Fact]
+    public void ReturnKey_ExecutesCommand()
+    {
+        translator.KeyDown(button, Key.Return);
+
+        Assert.Equal(expected: 1, command.ExecuteCount);
     }
 }

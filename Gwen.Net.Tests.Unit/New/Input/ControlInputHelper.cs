@@ -1,5 +1,6 @@
 using System.Drawing;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Input;
 using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.Tests.Unit.New.Input;
@@ -62,6 +63,18 @@ public static class ControlInputHelper
         public void PointerMove(Control control)
         {
             translator.PointerMove(GetHitPoint(control));
+        }
+
+        /// <summary>
+        /// Simulates a key-down event while the control has keyboard focus. The control will be focused if it isn't already.
+        /// </summary>
+        /// <param name="control">The control to send the key event to.</param>
+        /// <param name="key">The key to send.</param>
+        public void KeyDown(Control control, Key key)
+        {
+            control.Context.KeyboardFocus.Set(control);
+            
+            translator.KeyDown(key);
         }
     }
 }

@@ -61,10 +61,19 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
                     isPressed.SetValue(false);
                     
                     if (pointerButtonEvent.Hits(this))
-                        Command.GetValue()?.Execute();
+                       ExecuteCommand();
                 }
                 
                 Context.PointerFocus.Unset(this);
+                
+                break;
+            }
+            
+            case KeyEvent { Key: Key.Return, IsDown: true }:
+            {
+                isPressed.SetValue(true);
+                ExecuteCommand();
+                isPressed.SetValue(false);
                 
                 break;
             }
@@ -74,5 +83,10 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
         }
         
         inputEvent.Handled = true;
+    }
+    
+    private void ExecuteCommand()
+    {
+        Command.GetValue()?.Execute();
     }
 }
