@@ -1,6 +1,5 @@
 ﻿using System;
 using Gwen.Net.New.Controls;
-using Gwen.Net.New.Controls.Bases;
 using Gwen.Net.New.Controls.Internals;
 
 namespace Gwen.Net.New.Visuals;
@@ -13,6 +12,14 @@ public class ChildPresenter : Visual
 {
     private Control? visualizedChild;
     private Visual? childVisualization;
+
+    /// <summary>
+    /// Constructs a new instance of the <see cref="ChildPresenter"/> class.
+    /// </summary>
+    public ChildPresenter()
+    {
+        Visibility.Set(New.Visibility.Collapsed);
+    }
     
     /// <inheritdoc/>
     public override void OnAttach()
@@ -83,6 +90,8 @@ public class ChildPresenter : Visual
     
     private void AddVisualization(Control child)
     {
+        Visibility.Clear();
+        
         visualizedChild = child;
         childVisualization = child.Visualize();
         
@@ -91,6 +100,8 @@ public class ChildPresenter : Visual
     
     private void RemoveVisualization()
     {
+        Visibility.Set(New.Visibility.Collapsed);
+        
         visualizedChild = null;
         if (childVisualization == null) return;
         

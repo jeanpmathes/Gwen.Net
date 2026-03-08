@@ -108,13 +108,16 @@ public class VisualProperty : IValueSource
 }
 
 /// <summary>
-/// A visual property is a value of a <see cref="Visual"/> that can be set, styled and bound to a slot.
+/// A visual property is a value of a <see cref="Visual"/> that can be set and bound locally and internally.
+/// The local level is the level that should be used in templates and has the highest priority.
+/// The internal level is the level that should be used by the visual itself and has the second-highest priority.
 /// </summary>
 /// <typeparam name="T">The type of value stored in the property.</typeparam>
 public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
 {
     private readonly Binding<T> defaultBinding;
     
+    private Binding<T>? internalBinding;
     private Binding<T>? localBinding;
     
     private Binding<T> targetBinding;
@@ -164,7 +167,7 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
     
     private void RecomputeTargetBinding()
     {
-        Binding<T> binding = localBinding ?? defaultBinding;
+        Binding<T> binding = localBinding ?? internalBinding ?? defaultBinding;
         
         if (ReferenceEquals(binding, targetBinding))
             return;
@@ -224,6 +227,38 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
         
         return cachedValue!;
     }
+    
+    #region INTERNAL
+    
+    /// <summary>
+    /// Bind the property internally.
+    /// </summary>
+    /// <param name="newInternalBinding">The new internal binding for the property.</param>
+    public void Set(Binding<T> newInternalBinding)
+    {
+        internalBinding = newInternalBinding;
+        RecomputeTargetBinding();
+    }
+    
+    /// <summary>
+    /// Bind the property to a constant value internally.
+    /// </summary>
+    /// <param name="newValue">The new constant value for the property.</param>
+    public void Set(T newValue)
+    {
+        Set(Bindings.Binding.Constant(newValue));
+    }
+    
+    /// <summary>
+    /// Clears the internal binding of the property, causing it to fall back to the local binding or default value.
+    /// </summary>
+    public void Clear()
+    {
+        internalBinding = null;
+        RecomputeTargetBinding();
+    }
+    
+    #endregion INTERNAL
     
     #region LOCAL
     

@@ -1,4 +1,5 @@
 using System.Drawing;
+using Gwen.Net.New;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Internals;
 using Gwen.Net.New.Controls.Templates;
@@ -119,8 +120,67 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         Assert.Empty(control.GetPresenter().Children);
     }
 
+    [Fact]
+    public void OnAttach_WithoutChildren_IsCollapsed()
+    {
+        using ResourceRegistry registry = new();
+        using var canvas = Canvas.Create(new MockRenderer(), registry);
+
+        MockMultiChildControl control = new();
+
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 200, height: 200));
+        canvas.Render();
+
+        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+    }
+
+    [Fact]
+    public void ChildAddedAndRemoved_TogglesVisibility()
+    {
+        using ResourceRegistry registry = new();
+        using var canvas = Canvas.Create(new MockRenderer(), registry);
+
+        MockMultiChildControl control = new();
+
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 200, height: 200));
+        canvas.Render();
+
+        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+
+        Control child = new MockControl();
+        control.Children.Add(child);
+
+        Assert.Equal(expected: Visibility.Visible, control.GetPresenter().Visibility.GetValue());
+
+        control.Children.Remove(child);
+
+        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+    }
+
+    [Fact]
+    public void OnDetach_WithChildren_CollapsesPresenter()
+    {
+        using ResourceRegistry registry = new();
+        using var canvas = Canvas.Create(new MockRenderer(), registry);
+
+        MockMultiChildControl control = new();
+        control.Children.Add(new MockControl());
+
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 200, height: 200));
+        canvas.Render();
+
+        Assert.Equal(expected: Visibility.Visible, control.GetPresenter().Visibility.GetValue());
+
+        canvas.Child = null;
+
+        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+    }
+
     private class MockChildrenPresenter : ChildrenPresenter;
-    
+
     private class MockMultiChildControl : MultiChildControl<MockMultiChildControl>
     {
         private MockChildrenPresenter? presenter;

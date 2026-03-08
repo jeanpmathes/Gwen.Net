@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Internals;
@@ -14,6 +14,14 @@ public abstract class ChildrenPresenter : Visual
 {
     private readonly Dictionary<Control, Visual> visualizedChildren = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChildrenPresenter"/> class.
+    /// </summary>
+    protected ChildrenPresenter()
+    {
+        UpdateVisibility();
+    }
+    
     /// <inheritdoc/>
     public override void OnAttach()
     {
@@ -49,6 +57,8 @@ public abstract class ChildrenPresenter : Visual
         }
         
         visualizedChildren.Clear();
+        
+        UpdateVisibility();
     }
     
     private void OnTemplateOwnerChildAdded(Object? sender, ChildAddedEventArgs e)
@@ -68,6 +78,8 @@ public abstract class ChildrenPresenter : Visual
         Visual childVisualization = child.Visualize();
         visualizedChildren[child] = childVisualization;
         AddChild(childVisualization);
+        
+        UpdateVisibility();
     }
     
     private void RemoveVisualization(Control child)
@@ -75,6 +87,20 @@ public abstract class ChildrenPresenter : Visual
         if (visualizedChildren.Remove(child, out Visual? childVisualization))
         {
             RemoveChild(childVisualization);
+        }
+        
+        UpdateVisibility();
+    }
+    
+    private void UpdateVisibility()
+    {
+        if (visualizedChildren.Count > 0)
+        {
+            Visibility.Clear();
+        }
+        else
+        {
+            Visibility.Set(New.Visibility.Collapsed);
         }
     }
 }

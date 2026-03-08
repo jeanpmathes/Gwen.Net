@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Visuals;
 
@@ -57,6 +57,47 @@ public class VisualPropertyTests
         Assert.Equal(expected: 10, property.GetValue());
     }
 
+
+    [Fact]
+    public void InternalBinding_OverridesDefault()
+    {
+        var visual = new CountingVisual();
+        VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
+
+        property.Activate();
+        property.Set(2);
+
+        Assert.Equal(expected: 2, property.GetValue());
+    }
+    
+    [Fact]
+    public void InternalBinding_Clear_RevertsToDefault()
+    {
+        var visual = new CountingVisual();
+        VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
+
+        property.Activate();
+
+        property.Set(2);
+        property.Clear();
+
+        Assert.Equal(expected: 1, property.GetValue());
+    }
+
+    [Fact]
+    public void LocalBinding_OverridesInternal()
+    {
+        var visual = new CountingVisual();
+        VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
+
+        property.Activate();
+
+        property.Set(2);
+        property.Value = 3;
+        
+        Assert.Equal(expected: 3, property.GetValue());
+    }
+    
     private sealed class CountingVisual : Visual
     {
         public Int32 MeasureCalls { get; private set; }
