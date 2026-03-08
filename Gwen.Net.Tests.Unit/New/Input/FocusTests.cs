@@ -1,4 +1,5 @@
 using System.Drawing;
+using Gwen.Net.New;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Input;
@@ -168,14 +169,27 @@ public sealed class FocusTests
     }
 
     [Fact]
-    public void Clear_InvokesCallback()
+    public void Clear_DoesNotInvokeCallbackIfAlreadyClear()
     {
         var callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
 
         callbackFocus.Clear();
 
-        Assert.Equal(expected: 1, callbackCount);
+        Assert.Equal(expected: 0, callbackCount);
+    }
+    
+    [Fact]
+    public void Clear_InvokesCallbackIfFocused()
+    {
+        var callbackCount = 0;
+        Focus callbackFocus = new((_, _) => callbackCount++);
+        MockVisual visual = new();
+
+        callbackFocus.Set(visual);
+        callbackFocus.Clear();
+
+        Assert.Equal(expected: 2, callbackCount);
     }
 
     [Fact]
@@ -247,6 +261,40 @@ public sealed class FocusTests
         control.Template.Value = ControlTemplate.Create<MockControl>(_ => new MockVisual());
 
         Assert.True(callbackCount >= 1);
+    }
+    
+    [Fact]
+    public void Focus_IsClearedWhenControlIsHidden()
+    {
+        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        focus.Set(control);
+        Assert.NotNull(focus.GetFocused());
+
+        control.Visibility.Value = Visibility.Hidden;
+
+        Assert.Null(focus.GetFocused());
+    }
+    
+    [Fact]
+    public void Focus_IsClearedWhenVisualIsHidden()
+    {
+        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        focus.Set(control);
+        Assert.NotNull(focus.GetFocused());
+
+        control.Visualization.GetValue()?.Visibility.Value = Visibility.Hidden;
+
+        Assert.Null(focus.GetFocused());
     }
 
     #endregion CALLBACK

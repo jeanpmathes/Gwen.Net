@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Visuals;
 
@@ -32,9 +33,9 @@ public sealed class Focus
         Visual? previousFocusedVisual = focusedVisual;
         
         ClearFocusedControl();
-        focusedVisual = visual;
+        SetFocusedVisual(visual);
         
-        onFocusChanged(previousFocusedVisual, focusedVisual);
+        InvokeFocusChanged(previousFocusedVisual);
     }
 
     /// <summary>
@@ -48,7 +49,7 @@ public sealed class Focus
         ClearFocusedControl();
         SetFocusedControl(control);
         
-        onFocusChanged(previousFocusedVisual, focusedVisual);
+        InvokeFocusChanged(previousFocusedVisual);
     }
     
     /// <summary>
@@ -87,9 +88,8 @@ public sealed class Focus
         Visual? previousFocusedVisual = focusedVisual;
         
         ClearFocusedControl();
-        focusedVisual = null;
         
-        onFocusChanged.Invoke(previousFocusedVisual, focusedVisual);
+        InvokeFocusChanged(previousFocusedVisual);
     }
     
     /// <summary>
@@ -104,25 +104,74 @@ public sealed class Focus
     private void SetFocusedControl(Control control)
     {
         focusedControl = control;
-        focusedVisual = control.Visualization.GetValue();
+        SetFocusedVisual(control.Visualization.GetValue());
         
         focusedControl.Visualization.ValueChanged += OnVisualizationChanged;
     }
-
+    
     private void ClearFocusedControl()
     {
         if (focusedControl != null)
             focusedControl.Visualization.ValueChanged -= OnVisualizationChanged;
         
         focusedControl = null;
+        ClearFocusedVisual();
+    }
+    
+    private void SetFocusedVisual(Visual? visual)
+    {
+        focusedVisual = visual;
+        
+        if (focusedVisual == null)
+            return;
+
+        if (!focusedVisual.Visibility.GetValue().IsVisible)
+        {
+            focusedVisual = null;
+            
+            ClearFocusedControl();
+        }
+        else
+        {
+            focusedVisual.Visibility.ValueChanged += OnVisibilityChanged;
+        }
+    }
+    
+    private void ClearFocusedVisual()
+    {
+        if (focusedVisual != null)
+            focusedVisual.Visibility.ValueChanged -= OnVisibilityChanged;
+        
+        focusedVisual = null;
     }
 
     private void OnVisualizationChanged(Object? sender, EventArgs e)
     {
         Visual? previousFocusedVisual = focusedVisual;
         
-        focusedVisual = focusedControl?.Visualization.GetValue();
+        ClearFocusedVisual();
+        SetFocusedVisual(focusedControl?.Visualization.GetValue());
         
-        onFocusChanged(previousFocusedVisual, focusedVisual);
+        InvokeFocusChanged(previousFocusedVisual);
+    }
+
+    private void OnVisibilityChanged(Object? sender, EventArgs e)
+    {
+        Debug.Assert(focusedVisual != null);
+        
+        if (!focusedVisual.Visibility.GetValue().IsVisible)
+        {
+            Clear();
+        }
+    }
+    
+    private void InvokeFocusChanged(Visual? previousFocusedVisual)
+    {
+        Visual? newFocusedVisual = focusedVisual;
+        
+        if (previousFocusedVisual == newFocusedVisual)
+            return;
+        
+        onFocusChanged(previousFocusedVisual, newFocusedVisual);
     }
 }

@@ -303,6 +303,17 @@ public sealed class Binding<TValue> : IValueSource<TValue>
         return new Binding<TIn, TOut>(input => operation(input, GetValue()), [this]);
     }
     
+    /// <summary>
+    /// Introduce an input parameter to this binding, creating a new parametrized binding.
+    /// </summary>
+    /// <param name="operation">The operation to perform using the input value and the current value of this binding.</param>
+    /// <typeparam name="TInAndOut">The type of the input parameter, which is also the type of value stored in the created binding.</typeparam>
+    /// <returns>The created binding.</returns>
+    public Binding<TInAndOut, TInAndOut> With<TInAndOut>(Func<TInAndOut, TValue, TInAndOut> operation)
+    {
+        return new Binding<TInAndOut, TInAndOut>(input => operation(input, GetValue()), [this]);
+    }
+    
     /// <inheritdoc/>
     public override String ToString()
     {

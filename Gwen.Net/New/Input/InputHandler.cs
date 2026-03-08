@@ -56,6 +56,9 @@ public sealed class InputHandler : IDisposable
     {
         Visual current = root;
         
+        if (!current.Visibility.GetValue().IsVisible)
+            return null;
+        
         if (!current.Bounds.Contains(point)) 
             return null;
         
@@ -66,6 +69,9 @@ public sealed class InputHandler : IDisposable
             for (Int32 index = current.Children.Count - 1; index >= 0; index--)
             {
                 Visual child = current.Children[index];
+                
+                if (!child.Visibility.GetValue().IsVisible) 
+                    continue;
 
                 if (!child.Bounds.Contains(child.RootPointToLocal(point))) 
                     continue;
@@ -263,7 +269,7 @@ public sealed class InputHandler : IDisposable
         
         do
         {
-            Visual? next = null;
+            Visual? next;
 
             if (current.Parent != null)
             {
@@ -295,7 +301,7 @@ public sealed class InputHandler : IDisposable
     
     private static Boolean CanMoveFocusTo(Visual visual)
     {
-        return visual.IsNavigable.GetValue();
+        return visual.IsNavigable.GetValue() && visual.Visibility.GetValue().IsVisible;
     }
 
     /// <inheritdoc/>

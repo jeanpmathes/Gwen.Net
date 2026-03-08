@@ -38,6 +38,9 @@ public abstract class Control
         VerticalAlignment = Property.Create(this, New.VerticalAlignment.Stretch);
         
         IsNavigable = Property.Create(this, defaultValue: false);
+        
+        Visibility = Property.Create(this, defaultValue: New.Visibility.Visible, 
+            Binding.To(Parent).Select(p => p?.Visibility, New.Visibility.Visible).With<Visibility>(Visibilities.Lower));
     }
     
     #region PROPERTIES
@@ -98,6 +101,12 @@ public abstract class Control
     /// Whether this control allows to navigate to it, which is used to move the keyboard focus using the keyboard.
     /// </summary>
     public Property<Boolean> IsNavigable { get; }
+    
+    /// <summary>
+    /// The visibility of the control and its visualization.
+    /// Controls cannot be more visible than their parents.
+    /// </summary>
+    public Property<Visibility> Visibility { get; }
     
     #endregion PROPERTIES
     

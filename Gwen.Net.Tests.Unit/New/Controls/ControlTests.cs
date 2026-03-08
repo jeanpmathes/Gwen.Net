@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Gwen.Net.New;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Resources;
@@ -73,6 +74,18 @@ public class ControlTests
         Assert.Equal(expected: 1, template2Calls);
     }
     
+    [Fact]
+    public void Visibility_WhenParentIsHidden_IsCoercedToHidden()
+    {
+        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockControl child = new();
+        canvas.Child = child;
+
+        canvas.Visibility.Value = Visibility.Hidden;
+
+        Assert.Equal(Visibility.Hidden, child.Visibility.GetValue());
+    }
+
     [Fact]
     public void IsHovered_BeforeVisualized_ReturnsFalse()
     {

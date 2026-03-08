@@ -158,6 +158,40 @@ public class VisualTests
         Assert.Equal(expected: 174f, child.Bounds.Width);
         Assert.Equal(expected: 156f, child.Bounds.Height);
     }
+    
+    [Fact]
+    public void Measure_OfHiddenVisual_ReturnsNormalSize()
+    {
+        var visual = new MockVisual {Visibility = {Value = Visibility.Hidden}};
+
+        visual.Measure(new SizeF(width: 200f, height: 200f));
+
+        Assert.Equal(expected: 1f, visual.MeasuredSize.Width);
+        Assert.Equal(expected: 1f, visual.MeasuredSize.Height);
+    }
+    
+    [Fact]
+    public void Measure_OfCollapsedVisual_ReturnsZeroSize()
+    {
+        var visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
+
+        visual.Measure(new SizeF(width: 200f, height: 200f));
+
+        Assert.Equal(expected: 0f, visual.MeasuredSize.Width);
+        Assert.Equal(expected: 0f, visual.MeasuredSize.Height);
+    }
+    
+    [Fact]
+    public void Arrange_OfCollapsedVisual_SetsZeroSize()
+    {
+        var visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
+
+        visual.Measure(new SizeF(width: 200f, height: 200f));
+        visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
+
+        Assert.Equal(expected: 0f, visual.Bounds.Width);
+        Assert.Equal(expected: 0f, visual.Bounds.Height);
+    }
 
     #endregion LAYOUTING
 

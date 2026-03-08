@@ -40,6 +40,8 @@ public abstract class Visual
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
         
         IsNavigable = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.IsNavigable, defaultValue: false), Invalidation.None);
+        
+        Visibility = VisualProperty.Create(this, BindToOwner(o => o.Visibility, defaultValue: New.Visibility.Visible), Invalidation.Measure);
     }
     
     #region PROPERTIES
@@ -99,6 +101,11 @@ public abstract class Visual
     public VisualProperty<Boolean> IsNavigable { get; }
     
     /// <summary>
+    /// The visibility of this visual, which determines whether it is visible and whether it takes up space in the layout.
+    /// </summary>
+    public VisualProperty<Visibility> Visibility { get; }
+    
+    /// <summary>
     /// Create a binding that binds to the foreground of the template owner.
     /// </summary>
     /// <returns>The created binding.</returns>
@@ -114,6 +121,19 @@ public abstract class Visual
     protected Binding<Brush> BindToOwnerBackground()
     {
         return Binding.To(TemplateOwner).Select(o => o?.Background, Brushes.Transparent);
+    }
+    
+    /// <summary>
+    /// Bind to a property of the template owner, returning a default value if this visual is not part of a control template.
+    /// </summary>
+    /// <param name="selector">The selector function to select the property from the template owner.</param>
+    /// <param name="defaultValue">The default value to use if this visual is not part of a control template.</param>
+    /// <typeparam name="TValue">The type of the property to bind to.</typeparam>
+    /// <returns>The created binding.</returns>
+    protected Binding<TValue> BindToOwner<TValue>(Func<Control, IValueSource<TValue>> selector, TValue defaultValue = default!)
+    {
+        return Binding.To(TemplateOwner)
+            .Select(owner => owner != null ? selector(owner) : null, defaultValue);
     }
     
     /// <summary>
@@ -484,16 +504,23 @@ public abstract class Visual
             return MeasuredSize;
         
         lastAvailableSize = availableSize;
-
-        SizeF usableSize = availableSize - Margin.GetValue();
         
-        usableSize = Sizes.Max(SizeF.Empty, usableSize);
+        if (Visibility.GetValue().IsLayouted)
+        {
+            SizeF usableSize = availableSize - Margin.GetValue();
+        
+            usableSize = Sizes.Max(SizeF.Empty, usableSize);
 
-        SizeF measuredSize = OnMeasure(usableSize);
+            SizeF measuredSize = OnMeasure(usableSize);
             
-        measuredSize = Sizes.Clamp(measuredSize, MinimumSize, MaximumSize);
+            measuredSize = Sizes.Clamp(measuredSize, MinimumSize, MaximumSize);
         
-        MeasuredSize = measuredSize + Margin.GetValue();
+            MeasuredSize = measuredSize + Margin.GetValue();
+        }
+        else
+        {
+            MeasuredSize = SizeF.Empty;
+        }
         
         isMeasureValid = true;
         isArrangeValid = false;
@@ -550,8 +577,12 @@ public abstract class Visual
             Measure(finalRectangle.Size);
 
         finalRectangle -= Margin.GetValue();
-        
-        if (finalRectangle.IsEmpty)
+
+        if (!Visibility.GetValue().IsLayouted)
+        {
+            SetBounds(Rectangle.Empty);
+        }
+        else if (finalRectangle.IsEmpty)
         {
             SetBounds(finalRectangle);
         }
@@ -733,6 +764,9 @@ public abstract class Visual
         if (renderer == null) return;
         
         PrepareRender();
+        
+        if (!Visibility.GetValue().IsVisible) 
+            return;
         
         renderer.PushOffset(Bounds.Location);
         

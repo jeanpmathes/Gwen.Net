@@ -1,4 +1,5 @@
 using System.Drawing;
+using Gwen.Net.New;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Input;
@@ -42,6 +43,18 @@ public sealed class InputHandlerTests : IDisposable
         translator.PointerButtonDown(new PointF(x: 100f, y: 100f));
 
         Assert.IsType<PointerButtonEvent>(received);
+    }
+
+    [Fact]
+    public void PointerButtonDown_WhenVisualIsHidden_DoesNotDeliverEvent()
+    {
+        InputEvent? received = null;
+        childVisual.OnInputHandler = e => received = e;
+
+        childVisual.Visibility.Value = Visibility.Hidden;
+        translator.PointerButtonDown(new PointF(x: 100f, y: 100f));
+
+        Assert.Null(received);
     }
 
     [Fact]
@@ -301,6 +314,24 @@ public sealed class InputHandlerTests : IDisposable
         localTranslator.KeyDown(Key.Tab);
 
         Assert.False(localControl.A!.IsKeyboardFocused.GetValue());
+    }
+    
+    [Fact]
+    public void Tab_SkipsCollapsedVisuals()
+    {
+        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localControl.B!.Visibility.Value = Visibility.Collapsed;
+
+        localTranslator.KeyDown(Key.Tab);
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.Same(localControl.C, localCanvas.Input!.KeyboardFocus.GetFocused());
     }
 
     private sealed class MockControl : Control<MockControl>
