@@ -104,9 +104,10 @@ public sealed class Focus
     private void SetFocusedControl(Control control)
     {
         focusedControl = control;
-        SetFocusedVisual(control.Visualization.GetValue());
         
         focusedControl.Visualization.ValueChanged += OnVisualizationChanged;
+        
+        SetFocusedVisual(control.Visualization.GetValue());
     }
     
     private void ClearFocusedControl()

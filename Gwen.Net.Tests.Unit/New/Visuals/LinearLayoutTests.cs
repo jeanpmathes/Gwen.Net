@@ -7,10 +7,12 @@ namespace Gwen.Net.Tests.Unit.New.Visuals;
 
 public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new LinearLayout())
 {
+    private MockLinearLayout CreateLinearLayout() => new() {Visibility = {Value = Visibility.Visible}};
+    
     [Fact]
     public void Measure_Horizontal_NoChildren_ReturnsMinimumSize()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
 
         layout.Measure(new SizeF(width: 200f, height: 200f));
 
@@ -21,7 +23,7 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Horizontal_SingleChild_ReturnsChildSize()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
         MockVisual child = new() {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}};
         layout.Add(child);
 
@@ -34,7 +36,7 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Horizontal_MultipleChildren_SumsWidthAndTakesMaxHeight()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
         layout.Add(new MockVisual {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}});
         layout.Add(new MockVisual {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 50f}});
         layout.Add(new MockVisual {MinimumWidth = {Value = 30f}, MinimumHeight = {Value = 10f}});
@@ -48,7 +50,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Horizontal_WithPadding_IncludesPaddingInResult()
     {
-        MockLinearLayout layout = new() {Padding = {Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f)}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Padding.Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f);
+        
         layout.Add(new MockVisual {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}});
 
         layout.Measure(new SizeF(width: 200f, height: 200f));
@@ -60,7 +64,8 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Vertical_NoChildren_ReturnsMinimumSize()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
 
         layout.Measure(new SizeF(width: 200f, height: 200f));
 
@@ -71,7 +76,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Vertical_SingleChild_ReturnsChildSize()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         layout.Add(new MockVisual {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}});
 
         layout.Measure(new SizeF(width: 200f, height: 200f));
@@ -83,7 +90,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Vertical_MultipleChildren_SumsHeightAndTakesMaxWidth()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         layout.Add(new MockVisual {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}});
         layout.Add(new MockVisual {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 50f}});
         layout.Add(new MockVisual {MinimumWidth = {Value = 30f}, MinimumHeight = {Value = 10f}});
@@ -97,11 +106,10 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Measure_Vertical_WithPadding_IncludesPaddingInResult()
     {
-        MockLinearLayout layout = new()
-        {
-            Orientation = {Value = Orientation.Vertical},
-            Padding = {Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f)}
-        };
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        layout.Padding.Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f);
+ 
         layout.Add(new MockVisual {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}});
 
         layout.Measure(new SizeF(width: 200f, height: 200f));
@@ -113,7 +121,8 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Horizontal_ChildrenAreLaidOutLeftToRight()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 30f}};
 
@@ -130,7 +139,8 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Horizontal_ChildrenGetFullHeight()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 30f}};
 
@@ -147,7 +157,8 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Horizontal_ChildWidthEqualsDesiredWidth()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 40f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 60f}};
 
@@ -164,7 +175,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Horizontal_WithPadding_ChildrenAreOffsetByPadding()
     {
-        MockLinearLayout layout = new() {Padding = {Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f)}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Padding.Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f);
+        
         MockVisual child = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         layout.Add(child);
 
@@ -178,7 +191,8 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Horizontal_ThreeChildren_CorrectPositions()
     {
-        MockLinearLayout layout = new();
+        MockLinearLayout layout = CreateLinearLayout();
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 20f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 30f}};
         MockVisual child3 = new() {MinimumWidth = {Value = 50f}};
@@ -198,7 +212,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Vertical_ChildrenAreLaidOutTopToBottom()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 30f}};
 
@@ -215,7 +231,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Vertical_ChildrenGetFullWidth()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         MockVisual child1 = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumWidth = {Value = 60f}, MinimumHeight = {Value = 30f}};
 
@@ -232,7 +250,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Vertical_ChildHeightEqualsDesiredHeight()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         MockVisual child1 = new() {MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumHeight = {Value = 30f}};
 
@@ -249,11 +269,10 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Vertical_WithPadding_ChildrenAreOffsetByPadding()
     {
-        MockLinearLayout layout = new()
-        {
-            Orientation = {Value = Orientation.Vertical},
-            Padding = {Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f)}
-        };
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        layout.Padding.Value = new ThicknessF(left: 10f, top: 5f, right: 10f, bottom: 5f);
+        
         MockVisual child = new() {MinimumWidth = {Value = 40f}, MinimumHeight = {Value = 20f}};
         layout.Add(child);
 
@@ -267,7 +286,9 @@ public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new Linear
     [Fact]
     public void Arrange_Vertical_ThreeChildren_CorrectPositions()
     {
-        MockLinearLayout layout = new() {Orientation = {Value = Orientation.Vertical}};
+        MockLinearLayout layout = CreateLinearLayout();
+        layout.Orientation.Value = Orientation.Vertical;
+        
         MockVisual child1 = new() {MinimumHeight = {Value = 20f}};
         MockVisual child2 = new() {MinimumHeight = {Value = 30f}};
         MockVisual child3 = new() {MinimumHeight = {Value = 50f}};

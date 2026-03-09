@@ -14,8 +14,6 @@ public sealed class FocusTests
 {
     private readonly Focus focus = new((_, _) => {});
     
-    #region SET / GET VISUAL
-
     [Fact]
     public void Set_Visual_GetFocusedReturnsIt()
     {
@@ -37,10 +35,6 @@ public sealed class FocusTests
 
         Assert.Same(second, focus.GetFocused());
     }
-
-    #endregion SET / GET VISUAL
-
-    #region UNSET VISUAL
 
     [Fact]
     public void Unset_FocusedVisual_ClearsFocus()
@@ -65,10 +59,6 @@ public sealed class FocusTests
         Assert.Same(focused, focus.GetFocused());
     }
 
-    #endregion UNSET VISUAL
-
-    #region CLEAR
-
     [Fact]
     public void Clear_WhenVisualFocused_ClearsFocus()
     {
@@ -86,10 +76,6 @@ public sealed class FocusTests
         Assert.Null(focus.GetFocused());
     }
 
-    #endregion CLEAR
-
-    #region SET CONTROL
-
     [Fact]
     public void Set_Control_GetFocusedReturnsItsVisualization()
     {
@@ -103,6 +89,24 @@ public sealed class FocusTests
         focus.Set(control);
 
         Assert.Same(control.Visualization.GetValue(), focus.GetFocused());
+    }
+    
+    [Fact]
+    public void Set_HiddenControl_DoesNotThrowAndDoesNotFocus()
+    {
+        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        control.Visibility.Value = Visibility.Hidden;
+
+        var exception = Record.Exception(() => focus.Set(control));
+
+        Assert.Null(exception);
+        Assert.Null(focus.GetFocused());
     }
 
     [Fact]
@@ -137,10 +141,6 @@ public sealed class FocusTests
 
         Assert.NotNull(focus.GetFocused());
     }
-
-    #endregion SET CONTROL
-    
-    #region CALLBACK
 
     [Fact]
     public void Set_Visual_InvokesCallback()
@@ -296,6 +296,4 @@ public sealed class FocusTests
 
         Assert.Null(focus.GetFocused());
     }
-
-    #endregion CALLBACK
 }
