@@ -28,7 +28,7 @@ public static class UnitTestHarnessView
                         MinimumWidth = {Value = 500f},
                         MinimumHeight = {Value = 250f},
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},
-                        VerticalAlignment = {Value = VerticalAlignment.Center},
+                        VerticalAlignment = {Value = VerticalAlignment.Center}
                     },
                     new Text
                     {
@@ -62,7 +62,7 @@ public static class UnitTestHarnessView
                                 Content = {Value = "Click Me"},
 
                                 Margin = {Value = new ThicknessF(30)},
-                                
+
                                 Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
                             },
                             new Button<String>
@@ -72,7 +72,7 @@ public static class UnitTestHarnessView
                                 Margin = {Value = new ThicknessF(30)},
 
                                 Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
-                            },
+                            }
                         }
                     },
                     new Text

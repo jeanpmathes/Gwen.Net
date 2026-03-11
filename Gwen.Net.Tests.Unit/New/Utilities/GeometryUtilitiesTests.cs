@@ -12,7 +12,7 @@ public class GeometryUtilitiesTests
 
         Assert.Equal(new SizeF(width: 30, height: 5), result);
     }
-    
+
     [Fact]
     public void SizesClamp_ClampsWidthAndHeightIndependently()
     {
@@ -20,7 +20,7 @@ public class GeometryUtilitiesTests
 
         Assert.Equal(new SizeF(width: 10, height: 40), result);
     }
-    
+
     [Fact]
     public void SizesMax_ReturnsComponentWiseMaximum()
     {
@@ -32,11 +32,11 @@ public class GeometryUtilitiesTests
     [Fact]
     public void RectanglesClamp_ClampsSizeOfRectangle()
     {
-        RectangleF result = Rectangles.ClampSize(new RectangleF(location: PointF.Empty, new SizeF(width: 50, height: 2)), new SizeF(width: 10, height: 5), new SizeF(width: 30, height: 40));
+        RectangleF result = Rectangles.ClampSize(new RectangleF(PointF.Empty, new SizeF(width: 50, height: 2)), new SizeF(width: 10, height: 5), new SizeF(width: 30, height: 40));
 
-        Assert.Equal(new RectangleF(location: PointF.Empty, new SizeF(width: 30, height: 5)), result);
+        Assert.Equal(new RectangleF(PointF.Empty, new SizeF(width: 30, height: 5)), result);
     }
-    
+
     [Fact]
     public void RectanglesClamp_PreservesLocation()
     {

@@ -6,7 +6,7 @@ using Gwen.Net.New.Input;
 namespace Gwen.Net.New.Controls.Bases;
 
 /// <summary>
-/// Abstract base class for a button control, which is a control that can be clicked to perform an action.
+///     Abstract base class for a button control, which is a control that can be clicked to perform an action.
 /// </summary>
 /// <typeparam name="TContent">The type of the content displayed on the button.</typeparam>
 /// <typeparam name="TControl">The concrete type of the control.</typeparam>
@@ -17,7 +17,7 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     private ICommandExecution? currentExecution;
 
     /// <summary>
-    /// Creates a new instance of the <see cref="ButtonBase{TContent, TControl}"/> class.
+    ///     Creates a new instance of the <see cref="ButtonBase{TContent, TControl}" /> class.
     /// </summary>
     protected ButtonBase()
     {
@@ -34,15 +34,15 @@ public abstract class ButtonBase<TContent, TControl> : ContentControlBase<TConte
     #region PROPERTIES
 
     /// <summary>
-    /// The command to execute when the button is clicked.
+    ///     The command to execute when the button is clicked.
     /// </summary>
     public Property<ICommand<TContent>?> Command { get; }
 
     #endregion PROPERTIES
 
     /// <summary>
-    /// Whether the button is currently pressed.
-    /// The button will be considered pressed 
+    ///     Whether the button is currently pressed.
+    ///     The button will be considered pressed
     /// </summary>
     public ReadOnlySlot<Boolean> IsPressed => isPressed;
 

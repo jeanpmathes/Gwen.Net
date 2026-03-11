@@ -1,35 +1,34 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Control
-{
-    public class EnumRadioButtonGroup<T> : RadioButtonGroup where T : struct
-    {
-        public EnumRadioButtonGroup(ControlBase parent) : base(parent)
-        {
-            if (!typeof(T).IsEnum)
-            {
-                throw new Exception("T must be an enumerated type!");
-            }
+namespace Gwen.Net.Legacy.Control;
 
-            for (var i = 0; i < Enum.GetValues(typeof(T)).Length; i++)
-            {
-                String name = Enum.GetNames(typeof(T))[i];
-                LabeledRadioButton lrb = AddOption(name);
-                lrb.UserData = Enum.GetValues(typeof(T)).GetValue(i);
-            }
+public class EnumRadioButtonGroup<T> : RadioButtonGroup where T : struct
+{
+    public EnumRadioButtonGroup(ControlBase parent) : base(parent)
+    {
+        if (!typeof(T).IsEnum)
+        {
+            throw new Exception("T must be an enumerated type!");
         }
 
-        public T SelectedValue
+        for (Int32 i = 0; i < Enum.GetValues(typeof(T)).Length; i++)
         {
-            get => (T) Selected.UserData;
-            set
+            String name = Enum.GetNames(typeof(T))[i];
+            LabeledRadioButton lrb = AddOption(name);
+            lrb.UserData = Enum.GetValues(typeof(T)).GetValue(i);
+        }
+    }
+
+    public T SelectedValue
+    {
+        get => (T) Selected.UserData;
+        set
+        {
+            foreach (ControlBase child in Children)
             {
-                foreach (ControlBase child in Children)
+                if (child is LabeledRadioButton && child.UserData.Equals(value))
                 {
-                    if (child is LabeledRadioButton && child.UserData.Equals(value))
-                    {
-                        (child as LabeledRadioButton).RadioButton.Press();
-                    }
+                    (child as LabeledRadioButton).RadioButton.Press();
                 }
             }
         }

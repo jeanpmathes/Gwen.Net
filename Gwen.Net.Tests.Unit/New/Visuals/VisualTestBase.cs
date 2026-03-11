@@ -14,38 +14,39 @@ public abstract class VisualTestBase<TVisual>(Func<TVisual> factory) where TVisu
     public void Visual_CanBeUsed()
     {
         Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        
+
         Boolean isCreated = false;
+
         canvas.Child = new MockControl(() =>
         {
             isCreated = true;
             return factory();
         });
-        
+
         canvas.SetRenderingSize(new Size(width: 1000, height: 1000));
         canvas.Render();
-        
+
         canvas.SetRenderingSize(new Size(width: 0, height: 0));
         canvas.Render();
-        
+
         canvas.SetRenderingSize(new Size(width: 1, height: 1));
         canvas.Render();
-        
+
         canvas.SetRenderingSize(new Size(width: 5000, height: 5000));
         canvas.Render();
-        
+
         canvas.SetScale(0.5f);
         canvas.Render();
-        
+
         canvas.SetScale(2.39f);
         canvas.Render();
-        
+
         canvas.SetDebugOutlines(true);
         canvas.Render();
-        
+
         Assert.True(isCreated);
     }
-    
+
     private class MockControl(Func<TVisual> factory) : Control<MockControl>
     {
         protected override ControlTemplate<MockControl> CreateDefaultTemplate()

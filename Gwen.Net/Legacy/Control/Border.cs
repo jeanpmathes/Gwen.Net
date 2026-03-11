@@ -1,35 +1,34 @@
 ﻿using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control
+namespace Gwen.Net.Legacy.Control;
+
+public enum BorderType
 {
-    public enum BorderType
+    ToolTip,
+    StatusBar,
+    MenuStrip,
+    Selection,
+    PanelNormal,
+    PanelBright,
+    PanelDark,
+    PanelHighlight,
+    ListBox,
+    TreeControl,
+    CategoryList
+}
+
+public class Border : ControlBase
+{
+    public Border(ControlBase parent)
+        : base(parent)
     {
-        ToolTip,
-        StatusBar,
-        MenuStrip,
-        Selection,
-        PanelNormal,
-        PanelBright,
-        PanelDark,
-        PanelHighlight,
-        ListBox,
-        TreeControl,
-        CategoryList
+        BorderType = BorderType.PanelNormal;
     }
-    
-    public class Border : ControlBase
+
+    public BorderType BorderType { get; set; }
+
+    protected override void Render(SkinBase currentSkin)
     {
-        public Border(ControlBase parent)
-            : base(parent)
-        {
-            BorderType = BorderType.PanelNormal;
-        }
-
-        public BorderType BorderType { get; set; }
-
-        protected override void Render(SkinBase currentSkin)
-        {
-            currentSkin.DrawBorder(this, BorderType);
-        }
+        currentSkin.DrawBorder(this, BorderType);
     }
 }

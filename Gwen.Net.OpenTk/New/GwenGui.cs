@@ -13,27 +13,27 @@ internal class GwenGui : IGwenGui
     private readonly ResourceRegistry registry;
 
     private InputTranslator? input;
-    
+
     internal GwenGui(GameWindow parent, ResourceRegistry registry)
     {
         Parent = parent;
-        
+
         this.registry = registry;
     }
 
     public GameWindow Parent { get; }
 
-    public Canvas? Root { get; private set; }
-    
     private Renderer? Renderer { get; set; }
+
+    public Canvas? Root { get; private set; }
 
     public void Load()
     {
         Renderer = new Renderer();
         Root = Canvas.Create(Renderer, registry);
-        
+
         input = new InputTranslator(Parent, Root);
-        
+
         Root.SetRenderingSize(new Size(Parent.Size.X, Parent.Size.Y));
     }
 
@@ -50,7 +50,7 @@ internal class GwenGui : IGwenGui
     public void Dispose()
     {
         input?.Dispose();
-        
+
         Root?.Dispose();
         Renderer?.Dispose();
     }

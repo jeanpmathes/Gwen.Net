@@ -14,6 +14,21 @@ public sealed class FormattedText(Renderer renderer, String text, Font font, Tex
 
     public StringFormat StringFormat { get; } = CreateStringFormat(options);
 
+    public SizeF Measure(SizeF availableSize)
+    {
+        return renderer.MeasureText(this, availableSize);
+    }
+
+    public void Draw(RectangleF rectangle, Brush brush)
+    {
+        renderer.DrawText(this, rectangle, brush);
+    }
+
+    public void Dispose()
+    {
+        StringFormat.Dispose();
+    }
+
     private static StringFormat CreateStringFormat(TextOptions options)
     {
         StringFormat format = new();
@@ -39,22 +54,7 @@ public sealed class FormattedText(Renderer renderer, String text, Font font, Tex
             TextTrimming.PathEllipsis => StringTrimming.EllipsisPath,
             _ => StringTrimming.None
         };
-        
+
         return format;
-    }
-
-    public SizeF Measure(SizeF availableSize)
-    {
-        return renderer.MeasureText(this, availableSize);
-    }
-
-    public void Draw(RectangleF rectangle, Brush brush)
-    {
-        renderer.DrawText(this, rectangle, brush);
-    }
-
-    public void Dispose()
-    {
-        StringFormat.Dispose();
     }
 }

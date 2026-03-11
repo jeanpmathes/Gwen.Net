@@ -21,7 +21,7 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [rule];
-    
+
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
@@ -40,7 +40,7 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
             return;
 
         if (!IsContainingTypeBindingType(methodSymbol) && !IsReceiverTypeBindingType(invocationSyntax, context.SemanticModel))
-            return; 
+            return;
 
         foreach (ArgumentSyntax argument in invocationSyntax.ArgumentList.Arguments)
         {
@@ -50,29 +50,29 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
             context.ReportDiagnostic(Diagnostic.Create(rule, location));
         }
     }
-    
+
     private static Boolean IsContainingTypeBindingType(IMethodSymbol methodSymbol)
     {
         return IsBindingType(methodSymbol.ContainingType);
     }
-    
+
     private static Boolean IsReceiverTypeBindingType(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
     {
         if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
             return false;
 
         ITypeSymbol? receiverType = semanticModel.GetTypeInfo(memberAccess.Expression).Type;
-        
+
         return IsBindingType(receiverType);
     }
-    
+
     private static Boolean IsBindingType(ITypeSymbol? typeSymbol)
     {
         if (typeSymbol == null) return false;
-        
+
         ITypeSymbol original = typeSymbol.OriginalDefinition;
-        
+
         return original.Name == "Binding"
-            && original.ContainingNamespace?.ToDisplayString() == "Gwen.Net.New.Bindings"; // todo: remove New from namespace when deleting Legacy, test that it still works
+               && original.ContainingNamespace?.ToDisplayString() == "Gwen.Net.New.Bindings"; // todo: remove New from namespace when deleting Legacy, test that it still works
     }
 }

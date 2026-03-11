@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Platform
+namespace Gwen.Net.Legacy.Platform;
+
+public interface IFileSystemItemInfo
 {
-    public interface IFileSystemItemInfo
-    {
-        String Name { get; }
-        String FullName { get; }
-        String FormattedLastWriteTime { get; }
-    }
+    String Name { get; }
+    String FullName { get; }
+    String FormattedLastWriteTime { get; }
 }

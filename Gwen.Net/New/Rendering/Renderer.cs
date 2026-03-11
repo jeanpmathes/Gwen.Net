@@ -7,59 +7,59 @@ using Gwen.Net.New.Utilities;
 namespace Gwen.Net.New.Rendering;
 
 /// <summary>
-/// Abstract base class that helps implement renderers.
+///     Abstract base class that helps implement renderers.
 /// </summary>
 public abstract class Renderer : IRenderer
 {
     private Single scale = 1.0f;
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void Begin();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void End();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void PushOffset(PointF offset);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void PopOffset();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void PushClip(RectangleF rectangle);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void PopClip();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void BeginClip();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void EndClip();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract Boolean IsClipEmpty();
-    
-    /// <inheritdoc/>
+
+    /// <inheritdoc />
     public abstract IFormattedText CreateFormattedText(String text, Font font, TextOptions options);
-    
-    /// <inheritdoc/>
+
+    /// <inheritdoc />
     public abstract void DrawFilledRectangle(RectangleF rectangle, Brush brush);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public abstract void Resize(Size size);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public virtual void Scale(Single newScale)
     {
         scale = newScale;
     }
-    
+
     /// <summary>
-    /// Scale a point by applying the scale factor.
+    ///     Scale a point by applying the scale factor.
     /// </summary>
     /// <param name="point">The point to scale.</param>
     /// <returns>>The scaled point.</returns>
@@ -70,9 +70,9 @@ public abstract class Renderer : IRenderer
 
         return point;
     }
-    
+
     /// <summary>
-    /// Scale a size by applying the scale factor.
+    ///     Scale a size by applying the scale factor.
     /// </summary>
     /// <param name="size">The size to scale.</param>
     /// <returns>The scaled size.</returns>
@@ -83,9 +83,9 @@ public abstract class Renderer : IRenderer
 
         return size;
     }
-    
+
     /// <summary>
-    /// Scale a rectangle by applying the scale factor.
+    ///     Scale a rectangle by applying the scale factor.
     /// </summary>
     /// <param name="rectangle">The rectangle to scale.</param>
     /// <returns>The scaled rectangle.</returns>
@@ -98,9 +98,9 @@ public abstract class Renderer : IRenderer
 
         return rectangle;
     }
-    
+
     /// <summary>
-    /// Apply the scale factor to a thickness, scaling each edge accordingly.
+    ///     Apply the scale factor to a thickness, scaling each edge accordingly.
     /// </summary>
     /// <param name="thickness">The thickness to scale.</param>
     /// <returns>The scaled thickness.</returns>
@@ -112,9 +112,9 @@ public abstract class Renderer : IRenderer
             thickness.Right * scale,
             thickness.Bottom * scale);
     }
-    
+
     /// <summary>
-    /// Apply the inverse of the scale factor to a point, effectively unscaling it.
+    ///     Apply the inverse of the scale factor to a point, effectively unscaling it.
     /// </summary>
     /// <param name="point">The point to unscale.</param>
     /// <returns>The unscaled point.</returns>
@@ -125,9 +125,9 @@ public abstract class Renderer : IRenderer
 
         return point;
     }
-    
+
     /// <summary>
-    /// Apply the inverse of the scale factor to a size, effectively unscaling it.
+    ///     Apply the inverse of the scale factor to a size, effectively unscaling it.
     /// </summary>
     /// <param name="size">The size to unscale.</param>
     /// <returns>The unscaled size.</returns>
@@ -138,9 +138,9 @@ public abstract class Renderer : IRenderer
 
         return size;
     }
-    
+
     /// <summary>
-    /// Apply the inverse of the scale factor to a rectangle, effectively unscaling it.
+    ///     Apply the inverse of the scale factor to a rectangle, effectively unscaling it.
     /// </summary>
     /// <param name="rectangle">The rectangle to unscale.</param>
     /// <returns>The unscaled rectangle.</returns>
@@ -155,7 +155,7 @@ public abstract class Renderer : IRenderer
     }
 
     /// <summary>
-    /// Apply the inverse of the scale factor to a thickness, effectively unscaling it.
+    ///     Apply the inverse of the scale factor to a thickness, effectively unscaling it.
     /// </summary>
     /// <param name="thickness">The thickness to unscale.</param>
     /// <returns>The unscaled thickness.</returns>

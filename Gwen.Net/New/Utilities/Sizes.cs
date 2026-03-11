@@ -4,12 +4,12 @@ using System.Drawing;
 namespace Gwen.Net.New.Utilities;
 
 /// <summary>
-/// Helps to work with sizes.
+///     Helps to work with sizes.
 /// </summary>
 public static class Sizes
 {
     /// <summary>
-    /// Get the component-wise maximum of two sizes.
+    ///     Get the component-wise maximum of two sizes.
     /// </summary>
     /// <param name="size1">The first size.</param>
     /// <param name="size2">The second size.</param>
@@ -18,9 +18,9 @@ public static class Sizes
     {
         return new SizeF(Math.Max(size1.Width, size2.Width), Math.Max(size1.Height, size2.Height));
     }
-    
+
     /// <summary>
-    /// Clamp size between min and max sizes, performing a component-wise clamp.
+    ///     Clamp size between min and max sizes, performing a component-wise clamp.
     /// </summary>
     /// <param name="size">The size to clamp.</param>
     /// <param name="minSize">The minimum size.</param>

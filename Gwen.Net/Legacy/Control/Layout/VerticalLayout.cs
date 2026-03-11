@@ -1,19 +1,18 @@
-﻿namespace Gwen.Net.Legacy.Control.Layout
+﻿namespace Gwen.Net.Legacy.Control.Layout;
+
+/// <summary>
+///     Arrange child controls into a column.
+/// </summary>
+public class VerticalLayout : StackLayout
 {
     /// <summary>
-    ///     Arrange child controls into a column.
+    ///     Initializes a new instance of the <see cref="VerticalLayout" /> class.
     /// </summary>
-    public class VerticalLayout : StackLayout
+    /// <param name="parent">Parent control.</param>
+    public VerticalLayout(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VerticalLayout" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public VerticalLayout(ControlBase parent)
-            : base(parent)
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch;
-            VerticalAlignment = VerticalAlignment.Top;
-        }
+        HorizontalAlignment = HorizontalAlignment.Stretch;
+        VerticalAlignment = VerticalAlignment.Top;
     }
 }

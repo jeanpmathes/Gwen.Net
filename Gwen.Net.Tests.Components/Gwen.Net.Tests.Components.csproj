@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-      <LangVersion>14</LangVersion>
-      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <Version>0.1.5</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>14</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.1.5</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
-    <ProjectReference Include="..\Gwen.Net.Analyzers\Gwen.Net.Analyzers.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj"/>
+        <ProjectReference Include="..\Gwen.Net.Analyzers\Gwen.Net.Analyzers.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
+    </ItemGroup>
 
 </Project>

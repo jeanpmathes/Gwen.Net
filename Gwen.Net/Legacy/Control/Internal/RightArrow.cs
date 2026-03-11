@@ -1,36 +1,35 @@
 ﻿using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Submenu indicator.
+/// </summary>
+public class RightArrow : ControlBase
 {
     /// <summary>
-    ///     Submenu indicator.
+    ///     Initializes a new instance of the <see cref="RightArrow" /> class.
     /// </summary>
-    public class RightArrow : ControlBase
+    /// <param name="parent">Parent control.</param>
+    public RightArrow(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RightArrow" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public RightArrow(ControlBase parent)
-            : base(parent)
-        {
-            MouseInputEnabled = false;
+        MouseInputEnabled = false;
 
-            Size = new Size(BaseUnit);
-        }
+        Size = new Size(BaseUnit);
+    }
 
-        protected override void AdaptToScaleChange()
-        {
-            Size = new Size(BaseUnit);
-        }
+    protected override void AdaptToScaleChange()
+    {
+        Size = new Size(BaseUnit);
+    }
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            currentSkin.DrawMenuRightArrow(this);
-        }
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        currentSkin.DrawMenuRightArrow(this);
     }
 }

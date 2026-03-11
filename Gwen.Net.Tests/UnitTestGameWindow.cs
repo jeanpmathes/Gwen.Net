@@ -20,6 +20,13 @@ namespace Gwen.Net.Tests;
 
 public class UnitTestGameWindow : GameWindow
 {
+    public enum Theme
+    {
+        Default,
+        Light,
+        Dark
+    }
+
     private const Int32 MaxFrameSampleSize = 10000;
 
     private readonly ResourceRegistry registry;
@@ -29,13 +36,6 @@ public class UnitTestGameWindow : GameWindow
     private readonly CircularBuffer<Double> updateFrameTimes;
 
     private UnitTestHarness? harness;
-    
-    public enum Theme
-    {
-        Default,
-        Light,
-        Dark,
-    }
 
     private UnitTestGameWindow(Theme theme, GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
@@ -49,12 +49,12 @@ public class UnitTestGameWindow : GameWindow
             case Theme.Light:
                 registry.AddBundle<ClassicLight>();
                 break;
-            
+
             case Theme.Dark:
                 registry.AddBundle<ClassicDark>();
                 break;
         }
-        
+
         gui = GwenGuiFactory.CreateFromGame(this, registry);
 
         updateFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
@@ -82,7 +82,7 @@ public class UnitTestGameWindow : GameWindow
             Content = {Value = harness},
             ContentTemplate = {Value = ContentTemplate.Create<UnitTestHarness>(UnitTestHarnessView.Create)}
         };
-        
+
         gui.Root?.SetDebugOutlines(false);
     }
 
@@ -136,11 +136,11 @@ public class UnitTestGameWindow : GameWindow
     {
         GameWindowSettings? gameWindowSettings = GameWindowSettings.Default;
         NativeWindowSettings? nativeWindowSettings = NativeWindowSettings.Default;
-        
+
         nativeWindowSettings.Profile = ContextProfile.Core;
-        
+
         Vector2i position = new(x: 0, y: 0);
-        
+
         if (args.Contains("-p1"))
             position = new Vector2i(x: 0, y: 0);
         else if (args.Contains("-p2"))
@@ -149,12 +149,12 @@ public class UnitTestGameWindow : GameWindow
             position = new Vector2i(x: 0, y: 540);
         else if (args.Contains("-p4"))
             position = new Vector2i(x: 960, y: 540);
-        
+
         nativeWindowSettings.Location = position;
         nativeWindowSettings.ClientSize = new Vector2i(960 - 0, 540 - 32);
-        
+
         Theme theme = Theme.Default;
-        
+
         if (args.Contains("--light"))
             theme = Theme.Light;
         else if (args.Contains("--dark"))

@@ -1,15 +1,13 @@
 using System.Drawing;
 using Gwen.Net.New;
-using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
-using Gwen.Net.New.Commands;
 using Gwen.Net.New.Input;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Visuals;
-using Canvas = Gwen.Net.New.Controls.Canvas;
 using Gwen.Net.Tests.Unit.New.Commands;
 using Gwen.Net.Tests.Unit.New.Input;
 using Gwen.Net.Tests.Unit.New.Rendering;
+using Canvas = Gwen.Net.New.Controls.Canvas;
 
 namespace Gwen.Net.Tests.Unit.New.Controls;
 

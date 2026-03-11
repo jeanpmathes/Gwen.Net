@@ -8,10 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
+        <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj"/>
         <ProjectReference Include="..\Gwen.Net.Analyzers\Gwen.Net.Analyzers.csproj"
                           OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false" />
+                          ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>

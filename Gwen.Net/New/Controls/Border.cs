@@ -6,9 +6,9 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// A <see cref="Border"/> draws a border and background around its child control.
+///     A <see cref="Border" /> draws a border and background around its child control.
 /// </summary>
-/// <seealso cref="Visuals.Border"/>
+/// <seealso cref="Visuals.Border" />
 public class Border : BorderBase<Border>
 {
     /// <inheritdoc />
@@ -16,7 +16,7 @@ public class Border : BorderBase<Border>
     {
         return ControlTemplate.Create<Border>(control => new Visuals.Border
         {
-            BorderThickness = { Binding = Binding.To(control.BorderThickness) },
+            BorderThickness = {Binding = Binding.To(control.BorderThickness)},
             Child = new ChildPresenter()
         });
     }

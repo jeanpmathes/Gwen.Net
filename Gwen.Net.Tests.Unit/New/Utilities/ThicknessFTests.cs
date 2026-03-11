@@ -8,7 +8,7 @@ public class ThicknessFTests
     [Fact]
     public void UniformConstructor_SetsAllSidesToSameValue()
     {
-        ThicknessF thickness = new ThicknessF(5f);
+        ThicknessF thickness = new(5f);
 
         Assert.Equal(expected: 5f, thickness.Left);
         Assert.Equal(expected: 5f, thickness.Top);
@@ -19,7 +19,7 @@ public class ThicknessFTests
     [Fact]
     public void FourSideConstructor_SetsEachSideIndependently()
     {
-        ThicknessF thickness = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF thickness = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         Assert.Equal(expected: 1f, thickness.Left);
         Assert.Equal(expected: 2f, thickness.Top);
@@ -41,8 +41,8 @@ public class ThicknessFTests
     [Fact]
     public void SizePlusThickness_IncreasesWidthAndHeight()
     {
-        SizeF size = new SizeF(width: 100f, height: 50f);
-        ThicknessF thickness = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        SizeF size = new(width: 100f, height: 50f);
+        ThicknessF thickness = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         SizeF result = size + thickness;
 
@@ -52,8 +52,8 @@ public class ThicknessFTests
     [Fact]
     public void SizeMinusThickness_DecreasesWidthAndHeight()
     {
-        SizeF size = new SizeF(width: 100f, height: 50f);
-        ThicknessF thickness = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        SizeF size = new(width: 100f, height: 50f);
+        ThicknessF thickness = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         SizeF result = size - thickness;
 
@@ -63,8 +63,8 @@ public class ThicknessFTests
     [Fact]
     public void RectanglePlusThickness_ExpandsRectangleOutward()
     {
-        RectangleF rect = new RectangleF(x: 10f, y: 20f, width: 100f, height: 50f);
-        ThicknessF thickness = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        RectangleF rect = new(x: 10f, y: 20f, width: 100f, height: 50f);
+        ThicknessF thickness = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         RectangleF result = rect + thickness;
 
@@ -77,8 +77,8 @@ public class ThicknessFTests
     [Fact]
     public void RectangleMinusThickness_ShrinksRectangleInward()
     {
-        RectangleF rect = new RectangleF(x: 10f, y: 20f, width: 100f, height: 50f);
-        ThicknessF thickness = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        RectangleF rect = new(x: 10f, y: 20f, width: 100f, height: 50f);
+        ThicknessF thickness = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         RectangleF result = rect - thickness;
 
@@ -91,8 +91,8 @@ public class ThicknessFTests
     [Fact]
     public void Equals_ReturnsTrueForIdenticalThicknesses()
     {
-        ThicknessF a = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         Assert.True(a.Equals(b));
     }
@@ -100,7 +100,7 @@ public class ThicknessFTests
     [Fact]
     public void Equals_ReturnsFalseWhenAnySideDiffers()
     {
-        ThicknessF reference = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF reference = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         Assert.False(reference.Equals(new ThicknessF(left: 0f, top: 2f, right: 3f, bottom: 4f)));
         Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 0f, right: 3f, bottom: 4f)));
@@ -111,9 +111,9 @@ public class ThicknessFTests
     [Fact]
     public void Equals_AlignsWithEqualityOperator()
     {
-        ThicknessF a = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF c = new ThicknessF(left: 0f, top: 0f, right: 0f, bottom: 0f);
+        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF c = new(left: 0f, top: 0f, right: 0f, bottom: 0f);
 
         Assert.True(a == b);
         Assert.False(a == c);
@@ -122,8 +122,8 @@ public class ThicknessFTests
     [Fact]
     public void GetHashCode_ReturnsSameValueForEqualThicknesses()
     {
-        ThicknessF a = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
+        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
 
         Assert.Equal(a.GetHashCode(), b.GetHashCode());
     }

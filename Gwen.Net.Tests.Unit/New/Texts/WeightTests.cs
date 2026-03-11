@@ -5,19 +5,19 @@ namespace Gwen.Net.Tests.Unit.New.Texts;
 public class WeightTests
 {
     [Theory]
-    [InlineData((short)0)]
-    [InlineData((short)-1)]
-    [InlineData((short)1000)]
-    public void Constructor_ThrowsForOutOfRangeValues(short value)
+    [InlineData((Int16) 0)]
+    [InlineData((Int16) (-1))]
+    [InlineData((Int16) 1000)]
+    public void Constructor_ThrowsForOutOfRangeValues(Int16 value)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Weight(value));
     }
 
     [Theory]
-    [InlineData((short)1)]
-    [InlineData((short)400)]
-    [InlineData((short)999)]
-    public void Constructor_AllowsValuesInRange(short value)
+    [InlineData((Int16) 1)]
+    [InlineData((Int16) 400)]
+    [InlineData((Int16) 999)]
+    public void Constructor_AllowsValuesInRange(Int16 value)
     {
         Weight weight = new(value);
 

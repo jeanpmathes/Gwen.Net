@@ -3,86 +3,85 @@ using Gwen.Net.Legacy.Input;
 using Gwen.Net.Legacy.Renderer;
 using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy
+namespace Gwen.Net.Legacy;
+
+/// <summary>
+///     Tooltip handling.
+/// </summary>
+public static class ToolTip
 {
+    private static ControlBase toolTip;
+
     /// <summary>
-    ///     Tooltip handling.
+    ///     Enables tooltip display for the specified control.
     /// </summary>
-    public static class ToolTip
+    /// <param name="control">Target control.</param>
+    public static void Enable(ControlBase control)
     {
-        private static ControlBase toolTip;
-
-        /// <summary>
-        ///     Enables tooltip display for the specified control.
-        /// </summary>
-        /// <param name="control">Target control.</param>
-        public static void Enable(ControlBase control)
+        if (null == control.ToolTip)
         {
-            if (null == control.ToolTip)
-            {
-                return;
-            }
-
-            ControlBase localToolTip = control.ToolTip;
-            toolTip = control;
-            localToolTip.DoMeasure(Size.Infinity);
-            localToolTip.DoArrange(new Rectangle(Point.Zero, localToolTip.MeasuredSize));
+            return;
         }
 
-        /// <summary>
-        ///     Disables tooltip display for the specified control.
-        /// </summary>
-        /// <param name="control">Target control.</param>
-        public static void Disable(ControlBase control)
+        ControlBase localToolTip = control.ToolTip;
+        toolTip = control;
+        localToolTip.DoMeasure(Size.Infinity);
+        localToolTip.DoArrange(new Rectangle(Point.Zero, localToolTip.MeasuredSize));
+    }
+
+    /// <summary>
+    ///     Disables tooltip display for the specified control.
+    /// </summary>
+    /// <param name="control">Target control.</param>
+    public static void Disable(ControlBase control)
+    {
+        if (toolTip == control)
         {
-            if (toolTip == control)
-            {
-                toolTip = null;
-            }
+            toolTip = null;
+        }
+    }
+
+    /// <summary>
+    ///     Disables tooltip display for the specified control.
+    /// </summary>
+    /// <param name="control">Target control.</param>
+    public static void ControlDeleted(ControlBase control)
+    {
+        Disable(control);
+    }
+
+    /// <summary>
+    ///     Renders the currently visible tooltip.
+    /// </summary>
+    /// <param name="skin"></param>
+    public static void RenderToolTip(SkinBase skin)
+    {
+        if (null == toolTip)
+        {
+            return;
         }
 
-        /// <summary>
-        ///     Disables tooltip display for the specified control.
-        /// </summary>
-        /// <param name="control">Target control.</param>
-        public static void ControlDeleted(ControlBase control)
-        {
-            Disable(control);
-        }
+        RendererBase render = skin.Renderer;
 
-        /// <summary>
-        ///     Renders the currently visible tooltip.
-        /// </summary>
-        /// <param name="skin"></param>
-        public static void RenderToolTip(SkinBase skin)
-        {
-            if (null == toolTip)
-            {
-                return;
-            }
+        Point oldRenderOffset = render.RenderOffset;
+        Point mousePos = InputHandler.MousePosition;
+        Rectangle bounds = toolTip.ToolTip.Bounds;
 
-            RendererBase render = skin.Renderer;
+        Rectangle offset = Util.FloatRect(
+            mousePos.X - bounds.Width / 2,
+            mousePos.Y - bounds.Height - 10,
+            bounds.Width,
+            bounds.Height);
 
-            Point oldRenderOffset = render.RenderOffset;
-            Point mousePos = InputHandler.MousePosition;
-            Rectangle bounds = toolTip.ToolTip.Bounds;
+        offset = Util.ClampRectToRect(offset, toolTip.GetCanvas().Bounds);
 
-            Rectangle offset = Util.FloatRect(
-                mousePos.X - (bounds.Width / 2),
-                mousePos.Y - bounds.Height - 10,
-                bounds.Width,
-                bounds.Height);
+        //Calculate offset on screen bounds
+        render.AddRenderOffset(offset);
+        render.EndClip();
 
-            offset = Util.ClampRectToRect(offset, toolTip.GetCanvas().Bounds);
+        skin.DrawToolTip(toolTip.ToolTip);
+        toolTip.ToolTip.DoRender(skin);
 
-            //Calculate offset on screen bounds
-            render.AddRenderOffset(offset);
-            render.EndClip();
-
-            skin.DrawToolTip(toolTip.ToolTip);
-            toolTip.ToolTip.DoRender(skin);
-
-            render.RenderOffset = oldRenderOffset;
-        }
+        render.RenderOffset = oldRenderOffset;
     }
 }

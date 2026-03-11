@@ -103,7 +103,7 @@ public abstract class WindowBase : ResizableControl
         SetDragAndResizeCompatibleProperties();
         base.OnResized(control, args);
     }
-        
+
     private void SetDragAndResizeCompatibleProperties()
     {
         StartPosition = StartPosition.Manual;
@@ -112,7 +112,7 @@ public abstract class WindowBase : ResizableControl
         {
             HorizontalAlignment = HorizontalAlignment.Left;
         }
-            
+
         if (VerticalAlignment == VerticalAlignment.Center)
         {
             VerticalAlignment = VerticalAlignment.Top;
@@ -132,8 +132,8 @@ public abstract class WindowBase : ResizableControl
             Point pt = realParent.LocalPosToCanvas(
                 new Point(realParent.ActualWidth / 2, realParent.ActualHeight / 2));
 
-            x = pt.X - (width / 2);
-            y = pt.Y - (height / 2);
+            x = pt.X - width / 2;
+            y = pt.Y - height / 2;
         }
 
         return base.SetBounds(x, y, width, height);

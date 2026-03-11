@@ -1,33 +1,32 @@
 ﻿using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Splitter bar.
+/// </summary>
+public class SplitterBar : Dragger
 {
     /// <summary>
-    ///     Splitter bar.
+    ///     Initializes a new instance of the <see cref="SplitterBar" /> class.
     /// </summary>
-    public class SplitterBar : Dragger
+    /// <param name="parent">Parent control.</param>
+    public SplitterBar(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SplitterBar" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public SplitterBar(ControlBase parent)
-            : base(parent)
-        {
-            Target = this;
-            RestrictToParent = true;
-        }
+        Target = this;
+        RestrictToParent = true;
+    }
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        if (ShouldDrawBackground)
         {
-            if (ShouldDrawBackground)
-            {
-                currentSkin.DrawButton(this, depressed: true, hovered: false, IsDisabled);
-            }
+            currentSkin.DrawButton(this, depressed: true, hovered: false, IsDisabled);
         }
     }
 }

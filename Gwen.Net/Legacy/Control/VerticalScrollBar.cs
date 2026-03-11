@@ -2,222 +2,221 @@
 using Gwen.Net.Legacy.Control.Internal;
 using Gwen.Net.Legacy.Input;
 
-namespace Gwen.Net.Legacy.Control
+namespace Gwen.Net.Legacy.Control;
+
+/// <summary>
+///     Vertical scrollbar.
+/// </summary>
+public class VerticalScrollBar : ScrollBar
 {
     /// <summary>
-    ///     Vertical scrollbar.
+    ///     Initializes a new instance of the <see cref="VerticalScrollBar" /> class.
     /// </summary>
-    public class VerticalScrollBar : ScrollBar
+    /// <param name="parent">Parent control.</param>
+    public VerticalScrollBar(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="VerticalScrollBar" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public VerticalScrollBar(ControlBase parent)
-            : base(parent)
+        Width = BaseUnit;
+
+        bar.IsVertical = true;
+
+        scrollButton[0].Dock = Dock.Top;
+        scrollButton[0].SetDirectionUp();
+        scrollButton[0].Clicked += NudgeUp;
+
+        scrollButton[1].Dock = Dock.Bottom;
+        scrollButton[1].SetDirectionDown();
+        scrollButton[1].Clicked += NudgeDown;
+
+        bar.Dock = Dock.Fill;
+        bar.Dragged += OnBarMoved;
+    }
+
+    /// <summary>
+    ///     Bar size (in pixels).
+    /// </summary>
+    public override Int32 BarSize => bar.ActualHeight;
+
+    /// <summary>
+    ///     Bar position (in pixels).
+    /// </summary>
+    public override Int32 BarPos => bar.ActualTop - ActualWidth;
+
+    /// <summary>
+    ///     Button size (in pixels).
+    /// </summary>
+    public override Int32 ButtonSize => ActualWidth;
+
+    public override Int32 Width
+    {
+        get => base.Width;
+
+        set
         {
-            Width = BaseUnit;
+            base.Width = value;
 
-            bar.IsVertical = true;
-
-            scrollButton[0].Dock = Dock.Top;
-            scrollButton[0].SetDirectionUp();
-            scrollButton[0].Clicked += NudgeUp;
-
-            scrollButton[1].Dock = Dock.Bottom;
-            scrollButton[1].SetDirectionDown();
-            scrollButton[1].Clicked += NudgeDown;
-
-            bar.Dock = Dock.Fill;
-            bar.Dragged += OnBarMoved;
+            scrollButton[0].Height = Width;
+            scrollButton[1].Height = Width;
         }
+    }
 
-        /// <summary>
-        ///     Bar size (in pixels).
-        /// </summary>
-        public override Int32 BarSize => bar.ActualHeight;
-
-        /// <summary>
-        ///     Bar position (in pixels).
-        /// </summary>
-        public override Int32 BarPos => bar.ActualTop - ActualWidth;
-
-        /// <summary>
-        ///     Button size (in pixels).
-        /// </summary>
-        public override Int32 ButtonSize => ActualWidth;
-
-        public override Int32 Width
+    public override Single NudgeAmount
+    {
+        get
         {
-            get => base.Width;
-
-            set
+            if (depressed)
             {
-                base.Width = value;
-
-                scrollButton[0].Height = Width;
-                scrollButton[1].Height = Width;
+                return viewableContentSize / contentSize;
             }
+
+            return base.NudgeAmount;
+        }
+        set => base.NudgeAmount = value;
+    }
+
+    protected override void AdaptToScaleChange()
+    {
+        Width = BaseUnit;
+    }
+
+    protected override Size Arrange(Size finalSize)
+    {
+        Size size = base.Arrange(finalSize);
+
+        SetScrollAmount(ScrollAmount, forceUpdate: true);
+
+        return size;
+    }
+
+    protected override void UpdateBarSize()
+    {
+        Single barHeight = 0.0f;
+
+        if (contentSize > 0.0f)
+        {
+            barHeight = viewableContentSize / contentSize * (ActualHeight - ButtonSize * 2);
         }
 
-        public override Single NudgeAmount
+        if (barHeight < ButtonSize * 0.5f)
         {
-            get
-            {
-                if (depressed)
-                {
-                    return viewableContentSize / contentSize;
-                }
-
-                return base.NudgeAmount;
-            }
-            set => base.NudgeAmount = value;
+            barHeight = (Int32) (ButtonSize * 0.5f);
         }
 
-        protected override void AdaptToScaleChange()
-        {
-            Width = BaseUnit;
-        }
+        bar.SetSize(bar.ActualWidth, (Int32) barHeight);
+        bar.IsHidden = ActualHeight - ButtonSize * 2 <= barHeight;
 
-        protected override Size Arrange(Size finalSize)
+        //Based on our last scroll amount, produce a position for the bar.
+        if (!bar.IsHeld)
         {
-            Size size = base.Arrange(finalSize);
-
             SetScrollAmount(ScrollAmount, forceUpdate: true);
-            
-            return size;
         }
+    }
 
-        protected override void UpdateBarSize()
+    public virtual void NudgeUp(ControlBase control, EventArgs args)
+    {
+        if (!IsDisabled)
         {
-            var barHeight = 0.0f;
-
-            if (contentSize > 0.0f)
-            {
-                barHeight = viewableContentSize / contentSize * (ActualHeight - (ButtonSize * 2));
-            }
-
-            if (barHeight < ButtonSize * 0.5f)
-            {
-                barHeight = (Int32) (ButtonSize * 0.5f);
-            }
-
-            bar.SetSize(bar.ActualWidth, (Int32) barHeight);
-            bar.IsHidden = ActualHeight - (ButtonSize * 2) <= barHeight;
-
-            //Based on our last scroll amount, produce a position for the bar.
-            if (!bar.IsHeld)
-            {
-                SetScrollAmount(ScrollAmount, forceUpdate: true);
-            }
+            SetScrollAmount(ScrollAmount - NudgeAmount, forceUpdate: true);
         }
+    }
 
-        public virtual void NudgeUp(ControlBase control, EventArgs args)
+    public virtual void NudgeDown(ControlBase control, EventArgs args)
+    {
+        if (!IsDisabled)
         {
-            if (!IsDisabled)
+            SetScrollAmount(ScrollAmount + NudgeAmount, forceUpdate: true);
+        }
+    }
+
+    public override void ScrollToTop()
+    {
+        SetScrollAmount(value: 0, forceUpdate: true);
+    }
+
+    public override void ScrollToBottom()
+    {
+        SetScrollAmount(value: 1, forceUpdate: true);
+    }
+
+    /// <summary>
+    ///     Handler invoked on mouse click (left) event.
+    /// </summary>
+    /// <param name="x">X coordinate.</param>
+    /// <param name="y">Y coordinate.</param>
+    /// <param name="down">If set to <c>true</c> mouse button is down.</param>
+    protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
+    {
+        base.OnMouseClickedLeft(x, y, down);
+
+        if (down)
+        {
+            depressed = true;
+            InputHandler.MouseFocus = this;
+        }
+        else
+        {
+            Point clickPos = CanvasPosToLocal(new Point(x, y));
+
+            if (clickPos.Y < bar.ActualTop)
             {
-                SetScrollAmount(ScrollAmount - NudgeAmount, forceUpdate: true);
+                NudgeUp(this, EventArgs.Empty);
             }
-        }
-
-        public virtual void NudgeDown(ControlBase control, EventArgs args)
-        {
-            if (!IsDisabled)
+            else if (clickPos.Y > bar.ActualTop + bar.ActualHeight)
             {
-                SetScrollAmount(ScrollAmount + NudgeAmount, forceUpdate: true);
-            }
-        }
-
-        public override void ScrollToTop()
-        {
-            SetScrollAmount(value: 0, forceUpdate: true);
-        }
-
-        public override void ScrollToBottom()
-        {
-            SetScrollAmount(value: 1, forceUpdate: true);
-        }
-
-        /// <summary>
-        ///     Handler invoked on mouse click (left) event.
-        /// </summary>
-        /// <param name="x">X coordinate.</param>
-        /// <param name="y">Y coordinate.</param>
-        /// <param name="down">If set to <c>true</c> mouse button is down.</param>
-        protected override void OnMouseClickedLeft(Int32 x, Int32 y, Boolean down)
-        {
-            base.OnMouseClickedLeft(x, y, down);
-
-            if (down)
-            {
-                depressed = true;
-                InputHandler.MouseFocus = this;
-            }
-            else
-            {
-                Point clickPos = CanvasPosToLocal(new Point(x, y));
-
-                if (clickPos.Y < bar.ActualTop)
-                {
-                    NudgeUp(this, EventArgs.Empty);
-                }
-                else if (clickPos.Y > bar.ActualTop + bar.ActualHeight)
-                {
-                    NudgeDown(this, EventArgs.Empty);
-                }
-
-                depressed = false;
-                InputHandler.MouseFocus = null;
-            }
-        }
-
-        protected override Single CalculateScrolledAmount()
-        {
-            Single value = (Single) (bar.ActualTop - ButtonSize) /
-                           (ActualHeight - bar.ActualHeight - (ButtonSize * 2));
-
-            if (Single.IsNaN(value))
-            {
-                value = 0.0f;
+                NudgeDown(this, EventArgs.Empty);
             }
 
-            return value;
+            depressed = false;
+            InputHandler.MouseFocus = null;
         }
+    }
 
-        /// <summary>
-        ///     Sets the scroll amount (0-1).
-        /// </summary>
-        /// <param name="value">Scroll amount.</param>
-        /// <param name="forceUpdate">Determines whether the control should be updated.</param>
-        /// <returns>True if control state changed.</returns>
-        public override Boolean SetScrollAmount(Single value, Boolean forceUpdate = false)
+    protected override Single CalculateScrolledAmount()
+    {
+        Single value = (Single) (bar.ActualTop - ButtonSize) /
+                       (ActualHeight - bar.ActualHeight - ButtonSize * 2);
+
+        if (Single.IsNaN(value))
         {
-            value = Util.Clamp(value, min: 0, max: 1);
-
-            if (forceUpdate)
-            {
-                var newY = (Int32) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
-                bar.MoveTo(bar.ActualLeft, newY);
-            }
-            
-            Boolean changed = base.SetScrollAmount(value, forceUpdate);
-
-            return changed || forceUpdate;
+            value = 0.0f;
         }
 
-        /// <summary>
-        ///     Handler for the BarMoved event.
-        /// </summary>
-        /// <param name="control">The control.</param>
-        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-        protected override void OnBarMoved(ControlBase control, EventArgs args)
+        return value;
+    }
+
+    /// <summary>
+    ///     Sets the scroll amount (0-1).
+    /// </summary>
+    /// <param name="value">Scroll amount.</param>
+    /// <param name="forceUpdate">Determines whether the control should be updated.</param>
+    /// <returns>True if control state changed.</returns>
+    public override Boolean SetScrollAmount(Single value, Boolean forceUpdate = false)
+    {
+        value = Util.Clamp(value, min: 0, max: 1);
+
+        if (forceUpdate)
         {
-            if (bar.IsHeld)
-            {
-                SetScrollAmount(CalculateScrolledAmount());
-            }
-
-            base.OnBarMoved(control, EventArgs.Empty);
+            Int32 newY = (Int32) (ButtonSize + value * (ActualHeight - bar.ActualHeight - ButtonSize * 2));
+            bar.MoveTo(bar.ActualLeft, newY);
         }
+
+        Boolean changed = base.SetScrollAmount(value, forceUpdate);
+
+        return changed || forceUpdate;
+    }
+
+    /// <summary>
+    ///     Handler for the BarMoved event.
+    /// </summary>
+    /// <param name="control">The control.</param>
+    /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
+    protected override void OnBarMoved(ControlBase control, EventArgs args)
+    {
+        if (bar.IsHeld)
+        {
+            SetScrollAmount(CalculateScrolledAmount());
+        }
+
+        base.OnBarMoved(control, EventArgs.Empty);
     }
 }

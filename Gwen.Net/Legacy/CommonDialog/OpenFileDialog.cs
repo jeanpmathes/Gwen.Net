@@ -2,50 +2,49 @@
 using Gwen.Net.Legacy.Control;
 using static Gwen.Net.Legacy.Platform.GwenPlatform;
 
-namespace Gwen.Net.Legacy.CommonDialog
+namespace Gwen.Net.Legacy.CommonDialog;
+
+/// <summary>
+///     Dialog for selecting an existing file.
+/// </summary>
+public class OpenFileDialog : FileDialog
 {
-    /// <summary>
-    ///     Dialog for selecting an existing file.
-    /// </summary>
-    public class OpenFileDialog : FileDialog
+    public OpenFileDialog(ControlBase parent)
+        : base(parent) {}
+
+    protected override void OnCreated()
     {
-        public OpenFileDialog(ControlBase parent)
-            : base(parent) {}
+        base.OnCreated();
 
-        protected override void OnCreated()
+        Title = "Open File";
+        OkButtonText = "Open";
+        EnableNewFolder = false;
+    }
+
+    protected override void OnItemSelected(String selectedPath)
+    {
+        if (FileExists(selectedPath))
         {
-            base.OnCreated();
+            SetCurrentItem(GetFileName(selectedPath));
+        }
+    }
 
-            Title = "Open File";
-            OkButtonText = "Open";
-            EnableNewFolder = false;
+    protected override Boolean IsSubmittedNameOk(String submittedPath)
+    {
+        if (DirectoryExists(submittedPath))
+        {
+            SetPath(submittedPath);
+        }
+        else if (FileExists(submittedPath))
+        {
+            return true;
         }
 
-        protected override void OnItemSelected(String selectedPath)
-        {
-            if (FileExists(selectedPath))
-            {
-                SetCurrentItem(GetFileName(selectedPath));
-            }
-        }
+        return false;
+    }
 
-        protected override Boolean IsSubmittedNameOk(String submittedPath)
-        {
-            if (DirectoryExists(submittedPath))
-            {
-                SetPath(submittedPath);
-            }
-            else if (FileExists(submittedPath))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        protected override Boolean ValidateFileName(String pathToValidate)
-        {
-            return FileExists(pathToValidate);
-        }
+    protected override Boolean ValidateFileName(String pathToValidate)
+    {
+        return FileExists(pathToValidate);
     }
 }

@@ -1,63 +1,62 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Control.Property
+namespace Gwen.Net.Legacy.Control.Property;
+
+/// <summary>
+///     Checkable property.
+/// </summary>
+public class CheckProperty : PropertyBase
 {
+    protected readonly CheckBox checkBox;
+
     /// <summary>
-    ///     Checkable property.
+    ///     Initializes a new instance of the <see cref="CheckProperty" /> class.
     /// </summary>
-    public class CheckProperty : PropertyBase
+    /// <param name="parent">Parent control.</param>
+    public CheckProperty(ControlBase parent)
+        : base(parent)
     {
-        protected readonly CheckBox checkBox;
+        checkBox = new CheckBox(this);
+        checkBox.Dock = Dock.Left;
+        checkBox.ShouldDrawBackground = false;
+        checkBox.CheckChanged += OnValueChanged;
+        checkBox.IsTabable = true;
+        checkBox.KeyboardInputEnabled = true;
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="CheckProperty" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public CheckProperty(ControlBase parent)
-            : base(parent)
+    /// <summary>
+    ///     Property value.
+    /// </summary>
+    public override String Value
+    {
+        get => checkBox.IsChecked ? "1" : "0";
+        set => base.Value = value;
+    }
+
+    /// <summary>
+    ///     Indicates whether the property value is being edited.
+    /// </summary>
+    public override Boolean IsEditing => checkBox.HasFocus;
+
+    /// <summary>
+    ///     Indicates whether the control is hovered by mouse pointer.
+    /// </summary>
+    public override Boolean IsHovered => base.IsHovered || checkBox.IsHovered;
+
+    /// <summary>
+    ///     Sets the property value.
+    /// </summary>
+    /// <param name="value">Value to set.</param>
+    /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
+    public override void SetValue(String value, Boolean fireEvents = false)
+    {
+        if (value == "1" || value.ToLower() == "true" || value.ToLower() == "yes")
         {
-            checkBox = new CheckBox(this);
-            checkBox.Dock = Dock.Left;
-            checkBox.ShouldDrawBackground = false;
-            checkBox.CheckChanged += OnValueChanged;
-            checkBox.IsTabable = true;
-            checkBox.KeyboardInputEnabled = true;
+            checkBox.IsChecked = true;
         }
-
-        /// <summary>
-        ///     Property value.
-        /// </summary>
-        public override String Value
+        else
         {
-            get => checkBox.IsChecked ? "1" : "0";
-            set => base.Value = value;
-        }
-
-        /// <summary>
-        ///     Indicates whether the property value is being edited.
-        /// </summary>
-        public override Boolean IsEditing => checkBox.HasFocus;
-
-        /// <summary>
-        ///     Indicates whether the control is hovered by mouse pointer.
-        /// </summary>
-        public override Boolean IsHovered => base.IsHovered || checkBox.IsHovered;
-
-        /// <summary>
-        ///     Sets the property value.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public override void SetValue(String value, Boolean fireEvents = false)
-        {
-            if (value == "1" || value.ToLower() == "true" || value.ToLower() == "yes")
-            {
-                checkBox.IsChecked = true;
-            }
-            else
-            {
-                checkBox.IsChecked = false;
-            }
+            checkBox.IsChecked = false;
         }
     }
 }

@@ -8,46 +8,22 @@ namespace Gwen.Net.Tests.Unit.New.Rendering;
 
 public class MockRenderer : Renderer
 {
-    public override void Begin()
-    {
-        
-    }
-    
-    public override void End()
-    {
-        
-    }
+    public override void Begin() {}
 
-    public override void PushOffset(PointF offset)
-    {
-        
-    }
-    
-    public override void PopOffset()
-    {
-        
-    }
-    
-    public override void PushClip(RectangleF rectangle)
-    {
-        
-    }
-    
-    public override void PopClip()
-    {
-        
-    }
-    
-    public override void BeginClip()
-    {
-        
-    }
-    
-    public override void EndClip()
-    {
-        
-    }
-    
+    public override void End() {}
+
+    public override void PushOffset(PointF offset) {}
+
+    public override void PopOffset() {}
+
+    public override void PushClip(RectangleF rectangle) {}
+
+    public override void PopClip() {}
+
+    public override void BeginClip() {}
+
+    public override void EndClip() {}
+
     public override Boolean IsClipEmpty()
     {
         return false;
@@ -58,17 +34,9 @@ public class MockRenderer : Renderer
         return new MockFormattedText();
     }
 
-    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
-    {
-        
-    }
+    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush) {}
 
-    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush)
-    {
-        
-    }
+    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush) {}
 
-    public override void Resize(Size size)
-    {
-    }
+    public override void Resize(Size size) {}
 }

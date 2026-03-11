@@ -5,12 +5,12 @@ using Gwen.Net.New.Controls.Templates;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// Displays read-only text content.
+///     Displays read-only text content.
 /// </summary>
-/// <seealso cref="Visuals.Text"/>
+/// <seealso cref="Visuals.Text" />
 public class Text : TextBase<Text>
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected override ControlTemplate<Text> CreateDefaultTemplate()
     {
         return ControlTemplate.Create<Text>(control => new Visuals.Text

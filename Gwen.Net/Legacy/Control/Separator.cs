@@ -5,12 +5,12 @@ using Gwen.Net.Legacy.Skin;
 namespace Gwen.Net.Legacy.Control;
 
 /// <summary>
-/// A simple horizontal line, optionally containing text.
+///     A simple horizontal line, optionally containing text.
 /// </summary>
 public class Separator : ControlBase
 {
     private readonly Text text;
-    
+
     public Separator(ControlBase parent) : base(parent)
     {
         text = new Text(this)
@@ -18,7 +18,7 @@ public class Separator : ControlBase
             VerticalAlignment = VerticalAlignment.Center
         };
     }
-    
+
     /// <summary>
     ///     The text of the separator.
     /// </summary>
@@ -27,7 +27,7 @@ public class Separator : ControlBase
         get => text.String;
         set => text.String = value;
     }
-    
+
     /// <summary>
     ///     The color of the text.
     /// </summary>
@@ -36,7 +36,7 @@ public class Separator : ControlBase
         get => text.TextColor;
         set => text.TextColor = value;
     }
-    
+
     /// <summary>
     ///     The font of the text.
     /// </summary>
@@ -45,7 +45,7 @@ public class Separator : ControlBase
         get => text.Font;
         set => text.Font = value;
     }
-    
+
     protected override Size Measure(Size availableSize)
     {
         Size titleSize = text.DoMeasure(availableSize);
@@ -61,11 +61,11 @@ public class Separator : ControlBase
 
         return finalSize;
     }
-    
+
     protected override void Render(SkinBase currentSkin)
     {
         Int32 textWidth = text.String.Length > 0 ? text.ActualWidth : 0;
-        
+
         currentSkin.DrawSeparator(this, textStart: 10, textWidth);
     }
 }

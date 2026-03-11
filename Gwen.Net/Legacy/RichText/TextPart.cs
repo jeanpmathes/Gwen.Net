@@ -1,97 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Gwen.Net.Legacy.RichText
+namespace Gwen.Net.Legacy.RichText;
+
+public class TextPart : Part
 {
-    public class TextPart : Part
+    private static readonly Char[] separator =
     {
-        private static readonly Char[] separator =
+        ' ',
+        '\n',
+        '\r'
+    };
+
+    public TextPart(String text)
+    {
+        Text = text;
+        Color = null;
+    }
+
+    public TextPart(String text, Color color)
+    {
+        Text = text;
+        Color = color;
+    }
+
+    public String Text { get; }
+
+    public Color? Color { get; }
+
+    public Font Font { get; protected set; }
+
+    public override String[] Split(ref Font splitFont)
+    {
+        Font = splitFont;
+
+        return StringSplit(Text);
+    }
+
+    protected static String[] StringSplit(String str)
+    {
+        List<String> strings = new();
+        Int32 len = str.Length;
+        Int32 index = 0;
+        Int32 i;
+
+        while (index < len)
         {
-            ' ',
-            '\n',
-            '\r'
-        };
+            i = str.IndexOfAny(separator, index);
 
-        public TextPart(String text)
-        {
-            Text = text;
-            Color = null;
-        }
-
-        public TextPart(String text, Color color)
-        {
-            Text = text;
-            Color = color;
-        }
-
-        public String Text { get; }
-
-        public Color? Color { get; }
-
-        public Font Font { get; protected set; }
-
-        public override String[] Split(ref Font splitFont)
-        {
-            Font = splitFont;
-
-            return StringSplit(Text);
-        }
-
-        protected static String[] StringSplit(String str)
-        {
-            List<String> strings = new();
-            Int32 len = str.Length;
-            var index = 0;
-            Int32 i;
-
-            while (index < len)
+            if (i == index)
             {
-                i = str.IndexOfAny(separator, index);
-
-                if (i == index)
+                if (str[i] == ' ')
                 {
-                    if (str[i] == ' ')
-                    {
-                        strings.Add(" ");
+                    strings.Add(" ");
 
-                        while (index < len && str[index] == ' ')
-                        {
-                            index++;
-                        }
-                    }
-                    else
+                    while (index < len && str[index] == ' ')
                     {
-                        strings.Add("\n");
                         index++;
-
-                        if (index < len && str[index - 1] == '\r' && str[index] == '\n')
-                        {
-                            index++;
-                        }
-                    }
-                }
-                else if (i != -1)
-                {
-                    if (str[i] == ' ')
-                    {
-                        strings.Add(str.Substring(index, i - index + 1));
-                        index = i + 1;
-                    }
-                    else
-                    {
-                        strings.Add(str.Substring(index, i - index));
-                        index = i;
                     }
                 }
                 else
                 {
-                    strings.Add(str.Substring(index));
+                    strings.Add("\n");
+                    index++;
 
-                    break;
+                    if (index < len && str[index - 1] == '\r' && str[index] == '\n')
+                    {
+                        index++;
+                    }
                 }
             }
+            else if (i != -1)
+            {
+                if (str[i] == ' ')
+                {
+                    strings.Add(str.Substring(index, i - index + 1));
+                    index = i + 1;
+                }
+                else
+                {
+                    strings.Add(str.Substring(index, i - index));
+                    index = i;
+                }
+            }
+            else
+            {
+                strings.Add(str.Substring(index));
 
-            return strings.ToArray();
+                break;
+            }
         }
+
+        return strings.ToArray();
     }
 }

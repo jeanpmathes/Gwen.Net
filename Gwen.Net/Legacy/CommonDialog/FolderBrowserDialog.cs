@@ -2,48 +2,47 @@
 using Gwen.Net.Legacy.Control;
 using static Gwen.Net.Legacy.Platform.GwenPlatform;
 
-namespace Gwen.Net.Legacy.CommonDialog
+namespace Gwen.Net.Legacy.CommonDialog;
+
+/// <summary>
+///     Dialog for selecting an existing directory.
+/// </summary>
+public class FolderBrowserDialog : FileDialog
 {
-    /// <summary>
-    ///     Dialog for selecting an existing directory.
-    /// </summary>
-    public class FolderBrowserDialog : FileDialog
+    public FolderBrowserDialog(ControlBase parent)
+        : base(parent) {}
+
+    protected override void OnCreated()
     {
-        public FolderBrowserDialog(ControlBase parent)
-            : base(parent) {}
+        base.OnCreated();
 
-        protected override void OnCreated()
+        FoldersOnly = true;
+        Title = "Select Folder";
+        OkButtonText = "Select";
+    }
+
+    protected override void OnItemSelected(String selectedPath)
+    {
+        if (DirectoryExists(selectedPath))
         {
-            base.OnCreated();
+            SetCurrentItem(GetFileName(selectedPath));
+        }
+    }
 
-            FoldersOnly = true;
-            Title = "Select Folder";
-            OkButtonText = "Select";
+    protected override Boolean IsSubmittedNameOk(String submittedPath)
+    {
+        if (DirectoryExists(submittedPath))
+        {
+            SetPath(submittedPath);
+
+            return true;
         }
 
-        protected override void OnItemSelected(String selectedPath)
-        {
-            if (DirectoryExists(selectedPath))
-            {
-                SetCurrentItem(GetFileName(selectedPath));
-            }
-        }
+        return false;
+    }
 
-        protected override Boolean IsSubmittedNameOk(String submittedPath)
-        {
-            if (DirectoryExists(submittedPath))
-            {
-                SetPath(submittedPath);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        protected override Boolean ValidateFileName(String pathToValidate)
-        {
-            return DirectoryExists(pathToValidate);
-        }
+    protected override Boolean ValidateFileName(String pathToValidate)
+    {
+        return DirectoryExists(pathToValidate);
     }
 }

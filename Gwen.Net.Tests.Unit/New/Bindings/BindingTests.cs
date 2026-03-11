@@ -15,7 +15,7 @@ public class BindingTests
     [Fact]
     public void BindTo_WithSingleSource_EqualDependencyValue_DoesNotRaiseValueChanged()
     {
-        Slot<Int32> source = new Slot<Int32>(3);
+        Slot<Int32> source = new(3);
         Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
         Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
@@ -25,11 +25,11 @@ public class BindingTests
         Assert.Equal(expected: 6, binding.GetValue());
         Assert.Equal(expected: 0, events);
     }
-    
+
     [Fact]
     public void BindTo_WithSingleSource_ReactsToDependencyChanges()
     {
-        Slot<Int32> source = new Slot<Int32>(3);
+        Slot<Int32> source = new(3);
         Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
         Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
@@ -43,8 +43,8 @@ public class BindingTests
     [Fact]
     public void BindTo_WithTwoSources_ReactsToDependencyChanges()
     {
-        Slot<Int32> source1 = new Slot<Int32>(3);
-        Slot<Int32> source2 = new Slot<Int32>(4);
+        Slot<Int32> source1 = new(3);
+        Slot<Int32> source2 = new(4);
         Binding<Int32> binding = Binding.To(source1, source2).Compute((v1, v2) => v1 * v2);
         Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
@@ -59,13 +59,13 @@ public class BindingTests
         Assert.Equal(expected: 30, binding.GetValue());
         Assert.Equal(expected: 2, events);
     }
-    
+
     [Fact]
     public void BindTo_WithThreeSources_ReactsToDependencyChanges()
     {
-        Slot<Int32> source1 = new Slot<Int32>(2);
-        Slot<Int32> source2 = new Slot<Int32>(3);
-        Slot<Int32> source3 = new Slot<Int32>(4);
+        Slot<Int32> source1 = new(2);
+        Slot<Int32> source2 = new(3);
+        Slot<Int32> source3 = new(4);
         Binding<Int32> binding = Binding.To(source1, source2, source3).Compute((v1, v2, v3) => v1 * v2 * v3);
         Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
@@ -85,7 +85,7 @@ public class BindingTests
         Assert.Equal(expected: 210, binding.GetValue());
         Assert.Equal(expected: 3, events);
     }
-    
+
     [Fact]
     public void Select_ReturnsValueFromInitialInnerSource()
     {
@@ -182,9 +182,9 @@ public class BindingTests
     {
         Slot<Int32> outer = new(0);
 
-        Binding<String> binding = Binding.To(outer).Select(_ => null, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(_ => null, "default");
 
-        Assert.Equal(expected: "default", binding.GetValue());
+        Assert.Equal("default", binding.GetValue());
     }
 
     [Fact]
@@ -193,9 +193,9 @@ public class BindingTests
         Slot<Int32> outer = new(0);
         Slot<String> inner = new("hello");
 
-        Binding<String> binding = Binding.To(outer).Select(_ => inner, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(_ => inner, "default");
 
-        Assert.Equal(expected: "hello", binding.GetValue());
+        Assert.Equal("hello", binding.GetValue());
     }
 
     [Fact]
@@ -204,11 +204,11 @@ public class BindingTests
         Slot<Boolean> outer = new(true);
         Slot<String> inner = new("hello");
 
-        Binding<String> binding = Binding.To(outer).Select(v => v ? inner : null, defaultValue: "default");
+        Binding<String> binding = Binding.To(outer).Select(v => v ? inner : null, "default");
 
         outer.SetValue(false);
 
-        Assert.Equal(expected: "default", binding.GetValue());
+        Assert.Equal("default", binding.GetValue());
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public class BindingTests
 
         Binding<String> binding = Binding.To(source1, source2).Select((v1, v2) => v1 == 2 && v2 == 3 ? inner1 : inner2);
 
-        Assert.Equal(expected: "two-three", binding.GetValue());
+        Assert.Equal("two-three", binding.GetValue());
     }
 
     [Fact]
@@ -230,9 +230,9 @@ public class BindingTests
         Slot<Int32> source1 = new(1);
         Slot<Int32> source2 = new(2);
 
-        Binding<String> binding = Binding.To(source1, source2).Select((_, _) => null, defaultValue: "default");
+        Binding<String> binding = Binding.To(source1, source2).Select((_, _) => null, "default");
 
-        Assert.Equal(expected: "default", binding.GetValue());
+        Assert.Equal("default", binding.GetValue());
     }
 
     [Fact]
@@ -246,7 +246,7 @@ public class BindingTests
 
         Binding<String> binding = Binding.To(source1, source2, source3).Select((v1, v2, v3) => v1 == 1 && v2 == 2 && v3 == 3 ? inner1 : inner2);
 
-        Assert.Equal(expected: "one-two-three", binding.GetValue());
+        Assert.Equal("one-two-three", binding.GetValue());
     }
 
     [Fact]
@@ -256,8 +256,8 @@ public class BindingTests
         Slot<Int32> source2 = new(2);
         Slot<Int32> source3 = new(3);
 
-        Binding<String> binding = Binding.To(source1, source2, source3).Select((_, _, _) => null, defaultValue: "default");
+        Binding<String> binding = Binding.To(source1, source2, source3).Select((_, _, _) => null, "default");
 
-        Assert.Equal(expected: "default", binding.GetValue());
+        Assert.Equal("default", binding.GetValue());
     }
 }

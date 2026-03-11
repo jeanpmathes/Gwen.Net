@@ -8,5 +8,5 @@ out vec4 Color;
 
 void main(void)
 {
-	Color = texture(Texture, TextureCoordinates);
+    Color = texture(Texture, TextureCoordinates);
 }

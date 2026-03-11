@@ -8,16 +8,16 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Gwen.Net.OpenTk.New.Input;
 
-public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDisposable
+public sealed class InputTranslator : Net.New.Input.InputTranslator, IDisposable
 {
     private readonly GameWindow window;
-    
+
     private PointF lastMousePosition;
-    
+
     public InputTranslator(GameWindow window, Canvas canvas) : base(canvas)
     {
         this.window = window;
-        
+
         window.KeyUp += OnKeyUp;
         window.KeyDown += OnKeyDown;
         window.TextInput += OnTextInput;
@@ -37,7 +37,7 @@ public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDispo
         window.MouseMove -= OnMouseMove;
         window.MouseWheel -= OnMouseWheel;
     }
-    
+
     private static Key TranslateKeyCode(Keys key)
     {
         return key switch
@@ -60,7 +60,7 @@ public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDispo
             Keys.LeftControl or Keys.RightControl => Key.Control,
             Keys.LeftAlt or Keys.RightAlt => Key.Alt,
             Keys.LeftShift or Keys.RightShift => Key.Shift,
-            
+
             Keys.A => Key.A,
             Keys.B => Key.B,
             Keys.C => Key.C,
@@ -87,24 +87,24 @@ public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDispo
             Keys.X => Key.X,
             Keys.Y => Key.Y,
             Keys.Z => Key.Z,
-            
+
             _ => Key.Invalid
         };
     }
 
     private static ModifierKeys TranslateModifierKeys(KeyModifiers modifiers)
     {
-        var modifierKeys = ModifierKeys.None;
-        
+        ModifierKeys modifierKeys = ModifierKeys.None;
+
         if (modifiers.HasFlag(KeyModifiers.Alt))
             modifierKeys |= ModifierKeys.Alt;
-        
+
         if (modifiers.HasFlag(KeyModifiers.Control))
             modifierKeys |= ModifierKeys.Control;
-        
+
         if (modifiers.HasFlag(KeyModifiers.Shift))
             modifierKeys |= ModifierKeys.Shift;
-        
+
         return modifierKeys;
     }
 
@@ -118,24 +118,24 @@ public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDispo
             _ => PointerButton.Invalid
         };
     }
-    
+
     private void OnKeyUp(KeyboardKeyEventArgs args)
     {
         Key key = TranslateKeyCode(args.Key);
-        
-        if (key == Key.Invalid) 
+
+        if (key == Key.Invalid)
             return;
-        
+
         ProcessKeyUpInput(key, args.IsRepeat, TranslateModifierKeys(args.Modifiers));
     }
 
     private void OnKeyDown(KeyboardKeyEventArgs args)
     {
         Key key = TranslateKeyCode(args.Key);
-        
-        if (key == Key.Invalid) 
+
+        if (key == Key.Invalid)
             return;
-        
+
         ProcessKeyDownInput(key, args.IsRepeat, TranslateModifierKeys(args.Modifiers));
     }
 
@@ -157,7 +157,7 @@ public sealed class InputTranslator : Gwen.Net.New.Input.InputTranslator, IDispo
     private void OnMouseMove(MouseMoveEventArgs args)
     {
         lastMousePosition = new PointF(args.X, args.Y);
-        
+
         ProcessPointerMoveInput(lastMousePosition, args.DeltaX, args.DeltaY);
     }
 

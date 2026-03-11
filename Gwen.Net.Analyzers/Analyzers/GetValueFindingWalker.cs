@@ -9,23 +9,23 @@ namespace Gwen.Net.Analyzers.Analyzers;
 public class GetValueFindingWalker : CSharpSyntaxWalker
 {
     private readonly SemanticModel semanticModel;
-    
+
     private Location? found;
 
     private GetValueFindingWalker(SemanticModel semanticModel)
     {
         this.semanticModel = semanticModel;
     }
-    
+
     public static Location? ContainsGetValueInvocation(ExpressionSyntax expression, SemanticModel semanticModel)
     {
-        GetValueFindingWalker visitor = new GetValueFindingWalker(semanticModel);
-        
+        GetValueFindingWalker visitor = new(semanticModel);
+
         visitor.Visit(expression);
 
         return visitor.found;
     }
-    
+
     public override void VisitInvocationExpression(InvocationExpressionSyntax invocationExpressionSyntax)
     {
         base.VisitInvocationExpression(invocationExpressionSyntax);
@@ -36,13 +36,13 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
         if (IsGetValueInvocation(invocationExpressionSyntax, semanticModel) || IsGetValue2Invocation(invocationExpressionSyntax, semanticModel))
             found = invocationExpressionSyntax.GetLocation();
     }
-    
+
     private static Boolean IsGetValueInvocation(InvocationExpressionSyntax invocationExpressionSyntax, SemanticModel semanticModel)
     {
         if (IsGetValueInvocationBase(invocationExpressionSyntax, semanticModel) is not {} methodSymbol)
             return false;
 
-        if (methodSymbol is not { Name: "GetValue", Parameters.Length: 0 })
+        if (methodSymbol is not {Name: "GetValue", Parameters.Length: 0})
             return false;
 
         return methodSymbol.ContainingType is {} containingType
@@ -54,7 +54,7 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
         if (IsGetValueInvocationBase(invocationExpressionSyntax, semanticModel) is not {} methodSymbol)
             return false;
 
-        if (methodSymbol is not { Name: "GetValue", Parameters.Length: 1 })
+        if (methodSymbol is not {Name: "GetValue", Parameters.Length: 1})
             return false;
 
         return methodSymbol.ContainingType is {} containingType
@@ -66,7 +66,7 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
         return typeSymbol.OriginalDefinition.ToDisplayString() == interfaceDisplayName
                || typeSymbol.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == interfaceDisplayName);
     }
-    
+
     private static IMethodSymbol? IsGetValueInvocationBase(InvocationExpressionSyntax invocationExpressionSyntax, SemanticModel semanticModel)
     {
         String? methodName = invocationExpressionSyntax.Expression switch

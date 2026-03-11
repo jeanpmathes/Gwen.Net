@@ -1,76 +1,75 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Control
-{
-    public class LinkClickedEventArgs : EventArgs
-    {
-        internal LinkClickedEventArgs(String link)
-        {
-            Link = link;
-        }
+namespace Gwen.Net.Legacy.Control;
 
-        public String Link { get; }
+public class LinkClickedEventArgs : EventArgs
+{
+    internal LinkClickedEventArgs(String link)
+    {
+        Link = link;
     }
 
-    public class LinkLabel : Label
+    public String Link { get; }
+}
+
+public class LinkLabel : Label
+{
+    private Color? hoverColor;
+    private Color normalColor;
+    private Font normalFont;
+
+    public LinkLabel(ControlBase parent)
+        : base(parent)
     {
-        private Color? hoverColor;
-        private Color normalColor;
-        private Font normalFont;
+        hoverColor = null;
+        HoverFont = null;
 
-        public LinkLabel(ControlBase parent)
-            : base(parent)
+        HoverEnter += OnHoverEnter;
+        HoverLeave += OnHoverLeave;
+        base.Clicked += OnClicked;
+    }
+
+    public String Link { get; set; }
+
+    public Color HoverColor
+    {
+        get => hoverColor ?? TextColor;
+        set => hoverColor = value;
+    }
+
+    public Font HoverFont { get; set; }
+
+    public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
+
+    private void OnHoverEnter(ControlBase control, EventArgs args)
+    {
+        Cursor = Cursor.Finger;
+
+        normalColor = text.TextColor;
+        text.TextColor = HoverColor;
+
+        if (HoverFont != null)
         {
-            hoverColor = null;
-            HoverFont = null;
-
-            HoverEnter += OnHoverEnter;
-            HoverLeave += OnHoverLeave;
-            base.Clicked += OnClicked;
+            normalFont = text.Font;
+            text.Font = HoverFont;
         }
+    }
 
-        public String Link { get; set; }
+    private void OnHoverLeave(ControlBase control, EventArgs args)
+    {
+        text.TextColor = normalColor;
 
-        public Color HoverColor
+        if (HoverFont != null)
         {
-            get => hoverColor ?? TextColor;
-            set => hoverColor = value;
+            text.Font = normalFont;
         }
+    }
 
-        public Font HoverFont { get; set; }
-
-        public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
-
-        private void OnHoverEnter(ControlBase control, EventArgs args)
+    private void OnClicked(ControlBase control, ClickedEventArgs args)
+    {
+        if (LinkClicked != null)
         {
-            Cursor = Cursor.Finger;
-
-            normalColor = text.TextColor;
-            text.TextColor = HoverColor;
-
-            if (HoverFont != null)
-            {
-                normalFont = text.Font;
-                text.Font = HoverFont;
-            }
-        }
-
-        private void OnHoverLeave(ControlBase control, EventArgs args)
-        {
-            text.TextColor = normalColor;
-
-            if (HoverFont != null)
-            {
-                text.Font = normalFont;
-            }
-        }
-
-        private void OnClicked(ControlBase control, ClickedEventArgs args)
-        {
-            if (LinkClicked != null)
-            {
-                LinkClicked(this, new LinkClickedEventArgs(Link));
-            }
+            LinkClicked(this, new LinkClickedEventArgs(Link));
         }
     }
 }

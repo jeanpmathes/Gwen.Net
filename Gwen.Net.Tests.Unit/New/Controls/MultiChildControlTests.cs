@@ -224,7 +224,7 @@ public class MultiChildControlTests
         MockControl control = new();
 
         canvas.Child = control;
-        
+
         MockControl lateChild = new();
         Boolean lateChildAttached = false;
         lateChild.AttachedToRoot += (_, _) => lateChildAttached = true;

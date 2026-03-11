@@ -13,116 +13,127 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
-/// The base class of all GWEN controls, meaning logical controls.
+///     The base class of all GWEN controls, meaning logical controls.
 /// </summary>
-public abstract class Control 
+public abstract class Control
 {
     /// <summary>
-    /// Creates a new instance of the <see cref="Control"/> class.
+    ///     Creates a new instance of the <see cref="Control" /> class.
     /// </summary>
     protected Control()
     {
         Foreground = Property.Create(this, BindToParent(p => p.Foreground, Brushes.Black));
         Background = Property.Create(this, Brushes.Transparent);
-        
+
         MinimumWidth = Property.Create(this, defaultValue: 1f);
         MinimumHeight = Property.Create(this, defaultValue: 1f);
-        
-        MaximumWidth = Property.Create(this, defaultValue: Single.PositiveInfinity);
-        MaximumHeight = Property.Create(this, defaultValue: Single.PositiveInfinity);
-        
+
+        MaximumWidth = Property.Create(this, Single.PositiveInfinity);
+        MaximumHeight = Property.Create(this, Single.PositiveInfinity);
+
         Margin = Property.Create(this, ThicknessF.Zero);
         Padding = Property.Create(this, ThicknessF.Zero);
-        
+
         HorizontalAlignment = Property.Create(this, New.HorizontalAlignment.Stretch);
         VerticalAlignment = Property.Create(this, New.VerticalAlignment.Stretch);
-        
+
         IsNavigable = Property.Create(this, defaultValue: false);
-        
-        Visibility = Property.Create(this, defaultValue: New.Visibility.Visible, 
+
+        Visibility = Property.Create(this,
+            New.Visibility.Visible,
             Binding.To(Parent).Select(p => p?.Visibility, New.Visibility.Visible).Parametrize<Visibility>(Visibilities.Lower));
 
         {
-            LocalEnablement = Property.Create(this, defaultValue: New.Enablement.Enabled);
-        
-            Enablement = Property.Create(this, defaultValue: New.Enablement.Enabled, 
+            LocalEnablement = Property.Create(this, New.Enablement.Enabled);
+
+            Enablement = Property.Create(this,
+                New.Enablement.Enabled,
                 Binding.To(Parent).Select(p => p?.Enablement, New.Enablement.Enabled).Combine(LocalEnablement).Compute(Enablements.Lower).Parametrize<Enablement>(Enablements.Lower));
         }
     }
-    
-    #region PROPERTIES
-    
+
+    #region STYLE
+
     /// <summary>
-    /// The preferred foreground brush of the control.
+    ///     Invalidate styling of this control, causing it to be reapplied.
+    /// </summary>
+    protected abstract void InvalidateStyling();
+
+    #endregion
+
+    #region PROPERTIES
+
+    /// <summary>
+    ///     The preferred foreground brush of the control.
     /// </summary>
     public Property<Brush> Foreground { get; }
-    
+
     /// <summary>
-    /// The preferred background brush of the control.
+    ///     The preferred background brush of the control.
     /// </summary>
     public Property<Brush> Background { get; }
-    
+
     /// <summary>
-    /// The minimum width of this control. Might not be respected by all layout containers.
+    ///     The minimum width of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MinimumWidth { get; }
-    
+
     /// <summary>
-    /// The minimum height of this control. Might not be respected by all layout containers.
+    ///     The minimum height of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MinimumHeight { get; }
-    
+
     /// <summary>
-    /// The maximum width of this control. Might not be respected by all layout containers.
+    ///     The maximum width of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MaximumWidth { get; }
-        
+
     /// <summary>
-    /// The maximum height of this control. Might not be respected by all layout containers.
+    ///     The maximum height of this control. Might not be respected by all layout containers.
     /// </summary>
     public Property<Single> MaximumHeight { get; }
-    
+
     /// <summary>
-    /// The margin of this control, which is space around the control that the layout system should try to respect.
+    ///     The margin of this control, which is space around the control that the layout system should try to respect.
     /// </summary>
     public Property<ThicknessF> Margin { get; }
-    
+
     /// <summary>
-    /// The padding of this control, which is space inside the control that the layout system should try to respect.
-    /// If a control defines custom layout logic, it decides if and how to respect the padding.
-    /// As such, padding is less strictly enforced than margin.
+    ///     The padding of this control, which is space inside the control that the layout system should try to respect.
+    ///     If a control defines custom layout logic, it decides if and how to respect the padding.
+    ///     As such, padding is less strictly enforced than margin.
     /// </summary>
     public Property<ThicknessF> Padding { get; }
-    
+
     /// <summary>
-    /// The horizontal alignment of this control within its parent. Might not be respected by all layout containers.
+    ///     The horizontal alignment of this control within its parent. Might not be respected by all layout containers.
     /// </summary>
     public Property<HorizontalAlignment> HorizontalAlignment { get; }
-    
+
     /// <summary>
-    /// The vertical alignment of this control within its parent. Might not be respected by all layout containers.
+    ///     The vertical alignment of this control within its parent. Might not be respected by all layout containers.
     /// </summary>
     public Property<VerticalAlignment> VerticalAlignment { get; }
-    
+
     /// <summary>
-    /// Whether this control allows to navigate to it, which is used to move the keyboard focus using the keyboard.
+    ///     Whether this control allows to navigate to it, which is used to move the keyboard focus using the keyboard.
     /// </summary>
     public Property<Boolean> IsNavigable { get; }
-    
+
     /// <summary>
-    /// The visibility of the control and its visualization.
-    /// Controls cannot be more visible than their parents.
+    ///     The visibility of the control and its visualization.
+    ///     Controls cannot be more visible than their parents.
     /// </summary>
     public Property<Visibility> Visibility { get; }
-    
+
     /// <summary>
-    /// The enablement of the control.
-    /// Controls cannot be more enabled than their parents.
+    ///     The enablement of the control.
+    ///     Controls cannot be more enabled than their parents.
     /// </summary>
     public Property<Enablement> Enablement { get; }
-    
+
     /// <summary>
-    /// Create a property bound to a property of the parent control.
+    ///     Create a property bound to a property of the parent control.
     /// </summary>
     /// <param name="selector">The selector function to select the property from the parent control.</param>
     /// <param name="defaultValue">The default value to use if there is no parent.</param>
@@ -132,30 +143,30 @@ public abstract class Control
     {
         return Binding.To(Parent).Select(p => p != null ? selector(p) : null, defaultValue);
     }
-    
+
     #endregion PROPERTIES
-    
+
     #region HIERARCHY
-    
+
     /// <summary>
-    /// Whether this control is attached to a tree with a root control.
+    ///     Whether this control is attached to a tree with a root control.
     /// </summary>
     protected Boolean IsAttached { get; private set; }
 
     /// <summary>
-    /// Whether this control is the root control of the tree.
+    ///     Whether this control is the root control of the tree.
     /// </summary>
     private protected Boolean IsRoot { get; set; }
-    
+
     /// <summary>
-    /// Set this control as the root of the tree.
-    /// May only be called by the canvas controls.
+    ///     Set this control as the root of the tree.
+    ///     May only be called by the canvas controls.
     /// </summary>
     /// <param name="uiRenderer">The renderer that will be used to render the visuals of this control and its children.</param>
     private protected void SetAsRoot(IRenderer uiRenderer)
     {
         renderer = uiRenderer;
-        
+
         IsRoot = true;
 
         Attach();
@@ -163,20 +174,20 @@ public abstract class Control
 
     private readonly Slot<Control?> parent = new(null);
     private readonly ListSlot<Control> children = [];
-    
+
     /// <summary>
-    /// The parent of this control.
+    ///     The parent of this control.
     /// </summary>
     public ReadOnlySlot<Control?> Parent => parent;
 
     /// <summary>
-    /// The children of this control.
+    ///     The children of this control.
     /// </summary>
     public ReadOnlyListSlot<Control> Children => children;
 
     /// <summary>
-    /// Set the child of this control.
-    /// Replaces any existing children.
+    ///     Set the child of this control.
+    ///     Replaces any existing children.
     /// </summary>
     /// <param name="child">
     ///     The child to set. Will be removed from its previous parent if any.
@@ -214,7 +225,7 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Add a  child to this control.
+    ///     Add a  child to this control.
     /// </summary>
     /// <param name="child">The child to add. Will be removed from its previous parent if any.</param>
     protected void AddChild(Control child)
@@ -233,8 +244,8 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Remove a child from this control.
-    /// If the specified child is not a child of this control, nothing happens.
+    ///     Remove a child from this control.
+    ///     If the specified child is not a child of this control, nothing happens.
     /// </summary>
     /// <param name="child">The child to remove.</param>
     protected void RemoveChild(Control child)
@@ -258,19 +269,19 @@ public abstract class Control
     {
         ChildAdded?.Invoke(this, new ChildAddedEventArgs(child));
     }
-    
+
     /// <summary>
-    /// Invoked when a child is added to this control.
+    ///     Invoked when a child is added to this control.
     /// </summary>
     public event EventHandler<ChildAddedEventArgs>? ChildAdded;
-    
+
     private void OnChildRemoved(Control child)
     {
         ChildRemoved?.Invoke(this, new ChildRemovedEventArgs(child));
     }
-    
+
     /// <summary>
-    /// Invoked when a child is removed from this control.
+    ///     Invoked when a child is removed from this control.
     /// </summary>
     public event EventHandler<ChildRemovedEventArgs>? ChildRemoved;
 
@@ -290,14 +301,14 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Called when the control is attached to a tree with a root control.
-    /// Note that for example giving this control a parent does not necessarily
-    /// attach it to a root control, as the parent itself may not be attached to a root.
+    ///     Called when the control is attached to a tree with a root control.
+    ///     Note that for example giving this control a parent does not necessarily
+    ///     attach it to a root control, as the parent itself may not be attached to a root.
     /// </summary>
     public virtual void OnAttach() {}
 
     /// <summary>
-    /// Invoked when this control is attached to a tree with a root control.
+    ///     Invoked when this control is attached to a tree with a root control.
     /// </summary>
     public event EventHandler? AttachedToRoot;
 
@@ -318,13 +329,13 @@ public abstract class Control
     }
 
     /// <summary>
-    /// Called when the control is detached from a tree with a root control.
-    /// Note that being detached in most cases does not mean losing the parent,
-    /// as it may simply be that the parent or one of its ancestors was detached.
+    ///     Called when the control is detached from a tree with a root control.
+    ///     Note that being detached in most cases does not mean losing the parent,
+    ///     as it may simply be that the parent or one of its ancestors was detached.
     /// </summary>
     /// <remarks>
-    /// Generally, disposable resources must be disposed when being detached,
-    /// unless the control is being reparented.
+    ///     Generally, disposable resources must be disposed when being detached,
+    ///     unless the control is being reparented.
     /// </remarks>
     /// <param name="isReparenting">
     ///     Indicates whether the control is being detached because it is being reparented.
@@ -332,49 +343,46 @@ public abstract class Control
     public virtual void OnDetach(Boolean isReparenting) {}
 
     /// <summary>
-    /// Invoked when this control is detached from a tree with a root control.
+    ///     Invoked when this control is detached from a tree with a root control.
     /// </summary>
     public event EventHandler? DetachedFromRoot;
 
     #endregion HIERARCHY
-    
+
     #region CONTEXT
 
     private readonly Context? localContext;
     private Context? cachedContext;
-    
+
     /// <summary>
-    /// Rebuild the cached context for this control and reapply styling.
+    ///     Rebuild the cached context for this control and reapply styling.
     /// </summary>
     private void InvalidateContext()
     {
         UpdateCachedContext();
-        
+
         InvalidateStyling();
-        
+
         OnInvalidateContext();
     }
-    
+
     /// <summary>
-    /// Override to react to context changes.
+    ///     Override to react to context changes.
     /// </summary>
-    protected virtual void OnInvalidateContext()
-    {
-        
-    }
-    
+    protected virtual void OnInvalidateContext() {}
+
     [MemberNotNull(nameof(cachedContext))]
     private void UpdateCachedContext()
     {
         Context parentContext = Parent.GetValue()?.Context ?? Context.Default;
-        
+
         cachedContext = localContext == null
             ? parentContext
             : new Context(localContext, parentContext);
     }
 
     /// <summary>
-    /// The context of this control, which is used for example to determine styling.
+    ///     The context of this control, which is used for example to determine styling.
     /// </summary>
     public Context Context
     {
@@ -391,159 +399,146 @@ public abstract class Control
         init
         {
             localContext = value;
-            
+
             UpdateCachedContext();
         }
     }
 
     #endregion CONTEXT
-    
+
     #region VISUALIZATION / TEMPLATING
 
     private protected IRenderer? renderer;
-    
+
     /// <summary>
-    /// Build or refresh the visual tree that represents this control.
+    ///     Build or refresh the visual tree that represents this control.
     /// </summary>
     /// <returns>The root visual used to render this control.</returns>
     internal abstract Visual Visualize();
-    
+
     /// <summary>
-    /// The current root visual that represents this control, if it has been visualized.
+    ///     The current root visual that represents this control, if it has been visualized.
     /// </summary>
     public abstract ReadOnlySlot<Visual?> Visualization { get; }
-    
+
     #endregion VISUALIZATION / TEMPLATING
-    
-    #region STYLE
-    
-    /// <summary>
-    /// Invalidate styling of this control, causing it to be reapplied.
-    /// </summary>
-    protected abstract void InvalidateStyling();
-    
-    #endregion
-    
+
     #region INPUT
 
     /// <summary>
-    /// Whether the pointer (mouse) is currently hovering over the anchor visual of this control.
+    ///     Whether the pointer (mouse) is currently hovering over the anchor visual of this control.
     /// </summary>
     public abstract IValueSource<Boolean> IsHovered { get; }
 
     /// <summary>
-    /// Whether this control is currently focused for keyboard input, meaning that its anchor visual is the target of the keyboard focus.
+    ///     Whether this control is currently focused for keyboard input, meaning that its anchor visual is the target of the
+    ///     keyboard focus.
     /// </summary>
     public abstract IValueSource<Boolean> IsKeyboardFocused { get; }
-    
+
     /// <summary>
-    /// Whether this control is currently focused for pointer input, meaning that its anchor visual is the target of the pointer focus.
+    ///     Whether this control is currently focused for pointer input, meaning that its anchor visual is the target of the
+    ///     pointer focus.
     /// </summary>
     public abstract IValueSource<Boolean> IsPointerFocused { get; }
-    
+
     /// <summary>
-    /// Called when an input event tunnels down the visual tree towards the target visual and reaches the template anchor of this control.
-    /// Use this to intercept input events before they reach the target visual.
+    ///     Called when an input event tunnels down the visual tree towards the target visual and reaches the template anchor
+    ///     of this control.
+    ///     Use this to intercept input events before they reach the target visual.
     /// </summary>
     /// <param name="inputEvent">The input event.</param>
-    public virtual void OnInputPreview(InputEvent inputEvent)
-    {
-        
-    }
-    
+    public virtual void OnInputPreview(InputEvent inputEvent) {}
+
     /// <summary>
-    /// Called when an input event bubbles up the visual tree from the target visual and reaches the template anchor of this control.
-    /// Use this to handle inputs.
+    ///     Called when an input event bubbles up the visual tree from the target visual and reaches the template anchor of
+    ///     this control.
+    ///     Use this to handle inputs.
     /// </summary>
     /// <param name="inputEvent">The input event.</param>
-    public virtual void OnInput(InputEvent inputEvent)
-    {
-        
-    }
-    
-    
-    
+    public virtual void OnInput(InputEvent inputEvent) {}
+
     #endregion INPUT
-    
+
     #region ENABLEMENT
 
     private Property<Enablement> LocalEnablement { get; }
-    
+
     /// <summary>
-    /// Add a constraint to the (effective) enablement of this control.
-    /// The constraint will be combined with the existing enablement using <see cref="Enablements.Lower"/>.
-    /// Therefore, additional constraints will not allow the control to be more enabled, only less enabled.
+    ///     Add a constraint to the (effective) enablement of this control.
+    ///     The constraint will be combined with the existing enablement using <see cref="Enablements.Lower" />.
+    ///     Therefore, additional constraints will not allow the control to be more enabled, only less enabled.
     /// </summary>
     /// <param name="constraint">The enablement constraint to add.</param>
     protected void AddEnablementConstraint(Binding<Enablement> constraint)
     {
         LocalEnablement.OverrideDefault(original => Binding.To(original, constraint).Compute(Enablements.Lower));
     }
-    
+
     #endregion ENABLEMENT
 }
 
 /// <summary>
-/// The generic base class of all GWEN controls, meaning logical controls.
-/// The generic variant is needed for templating.
+///     The generic base class of all GWEN controls, meaning logical controls.
+///     The generic variant is needed for templating.
 /// </summary>
 /// <typeparam name="TSelf">The type of the control itself.</typeparam>
 public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
 {
     /// <summary>
-    /// Creates a new instance of the <see cref="Control{TSelf}"/> class.
+    ///     Creates a new instance of the <see cref="Control{TSelf}" /> class.
     /// </summary>
     protected Control()
     {
         Template = Property.Create(this, Binding.Computed(CreateDefaultTemplate));
         Template.ValueChanged += OnTemplateChanged;
 
-        Style = Property.Create(this,(Style<TSelf>?)null);
+        Style = Property.Create(this, (Style<TSelf>?) null);
         Style.ValueChanged += OnStyleChanged;
 
         IsHovered = Binding.To(visualization).Select(v => v?.IsHovered, defaultValue: false);
-        
+
         IsKeyboardFocused = Binding.To(visualization).Select(v => v?.IsKeyboardFocused, defaultValue: false);
         IsPointerFocused = Binding.To(visualization).Select(v => v?.IsPointerFocused, defaultValue: false);
     }
-    
+
     /// <summary>
-    /// Get this control as its own type.
+    ///     Get this control as its own type.
     /// </summary>
     protected TSelf Self => (TSelf) this;
-    
+
     #region VISUALIZATION / TEMPLATING
-    
+
     /// <summary>
-    /// The template used to visualize this control.
+    ///     The template used to visualize this control.
     /// </summary>
     public Property<ControlTemplate<TSelf>> Template { get; }
 
     private readonly Slot<Visual?> visualization = new(null);
-    
+
     /// <summary>
-    /// The current root visual that represents this control, if it has been visualized.
+    ///     The current root visual that represents this control, if it has been visualized.
     /// </summary>
     public override ReadOnlySlot<Visual?> Visualization => visualization;
 
     /// <summary>
-    /// Build or refresh the visual tree for this control and apply current styling.
+    ///     Build or refresh the visual tree for this control and apply current styling.
     /// </summary>
     /// <returns>The root visual used to render this control.</returns>
     internal override Visual Visualize()
     {
         UnanchorVisualization();
-        
+
         ApplyStyling();
 
         Visual currentVisualization = Template.GetValue().Apply(Self);
         visualization.SetValue(currentVisualization);
-        
+
         AnchorVisualization();
-        
+
         return currentVisualization;
     }
-    
+
     private void AnchorVisualization()
     {
         Visualization.GetValue()?.SetAsAnchor(this);
@@ -558,63 +553,64 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
 
         if (IsRoot)
             currentVisualization.UnsetAsRoot();
-        
+
         currentVisualization.UnsetAsAnchor();
-        
+
         visualization.SetValue(null);
     }
-    
+
     /// <summary>
-    /// Create a default template for this control, which is used if no style or local template is set.
+    ///     Create a default template for this control, which is used if no style or local template is set.
     /// </summary>
     /// <returns>The default control template.</returns>
     protected abstract ControlTemplate<TSelf> CreateDefaultTemplate();
-    
+
     private void OnTemplateChanged(Object? sender, EventArgs e)
     {
         InvalidateVisualization();
     }
-    
+
     private void InvalidateVisualization()
     {
         if (Visualization.GetValue() == null) return;
-        
+
         Visualize();
     }
-    
+
     #endregion VISUALIZATION / TEMPLATING
-    
+
     #region STYLE
 
     private IReadOnlyList<IStyle<TSelf>>? usedOuterStyles;
     private Style<TSelf>? usedLocalStyle;
-    
+
     private Boolean IsStyled => usedOuterStyles != null || usedLocalStyle != null;
-    
+
     /// <summary>
-    /// Set a specific style just for this control, which overrides any styling from the context.
-    /// This style does not affect any other controls.
+    ///     Set a specific style just for this control, which overrides any styling from the context.
+    ///     This style does not affect any other controls.
     /// </summary>
     public Property<Style<TSelf>?> Style { get; }
-    
+
     private void OnStyleChanged(Object? sender, EventArgs e)
     {
         InvalidateStyling();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected sealed override void InvalidateStyling()
     {
         if (!IsStyled) return;
-        
+
         ApplyStyling();
     }
-    
+
     private void ApplyStyling()
     {
         ClearStyling();
-        
+
         usedOuterStyles = Context.GetStyling<TSelf>();
+
         if (usedOuterStyles.Count > 0)
         {
             foreach (IStyle<TSelf> style in usedOuterStyles)
@@ -640,7 +636,7 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
         {
             usedOuterStyles[index].Clear(Self);
         }
-        
+
         usedOuterStyles = null;
     }
 
@@ -648,38 +644,38 @@ public abstract class Control<TSelf> : Control where TSelf : Control<TSelf>
 
     #region INPUT
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public sealed override IValueSource<Boolean> IsHovered { get; }
-    
-    /// <inheritdoc/>
+
+    /// <inheritdoc />
     public sealed override IValueSource<Boolean> IsKeyboardFocused { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public sealed override IValueSource<Boolean> IsPointerFocused { get; }
-    
+
     #endregion INPUT
 }
 
 /// <summary>
-/// Event arguments for the <see cref="Control.ChildAdded"/> event.
+///     Event arguments for the <see cref="Control.ChildAdded" /> event.
 /// </summary>
 /// <param name="child">The child that was added.</param>
 public class ChildAddedEventArgs(Control child) : EventArgs
 {
     /// <summary>
-    /// The child that was added to this control.
+    ///     The child that was added to this control.
     /// </summary>
     public Control Child { get; } = child;
 }
 
 /// <summary>
-/// Event arguments for the <see cref="Control.ChildRemoved"/> event.
+///     Event arguments for the <see cref="Control.ChildRemoved" /> event.
 /// </summary>
 /// <param name="child">The child that was removed.</param>
 public class ChildRemovedEventArgs(Control child) : EventArgs
 {
     /// <summary>
-    /// The child that was removed from this control.
+    ///     The child that was removed from this control.
     /// </summary>
     public Control Child { get; } = child;
 }

@@ -5,12 +5,15 @@ using Gwen.Net.New.Controls;
 namespace Gwen.Net.New.Bindings;
 
 /// <summary>
-/// Non-generic abstract base class for properties.
+///     Non-generic abstract base class for properties.
 /// </summary>
 public abstract class Property : IValueSource
 {
+    /// <inheritdoc />
+    public event EventHandler? ValueChanged;
+
     /// <summary>
-    /// Create a new property with the given default binding.
+    ///     Create a new property with the given default binding.
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultBinding">The default binding for the property.</param>
@@ -23,7 +26,7 @@ public abstract class Property : IValueSource
     }
 
     /// <summary>
-    /// Create a new property with a constant default value.
+    ///     Create a new property with a constant default value.
     /// </summary>
     /// <param name="owner">The owner element of the property.</param>
     /// <param name="defaultValue">The default value for the property.</param>
@@ -36,36 +39,33 @@ public abstract class Property : IValueSource
     }
 
     /// <summary>
-    /// Style the property with a value or binding.
+    ///     Style the property with a value or binding.
     /// </summary>
     /// <param name="value">The value or binding, must fit the type of the property.</param>
     internal abstract void Style(Object value);
 
     /// <summary>
-    /// Clear the styling of the property.
+    ///     Clear the styling of the property.
     /// </summary>
     internal abstract void ClearStyle();
 
     /// <summary>
-    /// Notifies subscribers that the value of the property has changed.
+    ///     Notifies subscribers that the value of the property has changed.
     /// </summary>
     protected void NotifyValueChanged()
     {
         ValueChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    /// <inheritdoc/>
-    public event EventHandler? ValueChanged;
 }
 
 /// <summary>
-/// A property is a value of a <see cref="Control"/> that can be set, styled and bound to a slot.
+///     A property is a value of a <see cref="Control" /> that can be set, styled and bound to a slot.
 /// </summary>
 /// <typeparam name="T">The type of value stored in the property.</typeparam>
 public sealed class Property<T> : Property, IValueSource<T>
 {
-    private Binding<T> defaultBinding;
     private readonly Binding<T, T>? coercionBinding;
+    private Binding<T> defaultBinding;
 
     private Binding<T>? styleBinding;
     private Binding<T>? localBinding;
@@ -89,6 +89,18 @@ public sealed class Property<T> : Property, IValueSource<T>
         owner.DetachedFromRoot += (_, _) => Deactivate();
     }
 
+    /// <inheritdoc />
+    public T GetValue()
+    {
+        if (!isActive)
+            return effectiveBinding.GetValue();
+
+        if (!isCacheValid)
+            UpdateCachedValue(notify: false);
+
+        return cachedValue!;
+    }
+
     [MemberNotNull(nameof(effectiveBinding))]
     private void SetEffectiveBinding()
     {
@@ -98,7 +110,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Activates the property, causing it to subscribe to changes in its active binding.
+    ///     Activates the property, causing it to subscribe to changes in its active binding.
     /// </summary>
     public void Activate()
     {
@@ -110,7 +122,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Deactivates the property, causing it to unsubscribe from changes in its active binding.
+    ///     Deactivates the property, causing it to unsubscribe from changes in its active binding.
     /// </summary>
     public void Deactivate()
     {
@@ -175,23 +187,17 @@ public sealed class Property<T> : Property, IValueSource<T>
             NotifyValueChanged();
     }
 
-    /// <inheritdoc/>
-    public T GetValue()
+    /// <inheritdoc />
+    public override String ToString()
     {
-        if (!isActive)
-            return effectiveBinding.GetValue();
-
-        if (!isCacheValid)
-            UpdateCachedValue(notify: false);
-
-        return cachedValue!;
+        return $"{{{GetValue()?.ToString()}}}";
     }
-    
-    #region DEFAULT 
-    
+
+    #region DEFAULT
+
     /// <summary>
-    /// Overrides the default binding of the property.
-    /// This is used for child controls to override the default bindings of their parent controls.
+    ///     Overrides the default binding of the property.
+    ///     This is used for child controls to override the default bindings of their parent controls.
     /// </summary>
     /// <param name="builder">A function that takes the current default binding and returns the new default binding.</param>
     internal void OverrideDefault(Func<Binding<T>, Binding<T>> builder)
@@ -199,17 +205,18 @@ public sealed class Property<T> : Property, IValueSource<T>
         defaultBinding = builder(defaultBinding);
         RecomputeSelectedBinding();
     }
-    
+
     /// <summary>
-    /// Overrides the default binding of the property with a constant value.
-    /// This is a convenience method for <see cref="OverrideDefault(Func{Binding{T}, Binding{T}})"/> when the new default binding is a constant value.
+    ///     Overrides the default binding of the property with a constant value.
+    ///     This is a convenience method for <see cref="OverrideDefault(Func{Binding{T}, Binding{T}})" /> when the new default
+    ///     binding is a constant value.
     /// </summary>
     /// <param name="defaultValue">The new default value.</param>
     internal void OverrideDefault(T defaultValue)
     {
         OverrideDefault(_ => Bindings.Binding.Constant(defaultValue));
     }
-    
+
     #endregion DEFAULT
 
     #region LOCAL
@@ -221,7 +228,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Binds the property to a constant value locally.
+    ///     Binds the property to a constant value locally.
     /// </summary>
     public T Value
     {
@@ -229,7 +236,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Binds the property locally.
+    ///     Binds the property locally.
     /// </summary>
     public Binding<T> Binding
     {
@@ -247,7 +254,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Style the property with a constant value.
+    ///     Style the property with a constant value.
     /// </summary>
     /// <param name="value">The constant value.</param>
     public void Style(T value)
@@ -256,7 +263,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Style the property with a binding.
+    ///     Style the property with a binding.
     /// </summary>
     /// <param name="binding">The binding.</param>
     public void Style(Binding<T> binding)
@@ -280,7 +287,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     /// <summary>
-    /// Clear the styling of the property.
+    ///     Clear the styling of the property.
     /// </summary>
     internal override void ClearStyle()
     {
@@ -288,10 +295,4 @@ public sealed class Property<T> : Property, IValueSource<T>
     }
 
     #endregion STYLE
-
-    /// <inheritdoc/>
-    public override String ToString()
-    {
-        return $"{{{GetValue()?.ToString()}}}";
-    }
 }

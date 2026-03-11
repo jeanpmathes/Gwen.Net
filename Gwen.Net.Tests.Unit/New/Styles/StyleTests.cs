@@ -9,7 +9,7 @@ public class StyleTests
     public void StyleClear_RevertsStyledPropertyToDefault()
     {
         Style<MockControl> style = Styling.Create<MockControl>(builder => builder.Set(c => c.MinimumHeight, value: 12f));
-        MockControl element = new MockControl();
+        MockControl element = new();
 
         style.Apply(element);
         Assert.Equal(expected: 12f, element.MinimumHeight.GetValue());

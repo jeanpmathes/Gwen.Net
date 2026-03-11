@@ -26,7 +26,7 @@ public class ChildPresenterTests() : VisualTestBase<ChildPresenter>(() => new Ch
 
         ChildPresenter presenter = GetPresenter(control);
 
-        Assert.Equal(expected: Visibility.Collapsed, presenter.Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, presenter.Visibility.GetValue());
     }
 
     [Fact]
@@ -43,13 +43,13 @@ public class ChildPresenterTests() : VisualTestBase<ChildPresenter>(() => new Ch
 
         ChildPresenter presenter = GetPresenter(control);
 
-        Assert.Equal(expected: Visibility.Collapsed, presenter.Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, presenter.Visibility.GetValue());
 
         control.Child = new MockControl();
-        Assert.Equal(expected: Visibility.Visible, presenter.Visibility.GetValue());
+        Assert.Equal(Visibility.Visible, presenter.Visibility.GetValue());
 
         control.Child = null;
-        Assert.Equal(expected: Visibility.Collapsed, presenter.Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, presenter.Visibility.GetValue());
     }
 
     private static ChildPresenter GetPresenter(ControlBorder control)

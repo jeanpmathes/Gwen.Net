@@ -2,76 +2,75 @@
 using Gwen.Net.Legacy.Control;
 using static Gwen.Net.Legacy.Platform.GwenPlatform;
 
-namespace Gwen.Net.Legacy.CommonDialog
+namespace Gwen.Net.Legacy.CommonDialog;
+
+/// <summary>
+///     Dialog for selecting a file name for saving or creating.
+/// </summary>
+public class SaveFileDialog : FileDialog
 {
-    /// <summary>
-    ///     Dialog for selecting a file name for saving or creating.
-    /// </summary>
-    public class SaveFileDialog : FileDialog
+    public SaveFileDialog(ControlBase parent)
+        : base(parent) {}
+
+    protected override void OnCreated()
     {
-        public SaveFileDialog(ControlBase parent)
-            : base(parent) {}
+        base.OnCreated();
 
-        protected override void OnCreated()
+        Title = "Save File";
+        OkButtonText = "Save";
+    }
+
+    protected override void OnItemSelected(String selectedPath)
+    {
+        if (FileExists(selectedPath))
         {
-            base.OnCreated();
+            SetCurrentItem(GetFileName(selectedPath));
+        }
+    }
 
-            Title = "Save File";
-            OkButtonText = "Save";
+    protected override Boolean IsSubmittedNameOk(String submittedPath)
+    {
+        if (DirectoryExists(submittedPath))
+        {
+            SetPath(submittedPath);
+        }
+        else if (FileExists(submittedPath))
+        {
+            return true;
         }
 
-        protected override void OnItemSelected(String selectedPath)
+        return false;
+    }
+
+    protected override Boolean ValidateFileName(String pathToValidate)
+    {
+        if (DirectoryExists(pathToValidate))
         {
-            if (FileExists(selectedPath))
-            {
-                SetCurrentItem(GetFileName(selectedPath));
-            }
+            return false;
         }
 
-        protected override Boolean IsSubmittedNameOk(String submittedPath)
+        if (FileExists(pathToValidate))
         {
-            if (DirectoryExists(submittedPath))
-            {
-                SetPath(submittedPath);
-            }
-            else if (FileExists(submittedPath))
-            {
-                return true;
-            }
+            MessageBox win = MessageBox.Show(
+                View,
+                $"File '{GetFileName(pathToValidate)}' already exists. Do you want to replace it?",
+                Title,
+                buttons: MessageBoxButtons.YesNo);
+
+            win.Dismissed += OnMessageBoxDismissed;
+            win.UserData = pathToValidate;
 
             return false;
         }
 
-        protected override Boolean ValidateFileName(String pathToValidate)
+        return true;
+    }
+
+    private void OnMessageBoxDismissed(ControlBase sender, MessageBoxResultEventArgs args)
+    {
+        if (args.Result == MessageBoxResult.Yes)
         {
-            if (DirectoryExists(pathToValidate))
-            {
-                return false;
-            }
-
-            if (FileExists(pathToValidate))
-            {
-                MessageBox win = MessageBox.Show(
-                    View,
-                    $"File '{GetFileName(pathToValidate)}' already exists. Do you want to replace it?",
-                    Title,
-                    buttons: MessageBoxButtons.YesNo);
-
-                win.Dismissed += OnMessageBoxDismissed;
-                win.UserData = pathToValidate;
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private void OnMessageBoxDismissed(ControlBase sender, MessageBoxResultEventArgs args)
-        {
-            if (args.Result == MessageBoxResult.Yes)
-            {
-                Close(sender.UserData as String);
-            }
+            Close(sender.UserData as String);
         }
     }
 }

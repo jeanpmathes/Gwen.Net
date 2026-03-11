@@ -11,11 +11,11 @@ uniform vec2 uScreenSize = vec2(1280, 720);
 
 void main(void)
 {
-	frag_uv = in_uv;
-	frag_color = in_color;
+    frag_uv = in_uv;
+    frag_color = in_color;
 
-	vec2 ndc_position = 2.0 * (in_screen_coords / uScreenSize) - 1.0;
-	ndc_position.y *= -1.0;
+    vec2 ndc_position = 2.0 * (in_screen_coords / uScreenSize) - 1.0;
+    ndc_position.y *= -1.0;
 
-	gl_Position = vec4(ndc_position, 0.0, 1);
+    gl_Position = vec4(ndc_position, 0.0, 1);
 }

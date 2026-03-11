@@ -1,7 +1,6 @@
-﻿namespace Gwen.Net.Legacy.Control
+﻿namespace Gwen.Net.Legacy.Control;
+
+public interface IColorPicker
 {
-    public interface IColorPicker
-    {
-        Color SelectedColor { get; }
-    }
+    Color SelectedColor { get; }
 }

@@ -5,236 +5,235 @@ using System.Collections.Generic;
 using Gwen.Net.Legacy.Control.Internal;
 using Gwen.Net.Legacy.RichText;
 
-namespace Gwen.Net.Legacy.Control
+namespace Gwen.Net.Legacy.Control;
+
+/// <summary>
+///     Multiline label with text chunks having different color/font.
+/// </summary>
+public class RichLabel : ControlBase
 {
+    private Int32 buildWidth;
+    private Document document;
+    private Boolean needsRebuild;
+    private Size textSize;
+    private Boolean updating;
+
     /// <summary>
-    ///     Multiline label with text chunks having different color/font.
+    ///     Initializes a new instance of the <see cref="RichLabel" /> class.
     /// </summary>
-    public class RichLabel : ControlBase
+    /// <param name="parent">Parent control.</param>
+    public RichLabel(ControlBase parent)
+        : base(parent)
     {
-        private Int32 buildWidth;
-        private Document document;
-        private Boolean needsRebuild;
-        private Size textSize;
-        private Boolean updating;
+        buildWidth = 0;
+        textSize = Size.Zero;
+        updating = false;
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RichLabel" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public RichLabel(ControlBase parent)
-            : base(parent)
+    public Document Document
+    {
+        get => document;
+        set
         {
-            buildWidth = 0;
-            textSize = Size.Zero;
-            updating = false;
+            document = value;
+            needsRebuild = true;
+            Invalidate();
         }
+    }
 
-        public Document Document
+    public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
+
+    protected void Rebuild()
+    {
+        updating = true;
+
+        DeleteAllChildren();
+
+        Size size = Size.Zero;
+
+        if (document != null && document.Paragraphs.Count > 0)
         {
-            get => document;
-            set
-            {
-                document = value;
-                needsRebuild = true;
-                Invalidate();
-            }
-        }
-
-        public event GwenEventHandler<LinkClickedEventArgs> LinkClicked;
-
-        protected void Rebuild()
-        {
-            updating = true;
-
-            DeleteAllChildren();
-
-            Size size = Size.Zero;
-
-            if (document != null && document.Paragraphs.Count > 0)
-            {
 #if USE_KNUTH_PLASS_LINE_BREAKING
 				LineBreaker lineBreaker = new RichText.KnuthPlass.LineBreaker(Skin.Renderer, Skin.DefaultFont);
 #else
-                LineBreaker lineBreaker = new RichText.Simple.LineBreaker(Skin.Renderer, Skin.DefaultFont);
+            LineBreaker lineBreaker = new RichText.Simple.LineBreaker(Skin.Renderer, Skin.DefaultFont);
 #endif
 
-                var y = 0;
-                Int32 x;
-                Int32 width;
-                Int32 height;
+            Int32 y = 0;
+            Int32 x;
+            Int32 width;
+            Int32 height;
 
-                foreach (Paragraph paragraph in document.Paragraphs)
+            foreach (Paragraph paragraph in document.Paragraphs)
+            {
+                if (paragraph is ImageParagraph)
                 {
-                    if (paragraph is ImageParagraph)
+                    ImageParagraph? imageParagraph = paragraph as ImageParagraph;
+
+                    ImagePanel image = new(this);
+                    image.ImageName = imageParagraph.ImageName;
+
+                    if (imageParagraph.ImageSize != null)
                     {
-                        var imageParagraph = paragraph as ImageParagraph;
-
-                        ImagePanel image = new(this);
-                        image.ImageName = imageParagraph.ImageName;
-
-                        if (imageParagraph.ImageSize != null)
-                        {
-                            image.Size = (Size) imageParagraph.ImageSize;
-                        }
-
-                        if (imageParagraph.TextureRect != null)
-                        {
-                            image.TextureRect = (Rectangle) imageParagraph.TextureRect;
-                        }
-
-                        if (imageParagraph.ImageColor != null)
-                        {
-                            image.ImageColor = (Color) imageParagraph.ImageColor;
-                        }
-
-                        image.DoMeasure(Size.Infinity);
-
-                        image.DoArrange(
-                            paragraph.Margin.Left,
-                            y + paragraph.Margin.Top,
-                            image.MeasuredSize.Width,
-                            image.MeasuredSize.Height);
-
-                        size.Width = Math.Max(
-                            size.Width,
-                            image.MeasuredSize.Width + paragraph.Margin.Left + paragraph.Margin.Right);
-
-                        y += image.MeasuredSize.Height + paragraph.Margin.Top + paragraph.Margin.Bottom;
+                        image.Size = (Size) imageParagraph.ImageSize;
                     }
-                    else
+
+                    if (imageParagraph.TextureRect != null)
                     {
-                        List<TextBlock> textBlocks = lineBreaker.LineBreak(paragraph, buildWidth);
+                        image.TextureRect = (Rectangle) imageParagraph.TextureRect;
+                    }
 
-                        if (textBlocks != null)
+                    if (imageParagraph.ImageColor != null)
+                    {
+                        image.ImageColor = (Color) imageParagraph.ImageColor;
+                    }
+
+                    image.DoMeasure(Size.Infinity);
+
+                    image.DoArrange(
+                        paragraph.Margin.Left,
+                        y + paragraph.Margin.Top,
+                        image.MeasuredSize.Width,
+                        image.MeasuredSize.Height);
+
+                    size.Width = Math.Max(
+                        size.Width,
+                        image.MeasuredSize.Width + paragraph.Margin.Left + paragraph.Margin.Right);
+
+                    y += image.MeasuredSize.Height + paragraph.Margin.Top + paragraph.Margin.Bottom;
+                }
+                else
+                {
+                    List<TextBlock> textBlocks = lineBreaker.LineBreak(paragraph, buildWidth);
+
+                    if (textBlocks != null)
+                    {
+                        x = paragraph.Margin.Left;
+                        y += paragraph.Margin.Top;
+                        width = 0;
+                        height = 0;
+
+                        foreach (TextBlock textBlock in textBlocks)
                         {
-                            x = paragraph.Margin.Left;
-                            y += paragraph.Margin.Top;
-                            width = 0;
-                            height = 0;
-
-                            foreach (TextBlock textBlock in textBlocks)
+                            if (textBlock.Part is LinkPart)
                             {
-                                if (textBlock.Part is LinkPart)
+                                LinkPart? linkPart = textBlock.Part as LinkPart;
+
+                                LinkLabel link = new(this);
+                                link.Text = textBlock.Text;
+                                link.Link = linkPart.Link;
+                                link.Font = linkPart.Font;
+                                link.LinkClicked += OnLinkClicked;
+
+                                if (linkPart.Color != null)
                                 {
-                                    var linkPart = textBlock.Part as LinkPart;
-
-                                    LinkLabel link = new(this);
-                                    link.Text = textBlock.Text;
-                                    link.Link = linkPart.Link;
-                                    link.Font = linkPart.Font;
-                                    link.LinkClicked += OnLinkClicked;
-
-                                    if (linkPart.Color != null)
-                                    {
-                                        link.TextColor = (Color) linkPart.Color;
-                                    }
-
-                                    if (linkPart.HoverColor != null)
-                                    {
-                                        link.HoverColor = (Color) linkPart.HoverColor;
-                                    }
-
-                                    if (linkPart.HoverFont != null)
-                                    {
-                                        link.HoverFont = linkPart.HoverFont;
-                                    }
-
-                                    link.DoMeasure(Size.Infinity);
-
-                                    link.DoArrange(
-                                        new Rectangle(
-                                            x + textBlock.Position.X,
-                                            y + textBlock.Position.Y,
-                                            textBlock.Size.Width,
-                                            textBlock.Size.Height));
-
-                                    width = Math.Max(width, link.ActualRight);
-                                    height = Math.Max(height, link.ActualBottom);
+                                    link.TextColor = (Color) linkPart.Color;
                                 }
-                                else if (textBlock.Part is TextPart)
+
+                                if (linkPart.HoverColor != null)
                                 {
-                                    var textPart = textBlock.Part as TextPart;
-
-                                    Text text = new(this);
-                                    text.String = textBlock.Text;
-                                    text.Font = textPart.Font;
-
-                                    if (textPart.Color != null)
-                                    {
-                                        text.TextColor = (Color) textPart.Color;
-                                    }
-
-                                    text.DoMeasure(Size.Infinity);
-
-                                    text.DoArrange(
-                                        new Rectangle(
-                                            x + textBlock.Position.X,
-                                            y + textBlock.Position.Y,
-                                            textBlock.Size.Width,
-                                            textBlock.Size.Height));
-
-                                    width = Math.Max(width, text.ActualRight + 1);
-                                    height = Math.Max(height, text.ActualBottom + 1);
+                                    link.HoverColor = (Color) linkPart.HoverColor;
                                 }
+
+                                if (linkPart.HoverFont != null)
+                                {
+                                    link.HoverFont = linkPart.HoverFont;
+                                }
+
+                                link.DoMeasure(Size.Infinity);
+
+                                link.DoArrange(
+                                    new Rectangle(
+                                        x + textBlock.Position.X,
+                                        y + textBlock.Position.Y,
+                                        textBlock.Size.Width,
+                                        textBlock.Size.Height));
+
+                                width = Math.Max(width, link.ActualRight);
+                                height = Math.Max(height, link.ActualBottom);
                             }
+                            else if (textBlock.Part is TextPart)
+                            {
+                                TextPart? textPart = textBlock.Part as TextPart;
 
-                            size.Width = Math.Max(size.Width, width + paragraph.Margin.Right);
+                                Text text = new(this);
+                                text.String = textBlock.Text;
+                                text.Font = textPart.Font;
 
-                            y = height + paragraph.Margin.Bottom;
+                                if (textPart.Color != null)
+                                {
+                                    text.TextColor = (Color) textPart.Color;
+                                }
+
+                                text.DoMeasure(Size.Infinity);
+
+                                text.DoArrange(
+                                    new Rectangle(
+                                        x + textBlock.Position.X,
+                                        y + textBlock.Position.Y,
+                                        textBlock.Size.Width,
+                                        textBlock.Size.Height));
+
+                                width = Math.Max(width, text.ActualRight + 1);
+                                height = Math.Max(height, text.ActualBottom + 1);
+                            }
                         }
+
+                        size.Width = Math.Max(size.Width, width + paragraph.Margin.Right);
+
+                        y = height + paragraph.Margin.Bottom;
                     }
                 }
-
-                size.Height = y;
             }
 
-            textSize = size;
-
-            needsRebuild = false;
-
-            updating = false;
+            size.Height = y;
         }
 
-        protected override Size Measure(Size availableSize)
+        textSize = size;
+
+        needsRebuild = false;
+
+        updating = false;
+    }
+
+    protected override Size Measure(Size availableSize)
+    {
+        if (needsRebuild || availableSize.Width != buildWidth)
         {
-            if (needsRebuild || availableSize.Width != buildWidth)
-            {
-                buildWidth = availableSize.Width;
-                Rebuild();
-            }
-
-            return textSize;
+            buildWidth = availableSize.Width;
+            Rebuild();
         }
 
-        protected override Size Arrange(Size finalSize)
+        return textSize;
+    }
+
+    protected override Size Arrange(Size finalSize)
+    {
+        if (needsRebuild || finalSize.Width != buildWidth)
         {
-            if (needsRebuild || finalSize.Width != buildWidth)
-            {
-                buildWidth = finalSize.Width;
-                Rebuild();
-            }
-
-            return textSize;
+            buildWidth = finalSize.Width;
+            Rebuild();
         }
 
-        private void OnLinkClicked(ControlBase control, LinkClickedEventArgs args)
+        return textSize;
+    }
+
+    private void OnLinkClicked(ControlBase control, LinkClickedEventArgs args)
+    {
+        if (LinkClicked != null)
         {
-            if (LinkClicked != null)
-            {
-                LinkClicked(this, args);
-            }
+            LinkClicked(this, args);
         }
+    }
 
-        public override void Invalidate()
+    public override void Invalidate()
+    {
+        // We don't want to cause the re-layout when creating text objects in the layout
+        if (updating)
         {
-            // We don't want to cause the re-layout when creating text objects in the layout
-            if (updating)
-            {
-                return;
-            }
-
-            base.Invalidate();
+            return;
         }
+
+        base.Invalidate();
     }
 }

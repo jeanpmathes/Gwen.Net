@@ -2,251 +2,250 @@
 using System.Collections.Generic;
 using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control
+namespace Gwen.Net.Legacy.Control;
+
+/// <summary>
+///     Tree control.
+/// </summary>
+public class TreeControl : ScrollControl
 {
     /// <summary>
-    ///     Tree control.
+    ///     Initializes a new instance of the <see cref="TreeControl" /> class.
     /// </summary>
-    public class TreeControl : ScrollControl
+    /// <param name="parent">Parent control.</param>
+    public TreeControl(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TreeControl" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public TreeControl(ControlBase parent)
-            : base(parent)
+        Padding = Padding.One;
+
+        MouseInputEnabled = true;
+        EnableScroll(horizontal: true, vertical: true);
+        AutoHideBars = true;
+
+        AllowMultiSelect = false;
+
+        RootNode = new TreeNode(this);
+    }
+
+    /// <summary>
+    ///     List of selected nodes.
+    /// </summary>
+    public IEnumerable<TreeNode> SelectedNodes
+    {
+        get
         {
-            Padding = Padding.One;
+            List<TreeNode> selectedNodes = new();
 
-            MouseInputEnabled = true;
-            EnableScroll(horizontal: true, vertical: true);
-            AutoHideBars = true;
-
-            AllowMultiSelect = false;
-
-            RootNode = new TreeNode(this);
-        }
-
-        /// <summary>
-        ///     List of selected nodes.
-        /// </summary>
-        public IEnumerable<TreeNode> SelectedNodes
-        {
-            get
+            foreach (ControlBase child in RootNode.Children)
             {
-                List<TreeNode> selectedNodes = new();
+                TreeNode? node = child as TreeNode;
 
-                foreach (ControlBase child in RootNode.Children)
+                if (node == null)
                 {
-                    var node = child as TreeNode;
-
-                    if (node == null)
-                    {
-                        continue;
-                    }
-
-                    selectedNodes.AddRange(node.SelectedChildren);
+                    continue;
                 }
 
-                return selectedNodes;
+                selectedNodes.AddRange(node.SelectedChildren);
             }
-        }
 
-        /// <summary>
-        ///     First selected node (and only if nodes are not multiselectable).
-        /// </summary>
-        public TreeNode SelectedNode
+            return selectedNodes;
+        }
+    }
+
+    /// <summary>
+    ///     First selected node (and only if nodes are not multiselectable).
+    /// </summary>
+    public TreeNode SelectedNode
+    {
+        get
         {
-            get
+            List<TreeNode>? selectedNodes = SelectedNodes as List<TreeNode>;
+
+            if (selectedNodes.Count > 0)
             {
-                var selectedNodes = SelectedNodes as List<TreeNode>;
-
-                if (selectedNodes.Count > 0)
-                {
-                    return selectedNodes[index: 0];
-                }
-
-                return null;
-            }
-        }
-
-        /// <summary>
-        ///     Determines if multiple nodes can be selected at the same time.
-        /// </summary>
-        public Boolean AllowMultiSelect { get; set; }
-
-        /// <summary>
-        ///     Get the root node of the tree view. Root node is an invisible always expanded node that works
-        ///     as a parent node for all first tier nodes visible on the control.
-        /// </summary>
-        public TreeNode RootNode { get; }
-
-        /// <summary>
-        ///     Invoked when the node's selected state has changed.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> SelectionChanged
-        {
-            add => RootNode.SelectionChanged += value;
-            remove => RootNode.SelectionChanged -= value;
-        }
-
-        /// <summary>
-        ///     Invoked when the node has been selected.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Selected
-        {
-            add => RootNode.Selected += value;
-            remove => RootNode.Selected -= value;
-        }
-
-        /// <summary>
-        ///     Invoked when the node has been unselected.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Unselected
-        {
-            add => RootNode.Unselected += value;
-            remove => RootNode.Unselected -= value;
-        }
-
-        /// <summary>
-        ///     Invoked when the node has been double clicked and contains no child nodes.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> NodeDoubleClicked
-        {
-            add => RootNode.NodeDoubleClicked += value;
-            remove => RootNode.NodeDoubleClicked -= value;
-        }
-
-        /// <summary>
-        ///     Invoked when the node has been expanded.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Expanded
-        {
-            add => RootNode.Expanded += value;
-            remove => RootNode.Expanded -= value;
-        }
-
-        /// <summary>
-        ///     Invoked when the node has been collapsed.
-        /// </summary>
-        public event GwenEventHandler<EventArgs> Collapsed
-        {
-            add => RootNode.Collapsed += value;
-            remove => RootNode.Collapsed -= value;
-        }
-
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            if (ShouldDrawBackground)
-            {
-                currentSkin.DrawTreeControl(this);
-            }
-        }
-
-        /// <summary>
-        ///     Adds a new child node.
-        /// </summary>
-        /// <param name="label">Node's label.</param>
-        /// <param name="name">Node's name.</param>
-        /// <param name="userData">Node's user data.</param>
-        /// <returns>Newly created control.</returns>
-        public TreeNode AddNode(String label, String name = null, Object userData = null)
-        {
-            return RootNode.AddNode(label, name, userData);
-        }
-
-        /// <summary>
-        ///     Removes all child nodes.
-        /// </summary>
-        public virtual void RemoveAll()
-        {
-            RootNode.DeleteAllChildren();
-        }
-
-        /// <summary>
-        ///     Remove node and all of it's child nodes.
-        /// </summary>
-        /// <param name="node">Node to remove.</param>
-        public void RemoveNode(TreeNode node)
-        {
-            if (node == null)
-            {
-                return;
+                return selectedNodes[index: 0];
             }
 
-            RootNode.RemoveNode(node);
+            return null;
+        }
+    }
+
+    /// <summary>
+    ///     Determines if multiple nodes can be selected at the same time.
+    /// </summary>
+    public Boolean AllowMultiSelect { get; set; }
+
+    /// <summary>
+    ///     Get the root node of the tree view. Root node is an invisible always expanded node that works
+    ///     as a parent node for all first tier nodes visible on the control.
+    /// </summary>
+    public TreeNode RootNode { get; }
+
+    /// <summary>
+    ///     Invoked when the node's selected state has changed.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> SelectionChanged
+    {
+        add => RootNode.SelectionChanged += value;
+        remove => RootNode.SelectionChanged -= value;
+    }
+
+    /// <summary>
+    ///     Invoked when the node has been selected.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> Selected
+    {
+        add => RootNode.Selected += value;
+        remove => RootNode.Selected -= value;
+    }
+
+    /// <summary>
+    ///     Invoked when the node has been unselected.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> Unselected
+    {
+        add => RootNode.Unselected += value;
+        remove => RootNode.Unselected -= value;
+    }
+
+    /// <summary>
+    ///     Invoked when the node has been double clicked and contains no child nodes.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> NodeDoubleClicked
+    {
+        add => RootNode.NodeDoubleClicked += value;
+        remove => RootNode.NodeDoubleClicked -= value;
+    }
+
+    /// <summary>
+    ///     Invoked when the node has been expanded.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> Expanded
+    {
+        add => RootNode.Expanded += value;
+        remove => RootNode.Expanded -= value;
+    }
+
+    /// <summary>
+    ///     Invoked when the node has been collapsed.
+    /// </summary>
+    public event GwenEventHandler<EventArgs> Collapsed
+    {
+        add => RootNode.Collapsed += value;
+        remove => RootNode.Collapsed -= value;
+    }
+
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        if (ShouldDrawBackground)
+        {
+            currentSkin.DrawTreeControl(this);
+        }
+    }
+
+    /// <summary>
+    ///     Adds a new child node.
+    /// </summary>
+    /// <param name="label">Node's label.</param>
+    /// <param name="name">Node's name.</param>
+    /// <param name="userData">Node's user data.</param>
+    /// <returns>Newly created control.</returns>
+    public TreeNode AddNode(String label, String name = null, Object userData = null)
+    {
+        return RootNode.AddNode(label, name, userData);
+    }
+
+    /// <summary>
+    ///     Removes all child nodes.
+    /// </summary>
+    public virtual void RemoveAll()
+    {
+        RootNode.DeleteAllChildren();
+    }
+
+    /// <summary>
+    ///     Remove node and all of it's child nodes.
+    /// </summary>
+    /// <param name="node">Node to remove.</param>
+    public void RemoveNode(TreeNode node)
+    {
+        if (node == null)
+        {
+            return;
         }
 
-        /// <summary>
-        ///     Remove all nodes.
-        /// </summary>
-        public void RemoveAllNodes()
-        {
-            RootNode.RemoveAllNodes();
-        }
+        RootNode.RemoveNode(node);
+    }
 
-        /// <summary>
-        ///     Opens the node and all child nodes.
-        /// </summary>
-        public void ExpandAll()
-        {
-            RootNode.ExpandAll();
-        }
+    /// <summary>
+    ///     Remove all nodes.
+    /// </summary>
+    public void RemoveAllNodes()
+    {
+        RootNode.RemoveAllNodes();
+    }
 
-        /// <summary>
-        ///     Clears the selection on the node and all child nodes.
-        /// </summary>
-        public void UnselectAll()
-        {
-            RootNode.UnselectAll();
-        }
+    /// <summary>
+    ///     Opens the node and all child nodes.
+    /// </summary>
+    public void ExpandAll()
+    {
+        RootNode.ExpandAll();
+    }
 
-        /// <summary>
-        ///     Find a node bu user data.
-        /// </summary>
-        /// <param name="userData">Node user data.</param>
-        /// <param name="recursive">Determines whether the search should be recursive.</param>
-        /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByUserData(Object userData, Boolean recursive = true)
-        {
-            return RootNode.FindNodeByUserData(userData, recursive);
-        }
+    /// <summary>
+    ///     Clears the selection on the node and all child nodes.
+    /// </summary>
+    public void UnselectAll()
+    {
+        RootNode.UnselectAll();
+    }
 
-        /// <summary>
-        ///     Find a node by name.
-        /// </summary>
-        /// <param name="name">Node name</param>
-        /// <param name="recursive">Determines whether the search should be recursive.</param>
-        /// <returns>Found node or null.</returns>
-        public TreeNode FindNodeByName(String name, Boolean recursive = true)
-        {
-            return RootNode.FindNodeByName(name, recursive);
-        }
+    /// <summary>
+    ///     Find a node bu user data.
+    /// </summary>
+    /// <param name="userData">Node user data.</param>
+    /// <param name="recursive">Determines whether the search should be recursive.</param>
+    /// <returns>Found node or null.</returns>
+    public TreeNode FindNodeByUserData(Object userData, Boolean recursive = true)
+    {
+        return RootNode.FindNodeByUserData(userData, recursive);
+    }
 
-        /// <summary>
-        ///     Handler for node added event.
-        /// </summary>
-        /// <param name="node">Node added.</param>
-        public virtual void OnNodeAdded(TreeNode node)
-        {
-            node.LabelPressed += OnNodeSelected;
-        }
+    /// <summary>
+    ///     Find a node by name.
+    /// </summary>
+    /// <param name="name">Node name</param>
+    /// <param name="recursive">Determines whether the search should be recursive.</param>
+    /// <returns>Found node or null.</returns>
+    public TreeNode FindNodeByName(String name, Boolean recursive = true)
+    {
+        return RootNode.FindNodeByName(name, recursive);
+    }
 
-        /// <summary>
-        ///     Handler for node selected event.
-        /// </summary>
-        /// <param name="control">Node selected.</param>
-        /// <param name="args">Event arguments.</param>
-        protected virtual void OnNodeSelected(ControlBase control, EventArgs args)
+    /// <summary>
+    ///     Handler for node added event.
+    /// </summary>
+    /// <param name="node">Node added.</param>
+    public virtual void OnNodeAdded(TreeNode node)
+    {
+        node.LabelPressed += OnNodeSelected;
+    }
+
+    /// <summary>
+    ///     Handler for node selected event.
+    /// </summary>
+    /// <param name="control">Node selected.</param>
+    /// <param name="args">Event arguments.</param>
+    protected virtual void OnNodeSelected(ControlBase control, EventArgs args)
+    {
+        if (!AllowMultiSelect /*|| InputHandler.InputHandler.IsKeyDown(Key.Control)*/)
         {
-            if (!AllowMultiSelect /*|| InputHandler.InputHandler.IsKeyDown(Key.Control)*/)
-            {
-                UnselectAll();
-            }
+            UnselectAll();
         }
     }
 }

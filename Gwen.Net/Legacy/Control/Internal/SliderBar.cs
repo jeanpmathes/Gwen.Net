@@ -1,43 +1,42 @@
 ﻿using System;
 using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Slider bar.
+/// </summary>
+public class SliderBar : Dragger
 {
     /// <summary>
-    ///     Slider bar.
+    ///     Initializes a new instance of the <see cref="SliderBar" /> class.
     /// </summary>
-    public class SliderBar : Dragger
+    /// <param name="parent">Parent control.</param>
+    public SliderBar(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SliderBar" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public SliderBar(ControlBase parent)
-            : base(parent)
-        {
-            Size = new Size(BaseUnit);
+        Size = new Size(BaseUnit);
 
-            Target = this;
-            RestrictToParent = true;
-        }
+        Target = this;
+        RestrictToParent = true;
+    }
 
-        /// <summary>
-        ///     Indicates whether the bar is horizontal.
-        /// </summary>
-        public Boolean IsHorizontal { get; set; }
+    /// <summary>
+    ///     Indicates whether the bar is horizontal.
+    /// </summary>
+    public Boolean IsHorizontal { get; set; }
 
-        protected override void AdaptToScaleChange()
-        {
-            Size = new Size(BaseUnit);
-        }
+    protected override void AdaptToScaleChange()
+    {
+        Size = new Size(BaseUnit);
+    }
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            currentSkin.DrawSliderButton(this, IsHeld, IsHorizontal);
-        }
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        currentSkin.DrawSliderButton(this, IsHeld, IsHorizontal);
     }
 }

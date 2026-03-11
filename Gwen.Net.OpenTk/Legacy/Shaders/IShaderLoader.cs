@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Gwen.Net.OpenTk.Legacy.Shaders
-{
-    public interface IShaderLoader
-    {
-        IShader Load(String shaderName);
+namespace Gwen.Net.OpenTk.Legacy.Shaders;
 
-        IShader Load(String vertexShaderName, String fragmentShaderName);
-    }
+public interface IShaderLoader
+{
+    IShader Load(String shaderName);
+
+    IShader Load(String vertexShaderName, String fragmentShaderName);
 }

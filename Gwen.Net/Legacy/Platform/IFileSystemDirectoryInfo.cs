@@ -1,4 +1,3 @@
-﻿namespace Gwen.Net.Legacy.Platform
-{
-    public interface IFileSystemDirectoryInfo : IFileSystemItemInfo {}
-}
+﻿namespace Gwen.Net.Legacy.Platform;
+
+public interface IFileSystemDirectoryInfo : IFileSystemItemInfo {}

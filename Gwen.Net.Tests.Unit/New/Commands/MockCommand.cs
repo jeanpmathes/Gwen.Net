@@ -16,7 +16,7 @@ public sealed class MockCommand : ICommand<Object>
     }
 
     /// <summary>
-    /// The number of times <see cref="Execute"/> has been called.
+    ///     The number of times <see cref="Execute" /> has been called.
     /// </summary>
     public Int32 ExecuteCount { get; private set; }
 

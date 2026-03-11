@@ -11,9 +11,9 @@ uniform float uUseTexture = 0.0;
 
 void main(void)
 {
-	vec4 texColor = texture(tex, frag_uv);
-	if (uUseTexture > 0.0)
-		out_frag_color = texColor * frag_color;
-	else
-		out_frag_color = frag_color;
+    vec4 texColor = texture(tex, frag_uv);
+    if (uUseTexture > 0.0)
+    out_frag_color = texColor * frag_color;
+    else
+    out_frag_color = frag_color;
 }

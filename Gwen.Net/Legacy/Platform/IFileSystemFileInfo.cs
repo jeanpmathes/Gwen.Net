@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Platform
+namespace Gwen.Net.Legacy.Platform;
+
+public interface IFileSystemFileInfo : IFileSystemItemInfo
 {
-    public interface IFileSystemFileInfo : IFileSystemItemInfo
-    {
-        String FormattedFileLength { get; }
-    }
+    String FormattedFileLength { get; }
 }

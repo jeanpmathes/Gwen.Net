@@ -2,60 +2,59 @@
 using System.Collections.Generic;
 using Gwen.Net.Legacy.Renderer;
 
-namespace Gwen.Net.Legacy.RichText.KnuthPlass
+namespace Gwen.Net.Legacy.RichText.KnuthPlass;
+
+internal class LeftFormatter : Formatter
 {
-    internal class LeftFormatter : Formatter
+    public LeftFormatter(RendererBase renderer, Font defaultFont)
+        : base(renderer, defaultFont) {}
+
+    public override List<Node> FormatParagraph(Paragraph paragraph)
     {
-        public LeftFormatter(RendererBase renderer, Font defaultFont)
-            : base(renderer, defaultFont) {}
+        List<Node> nodes = new();
 
-        public override List<Node> FormatParagraph(Paragraph paragraph)
+        Font font = defaultFont;
+        Int32 width, height;
+
+        for (Int32 partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
         {
-            List<Node> nodes = new();
+            Part part = paragraph.Parts[partIndex];
 
-            Font font = defaultFont;
-            Int32 width, height;
+            String[] words = part.Split(ref font);
 
-            for (var partIndex = 0; partIndex < paragraph.Parts.Count; partIndex++)
+            if (font == null)
             {
-                Part part = paragraph.Parts[partIndex];
-
-                String[] words = part.Split(ref font);
-
-                if (font == null)
-                {
-                    font = defaultFont;
-                }
-
-                for (var wordIndex = 0; wordIndex < words.Length; wordIndex++)
-                {
-                    String word = words[wordIndex];
-
-                    if (word[index: 0] == ' ')
-                    {
-                        continue;
-                    }
-
-                    MeasureText(font, word, out width, out height);
-
-                    nodes.Add(new BoxNode(width, word, part, height));
-
-                    if (wordIndex < words.Length - 1 || partIndex < paragraph.Parts.Count - 1)
-                    {
-                        nodes.Add(new GlueNode(width: 0, stretch: 12, shrink: 0));
-                        nodes.Add(new PenaltyNode(width: 0, penalty: 0, flagged: 0));
-                        MeasureText(font, " ", out width, out height);
-                        nodes.Add(new GlueNode(width, stretch: -12, shrink: 0));
-                    }
-                    else
-                    {
-                        nodes.Add(new GlueNode(width: 0, LineBreaker.Infinity, shrink: 0));
-                        nodes.Add(new PenaltyNode(width: 0, -LineBreaker.Infinity, flagged: 1));
-                    }
-                }
+                font = defaultFont;
             }
 
-            return nodes;
+            for (Int32 wordIndex = 0; wordIndex < words.Length; wordIndex++)
+            {
+                String word = words[wordIndex];
+
+                if (word[index: 0] == ' ')
+                {
+                    continue;
+                }
+
+                MeasureText(font, word, out width, out height);
+
+                nodes.Add(new BoxNode(width, word, part, height));
+
+                if (wordIndex < words.Length - 1 || partIndex < paragraph.Parts.Count - 1)
+                {
+                    nodes.Add(new GlueNode(width: 0, stretch: 12, shrink: 0));
+                    nodes.Add(new PenaltyNode(width: 0, penalty: 0, flagged: 0));
+                    MeasureText(font, " ", out width, out height);
+                    nodes.Add(new GlueNode(width, stretch: -12, shrink: 0));
+                }
+                else
+                {
+                    nodes.Add(new GlueNode(width: 0, LineBreaker.Infinity, shrink: 0));
+                    nodes.Add(new PenaltyNode(width: 0, -LineBreaker.Infinity, flagged: 1));
+                }
+            }
         }
+
+        return nodes;
     }
 }

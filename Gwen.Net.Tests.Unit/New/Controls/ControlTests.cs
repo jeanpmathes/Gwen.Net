@@ -15,11 +15,11 @@ public class ControlTests
     [Fact]
     public void ContextStyle_IsAppliedWhenControlGetsVisualized()
     {
-        using ResourceRegistry registry = new ResourceRegistry();
+        using ResourceRegistry registry = new();
         registry.AddStyle<Border>(builder => builder.Set(c => c.MinimumWidth, value: 25f));
 
         using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
-        Border border = new Border();
+        Border border = new();
 
         canvas.Child = border;
 
@@ -29,11 +29,12 @@ public class ControlTests
     [Fact]
     public void LocalStyle_IsAppliedAfterOuterStyles()
     {
-        using ResourceRegistry registry = new ResourceRegistry();
+        using ResourceRegistry registry = new();
         registry.AddStyle<Border>(builder => builder.Set(c => c.MinimumWidth, value: 50f));
 
         using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
-        Border border = new Border
+
+        Border border = new()
         {
             Style =
             {
@@ -49,10 +50,10 @@ public class ControlTests
     [Fact]
     public void ChangingTemplate_RevisualizesControlWithNewTemplate()
     {
-        using ResourceRegistry registry = new ResourceRegistry();
+        using ResourceRegistry registry = new();
         using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
-        MockControl control = new MockControl();
+        MockControl control = new();
         Int32 template1Calls = 0;
         Int32 template2Calls = 0;
 
@@ -73,7 +74,7 @@ public class ControlTests
         Assert.Equal(expected: 1, template1Calls);
         Assert.Equal(expected: 1, template2Calls);
     }
-    
+
     [Fact]
     public void Visibility_WhenParentIsHidden_IsCoercedToHidden()
     {

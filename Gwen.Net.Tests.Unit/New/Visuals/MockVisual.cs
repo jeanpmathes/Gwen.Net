@@ -10,8 +10,15 @@ public class MockVisual : Visual
     public Action? OnPointerEnterHandler { get; set; }
     public Action? OnPointerLeaveHandler { get; set; }
 
-    public void SetChildVisual(Visual? child) => SetChild(child);
-    public void AddChildVisual(Visual child) => AddChild(child);
+    public void SetChildVisual(Visual? child)
+    {
+        SetChild(child);
+    }
+
+    public void AddChildVisual(Visual child)
+    {
+        AddChild(child);
+    }
 
     public override void OnInputPreview(InputEvent inputEvent)
     {

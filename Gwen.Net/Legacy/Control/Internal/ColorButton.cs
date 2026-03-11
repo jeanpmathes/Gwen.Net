@@ -1,34 +1,33 @@
 ﻿using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Property button.
+/// </summary>
+public class ColorButton : ButtonBase
 {
     /// <summary>
-    ///     Property button.
+    ///     Initializes a new instance of the <see cref="ColorButton" /> class.
     /// </summary>
-    public class ColorButton : ButtonBase
+    /// <param name="parent">Parent control.</param>
+    public ColorButton(ControlBase parent) : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ColorButton" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public ColorButton(ControlBase parent) : base(parent)
-        {
-            Color = Color.Black;
-        }
+        Color = Color.Black;
+    }
 
-        /// <summary>
-        ///     Current color value.
-        /// </summary>
-        public Color Color { get; set; }
+    /// <summary>
+    ///     Current color value.
+    /// </summary>
+    public Color Color { get; set; }
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            currentSkin.Renderer.DrawColor = Color;
-            currentSkin.Renderer.DrawFilledRect(RenderBounds);
-        }
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        currentSkin.Renderer.DrawColor = Color;
+        currentSkin.Renderer.DrawFilledRect(RenderBounds);
     }
 }

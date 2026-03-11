@@ -30,7 +30,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         canvas.SetRenderingSize(new Size(width: 200, height: 200));
         canvas.Render();
 
-        Assert.Equal(expected: 2, actual: control.GetPresenter().Children.Count);
+        Assert.Equal(expected: 2, control.GetPresenter().Children.Count);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         control.Children.Add(new MockControl());
         control.Children.Add(new MockControl());
 
-        Assert.Equal(expected: 3, actual: control.GetPresenter().Children.Count);
+        Assert.Equal(expected: 3, control.GetPresenter().Children.Count);
     }
 
     [Fact]
@@ -108,11 +108,11 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         control.Children.Add(child2);
         control.Children.Add(child3);
 
-        Assert.Equal(expected: 3, actual: control.GetPresenter().Children.Count);
+        Assert.Equal(expected: 3, control.GetPresenter().Children.Count);
 
         control.Children.Remove(child2);
 
-        Assert.Equal(expected: 2, actual: control.GetPresenter().Children.Count);
+        Assert.Equal(expected: 2, control.GetPresenter().Children.Count);
 
         control.Children.Remove(child1);
         control.Children.Remove(child3);
@@ -132,7 +132,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         canvas.SetRenderingSize(new Size(width: 200, height: 200));
         canvas.Render();
 
-        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
     }
 
     [Fact]
@@ -147,16 +147,16 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         canvas.SetRenderingSize(new Size(width: 200, height: 200));
         canvas.Render();
 
-        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
 
         Control child = new MockControl();
         control.Children.Add(child);
 
-        Assert.Equal(expected: Visibility.Visible, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Visible, control.GetPresenter().Visibility.GetValue());
 
         control.Children.Remove(child);
 
-        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
     }
 
     [Fact]
@@ -172,11 +172,11 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
         canvas.SetRenderingSize(new Size(width: 200, height: 200));
         canvas.Render();
 
-        Assert.Equal(expected: Visibility.Visible, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Visible, control.GetPresenter().Visibility.GetValue());
 
         canvas.Child = null;
 
-        Assert.Equal(expected: Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
+        Assert.Equal(Visibility.Collapsed, control.GetPresenter().Visibility.GetValue());
     }
 
     private class MockChildrenPresenter : ChildrenPresenter;
@@ -185,7 +185,10 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     {
         private MockChildrenPresenter? presenter;
 
-        public MockChildrenPresenter GetPresenter() => presenter!;
+        public MockChildrenPresenter GetPresenter()
+        {
+            return presenter!;
+        }
 
         protected override ControlTemplate<MockMultiChildControl> CreateDefaultTemplate()
         {

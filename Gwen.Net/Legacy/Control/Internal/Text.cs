@@ -3,135 +3,135 @@
 using System;
 using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Displays text. Always sized to contents.
+/// </summary>
+public class Text : ControlBase
 {
+    private String fitToText;
+    private Font font;
+    private String @string;
+
     /// <summary>
-    ///     Displays text. Always sized to contents.
+    ///     Initializes a new instance of the <see cref="Text" /> class.
     /// </summary>
-    public class Text : ControlBase
+    /// <param name="parent">Parent control.</param>
+    public Text(ControlBase parent)
+        : base(parent)
     {
-        private String fitToText;
-        private Font font;
-        private String @string;
+        AutoSizeToContents = true;
+        font = Skin.DefaultFont;
+        @string = String.Empty;
+        fitToText = null;
+        TextColor = Skin.colors.labelColors.@default;
+        MouseInputEnabled = false;
+        TextColorOverride = new Color(a: 0, r: 255, g: 255, b: 255); // A==0, override disabled
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Text" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public Text(ControlBase parent)
-            : base(parent)
+    /// <summary>
+    ///     Font used to display the text.
+    /// </summary>
+    /// <remarks>
+    ///     The font is not being disposed by this class.
+    /// </remarks>
+    public Font Font
+    {
+        get => font;
+        set
         {
-            AutoSizeToContents = true;
-            font = Skin.DefaultFont;
-            @string = String.Empty;
-            fitToText = null;
-            TextColor = Skin.colors.labelColors.@default;
-            MouseInputEnabled = false;
-            TextColorOverride = new Color(a: 0, r: 255, g: 255, b: 255); // A==0, override disabled
+            font = value;
+            Invalidate();
         }
+    }
 
-        /// <summary>
-        ///     Font used to display the text.
-        /// </summary>
-        /// <remarks>
-        ///     The font is not being disposed by this class.
-        /// </remarks>
-        public Font Font
+    /// <summary>
+    ///     Text to display.
+    /// </summary>
+    public String String
+    {
+        get => @string;
+        set
         {
-            get => font;
-            set
-            {
-                font = value;
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        ///     Text to display.
-        /// </summary>
-        public String String
-        {
-            get => @string;
-            set
-            {
-                if (value == @string)
-                {
-                    return;
-                }
-
-                @string = value;
-
-                if (AutoSizeToContents)
-                {
-                    Invalidate();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Text color.
-        /// </summary>
-        public Color TextColor { get; set; }
-
-        /// <summary>
-        ///     Determines whether the control should be automatically resized to fit the text.
-        /// </summary>
-        public Boolean AutoSizeToContents { get; set; }
-
-        /// <summary>
-        ///     Text length in characters.
-        /// </summary>
-        public Int32 Length => String.Length;
-
-        /// <summary>
-        ///     Text color override - used by tooltips.
-        /// </summary>
-        public Color TextColorOverride { get; set; }
-
-        /// <summary>
-        ///     Text override - used to display different string.
-        /// </summary>
-        public String TextOverride { get; set; }
-
-        /// <summary>
-        ///     Set the minimum size of the control to be able to show the text of this property.
-        /// </summary>
-        public String FitToText
-        {
-            get => fitToText;
-            set
-            {
-                if (fitToText == value)
-                {
-                    return;
-                }
-
-                fitToText = value;
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            if (Length == 0 || Font == null)
+            if (value == @string)
             {
                 return;
             }
 
-            if (TextColorOverride.A == 0)
+            @string = value;
+
+            if (AutoSizeToContents)
             {
-                currentSkin.Renderer.DrawColor = TextColor;
+                Invalidate();
             }
-            else
+        }
+    }
+
+    /// <summary>
+    ///     Text color.
+    /// </summary>
+    public Color TextColor { get; set; }
+
+    /// <summary>
+    ///     Determines whether the control should be automatically resized to fit the text.
+    /// </summary>
+    public Boolean AutoSizeToContents { get; set; }
+
+    /// <summary>
+    ///     Text length in characters.
+    /// </summary>
+    public Int32 Length => String.Length;
+
+    /// <summary>
+    ///     Text color override - used by tooltips.
+    /// </summary>
+    public Color TextColorOverride { get; set; }
+
+    /// <summary>
+    ///     Text override - used to display different string.
+    /// </summary>
+    public String TextOverride { get; set; }
+
+    /// <summary>
+    ///     Set the minimum size of the control to be able to show the text of this property.
+    /// </summary>
+    public String FitToText
+    {
+        get => fitToText;
+        set
+        {
+            if (fitToText == value)
             {
-                currentSkin.Renderer.DrawColor = TextColorOverride;
+                return;
             }
 
-            currentSkin.Renderer.RenderText(Font, Point.Zero, TextOverride ?? String);
+            fitToText = value;
+            Invalidate();
+        }
+    }
+
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        if (Length == 0 || Font == null)
+        {
+            return;
+        }
+
+        if (TextColorOverride.A == 0)
+        {
+            currentSkin.Renderer.DrawColor = TextColor;
+        }
+        else
+        {
+            currentSkin.Renderer.DrawColor = TextColorOverride;
+        }
+
+        currentSkin.Renderer.RenderText(Font, Point.Zero, TextOverride ?? String);
 
 #if DEBUG_TEXT_MEASURE
 			{
@@ -152,125 +152,124 @@ namespace Gwen.Net.Legacy.Control.Internal
 				}
 			}
 #endif
+    }
+
+    protected override Size Measure(Size availableSize)
+    {
+        if (String == null)
+        {
+            return Size.Zero;
         }
 
-        protected override Size Measure(Size availableSize)
+        if (Font == null)
         {
-            if (String == null)
+            throw new InvalidOperationException("Text control font not set.");
+        }
+
+        Size size;
+
+        String text = TextOverride ?? String;
+
+        if (AutoSizeToContents && text.Length == 0)
+        {
+            size = Skin.Renderer.MeasureText(Font, " ");
+        }
+        else if (!AutoSizeToContents && !String.IsNullOrWhiteSpace(fitToText))
+        {
+            size = Skin.Renderer.MeasureText(Font, fitToText);
+        }
+        else
+        {
+            size = Skin.Renderer.MeasureText(Font, text);
+        }
+
+        return size;
+    }
+
+    protected override Size Arrange(Size finalSize)
+    {
+        return MeasuredSize;
+    }
+
+    /// <summary>
+    ///     Gets the coordinates of specified character in the text.
+    /// </summary>
+    /// <param name="index">Character index.</param>
+    /// <returns>Character position in local coordinates.</returns>
+    public Point GetCharacterPosition(Int32 index)
+    {
+        if (Length == 0 || index == 0)
+        {
+            return new Point(x: 0, y: 0);
+        }
+
+        String sub = (TextOverride ?? String).Substring(startIndex: 0, index);
+        Size s = Skin.Renderer.MeasureText(Font, sub);
+
+        return new Point(s.Width, y: 0);
+    }
+
+    /// <summary>
+    ///     Searches for a character closest to given point.
+    /// </summary>
+    /// <param name="p">Point.</param>
+    /// <returns>Character index.</returns>
+    public Int32 GetClosestCharacter(Point p)
+    {
+        Int32 px = p.X;
+        Int32 left = 0;
+        Int32 right = String.Length;
+
+        Int32 center;
+        Int32 cx;
+
+        while (true)
+        {
+            center = (right + left) / 2;
+            cx = GetCharacterPosition(center).X;
+
+            if (px < cx)
             {
-                return Size.Zero;
+                right = center;
             }
-
-            if (Font == null)
+            else if (px > cx)
             {
-                throw new InvalidOperationException("Text control font not set.");
-            }
-
-            Size size;
-
-            String text = TextOverride ?? String;
-
-            if (AutoSizeToContents && text.Length == 0)
-            {
-                size = Skin.Renderer.MeasureText(Font, " ");
-            }
-            else if (!AutoSizeToContents && !String.IsNullOrWhiteSpace(fitToText))
-            {
-                size = Skin.Renderer.MeasureText(Font, fitToText);
+                left = center;
             }
             else
             {
-                size = Skin.Renderer.MeasureText(Font, text);
+                left = center;
+                right = center;
+
+                break;
             }
 
-            return size;
+            if (right - left < 2)
+            {
+                break;
+            }
         }
 
-        protected override Size Arrange(Size finalSize)
+        Int32 lx = cx, rx = cx;
+
+        if (left == center)
         {
-            return MeasuredSize;
+            rx = GetCharacterPosition(right).X;
         }
-
-        /// <summary>
-        ///     Gets the coordinates of specified character in the text.
-        /// </summary>
-        /// <param name="index">Character index.</param>
-        /// <returns>Character position in local coordinates.</returns>
-        public Point GetCharacterPosition(Int32 index)
+        else if (right == center)
         {
-            if (Length == 0 || index == 0)
-            {
-                return new Point(x: 0, y: 0);
-            }
-
-            String sub = (TextOverride ?? String).Substring(startIndex: 0, index);
-            Size s = Skin.Renderer.MeasureText(Font, sub);
-
-            return new Point(s.Width, y: 0);
+            lx = GetCharacterPosition(left).X;
         }
 
-        /// <summary>
-        ///     Searches for a character closest to given point.
-        /// </summary>
-        /// <param name="p">Point.</param>
-        /// <returns>Character index.</returns>
-        public Int32 GetClosestCharacter(Point p)
+        if (px - lx < rx - px)
         {
-            Int32 px = p.X;
-            var left = 0;
-            Int32 right = String.Length;
-
-            Int32 center;
-            Int32 cx;
-
-            while (true)
-            {
-                center = (right + left) / 2;
-                cx = GetCharacterPosition(center).X;
-
-                if (px < cx)
-                {
-                    right = center;
-                }
-                else if (px > cx)
-                {
-                    left = center;
-                }
-                else
-                {
-                    left = center;
-                    right = center;
-
-                    break;
-                }
-
-                if (right - left < 2)
-                {
-                    break;
-                }
-            }
-
-            Int32 lx = cx, rx = cx;
-
-            if (left == center)
-            {
-                rx = GetCharacterPosition(right).X;
-            }
-            else if (right == center)
-            {
-                lx = GetCharacterPosition(left).X;
-            }
-
-            if (px - lx < rx - px)
-            {
-                center = left;
-            }
-            else
-            {
-                center = right;
-            }
-
-            return center;
+            center = left;
         }
+        else
+        {
+            center = right;
+        }
+
+        return center;
     }
 }

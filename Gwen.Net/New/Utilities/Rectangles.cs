@@ -3,12 +3,12 @@
 namespace Gwen.Net.New.Utilities;
 
 /// <summary>
-/// Utility class for rectangle operations.
+///     Utility class for rectangle operations.
 /// </summary>
 public static class Rectangles
 {
     /// <summary>
-    /// Clamp the size of the rectangle to the specified minimum and maximum sizes.
+    ///     Clamp the size of the rectangle to the specified minimum and maximum sizes.
     /// </summary>
     /// <param name="rectangle">The rectangle to clamp.</param>
     /// <param name="minSize">The minimum size.</param>

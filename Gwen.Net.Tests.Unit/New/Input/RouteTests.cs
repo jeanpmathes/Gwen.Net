@@ -127,7 +127,7 @@ public class RouteTests
 
         Int32 diff = Route.FindFirstDifferenceFromTop(route1, route2);
 
-        Assert.Equal(expected: route1.Count, diff);
+        Assert.Equal(route1.Count, diff);
     }
 
     [Fact]

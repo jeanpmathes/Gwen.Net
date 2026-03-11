@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.RichText
+namespace Gwen.Net.Legacy.RichText;
+
+public abstract class Part
 {
-    public abstract class Part
-    {
-        public abstract String[] Split(ref Font splitFont);
-    }
+    public abstract String[] Split(ref Font splitFont);
 }

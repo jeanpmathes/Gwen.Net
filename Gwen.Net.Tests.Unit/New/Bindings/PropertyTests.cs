@@ -8,8 +8,8 @@ public class PropertyTests
     [Fact]
     public void GetValue_WhenInactive_ReflectsCurrentBindingValue()
     {
-        MockControl owner = new MockControl();
-        Slot<Int32> source = new Slot<Int32>(10);
+        MockControl owner = new();
+        Slot<Int32> source = new(10);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
@@ -21,8 +21,8 @@ public class PropertyTests
     [Fact]
     public void ActiveProperty_RaisesValueChangedOnlyForActualValueChange()
     {
-        MockControl owner = new MockControl();
-        Slot<Int32> source = new Slot<Int32>(2);
+        MockControl owner = new();
+        Slot<Int32> source = new(2);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
@@ -40,8 +40,8 @@ public class PropertyTests
     [Fact]
     public void Deactivate_UnsubscribesFromBindingNotifications()
     {
-        MockControl owner = new MockControl();
-        Slot<Int32> source = new Slot<Int32>(1);
+        MockControl owner = new();
+        Slot<Int32> source = new(1);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
@@ -59,7 +59,7 @@ public class PropertyTests
     [Fact]
     public void LocalValue_TakesPrecedenceOverStyle()
     {
-        MockControl owner = new MockControl();
+        MockControl owner = new();
         Property<Int32> property = Property.Create(owner, defaultValue: 1);
 
         property.Style(5);
@@ -71,9 +71,9 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_IsAppliedToDefaultValue()
     {
-        MockControl owner = new MockControl();
+        MockControl owner = new();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
-        Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
+        Property<Int32> property = Property.Create(owner, defaultValue: 5, clamp);
 
         Assert.Equal(expected: 3, property.GetValue());
     }
@@ -81,9 +81,9 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_IsAppliedToLocalValue()
     {
-        MockControl owner = new MockControl();
+        MockControl owner = new();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
-        Property<Int32> property = Property.Create(owner, defaultValue: 0, coercionBinding: clamp);
+        Property<Int32> property = Property.Create(owner, defaultValue: 0, clamp);
 
         property.Value = 7;
 
@@ -93,10 +93,10 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_TriggersValueChangedWhenCoercedResultChanges()
     {
-        MockControl owner = new MockControl();
-        Slot<Int32> maxSlot = new Slot<Int32>(10);
+        MockControl owner = new();
+        Slot<Int32> maxSlot = new(10);
         Binding<Int32, Int32> clamp = Binding.To(maxSlot).Parametrize<Int32, Int32>((input, max) => Math.Clamp(input, min: 0, max));
-        Property<Int32> property = Property.Create(owner, defaultValue: 15, coercionBinding: clamp);
+        Property<Int32> property = Property.Create(owner, defaultValue: 15, clamp);
 
         property.Activate();
 
@@ -112,9 +112,9 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_DoesNotTriggerValueChangedWhenCoercedResultIsUnchanged()
     {
-        MockControl owner = new MockControl();
+        MockControl owner = new();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
-        Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
+        Property<Int32> property = Property.Create(owner, defaultValue: 5, clamp);
 
         property.Activate();
 

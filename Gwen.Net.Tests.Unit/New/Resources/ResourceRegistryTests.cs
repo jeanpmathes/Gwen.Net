@@ -14,15 +14,15 @@ public class ResourceRegistryTests
 
         Style style1 = registry.AddStyle<MockControl>(_ => {});
         Style style2 = registry.AddStyle<MockControl>(_ => {});
-        
+
         Assert.NotNull(style1);
         Assert.NotNull(style2);
         Assert.NotSame(style1, style2);
-        
+
         Assert.Contains(style1, registry.Styles);
         Assert.Contains(style2, registry.Styles);
     }
-    
+
     [Fact]
     public void ResourceRegistry_AddBundle_AddsAllStylesToRegistry()
     {
@@ -31,7 +31,7 @@ public class ResourceRegistryTests
 
         registry.AddBundle<ClassicLight>();
         Assert.NotEmpty(registry.Styles);
-        
+
         Int32 count = registry.Styles.Count;
         registry.AddBundle<ClassicDark>();
         Assert.True(registry.Styles.Count > count);

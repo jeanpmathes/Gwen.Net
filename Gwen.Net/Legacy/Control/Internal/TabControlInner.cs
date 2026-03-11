@@ -1,25 +1,24 @@
 ﻿using Gwen.Net.Legacy.Skin;
 
-namespace Gwen.Net.Legacy.Control.Internal
+namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Inner panel of tab control.
+/// </summary>
+public class TabControlInner : ControlBase
 {
     /// <summary>
-    ///     Inner panel of tab control.
+    ///     Initializes a new instance of the <see cref="TabControlInner" /> class.
     /// </summary>
-    public class TabControlInner : ControlBase
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TabControlInner" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        internal TabControlInner(ControlBase parent) : base(parent) {}
+    /// <param name="parent">Parent control.</param>
+    internal TabControlInner(ControlBase parent) : base(parent) {}
 
-        /// <summary>
-        ///     Renders the control using specified skin.
-        /// </summary>
-        /// <param name="currentSkin">Skin to use.</param>
-        protected override void Render(SkinBase currentSkin)
-        {
-            currentSkin.DrawTabControl(this);
-        }
+    /// <summary>
+    ///     Renders the control using specified skin.
+    /// </summary>
+    /// <param name="currentSkin">Skin to use.</param>
+    protected override void Render(SkinBase currentSkin)
+    {
+        currentSkin.DrawTabControl(this);
     }
 }

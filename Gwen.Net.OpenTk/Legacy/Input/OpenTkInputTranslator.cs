@@ -6,144 +6,143 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Gwen.Net.OpenTk.Legacy.Input
+namespace Gwen.Net.OpenTk.Legacy.Input;
+
+public class OpenTkInputTranslator
 {
-    public class OpenTkInputTranslator
+    private readonly Canvas canvas;
+
+    private Boolean controlPressed;
+    private Vector2 lastMousePosition;
+
+    public OpenTkInputTranslator(Canvas canvas)
     {
-        private readonly Canvas canvas;
+        this.canvas = canvas ?? throw new ArgumentNullException(nameof(canvas));
+    }
 
-        private Boolean controlPressed;
-        private Vector2 lastMousePosition;
-
-        public OpenTkInputTranslator(Canvas canvas)
+    private GwenMappedKey TranslateKeyCode(Keys key)
+    {
+        switch (key)
         {
-            this.canvas = canvas ?? throw new ArgumentNullException(nameof(canvas));
+            case Keys.Backspace: return GwenMappedKey.Backspace;
+            case Keys.Enter: return GwenMappedKey.Return;
+            case Keys.KeyPadEnter: return GwenMappedKey.Return;
+            case Keys.Escape: return GwenMappedKey.Escape;
+            case Keys.Tab: return GwenMappedKey.Tab;
+            case Keys.Space: return GwenMappedKey.Space;
+            case Keys.Up: return GwenMappedKey.Up;
+            case Keys.Down: return GwenMappedKey.Down;
+            case Keys.Left: return GwenMappedKey.Left;
+            case Keys.Right: return GwenMappedKey.Right;
+            case Keys.Home: return GwenMappedKey.Home;
+            case Keys.End: return GwenMappedKey.End;
+            case Keys.Delete: return GwenMappedKey.Delete;
+            case Keys.LeftControl:
+                controlPressed = true;
+
+                return GwenMappedKey.Control;
+            case Keys.LeftAlt: return GwenMappedKey.Alt;
+            case Keys.LeftShift: return GwenMappedKey.Shift;
+            case Keys.RightControl: return GwenMappedKey.Control;
+            case Keys.RightAlt:
+                if (controlPressed)
+                {
+                    canvas.Input_Key(GwenMappedKey.Control, down: false);
+                }
+
+                return GwenMappedKey.Alt;
+            case Keys.RightShift: return GwenMappedKey.Shift;
+
         }
 
-        private GwenMappedKey TranslateKeyCode(Keys key)
+        return GwenMappedKey.Invalid;
+    }
+
+    private static Char TranslateChar(Keys key)
+    {
+        if (key >= Keys.A && key <= Keys.Z)
         {
-            switch (key)
-            {
-                case Keys.Backspace: return GwenMappedKey.Backspace;
-                case Keys.Enter: return GwenMappedKey.Return;
-                case Keys.KeyPadEnter: return GwenMappedKey.Return;
-                case Keys.Escape: return GwenMappedKey.Escape;
-                case Keys.Tab: return GwenMappedKey.Tab;
-                case Keys.Space: return GwenMappedKey.Space;
-                case Keys.Up: return GwenMappedKey.Up;
-                case Keys.Down: return GwenMappedKey.Down;
-                case Keys.Left: return GwenMappedKey.Left;
-                case Keys.Right: return GwenMappedKey.Right;
-                case Keys.Home: return GwenMappedKey.Home;
-                case Keys.End: return GwenMappedKey.End;
-                case Keys.Delete: return GwenMappedKey.Delete;
-                case Keys.LeftControl:
-                    controlPressed = true;
-
-                    return GwenMappedKey.Control;
-                case Keys.LeftAlt: return GwenMappedKey.Alt;
-                case Keys.LeftShift: return GwenMappedKey.Shift;
-                case Keys.RightControl: return GwenMappedKey.Control;
-                case Keys.RightAlt:
-                    if (controlPressed)
-                    {
-                        canvas.Input_Key(GwenMappedKey.Control, down: false);
-                    }
-
-                    return GwenMappedKey.Alt;
-                case Keys.RightShift: return GwenMappedKey.Shift;
-
-            }
-
-            return GwenMappedKey.Invalid;
+            return (Char) ('a' + ((Int32) key - (Int32) Keys.A));
         }
 
-        private static Char TranslateChar(Keys key)
-        {
-            if (key >= Keys.A && key <= Keys.Z)
-            {
-                return (Char) ('a' + ((Int32) key - (Int32) Keys.A));
-            }
+        return ' ';
+    }
 
-            return ' ';
+    public void ProcessMouseButton(MouseButtonEventArgs args)
+    {
+        if (canvas is null)
+        {
+            return;
         }
 
-        public void ProcessMouseButton(MouseButtonEventArgs args)
+        if (args.Button == MouseButton.Left)
         {
-            if (canvas is null)
-            {
-                return;
-            }
+            canvas.Input_MouseButton(button: 0, args.IsPressed);
+        }
+        else if (args.Button == MouseButton.Right)
+        {
+            canvas.Input_MouseButton(button: 1, args.IsPressed);
+        }
+    }
 
-            if (args.Button == MouseButton.Left)
-            {
-                canvas.Input_MouseButton(button: 0, args.IsPressed);
-            }
-            else if (args.Button == MouseButton.Right)
-            {
-                canvas.Input_MouseButton(button: 1, args.IsPressed);
-            }
+    public void ProcessMouseMove(MouseMoveEventArgs args)
+    {
+        if (null == canvas)
+        {
+            return;
         }
 
-        public void ProcessMouseMove(MouseMoveEventArgs args)
+        Vector2 deltaPosition = args.Position - lastMousePosition;
+        lastMousePosition = args.Position;
+
+        canvas.Input_MouseMoved(
+            (Int32) lastMousePosition.X,
+            (Int32) lastMousePosition.Y,
+            (Int32) deltaPosition.X,
+            (Int32) deltaPosition.Y);
+    }
+
+    public void ProcessMouseWheel(MouseWheelEventArgs args)
+    {
+        if (null == canvas)
         {
-            if (null == canvas)
-            {
-                return;
-            }
-
-            Vector2 deltaPosition = args.Position - lastMousePosition;
-            lastMousePosition = args.Position;
-
-            canvas.Input_MouseMoved(
-                (Int32) lastMousePosition.X,
-                (Int32) lastMousePosition.Y,
-                (Int32) deltaPosition.X,
-                (Int32) deltaPosition.Y);
+            return;
         }
 
-        public void ProcessMouseWheel(MouseWheelEventArgs args)
-        {
-            if (null == canvas)
-            {
-                return;
-            }
+        canvas.Input_MouseWheel((Int32) (args.OffsetY * 60));
+    }
 
-            canvas.Input_MouseWheel((Int32) (args.OffsetY * 60));
+    public Boolean ProcessKeyDown(KeyboardKeyEventArgs eventArgs)
+    {
+        Char ch = TranslateChar(eventArgs.Key);
+
+        if (InputHandler.DoSpecialKeys(canvas, ch))
+        {
+            return false;
         }
 
-        public Boolean ProcessKeyDown(KeyboardKeyEventArgs eventArgs)
+        GwenMappedKey iKey = TranslateKeyCode(eventArgs.Key);
+
+        if (iKey == GwenMappedKey.Invalid)
         {
-            Char ch = TranslateChar(eventArgs.Key);
-
-            if (InputHandler.DoSpecialKeys(canvas, ch))
-            {
-                return false;
-            }
-
-            GwenMappedKey iKey = TranslateKeyCode(eventArgs.Key);
-
-            if (iKey == GwenMappedKey.Invalid)
-            {
-                return false;
-            }
-
-            return canvas.Input_Key(iKey, down: true);
+            return false;
         }
 
-        public void ProcessTextInput(TextInputEventArgs obj)
-        {
-            foreach (Char c in obj.AsString)
-            {
-                canvas.Input_Character(c);
-            }
-        }
+        return canvas.Input_Key(iKey, down: true);
+    }
 
-        public Boolean ProcessKeyUp(KeyboardKeyEventArgs eventArgs)
+    public void ProcessTextInput(TextInputEventArgs obj)
+    {
+        foreach (Char c in obj.AsString)
         {
-            GwenMappedKey key = TranslateKeyCode(eventArgs.Key);
-
-            return canvas.Input_Key(key, down: false);
+            canvas.Input_Character(c);
         }
+    }
+
+    public Boolean ProcessKeyUp(KeyboardKeyEventArgs eventArgs)
+    {
+        GwenMappedKey key = TranslateKeyCode(eventArgs.Key);
+
+        return canvas.Input_Key(key, down: false);
     }
 }

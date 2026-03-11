@@ -1,55 +1,54 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Control.Property
+namespace Gwen.Net.Legacy.Control.Property;
+
+/// <summary>
+///     Text property.
+/// </summary>
+public class Text : PropertyBase
 {
+    protected readonly TextBox textBox;
+
     /// <summary>
-    ///     Text property.
+    ///     Initializes a new instance of the <see cref="Text" /> class.
     /// </summary>
-    public class Text : PropertyBase
+    /// <param name="parent">Parent control.</param>
+    public Text(ControlBase parent)
+        : base(parent)
     {
-        protected readonly TextBox textBox;
+        textBox = new TextBox(this);
+        textBox.Dock = Dock.Fill;
+        textBox.Padding = Padding.Zero;
+        textBox.ShouldDrawBackground = false;
+        textBox.TextChanged += OnValueChanged;
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Text" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public Text(ControlBase parent)
-            : base(parent)
-        {
-            textBox = new TextBox(this);
-            textBox.Dock = Dock.Fill;
-            textBox.Padding = Padding.Zero;
-            textBox.ShouldDrawBackground = false;
-            textBox.TextChanged += OnValueChanged;
-        }
+    /// <summary>
+    ///     Property value.
+    /// </summary>
+    public override String Value
+    {
+        get => textBox.Text;
+        set => base.Value = value;
+    }
 
-        /// <summary>
-        ///     Property value.
-        /// </summary>
-        public override String Value
-        {
-            get => textBox.Text;
-            set => base.Value = value;
-        }
+    /// <summary>
+    ///     Indicates whether the property value is being edited.
+    /// </summary>
+    public override Boolean IsEditing => textBox.HasFocus;
 
-        /// <summary>
-        ///     Indicates whether the property value is being edited.
-        /// </summary>
-        public override Boolean IsEditing => textBox.HasFocus;
+    /// <summary>
+    ///     Indicates whether the control is hovered by mouse pointer.
+    /// </summary>
+    public override Boolean IsHovered => base.IsHovered | textBox.IsHovered;
 
-        /// <summary>
-        ///     Indicates whether the control is hovered by mouse pointer.
-        /// </summary>
-        public override Boolean IsHovered => base.IsHovered | textBox.IsHovered;
-
-        /// <summary>
-        ///     Sets the property value.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
-        public override void SetValue(String value, Boolean fireEvents = false)
-        {
-            textBox.SetText(value, fireEvents);
-        }
+    /// <summary>
+    ///     Sets the property value.
+    /// </summary>
+    /// <param name="value">Value to set.</param>
+    /// <param name="fireEvents">Determines whether to fire "value changed" event.</param>
+    public override void SetValue(String value, Boolean fireEvents = false)
+    {
+        textBox.SetText(value, fireEvents);
     }
 }

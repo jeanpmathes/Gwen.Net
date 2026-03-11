@@ -105,16 +105,16 @@ public class UnitTestGameWindow : GameWindow
     [STAThread]
     public static void Main(String[] args)
     {
-        var gameWindowSettings = GameWindowSettings.Default;
-        var nativeWindowSettings = NativeWindowSettings.Default;
+        GameWindowSettings? gameWindowSettings = GameWindowSettings.Default;
+        NativeWindowSettings? nativeWindowSettings = NativeWindowSettings.Default;
 
         nativeWindowSettings.Profile = ContextProfile.Core;
-        
+
         nativeWindowSettings.Location = new Vector2i(x: 0, y: 0);
         nativeWindowSettings.ClientSize = new Vector2i(960 - 0, 540 - 32);
 
         String file = args.FirstOrDefault() ?? "DefaultSkin2.png";
-        
+
         using UnitTestGameWindow window = new(file, gameWindowSettings, nativeWindowSettings);
 
         window.Title = $"Gwen.net OpenTK Unit Test (Legacy) [{String.Join(" ", args)}]";

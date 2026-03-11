@@ -36,11 +36,11 @@ public static class ShaderLoader
 
         return new Shader(program, vShader, fShader);
     }
-    
+
     public static String GetShader(String name, String type)
     {
         Type rootType = typeof(ShaderLoader);
-        var shaderName = $"{rootType.Namespace}.{name}.{type}";
+        String shaderName = $"{rootType.Namespace}.{name}.{type}";
         Stream? stream = rootType.Assembly.GetManifestResourceStream(shaderName);
 
         if (stream == null)

@@ -10,14 +10,8 @@ public sealed class MockFormattedText : IFormattedText
     {
         return new SizeF(width: 42, height: 24);
     }
-    
-    public void Draw(RectangleF rectangle, Brush brush)
-    {
-        
-    }
-    
-    public void Dispose()
-    {
-        
-    }
+
+    public void Draw(RectangleF rectangle, Brush brush) {}
+
+    public void Dispose() {}
 }

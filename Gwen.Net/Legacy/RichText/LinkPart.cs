@@ -1,45 +1,44 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.RichText
+namespace Gwen.Net.Legacy.RichText;
+
+public class LinkPart : TextPart
 {
-    public class LinkPart : TextPart
+    public LinkPart(String text, String link)
+        : base(text)
     {
-        public LinkPart(String text, String link)
-            : base(text)
+        Link = link;
+    }
+
+    public LinkPart(String text, String link, Color color, Color? hoverColor = null, Font hoverFont = null)
+        : base(text, color)
+    {
+        Link = link;
+
+        if (hoverColor != null)
         {
-            Link = link;
+            HoverColor = hoverColor;
         }
 
-        public LinkPart(String text, String link, Color color, Color? hoverColor = null, Font hoverFont = null)
-            : base(text, color)
+        if (hoverFont != null)
         {
-            Link = link;
-
-            if (hoverColor != null)
-            {
-                HoverColor = hoverColor;
-            }
-
-            if (hoverFont != null)
-            {
-                HoverFont = hoverFont;
-            }
+            HoverFont = hoverFont;
         }
+    }
 
-        public String Link { get; }
+    public String Link { get; }
 
-        public Color? HoverColor { get; }
+    public Color? HoverColor { get; }
 
-        public Font HoverFont { get; }
+    public Font HoverFont { get; }
 
-        public override String[] Split(ref Font splitFont)
+    public override String[] Split(ref Font splitFont)
+    {
+        Font = splitFont;
+
+        return new[]
         {
-            Font = splitFont;
-
-            return new[]
-            {
-                Text.Trim()
-            };
-        }
+            Text.Trim()
+        };
     }
 }

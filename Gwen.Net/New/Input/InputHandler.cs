@@ -5,7 +5,7 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Input;
 
 /// <summary>
-/// Handles input events and translates them into GWEN events.
+///     Handles input events and translates them into GWEN events.
 /// </summary>
 public sealed class InputHandler : IDisposable
 {
@@ -17,9 +17,12 @@ public sealed class InputHandler : IDisposable
     private PointF lastPointerPosition;
 
     /// <summary>
-    /// Creates a new <seealso cref="InputHandler"/> with the specified root visual.
+    ///     Creates a new <seealso cref="InputHandler" /> with the specified root visual.
     /// </summary>
-    /// <param name="root">The root visual of the visual tree. Input events will be hit-tested against this visual and its descendants.</param>
+    /// <param name="root">
+    ///     The root visual of the visual tree. Input events will be hit-tested against this visual and its
+    ///     descendants.
+    /// </param>
     public InputHandler(Visual root)
     {
         this.root = root;
@@ -29,16 +32,16 @@ public sealed class InputHandler : IDisposable
     }
 
     /// <summary>
-    /// The keyboard focus.
+    ///     The keyboard focus.
     /// </summary>
     public Focus KeyboardFocus { get; }
 
     /// <summary>
-    /// The pointer (mouse) focus.
+    ///     The pointer (mouse) focus.
     /// </summary>
     public Focus PointerFocus { get; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void Dispose()
     {
         hoverRoute.Dispose();

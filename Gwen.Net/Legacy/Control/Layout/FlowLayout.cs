@@ -1,92 +1,91 @@
 ﻿using System;
 
-namespace Gwen.Net.Legacy.Control.Layout
+namespace Gwen.Net.Legacy.Control.Layout;
+
+/// <summary>
+///     FlowLayout is a layout like <see cref="GridLayout" /> with auto sized columns
+///     but you don't need to know exact number of columns.
+/// </summary>
+public class FlowLayout : ControlBase
 {
     /// <summary>
-    ///     FlowLayout is a layout like <see cref="GridLayout" /> with auto sized columns
-    ///     but you don't need to know exact number of columns.
+    ///     Initializes a new instance of the <see cref="FlowLayout" /> class.
     /// </summary>
-    public class FlowLayout : ControlBase
+    /// <param name="parent">Parent control.</param>
+    public FlowLayout(ControlBase parent)
+        : base(parent) {}
+
+    protected override Size Measure(Size availableSize)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="FlowLayout" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public FlowLayout(ControlBase parent)
-            : base(parent) {}
+        availableSize -= Padding;
 
-        protected override Size Measure(Size availableSize)
+        Int32 lineWidth = 0;
+        Int32 lineHeight = 0;
+        Int32 width = 0;
+        Int32 height = 0;
+        Int32 y = 0;
+
+        foreach (ControlBase child in Children)
         {
-            availableSize -= Padding;
+            Size size = child.DoMeasure(availableSize);
 
-            var lineWidth = 0;
-            var lineHeight = 0;
-            var width = 0;
-            var height = 0;
-            var y = 0;
-
-            foreach (ControlBase child in Children)
+            if (lineWidth + size.Width > availableSize.Width)
             {
-                Size size = child.DoMeasure(availableSize);
+                y += lineHeight;
 
-                if (lineWidth + size.Width > availableSize.Width)
-                {
-                    y += lineHeight;
-
-                    lineWidth = size.Width;
-                    lineHeight = size.Height;
-                }
-                else
-                {
-                    lineWidth += size.Width;
-                    lineHeight = Math.Max(lineHeight, size.Height);
-                }
-
-                width = Math.Max(width, lineWidth);
-                height = Math.Max(height, y + size.Height);
+                lineWidth = size.Width;
+                lineHeight = size.Height;
+            }
+            else
+            {
+                lineWidth += size.Width;
+                lineHeight = Math.Max(lineHeight, size.Height);
             }
 
             width = Math.Max(width, lineWidth);
-            height = Math.Max(height, lineHeight);
-
-            return new Size(width, height) + Padding;
+            height = Math.Max(height, y + size.Height);
         }
 
-        protected override Size Arrange(Size finalSize)
+        width = Math.Max(width, lineWidth);
+        height = Math.Max(height, lineHeight);
+
+        return new Size(width, height) + Padding;
+    }
+
+    protected override Size Arrange(Size finalSize)
+    {
+        finalSize -= Padding;
+
+        Int32 lineHeight = 0;
+        Int32 width = 0;
+        Int32 height = 0;
+        Int32 x = 0;
+        Int32 y = 0;
+
+        foreach (ControlBase child in Children)
         {
-            finalSize -= Padding;
-
-            var lineHeight = 0;
-            var width = 0;
-            var height = 0;
-            var x = 0;
-            var y = 0;
-
-            foreach (ControlBase child in Children)
+            if (x + child.MeasuredSize.Width > finalSize.Width)
             {
-                if (x + child.MeasuredSize.Width > finalSize.Width)
-                {
-                    y += lineHeight;
-                    x = 0;
+                y += lineHeight;
+                x = 0;
 
-                    lineHeight = 0;
-                }
-
-                child.DoArrange(
-                    new Rectangle(
-                        x + Padding.Left,
-                        y + Padding.Top,
-                        child.MeasuredSize.Width,
-                        child.MeasuredSize.Height));
-
-                width = Math.Max(width, x + child.MeasuredSize.Width);
-                height = Math.Max(height, y + child.MeasuredSize.Height);
-
-                x += child.MeasuredSize.Width;
-                lineHeight = Math.Max(lineHeight, child.MeasuredSize.Height);
+                lineHeight = 0;
             }
 
-            return new Size(width, height) + Padding;
+            child.DoArrange(
+                new Rectangle(
+                    x + Padding.Left,
+                    y + Padding.Top,
+                    child.MeasuredSize.Width,
+                    child.MeasuredSize.Height));
+
+            width = Math.Max(width, x + child.MeasuredSize.Width);
+            height = Math.Max(height, y + child.MeasuredSize.Height);
+
+            x += child.MeasuredSize.Width;
+            lineHeight = Math.Max(lineHeight, child.MeasuredSize.Height);
         }
+
+        return new Size(width, height) + Padding;
     }
 }

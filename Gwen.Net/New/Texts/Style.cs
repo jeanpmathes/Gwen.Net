@@ -3,22 +3,22 @@
 namespace Gwen.Net.New.Texts;
 
 /// <summary>
-/// The style of a font.
+///     The style of a font.
 /// </summary>
 public enum Style : Byte
 {
     /// <summary>
-    /// Normal text.
+    ///     Normal text.
     /// </summary>
     Normal,
-    
+
     /// <summary>
-    /// Italic text.
+    ///     Italic text.
     /// </summary>
     Italic,
-    
+
     /// <summary>
-    /// Oblique text.
+    ///     Oblique text.
     /// </summary>
     Oblique
 }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Texts;
 using Gwen.Net.New.Utilities;
@@ -7,23 +10,24 @@ using OpenTK.Graphics.OpenGL;
 using Boolean = System.Boolean;
 using Brush = Gwen.Net.New.Graphics.Brush;
 using Font = Gwen.Net.New.Texts.Font;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Gwen.Net.OpenTk.New.Graphics;
 
-public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
+public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 {
     private readonly Shader shader;
     private readonly Boolean restoreRenderState;
 
     private readonly Dictionary<Brush, System.Drawing.Brush> systemBrushes = [];
-    private readonly Dictionary<Brush, System.Drawing.Pen> systemPens = [];
+    private readonly Dictionary<Brush, Pen> systemPens = [];
     private readonly Dictionary<Font, System.Drawing.Font> systemFonts = [];
 
     private Int32 vao;
     private Int32 texture;
-    
-    private System.Drawing.Bitmap? bitmap;
-    private System.Drawing.Graphics? graphics; 
+
+    private Bitmap? bitmap;
+    private System.Drawing.Graphics? graphics;
 
     private RenderState previousRenderState;
 
@@ -31,21 +35,38 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     {
         this.restoreRenderState = restoreRenderState;
 
-        CreateTargets(System.Drawing.Size.Empty);
+        CreateTargets(Size.Empty);
 
         shader = ShaderLoader.Load("gui");
     }
-    
+
+    public void Dispose()
+    {
+        foreach (System.Drawing.Brush brush in systemBrushes.Values)
+            brush.Dispose();
+
+        foreach (System.Drawing.Font font in systemFonts.Values)
+            font.Dispose();
+
+        GL.DeleteTexture(texture);
+        GL.DeleteVertexArray(vao);
+
+        shader.Dispose();
+
+        graphics?.Dispose();
+        bitmap?.Dispose();
+    }
+
     #region TARGETS
-    
-    private void CreateTargets(System.Drawing.Size size)
+
+    private void CreateTargets(Size size)
     {
         GL.CreateVertexArrays(n: 1, out vao);
 
         ResizeTargets(size);
     }
 
-    private void ResizeTargets(System.Drawing.Size size)
+    private void ResizeTargets(Size size)
     {
         if (texture != 0)
             GL.DeleteTexture(texture);
@@ -67,16 +88,16 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 
         if (size is not {Width: > 0, Height: > 0}) return;
 
-        bitmap = new System.Drawing.Bitmap(size.Width, size.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        bitmap = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
         graphics = System.Drawing.Graphics.FromImage(bitmap);
-        
+
         if (isClipping && clipStack.Count > 0)
         {
             ApplyClippingRectangle(clipStack.Peek());
         }
         else if (offsetStack.Count > 0)
         {
-            System.Drawing.PointF offset = offsetStack.Peek();
+            PointF offset = offsetStack.Peek();
             graphics.TranslateTransform(offset.X, offset.Y);
         }
     }
@@ -85,8 +106,8 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     {
         if (bitmap == null || graphics == null) return;
 
-        System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(System.Drawing.Point.Empty, bitmap.Size), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        GL.TextureSubImage2D(texture, level: 0, xoffset: 0, yoffset: 0, width: data.Width, height: data.Height, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+        BitmapData data = bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+        GL.TextureSubImage2D(texture, level: 0, xoffset: 0, yoffset: 0, data.Width, data.Height, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
         bitmap.UnlockBits(data);
 
         GL.BindVertexArray(vao);
@@ -110,27 +131,27 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         GL.Enable(EnableCap.Blend);
         GL.Disable(EnableCap.DepthTest);
-        
+
         GL.UseProgram(shader.Program);
-        
+
         GL.BindTextureUnit(unit: 0, texture);
-        
+
         EndClip();
-        
-        graphics?.Clear(System.Drawing.Color.Transparent);
+
+        graphics?.Clear(Color.Transparent);
     }
 
     public override void End()
     {
         EndClip();
-        
+
         Draw();
-        
+
         GL.BindTextureUnit(unit: 0, texture: 0);
         GL.UseProgram(program: 0);
 
         if (!restoreRenderState) return;
-        
+
         GL.BlendFunc((BlendingFactor) previousRenderState.blendSrc, (BlendingFactor) previousRenderState.blendDst);
         GL.AlphaFunc((AlphaFunction) previousRenderState.alphaFunc, previousRenderState.alphaRef);
 
@@ -144,11 +165,11 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             GL.Enable(EnableCap.DepthTest);
         }
     }
-    
-    public override void Resize(System.Drawing.Size size)
+
+    public override void Resize(Size size)
     {
-        GL.Viewport(x: 0, y: 0, width: size.Width, height: size.Height);
-        
+        GL.Viewport(x: 0, y: 0, size.Width, size.Height);
+
         ResizeTargets(size);
     }
 
@@ -162,60 +183,60 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         public Boolean depthTestEnabled;
         public Boolean blendEnabled;
     }
-    
+
     #endregion TARGETS
-    
+
     #region TRANSFORM & CLIP
-    
-    private readonly Stack<System.Drawing.PointF> offsetStack = new();
-    private readonly Stack<System.Drawing.RectangleF> clipStack = new();
-    
+
+    private readonly Stack<PointF> offsetStack = new();
+    private readonly Stack<RectangleF> clipStack = new();
+
     private Boolean isClipping;
-    
-    public override void PushOffset(System.Drawing.PointF offset)
+
+    public override void PushOffset(PointF offset)
     {
         offset = ApplyScale(offset);
-        
-        graphics?.TranslateTransform(offset.X, offset.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
-        
+
+        graphics?.TranslateTransform(offset.X, offset.Y, MatrixOrder.Append);
+
         if (offsetStack.Count > 0)
         {
-            System.Drawing.PointF previousOffset = offsetStack.Peek();
-            offset = new System.Drawing.PointF(previousOffset.X + offset.X, previousOffset.Y + offset.Y);
+            PointF previousOffset = offsetStack.Peek();
+            offset = new PointF(previousOffset.X + offset.X, previousOffset.Y + offset.Y);
         }
-        
+
         offsetStack.Push(offset);
     }
-    
+
     public override void PopOffset()
     {
         offsetStack.Pop();
-        
+
         graphics?.ResetTransform();
-        
+
         if (offsetStack.Count > 0)
         {
-            System.Drawing.PointF offset = offsetStack.Peek();
-            graphics?.TranslateTransform(offset.X, offset.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
+            PointF offset = offsetStack.Peek();
+            graphics?.TranslateTransform(offset.X, offset.Y, MatrixOrder.Append);
         }
     }
-    
-    public override void PushClip(System.Drawing.RectangleF rectangle)
+
+    public override void PushClip(RectangleF rectangle)
     {
         rectangle = ApplyScale(rectangle);
 
-        System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
+        PointF absoluteOffset = offsetStack.Count > 0
             ? offsetStack.Peek()
-            : new System.Drawing.PointF(x: 0f, y: 0f);
+            : new PointF(x: 0f, y: 0f);
 
-        System.Drawing.RectangleF effectiveRectangle = rectangle with
+        RectangleF effectiveRectangle = rectangle with
         {
             X = rectangle.X + absoluteOffset.X,
             Y = rectangle.Y + absoluteOffset.Y
         };
 
         if (clipStack.Count > 0)
-            effectiveRectangle = System.Drawing.RectangleF.Intersect(clipStack.Peek(), effectiveRectangle);
+            effectiveRectangle = RectangleF.Intersect(clipStack.Peek(), effectiveRectangle);
 
         clipStack.Push(effectiveRectangle);
 
@@ -245,40 +266,40 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
             ApplyClippingRectangle(clipStack.Peek());
     }
 
-    private void ApplyClippingRectangle(System.Drawing.RectangleF effectiveRectangle)
+    private void ApplyClippingRectangle(RectangleF effectiveRectangle)
     {
         if (graphics == null) return;
-        
-        graphics.ResetTransform();
-        graphics.SetClip(effectiveRectangle, System.Drawing.Drawing2D.CombineMode.Replace);
 
-        System.Drawing.PointF absoluteOffset = offsetStack.Count > 0
+        graphics.ResetTransform();
+        graphics.SetClip(effectiveRectangle, CombineMode.Replace);
+
+        PointF absoluteOffset = offsetStack.Count > 0
             ? offsetStack.Peek()
-            : new System.Drawing.PointF(x: 0f, y: 0f);
+            : new PointF(x: 0f, y: 0f);
 
         if (absoluteOffset.X != 0f || absoluteOffset.Y != 0f)
             graphics.TranslateTransform(absoluteOffset.X, absoluteOffset.Y);
     }
-    
+
     public override void EndClip() // todo: check when this is ever called, maybe this can be simplified
     {
         if (!isClipping) return;
-        
+
         isClipping = false;
-        
+
         graphics?.ResetClip();
     }
-    
+
     public override Boolean IsClipEmpty()
     {
         if (graphics == null) return true;
-        
-        System.Drawing.Region clip = graphics.Clip;
+
+        Region clip = graphics.Clip;
         return clip.IsEmpty(graphics);
     }
-    
+
     #endregion TRANSFORM & CLIP
-    
+
     #region TEXT
 
     public override IFormattedText CreateFormattedText(String text, Font font, TextOptions options)
@@ -286,40 +307,40 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         return new FormattedText(this, text, font, options);
     }
 
-    public System.Drawing.SizeF MeasureText(FormattedText text, System.Drawing.SizeF availableSize)
+    public SizeF MeasureText(FormattedText text, SizeF availableSize)
     {
         availableSize = ApplyScale(availableSize);
-        
-        if (graphics == null) return System.Drawing.SizeF.Empty;
+
+        if (graphics == null) return SizeF.Empty;
 
         System.Drawing.Font systemFont = GetFont(text.Font);
-        
-        System.Drawing.SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
-        
+
+        SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
+
         return ApplyInverseScale(measuredSize);
     }
-    
-    public void DrawText(FormattedText text, System.Drawing.RectangleF rectangle, Brush brush)
+
+    public void DrawText(FormattedText text, RectangleF rectangle, Brush brush)
     {
         rectangle = ApplyScale(rectangle);
-        
+
         System.Drawing.Brush? systemBrush = GetBrush(brush);
-        
+
         if (systemBrush == null) return;
-        
+
         System.Drawing.Font systemFont = GetFont(text.Font);
-        
+
         graphics?.DrawString(text.Text, systemFont, systemBrush, rectangle, text.StringFormat);
     }
-    
+
     #endregion TEXT
-    
+
     #region RECTANGLES
-    
-    public override void DrawFilledRectangle(System.Drawing.RectangleF rectangle, Brush brush)
+
+    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
-        
+
         if (systemBrush == null) return;
 
         rectangle = ApplyScale(rectangle);
@@ -327,18 +348,18 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
         graphics?.FillRectangle(systemBrush, rectangle);
     }
 
-    public override void DrawLinedRectangle(System.Drawing.RectangleF rectangle, ThicknessF thickness, Brush brush)
+    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
-        
+
         if (systemBrush == null) return;
 
         rectangle = ApplyScale(rectangle);
         thickness = ApplyScale(thickness);
-        
+
         if (thickness.IsUniform)
         {
-            System.Drawing.Pen? systemPen = GetPen(brush, thickness.Left);
+            Pen? systemPen = GetPen(brush, thickness.Left);
             if (systemPen == null) return;
 
             Single halfT = thickness.Left / 2f;
@@ -356,7 +377,7 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
     #endregion RECTANGLES
 
     #region MAPPINGS
-    
+
     private System.Drawing.Brush? GetBrush(Brush brush)
     {
         if (systemBrushes.TryGetValue(brush, out System.Drawing.Brush? systemBrush))
@@ -364,78 +385,61 @@ public sealed class Renderer : Gwen.Net.New.Rendering.Renderer, IDisposable
 
         systemBrush = brush switch
         {
-            SolidColorBrush solidColorBrush => new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B)),
+            SolidColorBrush solidColorBrush => new SolidBrush(Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B)),
             TransparentBrush => null,
             _ => systemBrush
         };
-        
+
         if (systemBrush != null)
             systemBrushes[brush] = systemBrush;
-        
+
         return systemBrush;
     }
-    
-    private System.Drawing.Pen? GetPen(Brush brush, Single thickness)
+
+    private Pen? GetPen(Brush brush, Single thickness)
     {
-        if (systemPens.TryGetValue(brush, out System.Drawing.Pen? systemPen))
+        if (systemPens.TryGetValue(brush, out Pen? systemPen))
         {
             systemPen.Width = thickness;
             return systemPen;
         }
 
         System.Drawing.Brush? systemBrush = GetBrush(brush);
-        
+
         if (systemBrush == null) return null;
 
-        systemPen = new System.Drawing.Pen(systemBrush, thickness);
+        systemPen = new Pen(systemBrush, thickness);
         systemPens[brush] = systemPen;
-        
+
         return systemPen;
     }
-    
+
     private System.Drawing.Font GetFont(Font font)
     {
         if (systemFonts.TryGetValue(font, out System.Drawing.Font? systemFont))
             return systemFont;
 
         systemFont = new System.Drawing.Font(font.Family, font.Size, GetFontStyleFromTextsStyle(font.Style) | GetFontStyleFromTextsWeight(font.Weight));
-        
+
         systemFonts[font] = systemFont;
-        
+
         return systemFont;
     }
-    
-    private static System.Drawing.FontStyle GetFontStyleFromTextsStyle(Style style)
+
+    private static FontStyle GetFontStyleFromTextsStyle(Style style)
     {
         return style switch
         {
-            Style.Normal => System.Drawing.FontStyle.Regular,
-            Style.Italic or Style.Oblique => System.Drawing.FontStyle.Italic,
-            _ => System.Drawing.FontStyle.Regular
+            Style.Normal => FontStyle.Regular,
+            Style.Italic or Style.Oblique => FontStyle.Italic,
+            _ => FontStyle.Regular
         };
     }
-    
-    private static System.Drawing.FontStyle GetFontStyleFromTextsWeight(Weight weight)
+
+    private static FontStyle GetFontStyleFromTextsWeight(Weight weight)
     {
-        return weight >= Weight.SemiBold ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular;
+        return weight >= Weight.SemiBold ? FontStyle.Bold : FontStyle.Regular;
     }
-    
+
     #endregion MAPPINGS
-
-    public void Dispose()
-    {
-        foreach (System.Drawing.Brush brush in systemBrushes.Values)
-            brush.Dispose();
-        
-        foreach (System.Drawing.Font font in systemFonts.Values)
-            font.Dispose();
-        
-        GL.DeleteTexture(texture);
-        GL.DeleteVertexArray(vao);
-
-        shader.Dispose();
-        
-        graphics?.Dispose();
-        bitmap?.Dispose();
-    }
 }

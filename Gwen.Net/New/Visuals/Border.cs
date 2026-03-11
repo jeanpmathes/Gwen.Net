@@ -1,19 +1,18 @@
 using System.Drawing;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Graphics;
-using Gwen.Net.New.Rendering;
 using Gwen.Net.New.Utilities;
 
 namespace Gwen.Net.New.Visuals;
 
 /// <summary>
-/// Draws a border and background around its child visual.
+///     Draws a border and background around its child visual.
 /// </summary>
-/// <see cref="Controls.Border"/>
+/// <see cref="Controls.Border" />
 public class Border : Visual
 {
     /// <summary>
-    /// Creates a new border visual.
+    ///     Creates a new border visual.
     /// </summary>
     public Border()
     {
@@ -21,22 +20,8 @@ public class Border : Visual
         BorderThickness = VisualProperty.Create(this, ThicknessF.One, Invalidation.Measure);
     }
 
-    #region PROPERTIES
-    
     /// <summary>
-    /// The brush used to draw the border.
-    /// </summary>
-    public VisualProperty<Brush> BorderBrush { get; }
-
-    /// <summary>
-    /// The thickness of the border.
-    /// </summary>
-    public VisualProperty<ThicknessF> BorderThickness { get; }
-    
-    #endregion PROPERTIES
-    
-    /// <summary>
-    /// Gets or sets the single child visual.
+    ///     Gets or sets the single child visual.
     /// </summary>
     public Visual? Child
     {
@@ -44,13 +29,13 @@ public class Border : Visual
         set => SetChild(value);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override SizeF OnMeasure(SizeF availableSize)
     {
         ThicknessF borderThickness = BorderThickness.GetValue();
 
         availableSize -= borderThickness;
-        
+
         SizeF desiredSize = base.OnMeasure(availableSize);
 
         desiredSize += borderThickness;
@@ -58,23 +43,37 @@ public class Border : Visual
         return desiredSize;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void OnArrange(RectangleF finalRectangle)
     {
         finalRectangle -= BorderThickness.GetValue();
         finalRectangle -= Padding.GetValue();
-        
+
         if (finalRectangle.IsEmpty)
             return;
-        
+
         foreach (Visual child in Children)
             child.Arrange(finalRectangle);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected override void OnRender()
     {
         Renderer.DrawFilledRectangle(RenderBounds, Background.GetValue());
         Renderer.DrawLinedRectangle(RenderBounds, BorderThickness.GetValue(), BorderBrush.GetValue());
     }
+
+    #region PROPERTIES
+
+    /// <summary>
+    ///     The brush used to draw the border.
+    /// </summary>
+    public VisualProperty<Brush> BorderBrush { get; }
+
+    /// <summary>
+    ///     The thickness of the border.
+    /// </summary>
+    public VisualProperty<ThicknessF> BorderThickness { get; }
+
+    #endregion PROPERTIES
 }

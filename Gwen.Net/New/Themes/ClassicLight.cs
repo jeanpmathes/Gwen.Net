@@ -7,7 +7,7 @@ using Gwen.Net.New.Styles;
 namespace Gwen.Net.New.Themes;
 
 /// <summary>
-/// The original GWEN theme, formerly known as "DefaultSkin". It is a light theme with rounded corners.
+///     The original GWEN theme, formerly known as "DefaultSkin". It is a light theme with rounded corners.
 /// </summary>
 public class ClassicLight(ResourceRegistry registry) : IResourceBundle<ClassicLight>
 {
@@ -15,15 +15,18 @@ public class ClassicLight(ResourceRegistry registry) : IResourceBundle<ClassicLi
 
     private static readonly Brush basicBackgroundBrush = new SolidColorBrush(Color.FromArgb(red: 253, green: 253, blue: 253));
     private static readonly Brush basicForegroundBrush = new SolidColorBrush(Color.FromArgb(red: 73, green: 73, blue: 73));
-    
-    /// <inheritdoc/>
-    public static ClassicLight Load(ResourceRegistry registry) => new(registry);
 
     internal Style<Control> ControlStyle { get; } = registry.AddStyle<Control>(b => b
         .Set(x => x.Foreground, basicForegroundBrush)
     );
-    
+
     internal Style<Canvas> CanvasStyle { get; } = registry.AddStyle<Canvas>(b => b
         .Set(x => x.Background, basicBackgroundBrush)
     );
+
+    /// <inheritdoc />
+    public static ClassicLight Load(ResourceRegistry registry)
+    {
+        return new ClassicLight(registry);
+    }
 }

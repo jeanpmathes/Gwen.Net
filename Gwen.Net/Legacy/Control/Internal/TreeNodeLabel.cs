@@ -1,49 +1,48 @@
-﻿namespace Gwen.Net.Legacy.Control.Internal
+﻿namespace Gwen.Net.Legacy.Control.Internal;
+
+/// <summary>
+///     Tree node label.
+/// </summary>
+public class TreeNodeLabel : Button
 {
     /// <summary>
-    ///     Tree node label.
+    ///     Initializes a new instance of the <see cref="TreeNodeLabel" /> class.
     /// </summary>
-    public class TreeNodeLabel : Button
+    /// <param name="parent">Parent control.</param>
+    public TreeNodeLabel(ControlBase parent)
+        : base(parent)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TreeNodeLabel" /> class.
-        /// </summary>
-        /// <param name="parent">Parent control.</param>
-        public TreeNodeLabel(ControlBase parent)
-            : base(parent)
+        Alignment = Alignment.Left | Alignment.CenterV;
+        ShouldDrawBackground = false;
+        TextPadding = new Padding(left: 3, top: 0, right: 5, bottom: 0);
+    }
+
+    /// <summary>
+    ///     Updates control colors.
+    /// </summary>
+    public override void UpdateColors()
+    {
+        if (IsDisabled)
         {
-            Alignment = Alignment.Left | Alignment.CenterV;
-            ShouldDrawBackground = false;
-            TextPadding = new Padding(left: 3, top: 0, right: 5, bottom: 0);
+            TextColor = Skin.colors.buttonColors.disabled;
+
+            return;
         }
 
-        /// <summary>
-        ///     Updates control colors.
-        /// </summary>
-        public override void UpdateColors()
+        if (ToggleState)
         {
-            if (IsDisabled)
-            {
-                TextColor = Skin.colors.buttonColors.disabled;
+            TextColor = Skin.colors.treeColors.selected;
 
-                return;
-            }
-
-            if (ToggleState)
-            {
-                TextColor = Skin.colors.treeColors.selected;
-
-                return;
-            }
-
-            if (IsHovered)
-            {
-                TextColor = Skin.colors.treeColors.hover;
-
-                return;
-            }
-
-            TextColor = Skin.colors.treeColors.normal;
+            return;
         }
+
+        if (IsHovered)
+        {
+            TextColor = Skin.colors.treeColors.hover;
+
+            return;
+        }
+
+        TextColor = Skin.colors.treeColors.normal;
     }
 }
