@@ -22,7 +22,7 @@ public abstract class Control
     /// </summary>
     protected Control()
     {
-        Foreground = Property.Create(this, Brushes.Black);
+        Foreground = Property.Create(this, BindToParent(p => p.Foreground, Brushes.Black));
         Background = Property.Create(this, Brushes.Transparent);
         
         MinimumWidth = Property.Create(this, defaultValue: 1f);
@@ -40,7 +40,14 @@ public abstract class Control
         IsNavigable = Property.Create(this, defaultValue: false);
         
         Visibility = Property.Create(this, defaultValue: New.Visibility.Visible, 
-            Binding.To(Parent).Select(p => p?.Visibility, New.Visibility.Visible).With<Visibility>(Visibilities.Lower));
+            Binding.To(Parent).Select(p => p?.Visibility, New.Visibility.Visible).Parametrize<Visibility>(Visibilities.Lower));
+
+        {
+            LocalEnablement = Property.Create(this, defaultValue: New.Enablement.Enabled);
+        
+            Enablement = Property.Create(this, defaultValue: New.Enablement.Enabled, 
+                Binding.To(Parent).Select(p => p?.Enablement, New.Enablement.Enabled).Combine(LocalEnablement).Compute(Enablements.Lower).Parametrize<Enablement>(Enablements.Lower));
+        }
     }
     
     #region PROPERTIES
@@ -107,6 +114,24 @@ public abstract class Control
     /// Controls cannot be more visible than their parents.
     /// </summary>
     public Property<Visibility> Visibility { get; }
+    
+    /// <summary>
+    /// The enablement of the control.
+    /// Controls cannot be more enabled than their parents.
+    /// </summary>
+    public Property<Enablement> Enablement { get; }
+    
+    /// <summary>
+    /// Create a property bound to a property of the parent control.
+    /// </summary>
+    /// <param name="selector">The selector function to select the property from the parent control.</param>
+    /// <param name="defaultValue">The default value to use if there is no parent.</param>
+    /// <typeparam name="T">The type of the property.</typeparam>
+    /// <returns>>The created property.</returns>
+    protected Binding<T> BindToParent<T>(Func<Control, IValueSource<T>> selector, T defaultValue)
+    {
+        return Binding.To(Parent).Select(p => p != null ? selector(p) : null, defaultValue);
+    }
     
     #endregion PROPERTIES
     
@@ -439,6 +464,23 @@ public abstract class Control
     
     
     #endregion INPUT
+    
+    #region ENABLEMENT
+
+    private Property<Enablement> LocalEnablement { get; }
+    
+    /// <summary>
+    /// Add a constraint to the (effective) enablement of this control.
+    /// The constraint will be combined with the existing enablement using <see cref="Enablements.Lower"/>.
+    /// Therefore, additional constraints will not allow the control to be more enabled, only less enabled.
+    /// </summary>
+    /// <param name="constraint">The enablement constraint to add.</param>
+    protected void AddEnablementConstraint(Binding<Enablement> constraint)
+    {
+        LocalEnablement.OverrideDefault(original => Binding.To(original, constraint).Compute(Enablements.Lower));
+    }
+    
+    #endregion ENABLEMENT
 }
 
 /// <summary>

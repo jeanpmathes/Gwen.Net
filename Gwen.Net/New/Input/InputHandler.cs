@@ -10,21 +10,11 @@ namespace Gwen.Net.New.Input;
 public sealed class InputHandler : IDisposable
 {
     private readonly Visual root;
-    
+
     private Visual? hoveredVisual;
     private Route hoverRoute = Route.Empty;
-    
-    private PointF lastPointerPosition;
 
-    /// <summary>
-    /// The keyboard focus.
-    /// </summary>
-    public Focus KeyboardFocus { get; }
-    
-    /// <summary>
-    /// The pointer (mouse) focus.
-    /// </summary>
-    public Focus PointerFocus { get; }
+    private PointF lastPointerPosition;
 
     /// <summary>
     /// Creates a new <seealso cref="InputHandler"/> with the specified root visual.
@@ -33,60 +23,76 @@ public sealed class InputHandler : IDisposable
     public InputHandler(Visual root)
     {
         this.root = root;
-        
+
         KeyboardFocus = new Focus(OnKeyboardFocusChanged);
         PointerFocus = new Focus(OnPointerFocusChanged);
     }
-    
+
+    /// <summary>
+    /// The keyboard focus.
+    /// </summary>
+    public Focus KeyboardFocus { get; }
+
+    /// <summary>
+    /// The pointer (mouse) focus.
+    /// </summary>
+    public Focus PointerFocus { get; }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        hoverRoute.Dispose();
+    }
+
     private void OnKeyboardFocusChanged(Visual? previousFocusedVisual, Visual? newFocusedVisual)
     {
         previousFocusedVisual?.HandleKeyboardFocusLost();
         newFocusedVisual?.HandleKeyboardFocusGained();
     }
-    
+
     private void OnPointerFocusChanged(Visual? previousFocusedVisual, Visual? newFocusedVisual)
     {
         previousFocusedVisual?.HandlePointerFocusLost();
         newFocusedVisual?.HandlePointerFocusGained();
-        
+
         UpdateHoveredVisual(PointerFocus.GetFocused() ?? PerformHitTest(lastPointerPosition));
     }
-    
+
     private Visual? PerformHitTest(PointF point)
     {
         Visual current = root;
-        
+
         if (!CanReceiveInput(current))
             return null;
-        
-        if (!current.Bounds.Contains(point)) 
+
+        if (!current.Bounds.Contains(point))
             return null;
-        
+
         while (true)
         {
             Boolean foundChild = false;
-            
+
             for (Int32 index = current.Children.Count - 1; index >= 0; index--)
             {
                 Visual child = current.Children[index];
-                
+
                 if (!CanReceiveInput(child))
                     continue;
 
-                if (!child.Bounds.Contains(child.RootPointToLocal(point))) 
+                if (!child.Bounds.Contains(child.RootPointToLocal(point)))
                     continue;
-                
+
                 current = child;
                 foundChild = true;
-                
+
                 break;
             }
 
-            if (!foundChild) 
+            if (!foundChild)
                 return current;
         }
     }
-    
+
     private static Boolean CanReceiveInput(Visual visual)
     {
         return visual.Enablement.GetValue().CanReceiveInput && visual.Visibility.GetValue().IsVisible;
@@ -95,8 +101,8 @@ public sealed class InputHandler : IDisposable
     private Visual? GetKeyboardTarget()
     {
         return KeyboardFocus.GetFocused();
-    } 
-    
+    }
+
     private Visual? GetPointerTarget(PointF point)
     {
         return PointerFocus.GetFocused() ?? PerformHitTest(point);
@@ -109,17 +115,17 @@ public sealed class InputHandler : IDisposable
         for (Int32 index = 0; index < route.Count; index++)
         {
             Visual visual = route.GetFromTop(index);
-            
+
             inputEvent.SetTarget(visual);
             visual.HandleInputPreview(inputEvent);
-            
+
             if (inputEvent.Handled) return;
         }
-        
+
         for (Int32 index = 0; index < route.Count; index++)
         {
             Visual visual = route.GetFromBottom(index);
-            
+
             inputEvent.SetTarget(visual);
             visual.HandleInput(inputEvent);
 
@@ -127,88 +133,23 @@ public sealed class InputHandler : IDisposable
         }
     }
 
-    #region EVENTS
-    
-    internal void HandleKeyEvent(Key key, Boolean isDown, Boolean isRepeat, ModifierKeys modifiers)
-    {
-        Visual? target = GetKeyboardTarget();
-
-        if (target != null)
-        {
-            KeyEvent @event = new(target, key, isDown, isRepeat, modifiers);
-        
-            HandleEvent(@event);
-            
-            if (@event.Handled) return;
-        }
-
-        if (isDown && key == Key.Tab)
-            MoveKeyboardFocus(!modifiers.HasFlag(ModifierKeys.Shift));
-    }
-    
-    internal void HandleTextEvent(String text)
-    {
-        Visual? target = GetKeyboardTarget();
-        
-        if (target == null) 
-            return;
-
-        HandleEvent(new TextEvent(target, text));
-    }
-    
-    internal void HandlePointerButtonEvent(PointF position, PointerButton button, Boolean isDown, ModifierKeys modifiers)
-    {
-        Visual? target = GetPointerTarget(position);
-        
-        if (target == null) 
-            return;
-
-        HandleEvent(new PointerButtonEvent(target, position, button, isDown, modifiers));
-    }
-    
-    internal void HandlePointerMoveEvent(PointF position, Single deltaX, Single deltaY)
-    {
-        lastPointerPosition = position;
-        
-        Visual? target = GetPointerTarget(position);
-
-        if (target != null)
-        {
-            HandleEvent(new PointerMoveEvent(target, position, deltaX, deltaY));
-        }
-        
-        UpdateHoveredVisual(PointerFocus.GetFocused() ?? target);
-    }
-
-    internal void HandleScrollEvent(PointF position, Single deltaX, Single deltaY)
-    {
-        Visual? target = GetPointerTarget(position);
-        
-        if (target == null) 
-            return;
-
-        HandleEvent(new ScrollEvent(target, position, deltaX, deltaY));
-    }
-
-    #endregion EVENTS
-    
     private void UpdateHoveredVisual(Visual? visual)
     {
-        if (visual == hoveredVisual) 
+        if (visual == hoveredVisual)
             return;
-        
+
         Route newHoverRoute = Route.Create(visual);
         Int32 firstDifferentIndex = Route.FindFirstDifferenceFromTop(hoverRoute, newHoverRoute);
 
         for (Int32 index = firstDifferentIndex; index < hoverRoute.Count; index++)
             hoverRoute.GetFromTop(index).HandlePointerLeave();
-        
+
         for (Int32 index = firstDifferentIndex; index < newHoverRoute.Count; index++)
             newHoverRoute.GetFromTop(index).HandlePointerEnter();
-        
+
         hoverRoute.Dispose();
         hoverRoute = newHoverRoute;
-        
+
         hoveredVisual = visual;
     }
 
@@ -222,15 +163,15 @@ public sealed class InputHandler : IDisposable
             KeyboardFocus.Set(start);
             return;
         }
-        
+
         if (forward)
             MoveKeyboardFocusForward(start);
         else
             MoveKeyboardFocusBackward(start);
     }
-    
+
     private void MoveKeyboardFocusForward(Visual start)
-    {        
+    {
         Visual? current = start;
 
         do
@@ -244,9 +185,9 @@ public sealed class InputHandler : IDisposable
             else if (current.Parent != null)
             {
                 next = current.Parent.GetChildAfter(current);
-                
+
                 Visual? climb = current;
-                
+
                 while (next == null && climb.Parent != null)
                 {
                     climb = climb.Parent;
@@ -256,22 +197,21 @@ public sealed class InputHandler : IDisposable
                 if (next == null && climb.Parent == null)
                     next = root;
             }
-            
+
             if (next != null && CanMoveFocusTo(next))
             {
                 KeyboardFocus.Set(next);
                 return;
             }
-            
+
             current = next;
-        }
-        while (current != null && current != start);
+        } while (current != null && current != start);
     }
-    
+
     private void MoveKeyboardFocusBackward(Visual start)
     {
         Visual? current = start;
-        
+
         do
         {
             Visual? next;
@@ -279,16 +219,16 @@ public sealed class InputHandler : IDisposable
             if (current.Parent != null)
             {
                 next = current.Parent.GetChildBefore(current);
-                
+
                 while (next is {Children.Count: > 0})
                     next = next.Children[^1];
-                
+
                 next ??= current.Parent;
             }
             else
             {
                 next = root;
-                
+
                 while (next.Children.Count > 0)
                     next = next.Children[^1];
             }
@@ -298,20 +238,78 @@ public sealed class InputHandler : IDisposable
                 KeyboardFocus.Set(next);
                 return;
             }
-            
+
             current = next;
-        }
-        while (current != null && current != start);
-    }
-    
-    private static Boolean CanMoveFocusTo(Visual visual)
-    {
-        return visual.Enablement.GetValue().IsFocusable && visual.IsNavigable.GetValue() && visual.Visibility.GetValue().IsVisible;
+        } while (current != null && current != start);
     }
 
-    /// <inheritdoc/>
-    public void Dispose()
+    private static Boolean CanMoveFocusTo(Visual visual)
     {
-        hoverRoute.Dispose();
+        return Focus.CanFocus(visual) && visual.IsNavigable.GetValue();
     }
+
+    #region EVENTS
+
+    internal void HandleKeyEvent(Key key, Boolean isDown, Boolean isRepeat, ModifierKeys modifiers)
+    {
+        Visual? target = GetKeyboardTarget();
+
+        if (target != null)
+        {
+            KeyEvent @event = new(target, key, isDown, isRepeat, modifiers);
+
+            HandleEvent(@event);
+
+            if (@event.Handled) return;
+        }
+
+        if (isDown && key == Key.Tab)
+            MoveKeyboardFocus(!modifiers.HasFlag(ModifierKeys.Shift));
+    }
+
+    internal void HandleTextEvent(String text)
+    {
+        Visual? target = GetKeyboardTarget();
+
+        if (target == null)
+            return;
+
+        HandleEvent(new TextEvent(target, text));
+    }
+
+    internal void HandlePointerButtonEvent(PointF position, PointerButton button, Boolean isDown, ModifierKeys modifiers)
+    {
+        Visual? target = GetPointerTarget(position);
+
+        if (target == null)
+            return;
+
+        HandleEvent(new PointerButtonEvent(target, position, button, isDown, modifiers));
+    }
+
+    internal void HandlePointerMoveEvent(PointF position, Single deltaX, Single deltaY)
+    {
+        lastPointerPosition = position;
+
+        Visual? target = GetPointerTarget(position);
+
+        if (target != null)
+        {
+            HandleEvent(new PointerMoveEvent(target, position, deltaX, deltaY));
+        }
+
+        UpdateHoveredVisual(PointerFocus.GetFocused() ?? target);
+    }
+
+    internal void HandleScrollEvent(PointF position, Single deltaX, Single deltaY)
+    {
+        Visual? target = GetPointerTarget(position);
+
+        if (target == null)
+            return;
+
+        HandleEvent(new ScrollEvent(target, position, deltaX, deltaY));
+    }
+
+    #endregion EVENTS
 }

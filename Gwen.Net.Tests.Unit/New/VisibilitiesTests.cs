@@ -33,4 +33,16 @@ public sealed class VisibilitiesTests
     {
         Assert.False(Visibility.Collapsed.IsLayouted);
     }
+
+    [Fact]
+    public void FromBoolean_True_ReturnsVisible()
+    {
+        Assert.Equal(Visibility.Visible, Visibilities.FromBoolean(true));
+    }
+
+    [Fact]
+    public void FromBoolean_False_ReturnsCollapsed()
+    {
+        Assert.Equal(Visibility.Collapsed, Visibilities.FromBoolean(false));
+    }
 }

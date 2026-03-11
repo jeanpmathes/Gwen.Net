@@ -42,6 +42,7 @@ public abstract class Visual
         IsNavigable = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.IsNavigable, defaultValue: false), Invalidation.None);
         
         Visibility = VisualProperty.Create(this, BindToOwner(o => o.Visibility, defaultValue: New.Visibility.Visible), Invalidation.Measure);
+        Enablement = VisualProperty.Create(this, BindToOwner(o => o.Enablement, defaultValue: New.Enablement.Enabled), Invalidation.None);
     }
     
     #region PROPERTIES
@@ -104,6 +105,11 @@ public abstract class Visual
     /// The visibility of this visual, which determines whether it is visible and whether it takes up space in the layout.
     /// </summary>
     public VisualProperty<Visibility> Visibility { get; }
+    
+    /// <summary>
+    /// The enablement of this visual, which determines whether it can receive input and focus and how it should react to input.
+    /// </summary>
+    public VisualProperty<Enablement> Enablement { get; }
     
     /// <summary>
     /// Create a binding that binds to the foreground of the template owner.
@@ -542,7 +548,7 @@ public abstract class Visual
         if (children.Count == 0)
             return SizeF.Empty;
         
-        var desiredSize = SizeF.Empty;
+        SizeF desiredSize = SizeF.Empty;
 
         SizeF usableSize = availableSize;
         

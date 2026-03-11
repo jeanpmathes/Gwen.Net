@@ -9,6 +9,8 @@ namespace Gwen.Net.New.Controls;
 
 internal static class ButtonDefaults
 {
+    public static readonly Brush DisabledForeground = new SolidColorBrush(Color.Gray);
+    
     public static readonly Brush FocusedBorderBrush = new SolidColorBrush(Color.Blue);
     
     public static readonly Brush HoveredBackground = new SolidColorBrush(Color.LightGray);
@@ -27,6 +29,10 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     {
         BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute(
             (foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
+        
+        Foreground.OverrideDefault(old => old
+            .Combine(Enablement)
+            .Compute((foreground, enablement) => enablement.IsEnabled ? foreground : ButtonDefaults.DisabledForeground));
         
         Background.OverrideDefault(old => old
             .Combine(IsPressed, IsHovered)

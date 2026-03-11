@@ -251,6 +251,43 @@ public sealed class Binding<TValue> : IValueSource<TValue>
 
         return new Binding<TSelected>(() => relay.Inner != null ? relay.Inner.GetValue() : defaultValue, setter: null, [relay]);
     }
+    
+    /// <summary>
+    /// Create a new binding that selects a parametrized value source from this binding's value using the provided selector function.
+    /// This will correctly handle subscription changes if the selector returns a different inner source when the outer value changes.
+    /// </summary>
+    /// <param name="selector">A function that selects an inner parametrized value source from the current value of this binding. Must not contain any calls to <see cref="IValueSource{T}.GetValue"/>.</param>
+    /// <typeparam name="TIn">The type of the input parameter of the selected value source.</typeparam>
+    /// <typeparam name="TOut">The type of the value stored in the selected value source.</typeparam>
+    /// <returns>The created binding.</returns>
+    public Binding<TIn, TOut> Select<TIn, TOut>(Func<TValue, IValueSource<TIn, TOut>> selector)
+    {
+        Relay<TIn, TOut> relay = new();
+        
+        ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
+        relay.SetInner(selector(GetValue()));
+        
+        return new Binding<TIn, TOut>(input => relay.Inner!.GetValue(input), [relay]);
+    }
+
+    /// <summary>
+    /// Contrary to the non-nullable overload, this variant allows the selector to return <c>null</c>.
+    /// It creates a new binding that selects a parametrized value source from this binding's value using the provided selector function, returning a constant source of <paramref name="defaultValue"/> when the selector returns <c>null</c>.
+    /// </summary>
+    /// <param name="selector">A function that selects an inner parametrized value source from the current value of this binding. May return <c>null</c>, in which case a constant source of <paramref name="defaultValue"/> is used. Must not contain any calls to <see cref="IValueSource{T}.GetValue"/>.</param>
+    /// <param name="defaultValue">The value to return when the selected inner source is <c>null</c>.</param>
+    /// <typeparam name="TIn">The type of the input parameter of the selected value source.</typeparam>
+    /// <typeparam name="TOut">The type of the value stored in the selected value source.</typeparam>
+    /// <returns>The created binding.</returns>
+    public Binding<TIn, TOut> Select<TIn, TOut>(Func<TValue, IValueSource<TIn, TOut>?> selector, TOut defaultValue)
+    {
+        Relay<TIn, TOut> relay = new();
+        
+        ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
+        relay.SetInner(selector(GetValue()));
+        
+        return new Binding<TIn, TOut>(input => relay.Inner != null ? relay.Inner.GetValue(input) : defaultValue, [relay]);
+    }
 
     /// <summary>
     /// Create a new binding that computes a value from this binding's value using the provided selector function.
@@ -298,7 +335,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <typeparam name="TIn">The type of the input parameter.</typeparam>
     /// <typeparam name="TOut">The type of value stored in the created binding.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TIn, TOut> With<TIn, TOut>(Func<TIn, TValue, TOut> operation)
+    public Binding<TIn, TOut> Parametrize<TIn, TOut>(Func<TIn, TValue, TOut> operation)
     {
         return new Binding<TIn, TOut>(input => operation(input, GetValue()), [this]);
     }
@@ -309,7 +346,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <param name="operation">The operation to perform using the input value and the current value of this binding.</param>
     /// <typeparam name="TInAndOut">The type of the input parameter, which is also the type of value stored in the created binding.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TInAndOut, TInAndOut> With<TInAndOut>(Func<TInAndOut, TValue, TInAndOut> operation)
+    public Binding<TInAndOut, TInAndOut> Parametrize<TInAndOut>(Func<TInAndOut, TValue, TInAndOut> operation)
     {
         return new Binding<TInAndOut, TInAndOut>(input => operation(input, GetValue()), [this]);
     }
@@ -348,6 +385,35 @@ public sealed class Binding<TValue> : IValueSource<TValue>
 
         public event EventHandler? ValueChanged;
     }
+
+    private sealed class Relay<TIn, TOut> : IValueSource<TIn, TOut>
+    {
+        internal IValueSource<TIn, TOut>? Inner { get; private set; }
+
+        internal void SetInner(IValueSource<TIn, TOut>? newInner)
+        {
+            if (ReferenceEquals(Inner, newInner)) return;
+
+            if (Inner != null)
+                Inner.ValueChanged -= OnInnerValueChanged;
+
+            Inner = newInner;
+
+            if (Inner != null)
+                Inner.ValueChanged += OnInnerValueChanged;
+
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnInnerValueChanged(Object? sender, EventArgs e)
+        {
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        TOut IValueSource<TIn, TOut>.GetValue(TIn input) => Inner != null ? Inner.GetValue(input) : default!;
+
+        public event EventHandler? ValueChanged;
+    }
 }
 
 /// <summary>
@@ -365,6 +431,51 @@ public sealed class Binding<TIn, TOut> : IValueSource<TIn, TOut>
         
         foreach (IValueSource dependency in dependencies)
             dependency.ValueChanged += OnDependencyValueChanged;
+    }
+    
+    /// <summary>
+    /// Create a new binding by applying this parametrized binding to an input value source. The created binding will update whenever either this binding or the input source updates.
+    /// </summary>
+    /// <param name="input">The input value source to apply to this binding.</param>
+    /// <returns>The created binding.</returns>
+    public Binding<TOut> Apply(IValueSource<TIn> input)
+    {
+        return new Binding<TOut>(() => getter(input.GetValue()), setter: null, [this, input]);
+    }
+    
+    /// <summary>
+    /// Create a new binding by applying this parametrized binding to a nullable input value source, using a default value when the input source returns <c>null</c>. The created binding will update whenever either this binding or the input source updates.
+    /// </summary>
+    /// <param name="input">The nullable input value source to apply to this binding.</param>
+    /// <param name="defaultInput">The default value to use when the input source returns <c>null</c>.</param>
+    /// <returns>The created binding.</returns>
+    public Binding<TOut> Apply(IValueSource<TIn?> input, TIn defaultInput)
+    {
+        return new Binding<TOut>(() => getter(input.GetValue() ?? defaultInput), setter: null, [this, input]);
+    }
+    
+    /// <summary>
+    /// Create a new binding by applying this parametrized binding to a nullable input value source, using a default output value when the input source returns <c>null</c>. The created binding will update whenever either this binding or the input source updates.
+    /// </summary>
+    /// <param name="input">The nullable input value source to apply to this binding.</param>
+    /// <param name="defaultOutput">The default value to return when the input source returns <c>null</c>.</param>
+    /// <returns>The created binding.</returns>
+    public Binding<TOut> ApplyOr(IValueSource<TIn?> input, TOut defaultOutput)
+    {
+        return new Binding<TOut>(() => {
+            TIn? inputValue = input.GetValue();
+            return inputValue != null ? getter(inputValue) : defaultOutput;
+        }, setter: null, [this, input]);
+    }
+    
+    /// <summary>
+    /// Create a new binding by applying this parametrized binding to a constant input value. The created binding will update whenever this binding updates.
+    /// </summary>
+    /// <param name="input">The constant input value to apply to this binding.</param>
+    /// <returns>The created binding.</returns>
+    public Binding<TOut> Apply(TIn input)
+    {
+        return new Binding<TOut>(() => getter(input), setter: null, [this]);
     }
     
     /// <inheritdoc/>

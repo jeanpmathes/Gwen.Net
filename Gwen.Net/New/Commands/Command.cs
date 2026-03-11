@@ -36,9 +36,9 @@ public static class Command
     
     private class SucceededExecution : ICommandExecution
     {
-        public ReadOnlySlot<Status> Status { get; } = new(Commands.Status.Succeeded);
+        public IValueSource<Status> Status { get; } = new Slot<Status>(Commands.Status.Succeeded);
         
-        public ReadOnlySlot<Single>? Progress => null;
+        public IValueSource<Single>? Progress => null;
 
         public void Dispose()
         {

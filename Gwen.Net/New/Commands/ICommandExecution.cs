@@ -11,10 +11,10 @@ public interface ICommandExecution : IDisposable
     /// <summary>
     /// The status of the command execution.
     /// </summary>
-    public ReadOnlySlot<Status> Status { get; }
+    public IValueSource<Status> Status { get; }
     
     /// <summary>
     /// The progress of the command execution, as a value between 0 and 1. Null if the command does not report progress.
     /// </summary>
-    public ReadOnlySlot<Single>? Progress { get; }
+    public IValueSource<Single>? Progress { get; }
 }

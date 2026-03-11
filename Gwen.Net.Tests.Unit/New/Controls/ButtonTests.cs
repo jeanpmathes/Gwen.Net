@@ -1,5 +1,8 @@
 using System.Drawing;
+using Gwen.Net.New;
+using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Commands;
 using Gwen.Net.New.Input;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Visuals;
@@ -24,10 +27,10 @@ public sealed class ButtonTests : ControlTestBase<Button<String>>, IDisposable
 
         button = new Button<String>();
         command = new MockCommand();
-        
+
         button.Command.Value = command;
         button.Content.Value = "Click me";
-        
+
         canvas.Child = button;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
         canvas.Render();
@@ -112,11 +115,57 @@ public sealed class ButtonTests : ControlTestBase<Button<String>>, IDisposable
 
         Assert.Null(focused);
     }
-    
+
     [Fact]
     public void ReturnKey_ExecutesCommand()
     {
         translator.KeyDown(button, Key.Return);
+
+        Assert.Equal(expected: 1, command.ExecuteCount);
+    }
+
+    [Fact]
+    public void Command_WhenCanExecuteIsFalse_DisablesButton()
+    {
+        command.SetCanExecute(false);
+
+        Assert.Equal(Enablement.Disabled, button.Enablement.GetValue());
+
+        translator.Click(button);
+        Assert.Equal(expected: 0, command.ExecuteCount);
+    }
+
+    [Fact]
+    public void Content_ClearIsPressedWhenNull()
+    {
+        translator.PointerButtonDown(button);
+        button.Content.Value = null;
+
+        Assert.False(button.IsPressed.GetValue());
+        Assert.Equal(expected: 0, command.ExecuteCount);
+    }
+
+    [Fact]
+    public void Click_WithCommandThatHoldsExecution_SetsIsPressedUntilExecutionCompletes()
+    {
+        command.HoldExecutionCompletion();
+
+        translator.Click(button);
+
+        Assert.True(button.IsPressed.GetValue());
+
+        command.CompleteExecution();
+
+        Assert.False(button.IsPressed.GetValue());
+    }
+
+    [Fact]
+    public void Click_WithCommandThatHoldsExecution_IgnoresSubsequentClicks()
+    {
+        command.HoldExecutionCompletion();
+
+        translator.Click(button);
+        translator.Click(button);
 
         Assert.Equal(expected: 1, command.ExecuteCount);
     }

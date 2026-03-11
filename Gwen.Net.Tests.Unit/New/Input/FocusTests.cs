@@ -13,7 +13,7 @@ namespace Gwen.Net.Tests.Unit.New.Input;
 public sealed class FocusTests
 {
     private readonly Focus focus = new((_, _) => {});
-    
+
     [Fact]
     public void Set_Visual_GetFocusedReturnsIt()
     {
@@ -90,7 +90,7 @@ public sealed class FocusTests
 
         Assert.Same(control.Visualization.GetValue(), focus.GetFocused());
     }
-    
+
     [Fact]
     public void Set_HiddenControl_DoesNotThrowAndDoesNotFocus()
     {
@@ -178,7 +178,7 @@ public sealed class FocusTests
 
         Assert.Equal(expected: 0, callbackCount);
     }
-    
+
     [Fact]
     public void Clear_InvokesCallbackIfFocused()
     {
@@ -250,6 +250,7 @@ public sealed class FocusTests
         Focus callbackFocus = new((_, _) => callbackCount++);
 
         using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -262,11 +263,12 @@ public sealed class FocusTests
 
         Assert.True(callbackCount >= 1);
     }
-    
+
     [Fact]
     public void Focus_IsClearedWhenControlIsHidden()
     {
         using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -279,11 +281,12 @@ public sealed class FocusTests
 
         Assert.Null(focus.GetFocused());
     }
-    
+
     [Fact]
     public void Focus_IsClearedWhenVisualIsHidden()
     {
         using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -293,6 +296,42 @@ public sealed class FocusTests
         Assert.NotNull(focus.GetFocused());
 
         control.Visualization.GetValue()?.Visibility.Value = Visibility.Hidden;
+
+        Assert.Null(focus.GetFocused());
+    }
+
+    [Fact]
+    public void Focus_IsClearedWhenControlIsDisabled()
+    {
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        focus.Set(control);
+        Assert.NotNull(focus.GetFocused());
+
+        control.Enablement.Value = Enablement.Disabled;
+
+        Assert.Null(focus.GetFocused());
+    }
+
+    [Fact]
+    public void Focus_IsClearedWhenVisualIsDisabled()
+    {
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        focus.Set(control);
+        Assert.NotNull(focus.GetFocused());
+
+        control.Visualization.GetValue()?.Enablement.Value = Enablement.Disabled;
 
         Assert.Null(focus.GetFocused());
     }

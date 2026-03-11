@@ -21,7 +21,7 @@ public sealed class InputHandlerTests : IDisposable
         canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         translator = new MockInputTranslator(canvas);
 
-        MockControl control = new MockControl();
+        MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
         canvas.Render();
@@ -58,6 +58,18 @@ public sealed class InputHandlerTests : IDisposable
     }
 
     [Fact]
+    public void PointerButtonDown_WhenVisualIsDisabled_DoesNotDeliverEvent()
+    {
+        InputEvent? received = null;
+        childVisual.OnInputHandler = e => received = e;
+
+        childVisual.Enablement.Value = Enablement.Disabled;
+        translator.PointerButtonDown(new PointF(x: 100f, y: 100f));
+
+        Assert.Null(received);
+    }
+
+    [Fact]
     public void PointerButtonDown_OutsideBounds_DoesNotDeliverEvent()
     {
         InputEvent? received = null;
@@ -71,7 +83,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void PointerButtonDown_EventTunnelsThenBubbles()
     {
-        List<String> order = new List<String>();
+        List<String> order = [];
 
         childVisual.OnInputPreviewHandler = _ => order.Add("tunnel");
         childVisual.OnInputHandler = _ => order.Add("bubble");
@@ -142,9 +154,9 @@ public sealed class InputHandlerTests : IDisposable
     public void PointerButtonDown_NestedHierarchy_HitsDeepestChild()
     {
         using Canvas nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        MockInputTranslator nestedTranslator = new MockInputTranslator(nestedCanvas);
+        MockInputTranslator nestedTranslator = new(nestedCanvas);
 
-        NestedMockControl control = new NestedMockControl();
+        NestedMockControl control = new();
         nestedCanvas.Child = control;
         nestedCanvas.SetRenderingSize(new Size(width: 500, height: 500));
         nestedCanvas.Render();
@@ -162,9 +174,9 @@ public sealed class InputHandlerTests : IDisposable
     public void PointerButtonDown_NestedHierarchy_BubblesToParent()
     {
         using Canvas nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        MockInputTranslator nestedTranslator = new MockInputTranslator(nestedCanvas);
+        MockInputTranslator nestedTranslator = new(nestedCanvas);
 
-        NestedMockControl control = new NestedMockControl();
+        NestedMockControl control = new();
         nestedCanvas.Child = control;
         nestedCanvas.SetRenderingSize(new Size(width: 500, height: 500));
         nestedCanvas.Render();
@@ -176,7 +188,7 @@ public sealed class InputHandlerTests : IDisposable
 
         Assert.True(receivedByOuter);
     }
-    
+
     [Fact]
     public void Tab_OnEmptyCanvas_DoesNotSetFocus()
     {
@@ -315,7 +327,7 @@ public sealed class InputHandlerTests : IDisposable
 
         Assert.False(localControl.A!.IsKeyboardFocused.GetValue());
     }
-    
+
     [Fact]
     public void Tab_SkipsCollapsedVisuals()
     {
@@ -327,6 +339,24 @@ public sealed class InputHandlerTests : IDisposable
         localCanvas.Render();
 
         localControl.B!.Visibility.Value = Visibility.Collapsed;
+
+        localTranslator.KeyDown(Key.Tab);
+        localTranslator.KeyDown(Key.Tab);
+
+        Assert.Same(localControl.C, localCanvas.Input!.KeyboardFocus.GetFocused());
+    }
+
+    [Fact]
+    public void Tab_SkipsDisabledVisuals()
+    {
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator localTranslator = new(localCanvas);
+        MultipleNavigableControl localControl = new();
+        localCanvas.Child = localControl;
+        localCanvas.SetRenderingSize(new Size(width: 500, height: 500));
+        localCanvas.Render();
+
+        localControl.B!.Enablement.Value = Enablement.Disabled;
 
         localTranslator.KeyDown(Key.Tab);
         localTranslator.KeyDown(Key.Tab);
