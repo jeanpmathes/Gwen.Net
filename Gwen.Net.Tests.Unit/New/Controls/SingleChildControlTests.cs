@@ -10,7 +10,7 @@ public class SingleChildControlTests
     [Fact]
     public void Child_IsNull_ByDefault()
     {
-        var control = new MockControl();
+        MockControl control = new MockControl();
         
         Assert.Null(control.Child);
         Assert.Empty(control.Children);
@@ -19,9 +19,9 @@ public class SingleChildControlTests
     [Fact]
     public void Child_ReplacesPreviousChild()
     {
-        var control = new MockControl();
-        var firstChild = new MockControl();
-        var secondChild = new MockControl();
+        MockControl control = new MockControl();
+        MockControl firstChild = new MockControl();
+        MockControl secondChild = new MockControl();
         
         control.Child = firstChild;
         Assert.Equal(firstChild, control.Child);

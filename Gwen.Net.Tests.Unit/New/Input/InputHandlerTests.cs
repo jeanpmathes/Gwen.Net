@@ -21,7 +21,7 @@ public sealed class InputHandlerTests : IDisposable
         canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         translator = new MockInputTranslator(canvas);
 
-        var control = new MockControl();
+        MockControl control = new MockControl();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
         canvas.Render();
@@ -71,7 +71,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void PointerButtonDown_EventTunnelsThenBubbles()
     {
-        var order = new List<String>();
+        List<String> order = new List<String>();
 
         childVisual.OnInputPreviewHandler = _ => order.Add("tunnel");
         childVisual.OnInputHandler = _ => order.Add("bubble");
@@ -84,7 +84,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void PointerButtonDown_HandledInPreview_DoesNotBubble()
     {
-        var bubbled = false;
+        Boolean bubbled = false;
 
         childVisual.OnInputPreviewHandler = e => e.Handled = true;
         childVisual.OnInputHandler = _ => bubbled = true;
@@ -141,10 +141,10 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void PointerButtonDown_NestedHierarchy_HitsDeepestChild()
     {
-        using var nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        var nestedTranslator = new MockInputTranslator(nestedCanvas);
+        using Canvas nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator nestedTranslator = new MockInputTranslator(nestedCanvas);
 
-        var control = new NestedMockControl();
+        NestedMockControl control = new NestedMockControl();
         nestedCanvas.Child = control;
         nestedCanvas.SetRenderingSize(new Size(width: 500, height: 500));
         nestedCanvas.Render();
@@ -161,15 +161,15 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void PointerButtonDown_NestedHierarchy_BubblesToParent()
     {
-        using var nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        var nestedTranslator = new MockInputTranslator(nestedCanvas);
+        using Canvas nestedCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        MockInputTranslator nestedTranslator = new MockInputTranslator(nestedCanvas);
 
-        var control = new NestedMockControl();
+        NestedMockControl control = new NestedMockControl();
         nestedCanvas.Child = control;
         nestedCanvas.SetRenderingSize(new Size(width: 500, height: 500));
         nestedCanvas.Render();
 
-        var receivedByOuter = false;
+        Boolean receivedByOuter = false;
         control.OuterVisual!.OnInputHandler = _ => receivedByOuter = true;
 
         nestedTranslator.PointerButtonDown(new PointF(x: 50f, y: 50f));
@@ -180,7 +180,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_OnEmptyCanvas_DoesNotSetFocus()
     {
-        using var emptyCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas emptyCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator emptyTranslator = new(emptyCanvas);
         emptyCanvas.SetRenderingSize(new Size(width: 500, height: 500));
         emptyCanvas.Render();
@@ -209,7 +209,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_WithSingleNavigable_FocusesIt()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         SingleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -224,7 +224,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_Forward_MovesFocusToNext()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -240,7 +240,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_Backward_MovesFocusToPrevious()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -256,7 +256,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_ForwardFromLast_WrapsToFirst()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -272,7 +272,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void ShiftTab_BackwardFromFirst_WrapsToLast()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -288,7 +288,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_FocusedVisual_IsKeyboardFocused()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -303,7 +303,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_PreviouslyFocusedVisual_IsNoLongerKeyboardFocused()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;
@@ -319,7 +319,7 @@ public sealed class InputHandlerTests : IDisposable
     [Fact]
     public void Tab_SkipsCollapsedVisuals()
     {
-        using var localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas localCanvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator localTranslator = new(localCanvas);
         MultipleNavigableControl localControl = new();
         localCanvas.Child = localControl;

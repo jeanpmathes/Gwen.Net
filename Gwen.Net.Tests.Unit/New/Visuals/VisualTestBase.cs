@@ -13,9 +13,9 @@ public abstract class VisualTestBase<TVisual>(Func<TVisual> factory) where TVisu
     [Fact]
     public void Visual_CanBeUsed()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         
-        var isCreated = false;
+        Boolean isCreated = false;
         canvas.Child = new MockControl(() =>
         {
             isCreated = true;

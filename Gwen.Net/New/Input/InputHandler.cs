@@ -56,7 +56,7 @@ public sealed class InputHandler : IDisposable
     {
         Visual current = root;
         
-        if (!current.Visibility.GetValue().IsVisible)
+        if (!CanReceiveInput(current))
             return null;
         
         if (!current.Bounds.Contains(point)) 
@@ -64,13 +64,13 @@ public sealed class InputHandler : IDisposable
         
         while (true)
         {
-            var foundChild = false;
+            Boolean foundChild = false;
             
             for (Int32 index = current.Children.Count - 1; index >= 0; index--)
             {
                 Visual child = current.Children[index];
                 
-                if (!child.Visibility.GetValue().IsVisible) 
+                if (!CanReceiveInput(child))
                     continue;
 
                 if (!child.Bounds.Contains(child.RootPointToLocal(point))) 
@@ -86,6 +86,11 @@ public sealed class InputHandler : IDisposable
                 return current;
         }
     }
+    
+    private static Boolean CanReceiveInput(Visual visual)
+    {
+        return visual.Enablement.GetValue().CanReceiveInput && visual.Visibility.GetValue().IsVisible;
+    }
 
     private Visual? GetKeyboardTarget()
     {
@@ -99,9 +104,9 @@ public sealed class InputHandler : IDisposable
 
     private static void HandleEvent(InputEvent inputEvent)
     {
-        using var route = Route.Create(inputEvent.Target);
+        using Route route = Route.Create(inputEvent.Target);
 
-        for (var index = 0; index < route.Count; index++)
+        for (Int32 index = 0; index < route.Count; index++)
         {
             Visual visual = route.GetFromTop(index);
             
@@ -111,7 +116,7 @@ public sealed class InputHandler : IDisposable
             if (inputEvent.Handled) return;
         }
         
-        for (var index = 0; index < route.Count; index++)
+        for (Int32 index = 0; index < route.Count; index++)
         {
             Visual visual = route.GetFromBottom(index);
             
@@ -192,7 +197,7 @@ public sealed class InputHandler : IDisposable
         if (visual == hoveredVisual) 
             return;
         
-        var newHoverRoute = Route.Create(visual);
+        Route newHoverRoute = Route.Create(visual);
         Int32 firstDifferentIndex = Route.FindFirstDifferenceFromTop(hoverRoute, newHoverRoute);
 
         for (Int32 index = firstDifferentIndex; index < hoverRoute.Count; index++)
@@ -301,7 +306,7 @@ public sealed class InputHandler : IDisposable
     
     private static Boolean CanMoveFocusTo(Visual visual)
     {
-        return visual.IsNavigable.GetValue() && visual.Visibility.GetValue().IsVisible;
+        return visual.Enablement.GetValue().IsFocusable && visual.IsNavigable.GetValue() && visual.Visibility.GetValue().IsVisible;
     }
 
     /// <inheritdoc/>

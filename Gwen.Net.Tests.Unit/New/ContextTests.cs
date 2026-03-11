@@ -14,7 +14,7 @@ public class ContextTests
         Style style1 = null!;
         Style style2 = null!;
         
-        var context = Context.Create(registry =>
+        Context context = Context.Create(registry =>
         {
             style1 = registry.AddStyle<Control>(builder => builder.Set(c => c.MinimumWidth, value: 10f));
             style2 = registry.AddStyle<MockControl>(builder => builder.Set(c => c.MinimumWidth, value: 20f));
@@ -32,14 +32,14 @@ public class ContextTests
     {
         Style style = null!;
         
-        var parentContext = Context.Create(registry =>
+        Context parentContext = Context.Create(registry =>
         {
             style = registry.AddStyle<MockControl>(builder => builder.Set(c => c.MinimumWidth, value: 20f));
         });
 
-        var childContext = Context.Default;
+        Context childContext = Context.Default;
         
-        var context = new Context(childContext, parentContext);
+        Context context = new Context(childContext, parentContext);
         IReadOnlyList<IStyle<MockControl>> styles = context.GetStyling<MockControl>();
         
         Assert.Single(styles);
@@ -51,7 +51,7 @@ public class ContextTests
     {
         Style parentStyle = null!;
         
-        var parentContext = Context.Create(registry =>
+        Context parentContext = Context.Create(registry =>
         {
             registry.AddStyle<Control>(builder => builder.Set(c => c.MinimumWidth, value: 10f));
             parentStyle = registry.AddStyle<MockControl>(builder => builder.Set(c => c.MinimumWidth, value: 20f));
@@ -59,12 +59,12 @@ public class ContextTests
         
         Style childStyle = null!;
         
-        var childContext = Context.Create(registry =>
+        Context childContext = Context.Create(registry =>
         {
             childStyle = registry.AddStyle<Control>(builder => builder.Set(c => c.MinimumWidth, value: 30f));
         });
         
-        var context = new Context(childContext, parentContext);
+        Context context = new Context(childContext, parentContext);
         IReadOnlyList<IStyle<MockControl>> styles = context.GetStyling<MockControl>();
         
         Assert.Equal(expected: 2, styles.Count);
@@ -77,7 +77,7 @@ public class ContextTests
     {
         Style parentStyle1 = null!;
 
-        var parentContext = Context.Create(registry =>
+        Context parentContext = Context.Create(registry =>
         {
             parentStyle1 = registry.AddStyle<Control>(builder => builder.Set(c => c.MinimumWidth, value: 10f));
             registry.AddStyle<MockControl>(builder => builder.Set(c => c.MinimumWidth, value: 20f));
@@ -85,12 +85,12 @@ public class ContextTests
         
         Style childStyle = null!;
         
-        var childContext = Context.Create(registry =>
+        Context childContext = Context.Create(registry =>
         {
             childStyle = registry.AddStyle<MockControl>(builder => builder.Set(c => c.MinimumWidth, value: 30f));
         });
         
-        var context = new Context(childContext, parentContext);
+        Context context = new Context(childContext, parentContext);
         IReadOnlyList<IStyle<MockControl>> styles = context.GetStyling<MockControl>();
         
         Assert.Equal(expected: 2, styles.Count);
@@ -103,7 +103,7 @@ public class ContextTests
     {
         ContentTemplate<String>? template = null;
         
-        var context = Context.Create(registry =>
+        Context context = Context.Create(registry =>
         {
             template = registry.AddContentTemplate<String>(_ => new MockControl());
         });
@@ -116,7 +116,7 @@ public class ContextTests
     [Fact]
     public void GetContentTemplate_DoesNotReturnTemplateOfMoreGeneralType()
     {
-        var context = Context.Create(registry =>
+        Context context = Context.Create(registry =>
         {
             registry.AddContentTemplate<Object>(_ => new MockControl());
         });
@@ -131,14 +131,14 @@ public class ContextTests
     {
         ContentTemplate<String>? template = null;
         
-        var parentContext = Context.Create(registry =>
+        Context parentContext = Context.Create(registry =>
         {
             template = registry.AddContentTemplate<String>(_ => new MockControl());
         });
 
-        var childContext = Context.Default;
+        Context childContext = Context.Default;
         
-        var context = new Context(childContext, parentContext);
+        Context context = new Context(childContext, parentContext);
         IContentTemplate<String> result = context.GetContentTemplate<String>();
         
         Assert.Same(template, result);

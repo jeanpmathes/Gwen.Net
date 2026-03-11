@@ -62,7 +62,7 @@ public static class UnitTestHarnessView
                                 Content = {Value = "Click Me"},
 
                                 Margin = {Value = new ThicknessF(30)},
-
+                                
                                 Command = {Value = Command.FromAction(() => Console.WriteLine("Button clicked!"))}
                             },
                             new Button<String>

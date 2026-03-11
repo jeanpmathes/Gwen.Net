@@ -15,9 +15,9 @@ public class BindingTests
     [Fact]
     public void BindTo_WithSingleSource_EqualDependencyValue_DoesNotRaiseValueChanged()
     {
-        var source = new Slot<Int32>(3);
+        Slot<Int32> source = new Slot<Int32>(3);
         Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
-        var events = 0;
+        Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
 
         source.SetValue(3);
@@ -29,9 +29,9 @@ public class BindingTests
     [Fact]
     public void BindTo_WithSingleSource_ReactsToDependencyChanges()
     {
-        var source = new Slot<Int32>(3);
+        Slot<Int32> source = new Slot<Int32>(3);
         Binding<Int32> binding = Binding.To(source).Compute(value => value * 2);
-        var events = 0;
+        Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
 
         source.SetValue(5);
@@ -43,10 +43,10 @@ public class BindingTests
     [Fact]
     public void BindTo_WithTwoSources_ReactsToDependencyChanges()
     {
-        var source1 = new Slot<Int32>(3);
-        var source2 = new Slot<Int32>(4);
+        Slot<Int32> source1 = new Slot<Int32>(3);
+        Slot<Int32> source2 = new Slot<Int32>(4);
         Binding<Int32> binding = Binding.To(source1, source2).Compute((v1, v2) => v1 * v2);
-        var events = 0;
+        Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
 
         source1.SetValue(5);
@@ -63,11 +63,11 @@ public class BindingTests
     [Fact]
     public void BindTo_WithThreeSources_ReactsToDependencyChanges()
     {
-        var source1 = new Slot<Int32>(2);
-        var source2 = new Slot<Int32>(3);
-        var source3 = new Slot<Int32>(4);
+        Slot<Int32> source1 = new Slot<Int32>(2);
+        Slot<Int32> source2 = new Slot<Int32>(3);
+        Slot<Int32> source3 = new Slot<Int32>(4);
         Binding<Int32> binding = Binding.To(source1, source2, source3).Compute((v1, v2, v3) => v1 * v2 * v3);
-        var events = 0;
+        Int32 events = 0;
         binding.ValueChanged += (_, _) => events++;
 
         source1.SetValue(5);
@@ -116,7 +116,7 @@ public class BindingTests
     {
         Slot<Int32> outer = new(0);
         Slot<Int32> inner = new(0);
-        var events = 0;
+        Int32 events = 0;
 
         Binding<Int32> binding = Binding.To(outer).Select(_ => inner);
         binding.ValueChanged += (_, _) => events++;
@@ -133,7 +133,7 @@ public class BindingTests
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
-        var events = 0;
+        Int32 events = 0;
 
         Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
         binding.ValueChanged += (_, _) => events++;
@@ -149,7 +149,7 @@ public class BindingTests
         Slot<Int32> outer = new(0);
         Slot<Int32> inner1 = new(10);
         Slot<Int32> inner2 = new(20);
-        var events = 0;
+        Int32 events = 0;
 
         Binding<Int32> binding = Binding.To(outer).Select(v => v == 0 ? inner1 : inner2);
 

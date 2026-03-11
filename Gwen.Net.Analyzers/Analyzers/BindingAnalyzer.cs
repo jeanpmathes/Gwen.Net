@@ -39,7 +39,7 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
         if (context.SemanticModel.GetSymbolInfo(invocationSyntax).Symbol is not IMethodSymbol methodSymbol)
             return;
 
-        if (!IsContainingTypeBindingType(methodSymbol) && !IsReceiverBindingType(invocationSyntax, context.SemanticModel))
+        if (!IsContainingTypeBindingType(methodSymbol) && !IsReceiverTypeBindingType(invocationSyntax, context.SemanticModel))
             return; 
 
         foreach (ArgumentSyntax argument in invocationSyntax.ArgumentList.Arguments)
@@ -56,7 +56,7 @@ public sealed class BindingAnalyzer : DiagnosticAnalyzer
         return IsBindingType(methodSymbol.ContainingType);
     }
     
-    private static Boolean IsReceiverBindingType(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
+    private static Boolean IsReceiverTypeBindingType(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
     {
         if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
             return false;

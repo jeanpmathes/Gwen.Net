@@ -15,11 +15,11 @@ public class ControlTests
     [Fact]
     public void ContextStyle_IsAppliedWhenControlGetsVisualized()
     {
-        using var registry = new ResourceRegistry();
+        using ResourceRegistry registry = new ResourceRegistry();
         registry.AddStyle<Border>(builder => builder.Set(c => c.MinimumWidth, value: 25f));
 
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
-        var border = new Border();
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
+        Border border = new Border();
 
         canvas.Child = border;
 
@@ -29,11 +29,11 @@ public class ControlTests
     [Fact]
     public void LocalStyle_IsAppliedAfterOuterStyles()
     {
-        using var registry = new ResourceRegistry();
+        using ResourceRegistry registry = new ResourceRegistry();
         registry.AddStyle<Border>(builder => builder.Set(c => c.MinimumWidth, value: 50f));
 
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
-        var border = new Border
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
+        Border border = new Border
         {
             Style =
             {
@@ -49,12 +49,12 @@ public class ControlTests
     [Fact]
     public void ChangingTemplate_RevisualizesControlWithNewTemplate()
     {
-        using var registry = new ResourceRegistry();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using ResourceRegistry registry = new ResourceRegistry();
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
-        var control = new MockControl();
-        var template1Calls = 0;
-        var template2Calls = 0;
+        MockControl control = new MockControl();
+        Int32 template1Calls = 0;
+        Int32 template2Calls = 0;
 
         control.Template.Value = ControlTemplate.Create<MockControl>(_ =>
         {
@@ -77,7 +77,7 @@ public class ControlTests
     [Fact]
     public void Visibility_WhenParentIsHidden_IsCoercedToHidden()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl child = new();
         canvas.Child = child;
 
@@ -97,7 +97,7 @@ public class ControlTests
     [Fact]
     public void IsHovered_WhenPointerMovesOver_ReturnsTrue()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator translator = new(canvas);
 
         MockControl control = new();
@@ -113,7 +113,7 @@ public class ControlTests
     [Fact]
     public void IsHovered_WhenPointerMovesOff_ReturnsFalse()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockInputTranslator translator = new(canvas);
 
         MockControl control = new();

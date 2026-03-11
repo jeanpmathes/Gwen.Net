@@ -16,7 +16,7 @@ public class ChildPresenterTests() : VisualTestBase<ChildPresenter>(() => new Ch
     public void OnAttach_WithoutChild_IsCollapsed()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         ControlBorder control = new();
 
@@ -33,7 +33,7 @@ public class ChildPresenterTests() : VisualTestBase<ChildPresenter>(() => new Ch
     public void ChildAddedAndRemoved_TogglesVisibility()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         ControlBorder control = new();
 
@@ -54,7 +54,7 @@ public class ChildPresenterTests() : VisualTestBase<ChildPresenter>(() => new Ch
 
     private static ChildPresenter GetPresenter(ControlBorder control)
     {
-        var rootVisualization = Assert.IsType<BorderVisual>(control.Visualization.GetValue());
+        BorderVisual rootVisualization = Assert.IsType<BorderVisual>(control.Visualization.GetValue());
         return Assert.IsType<ChildPresenter>(rootVisualization.Child);
     }
 }

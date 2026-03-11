@@ -795,7 +795,7 @@ namespace Gwen.Net.Legacy.Control
             }
 
             // The ideal position is for the caret to be right in the middle
-            var idealx = (Int32) (-caretPos + scrollArea.ActualWidth * 0.5f);
+            Int32 idealx = (Int32) (-caretPos + scrollArea.ActualWidth * 0.5f);
 
             // Don't show too much whitespace to the right
             if (idealx + text.MeasuredSize.Width < viewSize.Width)

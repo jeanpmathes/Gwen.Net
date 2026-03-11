@@ -8,8 +8,8 @@ public class BrushTests
     [Fact]
     public void TransparentBrush_IsEqualToAllOtherInstances()
     {
-        var brush1 = new TransparentBrush();
-        var brush2 = new TransparentBrush();
+        TransparentBrush brush1 = new TransparentBrush();
+        TransparentBrush brush2 = new TransparentBrush();
 
         Assert.True(brush1.Equals(brush2));
     }
@@ -17,8 +17,8 @@ public class BrushTests
     [Fact]
     public void TransparentBrush_GetHashCode_ReturnsSameValueForAllInstances()
     {
-        var brush1 = new TransparentBrush();
-        var brush2 = new TransparentBrush();
+        TransparentBrush brush1 = new TransparentBrush();
+        TransparentBrush brush2 = new TransparentBrush();
 
         Assert.Equal(brush1.GetHashCode(), brush2.GetHashCode());
     }
@@ -26,8 +26,8 @@ public class BrushTests
     [Fact]
     public void SolidColorBrush_TwoIndependentInstancesWithSameColor_AreEqual()
     {
-        var first = new SolidColorBrush(Color.Red);
-        var second = new SolidColorBrush(Color.Red);
+        SolidColorBrush first = new SolidColorBrush(Color.Red);
+        SolidColorBrush second = new SolidColorBrush(Color.Red);
 
         Assert.True(first.Equals(second));
     }

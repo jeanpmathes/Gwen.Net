@@ -7,7 +7,7 @@ namespace Gwen.Net.Tests.Unit.New.Visuals;
 
 public class LinearLayoutTests() : VisualTestBase<LinearLayout>(() => new LinearLayout())
 {
-    private MockLinearLayout CreateLinearLayout() => new() {Visibility = {Value = Visibility.Visible}};
+    private static MockLinearLayout CreateLinearLayout() => new() {Visibility = {Value = Visibility.Visible}};
     
     [Fact]
     public void Measure_Horizontal_NoChildren_ReturnsMinimumSize()

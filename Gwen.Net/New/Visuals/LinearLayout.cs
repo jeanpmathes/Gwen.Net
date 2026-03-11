@@ -32,7 +32,7 @@ public class LinearLayout : Layout
     /// <inheritdoc />
     public override SizeF OnMeasure(SizeF availableSize)
     {
-        var desiredSize = SizeF.Empty;
+        SizeF desiredSize = SizeF.Empty;
 
         SizeF usableSize = availableSize - Padding.GetValue();
         

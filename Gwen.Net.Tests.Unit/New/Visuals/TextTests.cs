@@ -32,8 +32,8 @@ public class TextTests() : VisualTestBase<Gwen.Net.New.Visuals.Text>(() => new G
     [Fact]
     public void TextVisual_CreatesFormattedTextOnAttach()
     {
-        var renderer = new TrackingRenderer();
-        var canvas = Canvas.Create(renderer, new ResourceRegistry());
+        TrackingRenderer renderer = new TrackingRenderer();
+        Canvas canvas = Canvas.Create(renderer, new ResourceRegistry());
         canvas.Child = new Text();
 
         Assert.NotNull(renderer.LastCreatedText);
@@ -43,8 +43,8 @@ public class TextTests() : VisualTestBase<Gwen.Net.New.Visuals.Text>(() => new G
     [Fact]
     public void TextVisual_DisposesFormattedTextOnDetach()
     {
-        var renderer = new TrackingRenderer();
-        var canvas = Canvas.Create(renderer, new ResourceRegistry());
+        TrackingRenderer renderer = new TrackingRenderer();
+        Canvas canvas = Canvas.Create(renderer, new ResourceRegistry());
         canvas.Child = new Text();
 
         TrackableFormattedText formattedText = renderer.LastCreatedText!;
@@ -57,9 +57,9 @@ public class TextTests() : VisualTestBase<Gwen.Net.New.Visuals.Text>(() => new G
     [Fact]
     public void TextVisual_DisposesOldFormattedTextOnContentChange()
     {
-        var renderer = new TrackingRenderer();
-        var canvas = Canvas.Create(renderer, new ResourceRegistry());
-        var control = new Text { Content = { Value = "initial" } };
+        TrackingRenderer renderer = new TrackingRenderer();
+        Canvas canvas = Canvas.Create(renderer, new ResourceRegistry());
+        Text control = new Text { Content = { Value = "initial" } };
         canvas.Child = control;
 
         TrackableFormattedText first = renderer.LastCreatedText!;
@@ -72,9 +72,9 @@ public class TextTests() : VisualTestBase<Gwen.Net.New.Visuals.Text>(() => new G
     [Fact]
     public void TextVisual_CreatesNewFormattedTextOnContentChange()
     {
-        var renderer = new TrackingRenderer();
-        var canvas = Canvas.Create(renderer, new ResourceRegistry());
-        var control = new Text { Content = { Value = "initial" } };
+        TrackingRenderer renderer = new TrackingRenderer();
+        Canvas canvas = Canvas.Create(renderer, new ResourceRegistry());
+        Text control = new Text { Content = { Value = "initial" } };
         canvas.Child = control;
 
         TrackableFormattedText first = renderer.LastCreatedText!;

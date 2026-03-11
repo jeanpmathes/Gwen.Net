@@ -6,8 +6,11 @@ namespace Gwen.Net.New.Bindings;
 /// A read-only slot stores a value that can be retrieved and subscribed to for changes, but not set externally.
 /// </summary>
 /// <typeparam name="T">The type of value stored in the slot.</typeparam>
-public class ReadOnlySlot<T> : IValueSource<T>
+public class ReadOnlySlot<T> : IValueSource<T> 
 {
+    // todo: maybe remove ReadOnlySlot and just use IValueSource<T> everywhere, move code down to Slot<T>
+    // todo: maybe the same can be done for the list slot as well
+    
     private T value;
     
     /// <summary>

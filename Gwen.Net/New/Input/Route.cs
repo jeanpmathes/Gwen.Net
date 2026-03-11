@@ -94,7 +94,7 @@ public sealed class Route : IDisposable
     {
         Int32 lowerCount = Math.Min(route1.Count, route2.Count);
         
-        for (var index = 0; index < lowerCount; index++)
+        for (Int32 index = 0; index < lowerCount; index++)
         {
             if (route1.GetFromTop(index) != route2.GetFromTop(index))
                 return index;

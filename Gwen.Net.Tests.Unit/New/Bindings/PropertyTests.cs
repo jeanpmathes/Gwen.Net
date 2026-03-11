@@ -8,8 +8,8 @@ public class PropertyTests
     [Fact]
     public void GetValue_WhenInactive_ReflectsCurrentBindingValue()
     {
-        var owner = new MockControl();
-        var source = new Slot<Int32>(10);
+        MockControl owner = new MockControl();
+        Slot<Int32> source = new Slot<Int32>(10);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
@@ -21,12 +21,12 @@ public class PropertyTests
     [Fact]
     public void ActiveProperty_RaisesValueChangedOnlyForActualValueChange()
     {
-        var owner = new MockControl();
-        var source = new Slot<Int32>(2);
+        MockControl owner = new MockControl();
+        Slot<Int32> source = new Slot<Int32>(2);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
-        var events = 0;
+        Int32 events = 0;
         property.ValueChanged += (_, _) => events++;
 
         property.Activate();
@@ -40,12 +40,12 @@ public class PropertyTests
     [Fact]
     public void Deactivate_UnsubscribesFromBindingNotifications()
     {
-        var owner = new MockControl();
-        var source = new Slot<Int32>(1);
+        MockControl owner = new MockControl();
+        Slot<Int32> source = new Slot<Int32>(1);
         Property<Int32> property = Property.Create(owner, defaultValue: 0);
         property.Binding = Binding.To(source);
 
-        var events = 0;
+        Int32 events = 0;
         property.ValueChanged += (_, _) => events++;
 
         property.Activate(); // Only this causes an event.
@@ -59,7 +59,7 @@ public class PropertyTests
     [Fact]
     public void LocalValue_TakesPrecedenceOverStyle()
     {
-        var owner = new MockControl();
+        MockControl owner = new MockControl();
         Property<Int32> property = Property.Create(owner, defaultValue: 1);
 
         property.Style(5);
@@ -71,7 +71,7 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_IsAppliedToDefaultValue()
     {
-        var owner = new MockControl();
+        MockControl owner = new MockControl();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
         Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
 
@@ -81,7 +81,7 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_IsAppliedToLocalValue()
     {
-        var owner = new MockControl();
+        MockControl owner = new MockControl();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
         Property<Int32> property = Property.Create(owner, defaultValue: 0, coercionBinding: clamp);
 
@@ -93,14 +93,14 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_TriggersValueChangedWhenCoercedResultChanges()
     {
-        var owner = new MockControl();
-        var maxSlot = new Slot<Int32>(10);
-        Binding<Int32, Int32> clamp = Binding.To(maxSlot).With<Int32, Int32>((input, max) => Math.Clamp(input, min: 0, max));
+        MockControl owner = new MockControl();
+        Slot<Int32> maxSlot = new Slot<Int32>(10);
+        Binding<Int32, Int32> clamp = Binding.To(maxSlot).Parametrize<Int32, Int32>((input, max) => Math.Clamp(input, min: 0, max));
         Property<Int32> property = Property.Create(owner, defaultValue: 15, coercionBinding: clamp);
 
         property.Activate();
 
-        var events = 0;
+        Int32 events = 0;
         property.ValueChanged += (_, _) => events++;
 
         maxSlot.SetValue(5);
@@ -112,13 +112,13 @@ public class PropertyTests
     [Fact]
     public void CoercionBinding_DoesNotTriggerValueChangedWhenCoercedResultIsUnchanged()
     {
-        var owner = new MockControl();
+        MockControl owner = new MockControl();
         Binding<Int32, Int32> clamp = Binding.Computed<Int32, Int32>(input => Math.Clamp(input, min: 0, max: 3));
         Property<Int32> property = Property.Create(owner, defaultValue: 5, coercionBinding: clamp);
 
         property.Activate();
 
-        var events = 0;
+        Int32 events = 0;
         property.ValueChanged += (_, _) => events++;
 
         property.Value = 7; // Still clamps to 3, no actual change.

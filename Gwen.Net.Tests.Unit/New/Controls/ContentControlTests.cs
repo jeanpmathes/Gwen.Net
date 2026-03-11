@@ -10,8 +10,8 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_WithNullContent_HasNoChild()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
-        var control = new ContentControl<Object>();
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        ContentControl<Object> control = new ContentControl<Object>();
         canvas.Child = control;
         
         Assert.Empty(control.Children);
@@ -20,7 +20,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_WithLocalTemplate_UsesLocalTemplate()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         
         const String contentString = "test content";
         String? templatedContent = null;
@@ -30,7 +30,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
             return new MockControl();
         });
 
-        var control = new ContentControl<String>
+        ContentControl<String> control = new ContentControl<String>
         {
             Content = {Value = contentString},
             ContentTemplate = {Value = template}
@@ -46,7 +46,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_WithContextTemplate_UsesContextTemplate()
     {
-        var registry = new ResourceRegistry();
+        ResourceRegistry registry = new ResourceRegistry();
         
         const String contentString = "test content";
         String? templatedContent = null;
@@ -56,8 +56,8 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
             return new MockControl();
         });
         
-        var canvas = Canvas.Create(new MockRenderer(), registry);
-        var control = new ContentControl<String>
+        Canvas canvas = Canvas.Create(new MockRenderer(), registry);
+        ContentControl<String> control = new ContentControl<String>
         {
             Content = {Value = contentString}
         };
@@ -72,14 +72,14 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_LocalTemplateOverridesContextTemplate()
     {
-        var registry = new ResourceRegistry();
+        ResourceRegistry registry = new ResourceRegistry();
         
         registry.AddContentTemplate<String>(_ => new MockControl("no tok"));
         
-        var canvas = Canvas.Create(new MockRenderer(), registry);
+        Canvas canvas = Canvas.Create(new MockRenderer(), registry);
         
         const String okTag = "ok";
-        var control = new ContentControl<Object>
+        ContentControl<Object> control = new ContentControl<Object>
         {
             Content = {Value = "test content"},
             ContentTemplate = {Value = ContentTemplate.Create<Object>(_ => new MockControl(okTag))}
@@ -87,19 +87,19 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
         canvas.Child = control;
         
         Assert.Single(control.Children);
-        var mockControl = Assert.IsType<MockControl>(control.Children[0]);
+        MockControl mockControl = Assert.IsType<MockControl>(control.Children[0]);
         Assert.Equal(okTag, mockControl.Tag);
     }
 
     [Fact]
     public void ContentControl_ChangingContent_UpdatesChild()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         
         const String firstContent = "first";
         const String secondContent = "second";
         
-        var control = new ContentControl<String>
+        ContentControl<String> control = new ContentControl<String>
         {
             ContentTemplate = {Value = ContentTemplate.Create<String>(content => new MockControl(content)) }
         };
@@ -108,7 +108,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
         control.Content.Value = firstContent;
         
         Assert.Single(control.Children);
-        var mockControl = Assert.IsType<MockControl>(control.Children[0]);
+        MockControl mockControl = Assert.IsType<MockControl>(control.Children[0]);
         Assert.Equal(firstContent, mockControl.Tag);
         
         control.Content.Value = secondContent;
@@ -123,11 +123,11 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_WithStringContent_HasTextElement()
     {
-        var registry = new ResourceRegistry();
+        ResourceRegistry registry = new ResourceRegistry();
         registry.AddContentTemplate<String>(content => new Text { Content = { Value = content } });
 
-        var canvas = Canvas.Create(new MockRenderer(), registry);
-        var control = new ContentControl<String>
+        Canvas canvas = Canvas.Create(new MockRenderer(), registry);
+        ContentControl<String> control = new ContentControl<String>
         {
             Content = { Value = "hello" }
         };
@@ -140,12 +140,12 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
     [Fact]
     public void ContentControl_ChangingContentTemplate_UpdatesChild()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         const String firstContent = "first";
         const String secondContent = "second";
 
-        var control = new ContentControl<String>
+        ContentControl<String> control = new ContentControl<String>
         {
             Content = {Value = "test content"},
             ContentTemplate = {Value = ContentTemplate.Create<String>(_ => new MockControl(firstContent)) }
@@ -154,7 +154,7 @@ public class ContentControlTests() : ControlTestBase<ContentControl<Object>>(() 
         canvas.Child = control;
         
         Assert.Single(control.Children);
-        var mockControl = Assert.IsType<MockControl>(control.Children[0]);
+        MockControl mockControl = Assert.IsType<MockControl>(control.Children[0]);
         Assert.Equal(firstContent, mockControl.Tag);
         
         control.ContentTemplate.Value = ContentTemplate.Create<String>(_ => new MockControl(secondContent));

@@ -17,7 +17,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void OnAttach_VisualizesExistingChildren()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         Control child1 = new MockControl();
@@ -37,7 +37,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void ChildAdded_AfterAttach_VisualizesNewChild()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         canvas.Child = control;
@@ -54,7 +54,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void ChildRemoved_AfterAttach_RemovesVisualization()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         Control child = new MockControl();
@@ -75,7 +75,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void MultipleChildrenAdded_AllVisualized()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         canvas.Child = control;
@@ -93,7 +93,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void AddAndRemoveMultipleChildren_PresenterStaysConsistent()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         canvas.Child = control;
@@ -124,7 +124,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void OnAttach_WithoutChildren_IsCollapsed()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
 
@@ -139,7 +139,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void ChildAddedAndRemoved_TogglesVisibility()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
 
@@ -163,7 +163,7 @@ public class ChildrenPresenterTests() : VisualTestBase<ChildrenPresenter>(() => 
     public void OnDetach_WithChildren_CollapsesPresenter()
     {
         using ResourceRegistry registry = new();
-        using var canvas = Canvas.Create(new MockRenderer(), registry);
+        using Canvas canvas = Canvas.Create(new MockRenderer(), registry);
 
         MockMultiChildControl control = new();
         control.Children.Add(new MockControl());

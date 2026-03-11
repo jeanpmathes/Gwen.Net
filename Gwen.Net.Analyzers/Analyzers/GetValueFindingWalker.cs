@@ -19,7 +19,7 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
     
     public static Location? ContainsGetValueInvocation(ExpressionSyntax expression, SemanticModel semanticModel)
     {
-        var visitor = new GetValueFindingWalker(semanticModel);
+        GetValueFindingWalker visitor = new GetValueFindingWalker(semanticModel);
         
         visitor.Visit(expression);
 
@@ -33,6 +33,42 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
         if (found != null)
             return;
 
+        if (IsGetValueInvocation(invocationExpressionSyntax, semanticModel) || IsGetValue2Invocation(invocationExpressionSyntax, semanticModel))
+            found = invocationExpressionSyntax.GetLocation();
+    }
+    
+    private static Boolean IsGetValueInvocation(InvocationExpressionSyntax invocationExpressionSyntax, SemanticModel semanticModel)
+    {
+        if (IsGetValueInvocationBase(invocationExpressionSyntax, semanticModel) is not {} methodSymbol)
+            return false;
+
+        if (methodSymbol is not { Name: "GetValue", Parameters.Length: 0 })
+            return false;
+
+        return methodSymbol.ContainingType is {} containingType
+               && IsOrImplementsInterface(containingType, "Gwen.Net.New.Bindings.IValueSource<T>"); // todo: remove New from namespace when deleting Legacy
+    }
+
+    private static Boolean IsGetValue2Invocation(InvocationExpressionSyntax invocationExpressionSyntax, SemanticModel semanticModel)
+    {
+        if (IsGetValueInvocationBase(invocationExpressionSyntax, semanticModel) is not {} methodSymbol)
+            return false;
+
+        if (methodSymbol is not { Name: "GetValue", Parameters.Length: 1 })
+            return false;
+
+        return methodSymbol.ContainingType is {} containingType
+               && IsOrImplementsInterface(containingType, "Gwen.Net.New.Bindings.IValueSource<TIn, TOut>"); // todo: remove New from namespace when deleting Legacy
+    }
+
+    private static Boolean IsOrImplementsInterface(ITypeSymbol typeSymbol, String interfaceDisplayName)
+    {
+        return typeSymbol.OriginalDefinition.ToDisplayString() == interfaceDisplayName
+               || typeSymbol.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == interfaceDisplayName);
+    }
+    
+    private static IMethodSymbol? IsGetValueInvocationBase(InvocationExpressionSyntax invocationExpressionSyntax, SemanticModel semanticModel)
+    {
         String? methodName = invocationExpressionSyntax.Expression switch
         {
             IdentifierNameSyntax id => id.Identifier.Text,
@@ -41,20 +77,8 @@ public class GetValueFindingWalker : CSharpSyntaxWalker
         };
 
         if (methodName != "GetValue")
-            return;
+            return null;
 
-        if (semanticModel.GetSymbolInfo(invocationExpressionSyntax).Symbol is not IMethodSymbol methodSymbol)
-            return;
-
-        if (methodSymbol is not {Name: "GetValue", Parameters.Length: 0})
-            return;
-
-        if (methodSymbol.ContainingType is not {} containingType)
-            return;
-
-        if (!containingType.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "Gwen.Net.New.Bindings.IValueSource<T>"))
-            return; // todo: remove New from namespace when deleting Legacy
-
-        found = invocationExpressionSyntax.GetLocation();
+        return semanticModel.GetSymbolInfo(invocationExpressionSyntax).Symbol as IMethodSymbol;
     }
 }

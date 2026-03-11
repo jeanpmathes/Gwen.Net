@@ -7,8 +7,8 @@ public class SlotTests
     [Fact]
     public void SetValue_WithDifferentValue_UpdatesValueAndRaisesValueChanged()
     {
-        var slot = new Slot<Int32>(5);
-        var events = 0;
+        Slot<Int32> slot = new Slot<Int32>(5);
+        Int32 events = 0;
         slot.ValueChanged += (_, _) => events++;
 
         slot.SetValue(9);
@@ -20,8 +20,8 @@ public class SlotTests
     [Fact]
     public void SetValue_WithEqualValue_DoesNotRaiseValueChanged()
     {
-        var slot = new Slot<String>("abc");
-        var events = 0;
+        Slot<String> slot = new Slot<String>("abc");
+        Int32 events = 0;
         slot.ValueChanged += (_, _) => events++;
 
         slot.SetValue("abc");

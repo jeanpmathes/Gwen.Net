@@ -100,7 +100,12 @@ public class ChildPresenter : Visual
     
     private void RemoveVisualization()
     {
-        Visibility.Set(New.Visibility.Collapsed);
+        Visibility.Set(New.Visibility.Collapsed); 
+        
+        // todo: these set / clear methods are only used here and in ChildrenPresenter
+        // todo: maybe that system can be completely removed from visual properties??
+        // todo: this would make VisualProperty simpler, at the cost of having children presenters be visible when empty
+        // todo: and the only problem with that would be that they render their boundaries in debug mode
         
         visualizedChild = null;
         if (childVisualization == null) return;

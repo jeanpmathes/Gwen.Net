@@ -21,7 +21,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyScale_ScalesPoint()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         PointF result = renderer.ApplyScale(new PointF(x: 3f, y: 5f));
@@ -33,7 +33,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyScale_ScalesSize()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         SizeF result = renderer.ApplyScale(new SizeF(width: 3f, height: 5f));
@@ -45,7 +45,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyScale_ScalesRectangle()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         RectangleF result = renderer.ApplyScale(new RectangleF(x: 3f, y: 5f, width: 10f, height: 20f));
@@ -59,7 +59,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyScale_ScalesThickness()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         ThicknessF result = renderer.ApplyScale(new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f));
@@ -73,7 +73,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyInverseScale_UnscalesPoint()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         PointF result = renderer.ApplyInverseScale(new PointF(x: 6f, y: 10f));
@@ -85,7 +85,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyInverseScale_UnscalesSize()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         SizeF result = renderer.ApplyInverseScale(new SizeF(width: 6f, height: 10f));
@@ -97,7 +97,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyInverseScale_UnscalesRectangle()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         RectangleF result = renderer.ApplyInverseScale(new RectangleF(x: 6f, y: 10f, width: 20f, height: 40f));
@@ -111,7 +111,7 @@ public class RendererTests
     [Fact]
     public void Scale_ApplyInverseScale_UnscalesThickness()
     {
-        var renderer = new MockRenderer();
+        MockRenderer renderer = new MockRenderer();
         renderer.Scale(2f);
 
         ThicknessF result = renderer.ApplyInverseScale(new ThicknessF(left: 2f, top: 4f, right: 6f, bottom: 8f));

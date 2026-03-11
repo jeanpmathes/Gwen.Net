@@ -9,7 +9,7 @@ public class VisualPropertyTests
     [Fact]
     public void InvalidationMeasure_TriggersNewMeasurePass()
     {
-        var visual = new CountingVisual();
+        CountingVisual visual = new CountingVisual();
         VisualProperty<Single> property = VisualProperty.Create(visual, defaultValue: 1f, Invalidation.Measure);
 
         property.Activate();
@@ -25,7 +25,7 @@ public class VisualPropertyTests
     [Fact]
     public void InvalidationArrange_TriggersNewArrangePass()
     {
-        var visual = new CountingVisual();
+        CountingVisual visual = new CountingVisual();
         VisualProperty<Single> property = VisualProperty.Create(visual, defaultValue: 1f, Invalidation.Arrange);
 
         property.Activate();
@@ -42,11 +42,11 @@ public class VisualPropertyTests
     [Fact]
     public void ActiveProperty_CachesValueAndEmitsChangeOnlyWhenValueChanges()
     {
-        var visual = new CountingVisual();
-        var source = new Slot<Int32>(3);
+        CountingVisual visual = new CountingVisual();
+        Slot<Int32> source = new Slot<Int32>(3);
         VisualProperty<Int32> property = VisualProperty.Create(visual, Binding.To(source), Invalidation.None);
 
-        var events = 0;
+        Int32 events = 0;
         property.ValueChanged += (_, _) => events++;
 
         property.Activate();
@@ -61,7 +61,7 @@ public class VisualPropertyTests
     [Fact]
     public void InternalBinding_OverridesDefault()
     {
-        var visual = new CountingVisual();
+        CountingVisual visual = new CountingVisual();
         VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
 
         property.Activate();
@@ -73,7 +73,7 @@ public class VisualPropertyTests
     [Fact]
     public void InternalBinding_Clear_RevertsToDefault()
     {
-        var visual = new CountingVisual();
+        CountingVisual visual = new CountingVisual();
         VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
 
         property.Activate();
@@ -87,7 +87,7 @@ public class VisualPropertyTests
     [Fact]
     public void LocalBinding_OverridesInternal()
     {
-        var visual = new CountingVisual();
+        CountingVisual visual = new CountingVisual();
         VisualProperty<Int32> property = VisualProperty.Create(visual, defaultValue: 1, Invalidation.None);
 
         property.Activate();

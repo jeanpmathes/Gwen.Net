@@ -10,7 +10,7 @@ public abstract class ControlTestBase<TControl>(Func<TControl> factory) where TC
     [Fact]
     public void Control_CanBeUsed()
     {
-        var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         canvas.Child = factory();
         

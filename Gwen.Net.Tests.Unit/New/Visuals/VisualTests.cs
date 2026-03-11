@@ -11,7 +11,7 @@ public class VisualTests
     [Fact]
     public void Arrange_WhenFinalRectangleChanges_UpdatesBounds()
     {
-        var visual = new MockVisual();
+        MockVisual visual = new MockVisual();
 
         visual.Measure(new SizeF(width: 100f, height: 100f));
 
@@ -25,7 +25,7 @@ public class VisualTests
     [Fact]
     public void Measure_ClampsToMinimumSize()
     {
-        var visual = new MockVisual {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}};
+        MockVisual visual = new MockVisual {MinimumWidth = {Value = 50f}, MinimumHeight = {Value = 30f}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
 
@@ -36,8 +36,8 @@ public class VisualTests
     [Fact]
     public void Measure_ClampsToMaximumSize()
     {
-        var parent = new MockVisual {MaximumWidth = {Value = 50f}, MaximumHeight = {Value = 40f}};
-        var child = new MockVisual {MinimumWidth = {Value = 100f}, MinimumHeight = {Value = 100f}};
+        MockVisual parent = new MockVisual {MaximumWidth = {Value = 50f}, MaximumHeight = {Value = 40f}};
+        MockVisual child = new MockVisual {MinimumWidth = {Value = 100f}, MinimumHeight = {Value = 100f}};
 
         parent.SetChildVisual(child);
 
@@ -50,8 +50,8 @@ public class VisualTests
     [Fact]
     public void Arrange_BoundsRespectMaximumSize()
     {
-        var parent = new MockVisual {MaximumWidth = {Value = 50f}, MaximumHeight = {Value = 40f}};
-        var child = new MockVisual {MinimumWidth = {Value = 100f}, MinimumHeight = {Value = 100f}};
+        MockVisual parent = new MockVisual {MaximumWidth = {Value = 50f}, MaximumHeight = {Value = 40f}};
+        MockVisual child = new MockVisual {MinimumWidth = {Value = 100f}, MinimumHeight = {Value = 100f}};
 
         parent.SetChildVisual(child);
 
@@ -65,7 +65,7 @@ public class VisualTests
     [Fact]
     public void Measure_WithMargin_MeasuredSizeIncludesMargin()
     {
-        var visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         
@@ -76,7 +76,7 @@ public class VisualTests
     [Fact]
     public void Arrange_WithMargin_BoundsPositionIsOffsetByMargin()
     {
-        var visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -88,7 +88,7 @@ public class VisualTests
     [Fact]
     public void Arrange_WithMargin_BoundsSizeDoesNotIncludeMargin()
     {
-        var visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual visual = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -100,8 +100,8 @@ public class VisualTests
     [Fact]
     public void Arrange_ChildWithMargin_ChildBoundsAreOffsetByItsMargin()
     {
-        var parent = new MockVisual();
-        var child = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual parent = new MockVisual();
+        MockVisual child = new MockVisual {Margin = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
 
         parent.SetChildVisual(child);
 
@@ -117,8 +117,8 @@ public class VisualTests
     [Fact]
     public void Measure_WithPaddingAndChild_MeasuredSizeIncludesPadding()
     {
-        var parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual child = new MockVisual();
         parent.SetChildVisual(child);
 
         parent.Measure(new SizeF(width: 200f, height: 200f));
@@ -130,8 +130,8 @@ public class VisualTests
     [Fact]
     public void Arrange_WithPadding_ChildIsOffsetByPadding()
     {
-        var parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual child = new MockVisual();
         
         parent.SetChildVisual(child);
 
@@ -145,8 +145,8 @@ public class VisualTests
     [Fact]
     public void Arrange_ParentPaddingAndChildMargin_ChildIsOffsetByBoth()
     {
-        var parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
-        var child = new MockVisual {Margin = {Value = new ThicknessF(left: 3f, top: 7f, right: 3f, bottom: 7f)}};
+        MockVisual parent = new MockVisual {Padding = {Value = new ThicknessF(left: 5f, top: 10f, right: 15f, bottom: 20f)}};
+        MockVisual child = new MockVisual {Margin = {Value = new ThicknessF(left: 3f, top: 7f, right: 3f, bottom: 7f)}};
 
         parent.SetChildVisual(child);
 
@@ -162,7 +162,7 @@ public class VisualTests
     [Fact]
     public void Measure_OfHiddenVisual_ReturnsNormalSize()
     {
-        var visual = new MockVisual {Visibility = {Value = Visibility.Hidden}};
+        MockVisual visual = new MockVisual {Visibility = {Value = Visibility.Hidden}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
 
@@ -173,7 +173,7 @@ public class VisualTests
     [Fact]
     public void Measure_OfCollapsedVisual_ReturnsZeroSize()
     {
-        var visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
+        MockVisual visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
 
@@ -184,7 +184,7 @@ public class VisualTests
     [Fact]
     public void Arrange_OfCollapsedVisual_SetsZeroSize()
     {
-        var visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
+        MockVisual visual = new MockVisual {Visibility = {Value = Visibility.Collapsed}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -200,7 +200,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalStretch_FillsAvailableWidth()
     {
-        var visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Stretch}};
+        MockVisual visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Stretch}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -212,7 +212,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalLeft_AlignedToLeftEdge()
     {
-        var visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Left}};
+        MockVisual visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Left}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -224,7 +224,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalCenter_CenteredInAvailableSpace()
     {
-        var visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Center}};
+        MockVisual visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Center}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -236,7 +236,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalRight_AlignedToRightEdge()
     {
-        var visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Right}};
+        MockVisual visual = new MockVisual {HorizontalAlignment = {Value = HorizontalAlignment.Right}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -248,7 +248,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalCenter_WithMargin_CenteredWithinMarginArea()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Center},
             Margin = {Value = new ThicknessF(left: 10f, top: 0f, right: 20f, bottom: 0f)}
@@ -264,7 +264,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalRight_WithMargin_AlignedToRightWithinMarginArea()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Right},
             Margin = {Value = new ThicknessF(left: 10f, top: 0f, right: 20f, bottom: 0f)}
@@ -280,7 +280,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalStretch_RespectsMaximumWidth()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Stretch},
             MaximumWidth = {Value = 80f}
@@ -295,7 +295,7 @@ public class VisualTests
     [Fact]
     public void Arrange_HorizontalLeft_WithLargerMinimumSize_UsesMinimumSize()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Left},
             MinimumWidth = {Value = 50f}
@@ -311,7 +311,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalStretch_FillsAvailableHeight()
     {
-        var visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Stretch}};
+        MockVisual visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Stretch}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -323,7 +323,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalTop_AlignedToTopEdge()
     {
-        var visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Top}};
+        MockVisual visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Top}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -335,7 +335,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalCenter_CenteredInAvailableSpace()
     {
-        var visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Center}};
+        MockVisual visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Center}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -347,7 +347,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalBottom_AlignedToBottomEdge()
     {
-        var visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Bottom}};
+        MockVisual visual = new MockVisual {VerticalAlignment = {Value = VerticalAlignment.Bottom}};
 
         visual.Measure(new SizeF(width: 200f, height: 200f));
         visual.Arrange(new RectangleF(x: 0f, y: 0f, width: 200f, height: 200f));
@@ -359,7 +359,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalCenter_WithMargin_CenteredWithinMarginArea()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             VerticalAlignment = {Value = VerticalAlignment.Center},
             Margin = {Value = new ThicknessF(left: 0f, top: 10f, right: 0f, bottom: 20f)}
@@ -375,7 +375,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalBottom_WithMargin_AlignedToBottomWithinMarginArea()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             VerticalAlignment = {Value = VerticalAlignment.Bottom},
             Margin = {Value = new ThicknessF(left: 0f, top: 10f, right: 0f, bottom: 20f)}
@@ -391,7 +391,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalStretch_RespectsMaximumHeight()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             VerticalAlignment = {Value = VerticalAlignment.Stretch},
             MaximumHeight = {Value = 80f}
@@ -406,7 +406,7 @@ public class VisualTests
     [Fact]
     public void Arrange_VerticalTop_WithLargerMinimumSize_UsesMinimumSize()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             VerticalAlignment = {Value = VerticalAlignment.Top},
             MinimumHeight = {Value = 50f}
@@ -422,7 +422,7 @@ public class VisualTests
     [Fact]
     public void Arrange_CenterCenter_CenteredBothAxes()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Center},
             VerticalAlignment = {Value = VerticalAlignment.Center},
@@ -442,7 +442,7 @@ public class VisualTests
     [Fact]
     public void Arrange_RightBottom_PositionedAtBottomRight()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Right},
             VerticalAlignment = {Value = VerticalAlignment.Bottom},
@@ -462,7 +462,7 @@ public class VisualTests
     [Fact]
     public void Arrange_LeftTop_PositionedAtTopLeft()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Left},
             VerticalAlignment = {Value = VerticalAlignment.Top},
@@ -482,7 +482,7 @@ public class VisualTests
     [Fact]
     public void Arrange_CenterCenter_WithMargin_CenteredWithinMarginArea()
     {
-        var visual = new MockVisual
+        MockVisual visual = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Center},
             VerticalAlignment = {Value = VerticalAlignment.Center},
@@ -503,8 +503,8 @@ public class VisualTests
     [Fact]
     public void Arrange_ChildCenterCenter_ChildCenteredWithinParentContentArea()
     {
-        var parent = new MockVisual {Padding = {Value = new ThicknessF(10f)}};
-        var child = new MockVisual
+        MockVisual parent = new MockVisual {Padding = {Value = new ThicknessF(10f)}};
+        MockVisual child = new MockVisual
         {
             HorizontalAlignment = {Value = HorizontalAlignment.Center},
             VerticalAlignment = {Value = VerticalAlignment.Center},
@@ -530,8 +530,8 @@ public class VisualTests
     [Fact]
     public void LocalPointToRoot_NestedChild_AccumulatesParentOffsets()
     {
-        var parent = new MockVisual();
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual child = new MockVisual();
 
         parent.SetChildVisual(child);
 
@@ -547,8 +547,8 @@ public class VisualTests
     [Fact]
     public void RootPointToLocal_NestedChild_SubtractsAccumulatedOffsets()
     {
-        var parent = new MockVisual();
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual child = new MockVisual();
 
         parent.SetChildVisual(child);
 
@@ -568,8 +568,8 @@ public class VisualTests
     [Fact]
     public void GetChildAfter_WithNonChild_ReturnsNull()
     {
-        var parent = new MockVisual();
-        var other = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual other = new MockVisual();
 
         Assert.Null(parent.GetChildAfter(other));
     }
@@ -577,8 +577,8 @@ public class VisualTests
     [Fact]
     public void GetChildAfter_WithOnlyChild_ReturnsNull()
     {
-        var parent = new MockVisual();
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual child = new MockVisual();
         parent.AddChildVisual(child);
 
         Assert.Null(parent.GetChildAfter(child));
@@ -587,9 +587,9 @@ public class VisualTests
     [Fact]
     public void GetChildAfter_WithFirstOfTwo_ReturnsSecond()
     {
-        var parent = new MockVisual();
-        var first = new MockVisual();
-        var second = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual first = new MockVisual();
+        MockVisual second = new MockVisual();
         parent.AddChildVisual(first);
         parent.AddChildVisual(second);
 
@@ -599,8 +599,8 @@ public class VisualTests
     [Fact]
     public void GetChildBefore_WithNonChild_ReturnsNull()
     {
-        var parent = new MockVisual();
-        var other = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual other = new MockVisual();
 
         Assert.Null(parent.GetChildBefore(other));
     }
@@ -608,8 +608,8 @@ public class VisualTests
     [Fact]
     public void GetChildBefore_WithOnlyChild_ReturnsNull()
     {
-        var parent = new MockVisual();
-        var child = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual child = new MockVisual();
         parent.AddChildVisual(child);
 
         Assert.Null(parent.GetChildBefore(child));
@@ -618,9 +618,9 @@ public class VisualTests
     [Fact]
     public void GetChildBefore_WithSecondOfTwo_ReturnsFirst()
     {
-        var parent = new MockVisual();
-        var first = new MockVisual();
-        var second = new MockVisual();
+        MockVisual parent = new MockVisual();
+        MockVisual first = new MockVisual();
+        MockVisual second = new MockVisual();
         parent.AddChildVisual(first);
         parent.AddChildVisual(second);
 

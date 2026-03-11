@@ -151,10 +151,10 @@ namespace Gwen.Net.Legacy
             Single f = (h / 60) - (Single) Math.Floor(h / 60);
 
             v = v * 255;
-            var va = Convert.ToInt32(v);
-            var p = Convert.ToInt32(v * (1 - s));
-            var q = Convert.ToInt32(v * (1 - f * s));
-            var t = Convert.ToInt32(v * (1 - (1 - f) * s));
+            Int32 va = Convert.ToInt32(v);
+            Int32 p = Convert.ToInt32(v * (1 - s));
+            Int32 q = Convert.ToInt32(v * (1 - f * s));
+            Int32 t = Convert.ToInt32(v * (1 - (1 - f) * s));
 
             if (hi == 0)
             {
@@ -214,7 +214,7 @@ namespace Gwen.Net.Legacy
         public static String[] SplitAndKeep(String text, String separators)
         {
             List<String> strings = new();
-            var offset = 0;
+            Int32 offset = 0;
             Int32 length = text.Length;
             Int32 sepLen = separators.Length;
             Int32 i = text.IndexOf(separators, StringComparison.Ordinal);

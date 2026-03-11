@@ -8,7 +8,7 @@ public class RouteTests
     [Fact]
     public void Route_Empty_HasZeroCount()
     {
-        using var route = Route.Empty;
+        using Route route = Route.Empty;
 
         Assert.Equal(expected: 0, route.Count);
     }
@@ -16,7 +16,7 @@ public class RouteTests
     [Fact]
     public void Route_Create_WithNull_ReturnsEmptyRoute()
     {
-        using var route = Route.Create(null);
+        using Route route = Route.Create(null);
 
         Assert.Equal(expected: 0, route.Count);
     }
@@ -26,7 +26,7 @@ public class RouteTests
     {
         MockVisual visual = new();
 
-        using var route = Route.Create(visual);
+        using Route route = Route.Create(visual);
 
         Assert.Equal(expected: 1, route.Count);
     }
@@ -38,7 +38,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Equal(expected: 2, route.Count);
     }
@@ -50,7 +50,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(child, route.Target);
     }
@@ -62,7 +62,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(parent, route.Root);
     }
@@ -74,7 +74,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(parent, route.GetFromTop(0));
     }
@@ -86,7 +86,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(child, route.GetFromTop(route.Count - 1));
     }
@@ -98,7 +98,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(child, route.GetFromBottom(0));
     }
@@ -110,7 +110,7 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route = Route.Create(child);
+        using Route route = Route.Create(child);
 
         Assert.Same(parent, route.GetFromBottom(route.Count - 1));
     }
@@ -122,8 +122,8 @@ public class RouteTests
         MockVisual child = new();
         parent.SetChildVisual(child);
 
-        using var route1 = Route.Create(child);
-        using var route2 = Route.Create(child);
+        using Route route1 = Route.Create(child);
+        using Route route2 = Route.Create(child);
 
         Int32 diff = Route.FindFirstDifferenceFromTop(route1, route2);
 
@@ -140,8 +140,8 @@ public class RouteTests
         root1.SetChildVisual(child1);
         root2.SetChildVisual(child2);
 
-        using var route1 = Route.Create(child1);
-        using var route2 = Route.Create(child2);
+        using Route route1 = Route.Create(child1);
+        using Route route2 = Route.Create(child2);
 
         Int32 diff = Route.FindFirstDifferenceFromTop(route1, route2);
 
@@ -157,8 +157,8 @@ public class RouteTests
         root.AddChildVisual(child1);
         root.AddChildVisual(child2);
 
-        using var route1 = Route.Create(child1);
-        using var route2 = Route.Create(child2);
+        using Route route1 = Route.Create(child1);
+        using Route route2 = Route.Create(child2);
 
         Int32 diff = Route.FindFirstDifferenceFromTop(route1, route2);
 
@@ -170,8 +170,8 @@ public class RouteTests
     {
         MockVisual visual = new();
 
-        using var nonEmpty = Route.Create(visual);
-        using var empty = Route.Empty;
+        using Route nonEmpty = Route.Create(visual);
+        using Route empty = Route.Empty;
 
         Int32 diff = Route.FindFirstDifferenceFromTop(nonEmpty, empty);
 

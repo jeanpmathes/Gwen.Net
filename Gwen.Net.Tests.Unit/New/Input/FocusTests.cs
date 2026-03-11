@@ -79,7 +79,7 @@ public sealed class FocusTests
     [Fact]
     public void Set_Control_GetFocusedReturnsItsVisualization()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         MockControl control = new();
         canvas.Child = control;
@@ -94,7 +94,7 @@ public sealed class FocusTests
     [Fact]
     public void Set_HiddenControl_DoesNotThrowAndDoesNotFocus()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         MockControl control = new();
         canvas.Child = control;
@@ -103,7 +103,7 @@ public sealed class FocusTests
 
         control.Visibility.Value = Visibility.Hidden;
 
-        var exception = Record.Exception(() => focus.Set(control));
+        Exception? exception = Record.Exception(() => focus.Set(control));
 
         Assert.Null(exception);
         Assert.Null(focus.GetFocused());
@@ -112,7 +112,7 @@ public sealed class FocusTests
     [Fact]
     public void Unset_FocusedControl_ClearsFocus()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         MockControl control = new();
         canvas.Child = control;
@@ -128,7 +128,7 @@ public sealed class FocusTests
     [Fact]
     public void Unset_UnfocusedControl_DoesNotClearFocus()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
 
         MockControl focused = new("focused");
         MockControl other = new("other");
@@ -145,7 +145,7 @@ public sealed class FocusTests
     [Fact]
     public void Set_Visual_InvokesCallback()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual visual = new();
 
@@ -157,7 +157,7 @@ public sealed class FocusTests
     [Fact]
     public void Set_Visual_TwiceCalls_InvokesCallbackTwice()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual first = new();
         MockVisual second = new();
@@ -171,7 +171,7 @@ public sealed class FocusTests
     [Fact]
     public void Clear_DoesNotInvokeCallbackIfAlreadyClear()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
 
         callbackFocus.Clear();
@@ -182,7 +182,7 @@ public sealed class FocusTests
     [Fact]
     public void Clear_InvokesCallbackIfFocused()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual visual = new();
 
@@ -195,7 +195,7 @@ public sealed class FocusTests
     [Fact]
     public void Unset_FocusedVisual_InvokesCallback()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
         Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual visual = new();
@@ -211,7 +211,7 @@ public sealed class FocusTests
     [Fact]
     public void Unset_UnfocusedVisual_DoesNotInvokeCallback()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
         Focus callbackFocus = new((_, _) => callbackCount++);
         MockVisual focused = new();
@@ -228,10 +228,10 @@ public sealed class FocusTests
     [Fact]
     public void Set_Control_InvokesCallback()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         Focus callbackFocus = new((_, _) => callbackCount++);
 
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -245,11 +245,11 @@ public sealed class FocusTests
     [Fact]
     public void ControlVisualizationChange_InvokesCallback()
     {
-        var callbackCount = 0;
+        Int32 callbackCount = 0;
         // ReSharper disable once AccessToModifiedClosure
         Focus callbackFocus = new((_, _) => callbackCount++);
 
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -266,7 +266,7 @@ public sealed class FocusTests
     [Fact]
     public void Focus_IsClearedWhenControlIsHidden()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));
@@ -283,7 +283,7 @@ public sealed class FocusTests
     [Fact]
     public void Focus_IsClearedWhenVisualIsHidden()
     {
-        using var canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
         MockControl control = new();
         canvas.Child = control;
         canvas.SetRenderingSize(new Size(width: 500, height: 500));

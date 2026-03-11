@@ -134,8 +134,8 @@ public class UnitTestGameWindow : GameWindow
     [STAThread]
     public static void Main(String[] args)
     {
-        var gameWindowSettings = GameWindowSettings.Default;
-        var nativeWindowSettings = NativeWindowSettings.Default;
+        GameWindowSettings? gameWindowSettings = GameWindowSettings.Default;
+        NativeWindowSettings? nativeWindowSettings = NativeWindowSettings.Default;
         
         nativeWindowSettings.Profile = ContextProfile.Core;
         
@@ -153,7 +153,7 @@ public class UnitTestGameWindow : GameWindow
         nativeWindowSettings.Location = position;
         nativeWindowSettings.ClientSize = new Vector2i(960 - 0, 540 - 32);
         
-        var theme = Theme.Default;
+        Theme theme = Theme.Default;
         
         if (args.Contains("--light"))
             theme = Theme.Light;

@@ -25,7 +25,7 @@ public class CommandTests
     [Fact]
     public void FromAction_Execute_InvokesAction()
     {
-        var invoked = false;
+        Boolean invoked = false;
         ICommand<Object> command = Command.FromAction(() => invoked = true);
 
         command.Execute(placeholder);
@@ -36,7 +36,7 @@ public class CommandTests
     [Fact]
     public void FromAction_Execute_CanBeCalledMultipleTimes()
     {
-        var count = 0;
+        Int32 count = 0;
         ICommand<Object> command = Command.FromAction(() => count++);
 
         command.Execute(placeholder);
