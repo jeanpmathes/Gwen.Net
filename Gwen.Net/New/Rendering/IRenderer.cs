@@ -66,6 +66,18 @@ public interface IRenderer
     public Boolean IsClipEmpty();
 
     /// <summary>
+    /// Push an opacity to the renderer, multiplying it with the current opacity.
+    /// The initial opacity is <c>1.0f</c>.
+    /// </summary>
+    /// <param name="opacity">The opacity to push, between <c>0.0f</c> and <c>1.0f</c>.</param>
+    public void PushOpacity(Single opacity);
+
+    /// <summary>
+    /// Pop the last pushed opacity. If there is no opacity on the stack, nothing happens.
+    /// </summary>
+    public void PopOpacity();
+
+    /// <summary>
     ///     Create a formatted text object for the given text, font, and layout options.
     /// </summary>
     /// <param name="text">The text to format.</param>

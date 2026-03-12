@@ -19,8 +19,8 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
     private readonly Shader shader;
     private readonly Boolean restoreRenderState;
 
-    private readonly Dictionary<Brush, System.Drawing.Brush> systemBrushes = [];
-    private readonly Dictionary<Brush, Pen> systemPens = [];
+    private readonly Dictionary<(Brush Brush, Byte Alpha), System.Drawing.Brush> systemBrushes = [];
+    private readonly Dictionary<(Brush Brush, Byte Alpha), Pen> systemPens = [];
     private readonly Dictionary<Font, System.Drawing.Font> systemFonts = [];
 
     private Int32 vao;
@@ -42,6 +42,9 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
     public void Dispose()
     {
+        foreach (Pen pen in systemPens.Values)
+            pen.Dispose();
+
         foreach (System.Drawing.Brush brush in systemBrushes.Values)
             brush.Dispose();
 
@@ -90,6 +93,8 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         bitmap = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
         graphics = System.Drawing.Graphics.FromImage(bitmap);
+
+        graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
         if (isClipping && clipStack.Count > 0)
         {
@@ -186,12 +191,15 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
     #endregion TARGETS
 
-    #region TRANSFORM & CLIP
+    #region TRANSFORM & CLIP & OPACITY
 
     private readonly Stack<PointF> offsetStack = new();
     private readonly Stack<RectangleF> clipStack = new();
+    private readonly Stack<Single> opacityStack = new();
 
     private Boolean isClipping;
+
+    private Single CurrentOpacity => opacityStack.Count > 0 ? opacityStack.Peek() : 1.0f;
 
     public override void PushOffset(PointF offset)
     {
@@ -298,7 +306,21 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         return clip.IsEmpty(graphics);
     }
 
-    #endregion TRANSFORM & CLIP
+    public override void PushOpacity(Single opacity)
+    {
+        opacity = Math.Clamp(value: opacity, min: 0.0f, max: 1.0f);
+
+        opacityStack.Push(CurrentOpacity * opacity);
+    }
+
+    public override void PopOpacity()
+    {
+        if (opacityStack.Count <= 0) return;
+
+        opacityStack.Pop();
+    }
+
+    #endregion TRANSFORM & CLIP & OPACITY
 
     #region TEXT
 
@@ -378,27 +400,55 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
     #region MAPPINGS
 
+    private Byte GetEffectiveAlpha(Byte alpha)
+    {
+        return (Byte) Math.Clamp((Int32) Math.Round(alpha * CurrentOpacity), Byte.MinValue, Byte.MaxValue);
+    }
+
+    private Byte? TryGetEffectiveAlpha(Brush brush)
+    {
+        return brush switch
+        {
+            SolidColorBrush solidColorBrush => GetEffectiveAlpha(solidColorBrush.Color.A),
+            TransparentBrush => 0,
+            _ => null
+        };
+    }
+
     private System.Drawing.Brush? GetBrush(Brush brush)
     {
-        if (systemBrushes.TryGetValue(brush, out System.Drawing.Brush? systemBrush))
+        Byte? alpha = TryGetEffectiveAlpha(brush);
+
+        if (alpha is null or 0)
+            return null;
+
+        (Brush Brush, Byte Alpha) key = (brush, alpha.Value);
+
+        if (systemBrushes.TryGetValue(key, out System.Drawing.Brush? systemBrush))
             return systemBrush;
 
         systemBrush = brush switch
         {
-            SolidColorBrush solidColorBrush => new SolidBrush(Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B)),
-            TransparentBrush => null,
-            _ => systemBrush
+            SolidColorBrush solidColorBrush => new SolidBrush(Color.FromArgb(alpha.Value, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B)),
+            _ => null
         };
 
         if (systemBrush != null)
-            systemBrushes[brush] = systemBrush;
+            systemBrushes[key] = systemBrush;
 
         return systemBrush;
     }
 
     private Pen? GetPen(Brush brush, Single thickness)
     {
-        if (systemPens.TryGetValue(brush, out Pen? systemPen))
+        Byte? alpha = TryGetEffectiveAlpha(brush);
+
+        if (alpha is null or 0)
+            return null;
+
+        (Brush Brush, Byte Alpha) key = (brush, alpha.Value);
+
+        if (systemPens.TryGetValue(key, out Pen? systemPen))
         {
             systemPen.Width = thickness;
             return systemPen;
@@ -409,7 +459,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         if (systemBrush == null) return null;
 
         systemPen = new Pen(systemBrush, thickness);
-        systemPens[brush] = systemPen;
+        systemPens[key] = systemPen;
 
         return systemPen;
     }

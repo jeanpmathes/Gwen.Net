@@ -151,6 +151,8 @@ public class Text : Visual
     /// <inheritdoc />
     protected override void OnRender()
     {
+        base.OnRender();
+
         formattedText?.Draw(finalTextRectangle, TextBrush.GetValue());
     }
 

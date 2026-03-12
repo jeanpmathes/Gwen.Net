@@ -41,6 +41,10 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
                     ? ButtonDefaults.HoveredBackground
                     : background));
 
+        Opacity.OverrideDefault(old => old
+            .Combine(Enablement)
+            .Compute((opacity, enablement) => enablement.IsEnabled ? opacity : 0.8f));
+
         IsNavigable.OverrideDefault(defaultValue: true);
     }
 

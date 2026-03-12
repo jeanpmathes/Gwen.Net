@@ -25,6 +25,8 @@ public abstract class Control
         Foreground = Property.Create(this, BindToParent(p => p.Foreground, Brushes.Black));
         Background = Property.Create(this, Brushes.Transparent);
 
+        Opacity = Property.Create(this, defaultValue: 1f);
+
         MinimumWidth = Property.Create(this, defaultValue: 1f);
         MinimumHeight = Property.Create(this, defaultValue: 1f);
 
@@ -72,6 +74,11 @@ public abstract class Control
     ///     The preferred background brush of the control.
     /// </summary>
     public Property<Brush> Background { get; }
+
+    /// <summary>
+    ///     The opacity of the control. Opacity is applied in a multiplicative fashion when traversing the tree and also applied to any used brushes.
+    /// </summary>
+    public Property<Single> Opacity { get; }
 
     /// <summary>
     ///     The minimum width of this control. Might not be respected by all layout containers.

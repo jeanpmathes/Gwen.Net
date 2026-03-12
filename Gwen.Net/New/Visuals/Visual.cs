@@ -34,15 +34,17 @@ public abstract class Visual
         Margin = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Margin), Invalidation.Measure);
         Padding = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Padding), Invalidation.Measure);
 
-        HorizontalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.HorizontalAlignment, New.HorizontalAlignment.Stretch), Invalidation.Arrange);
-        VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment, New.VerticalAlignment.Stretch), Invalidation.Arrange);
+        HorizontalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.HorizontalAlignment), Invalidation.Arrange);
+        VerticalAlignment = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.VerticalAlignment), Invalidation.Arrange);
 
         Background = VisualProperty.Create(this, BindToOwnerBackground(), Invalidation.Render);
 
+        Opacity = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.Opacity, defaultValue: 1f), Invalidation.Render);
+
         IsNavigable = VisualProperty.Create(this, BindToOwnerIfAnchor(o => o.IsNavigable, defaultValue: false), Invalidation.None);
 
-        Visibility = VisualProperty.Create(this, BindToOwner(o => o.Visibility, New.Visibility.Visible), Invalidation.Measure);
-        Enablement = VisualProperty.Create(this, BindToOwner(o => o.Enablement, New.Enablement.Enabled), Invalidation.None);
+        Visibility = VisualProperty.Create(this, BindToOwner(o => o.Visibility), Invalidation.Measure);
+        Enablement = VisualProperty.Create(this, BindToOwner(o => o.Enablement), Invalidation.None);
     }
 
     #region PROPERTIES
@@ -95,6 +97,12 @@ public abstract class Visual
     ///     The brush used to draw the background of this visual.
     /// </summary>
     public VisualProperty<Brush> Background { get; }
+
+    /// <summary>
+    /// The opacity to render this element with, in the range from 0 to 1 inclusive.
+    /// The renderer multiplies this with all parent opacities and also the brush opacity.
+    /// </summary>
+    public VisualProperty<Single> Opacity { get; }
 
     /// <summary>
     ///     Whether this visual allows to navigate to it, which is used to move the keyboard focus using the keyboard.
@@ -789,13 +797,17 @@ public abstract class Visual
         if (!Visibility.GetValue().IsVisible)
             return;
 
+        // todo: unify all push/pop operations into a single Push(offset, clip?, opacity) with nullable clip
+
         renderer.PushOffset(Bounds.Location);
+        renderer.PushOpacity(Opacity.GetValue());
 
         DoRender();
 
         if (ShouldClip)
             renderer.PopClip();
 
+        renderer.PopOpacity();
         renderer.PopOffset();
 
         isRenderValid = true;

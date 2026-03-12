@@ -29,6 +29,10 @@ public class MockRenderer : Renderer
         return false;
     }
 
+    public override void PushOpacity(Single opacity) {}
+
+    public override void PopOpacity() {}
+
     public override IFormattedText CreateFormattedText(String text, Font font, TextOptions options)
     {
         return new MockFormattedText();

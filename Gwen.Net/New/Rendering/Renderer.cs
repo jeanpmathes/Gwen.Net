@@ -41,6 +41,12 @@ public abstract class Renderer : IRenderer
     public abstract Boolean IsClipEmpty();
 
     /// <inheritdoc />
+    public abstract void PushOpacity(Single opacity);
+
+    /// <inheritdoc />
+    public abstract void PopOpacity();
+
+    /// <inheritdoc />
     public abstract IFormattedText CreateFormattedText(String text, Font font, TextOptions options);
 
     /// <inheritdoc />
