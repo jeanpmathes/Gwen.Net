@@ -128,7 +128,7 @@ public sealed class Focus
         if (focusedVisual == null)
             return;
 
-        if (!focusedVisual.Visibility.GetValue().IsVisible)
+        if (!CanFocus(focusedVisual))
         {
             focusedVisual = null;
 

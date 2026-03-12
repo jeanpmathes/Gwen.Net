@@ -110,6 +110,36 @@ public sealed class FocusTests
     }
 
     [Fact]
+    public void Set_DisabledControl_DoesNotFocus()
+    {
+        using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
+
+        MockControl control = new();
+        canvas.Child = control;
+        canvas.SetRenderingSize(new Size(width: 500, height: 500));
+        canvas.Render();
+
+        control.Enablement.Value = Enablement.Disabled;
+
+        focus.Set(control);
+
+        Assert.Null(focus.GetFocused());
+    }
+
+    [Fact]
+    public void Set_DisabledVisual_DoesNotFocus()
+    {
+        MockVisual visual = new()
+        {
+            Enablement = {Value = Enablement.Disabled}
+        };
+
+        focus.Set(visual);
+
+        Assert.Null(focus.GetFocused());
+    }
+
+    [Fact]
     public void Unset_FocusedControl_ClearsFocus()
     {
         using Canvas canvas = Canvas.Create(new MockRenderer(), new ResourceRegistry());
