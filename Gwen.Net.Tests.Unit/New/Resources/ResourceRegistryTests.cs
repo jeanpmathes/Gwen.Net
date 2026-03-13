@@ -1,4 +1,5 @@
-﻿using Gwen.Net.New.Resources;
+﻿using Gwen.Net.New.Controls;
+using Gwen.Net.New.Resources;
 using Gwen.Net.New.Styles;
 using Gwen.Net.New.Themes;
 using Gwen.Net.Tests.Unit.New.Controls;
@@ -35,5 +36,15 @@ public class ResourceRegistryTests
         Int32 count = registry.Styles.Count;
         registry.AddBundle<ClassicDark>();
         Assert.True(registry.Styles.Count > count);
+    }
+
+    [Fact]
+    public void ResourceRegistry_AddStyle_ForInterface_AddsStyleToRegistry()
+    {
+        ResourceRegistry registry = new();
+
+        Style style = registry.AddStyle<IControl>(builder => builder.Set(c => c.MinimumWidth, value: 10f));
+
+        Assert.Contains(style, registry.Styles);
     }
 }

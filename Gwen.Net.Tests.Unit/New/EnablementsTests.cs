@@ -69,4 +69,22 @@ public class EnablementsTests
     {
         Assert.Equal(Enablement.Disabled, Enablements.FromBoolean(false));
     }
+
+    [Fact]
+    public void IsDisabled_Enabled_ReturnsFalse()
+    {
+        Assert.False(Enablement.Enabled.IsDisabled);
+    }
+
+    [Fact]
+    public void IsDisabled_ReadOnly_ReturnsFalse()
+    {
+        Assert.False(Enablement.ReadOnly.IsDisabled);
+    }
+
+    [Fact]
+    public void IsDisabled_Disabled_ReturnsTrue()
+    {
+        Assert.True(Enablement.Disabled.IsDisabled);
+    }
 }

@@ -1,11 +1,28 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Gwen.Net.New.Bindings;
 using Gwen.Net.New.Controls.Bases;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Graphics;
+using Gwen.Net.New.Utilities;
 using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.New.Controls;
+
+/// <summary>
+///     Non-generic contract for buttons.
+/// </summary>
+public interface IButton : IContentControl
+{
+    /// <inheritdoc cref="Button{TContent}.BorderBrush" />
+    public Property<Brush> BorderBrush { get; }
+
+    /// <inheritdoc cref="Button{TContent}.BorderThickness" />
+    public Property<ThicknessF> BorderThickness { get; }
+
+    /// <inheritdoc cref="ButtonBase{TContent,TControl}.IsPressed" />
+    public ReadOnlySlot<Boolean> IsPressed { get; }
+}
 
 internal static class ButtonDefaults
 {
@@ -20,7 +37,7 @@ internal static class ButtonDefaults
 /// <summary>
 ///     A content control that can be clicked to perform an action.
 /// </summary>
-public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TContent : class
+public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton where TContent : class
 {
     /// <summary>
     ///     Creates a new instance of the <see cref="Button{TContent}" /> class.
@@ -28,6 +45,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     public Button()
     {
         BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute((foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
+        BorderThickness = Property.Create(this, new ThicknessF(1.0f));
 
         Foreground.OverrideDefault(old => old
             .Combine(Enablement)
@@ -48,6 +66,18 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
         IsNavigable.OverrideDefault(defaultValue: true);
     }
 
+    /// <inheritdoc />
+    protected override ControlTemplate<Button<TContent>> CreateDefaultTemplate()
+    {
+        return ControlTemplate.Create<Button<TContent>>(static control => new Visuals.Border
+        {
+            BorderBrush = {Binding = Binding.To(control.BorderBrush)},
+            BorderThickness = {Binding = Binding.To(control.BorderThickness)},
+
+            Child = new ChildPresenter()
+        });
+    }
+
     #region PROPERTIES
 
     /// <summary>
@@ -55,16 +85,10 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>> where TCo
     /// </summary>
     public Property<Brush> BorderBrush { get; }
 
+    /// <summary>
+    ///     The thickness of the button's border.
+    /// </summary>
+    public Property<ThicknessF> BorderThickness { get; }
+
     #endregion PROPERTIES
-
-    /// <inheritdoc />
-    protected override ControlTemplate<Button<TContent>> CreateDefaultTemplate()
-    {
-        return ControlTemplate.Create<Button<TContent>>(static control => new Visuals.Border
-        {
-            BorderBrush = {Binding = Binding.To(control.BorderBrush)},
-
-            Child = new ChildPresenter()
-        });
-    }
 }

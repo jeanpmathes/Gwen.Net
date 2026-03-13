@@ -57,6 +57,11 @@ public static class Enablements
         public Boolean IsEnabled => enablement == Enablement.Enabled;
 
         /// <summary>
+        ///     Whether the element is fully disabled.
+        /// </summary>
+        public Boolean IsDisabled => enablement == Enablement.Disabled;
+
+        /// <summary>
         ///     Whether the element can receive focus.
         /// </summary>
         public Boolean IsFocusable => enablement != Enablement.Disabled;

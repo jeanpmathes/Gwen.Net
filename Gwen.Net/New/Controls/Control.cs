@@ -13,9 +13,78 @@ using Gwen.Net.New.Visuals;
 namespace Gwen.Net.New.Controls;
 
 /// <summary>
+///     Non-generic contract for shared control properties.
+/// </summary>
+public interface IControl
+{
+    /// <inheritdoc cref="Control.Foreground" />
+    public Property<Brush> Foreground { get; }
+
+    /// <inheritdoc cref="Control.Background" />
+    public Property<Brush> Background { get; }
+
+    /// <inheritdoc cref="Control.Opacity" />
+    public Property<Single> Opacity { get; }
+
+    /// <inheritdoc cref="Control.MinimumWidth" />
+    public Property<Single> MinimumWidth { get; }
+
+    /// <inheritdoc cref="Control.MinimumHeight" />
+    public Property<Single> MinimumHeight { get; }
+
+    /// <inheritdoc cref="Control.MaximumWidth" />
+    public Property<Single> MaximumWidth { get; }
+
+    /// <inheritdoc cref="Control.MaximumHeight" />
+    public Property<Single> MaximumHeight { get; }
+
+    /// <inheritdoc cref="Control.Margin" />
+    public Property<ThicknessF> Margin { get; }
+
+    /// <inheritdoc cref="Control.Padding" />
+    public Property<ThicknessF> Padding { get; }
+
+    /// <inheritdoc cref="Control.HorizontalAlignment" />
+    public Property<HorizontalAlignment> HorizontalAlignment { get; }
+
+    /// <inheritdoc cref="Control.VerticalAlignment" />
+    public Property<VerticalAlignment> VerticalAlignment { get; }
+
+    /// <inheritdoc cref="Control.IsNavigable" />
+    public Property<Boolean> IsNavigable { get; }
+
+    /// <inheritdoc cref="Control.Visibility" />
+    public Property<Visibility> Visibility { get; }
+
+    /// <inheritdoc cref="Control.Enablement" />
+    public Property<Enablement> Enablement { get; }
+
+    /// <inheritdoc cref="Control.Parent" />
+    public ReadOnlySlot<Control?> Parent { get; }
+
+    /// <inheritdoc cref="Control.Children" />
+    public ReadOnlyListSlot<Control> Children { get; }
+
+    /// <inheritdoc cref="Control.Context" />
+    public Context Context { get; }
+
+    /// <inheritdoc cref="Control.Visualization" />
+    public ReadOnlySlot<Visual?> Visualization { get; }
+
+    /// <inheritdoc cref="Control.IsHovered" />
+    public IValueSource<Boolean> IsHovered { get; }
+
+    /// <inheritdoc cref="Control.IsKeyboardFocused" />
+    public IValueSource<Boolean> IsKeyboardFocused { get; }
+
+    /// <inheritdoc cref="Control.IsPointerFocused" />
+    public IValueSource<Boolean> IsPointerFocused { get; }
+}
+
+/// <summary>
 ///     The base class of all GWEN controls, meaning logical controls.
 /// </summary>
-public abstract class Control
+public abstract class Control : IControl
 {
     /// <summary>
     ///     Creates a new instance of the <see cref="Control" /> class.

@@ -281,6 +281,9 @@ public sealed class Property<T> : Property, IValueSource<T>
             case Binding<T> binding:
                 Style(binding);
                 break;
+            case Binding<T, T> trigger:
+                Style(trigger.Apply(effectiveBinding));
+                break;
             default:
                 throw new ArgumentException($"Invalid style value for property of type {typeof(T)}: {value}", nameof(value));
         }

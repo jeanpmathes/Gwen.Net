@@ -33,7 +33,7 @@ public sealed class ResourceRegistry : IDisposable
     /// <param name="builder">The builder for the style.</param>
     /// <typeparam name="TControl">The element type this style is for.</typeparam>
     /// <returns>A new instance of the <see cref="Style{TElement}" /> class.</returns>
-    public Style<TControl> AddStyle<TControl>(Action<Styling.IBuilder<TControl>> builder) where TControl : Control
+    public Style<TControl> AddStyle<TControl>(Action<Styling.IBuilder<TControl>> builder) where TControl : IControl
     {
         Style<TControl> style = Styling.Create(builder);
 

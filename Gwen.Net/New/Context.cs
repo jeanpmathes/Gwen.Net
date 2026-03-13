@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gwen.Net.New.Controls;
 using Gwen.Net.New.Controls.Templates;
 using Gwen.Net.New.Input;
@@ -87,7 +88,7 @@ public class Context
     /// </summary>
     public static Context Default { get; } = new();
 
-    private IStyle<T>? GetStyleForType<T>(Type type) where T : Control
+    private IStyle<T>? GetStyleForType<T>(Type type) where T : IControl
     {
         if (styles != null && styles.TryGetValue(type, out Style? potentialStyle) && potentialStyle is IStyle<T> style)
             return style;
@@ -102,28 +103,49 @@ public class Context
     /// </summary>
     /// <typeparam name="T">The element type to get the style for.</typeparam>
     /// <returns>The styles for the given element type, may be empty.</returns>
-    public IReadOnlyList<IStyle<T>> GetStyling<T>() where T : Control
+    public IReadOnlyList<IStyle<T>> GetStyling<T>() where T : IControl
     {
         if (styles == null)
             return parent?.GetStyling<T>() ?? [];
 
         // todo: caching of lists
+
         List<IStyle<T>> result = [];
-
-        Type queryType = typeof(T);
-        Type? currentType = queryType;
-
-        while (currentType != typeof(Object) && currentType != null)
-        {
-            if (GetStyleForType<T>(currentType) is {} style)
-                result.Add(style);
-
-            currentType = currentType.BaseType;
-        }
-
-        result.Reverse();
+        HashSet<Type> visited = [];
+        CollectStylesForType(typeof(T), visited, result);
 
         return result;
+    }
+
+    private static String GetTypeSortKey(Type type)
+    {
+        return type.AssemblyQualifiedName ?? type.FullName ?? type.Name;
+    }
+
+    private void CollectStylesForType<T>(Type type, HashSet<Type> visited, List<IStyle<T>> result) where T : IControl
+    {
+        if (type == typeof(Object)) return;
+        if (!visited.Add(type)) return;
+
+        if (type.BaseType != null)
+            CollectStylesForType(type.BaseType, visited, result);
+
+        foreach (Type interfaceType in type.GetInterfaces().OrderBy(GetTypeSortKey, StringComparer.Ordinal))
+            CollectStylesForInterface(interfaceType, visited, result);
+
+        if (GetStyleForType<T>(type) is {} style)
+            result.Add(style);
+    }
+
+    private void CollectStylesForInterface<T>(Type interfaceType, HashSet<Type> visited, List<IStyle<T>> result) where T : IControl
+    {
+        if (!visited.Add(interfaceType)) return;
+
+        foreach (Type parentInterfaceType in interfaceType.GetInterfaces().OrderBy(GetTypeSortKey, StringComparer.Ordinal))
+            CollectStylesForInterface(parentInterfaceType, visited, result);
+
+        if (GetStyleForType<T>(interfaceType) is {} style)
+            result.Add(style);
     }
 
     /// <summary>

@@ -2,6 +2,10 @@ using System;
 
 namespace Gwen.Net.New.Bindings;
 
+// todo: add more situations where we stop change propagation, e.g. in binding, binding2 and relay
+// todo: maybe relay is not needed as it uses bindings
+// todo: could be accomplished by having correct value changed events with new and old value in there as well
+
 /// <summary>
 ///     Utility class for defining bindings.
 /// </summary>

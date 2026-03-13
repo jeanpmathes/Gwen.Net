@@ -99,6 +99,60 @@ public class ContextTests
     }
 
     [Fact]
+    public void GetStyling_ReturnsStyleForImplementedInterface()
+    {
+        Style interfaceStyle = null!;
+
+        Context context = Context.Create(registry =>
+        {
+            interfaceStyle = registry.AddStyle<IButton>(builder => builder.Set(c => c.MinimumWidth, value: 15f));
+        });
+
+        IReadOnlyList<IStyle<Button<String>>> styles = context.GetStyling<Button<String>>();
+
+        Assert.Single(styles);
+        Assert.Same(interfaceStyle, styles[0]);
+    }
+
+    [Fact]
+    public void GetStyling_ReturnsStyleForInheritedInterface()
+    {
+        Style inheritedInterfaceStyle = null!;
+
+        Context context = Context.Create(registry =>
+        {
+            inheritedInterfaceStyle = registry.AddStyle<IContentControl>(builder => builder.Set(c => c.MinimumWidth, value: 15f));
+        });
+
+        IReadOnlyList<IStyle<Button<String>>> styles = context.GetStyling<Button<String>>();
+
+        Assert.Single(styles);
+        Assert.Same(inheritedInterfaceStyle, styles[0]);
+    }
+
+    [Fact]
+    public void GetStyling_OrdersInterfacesBeforeClassStyles()
+    {
+        Style iControlStyle = null!;
+        Style controlStyle = null!;
+        Style iButtonStyle = null!;
+
+        Context context = Context.Create(registry =>
+        {
+            iControlStyle = registry.AddStyle<IControl>(builder => builder.Set(c => c.MinimumWidth, value: 10f));
+            controlStyle = registry.AddStyle<Control>(builder => builder.Set(c => c.MinimumWidth, value: 20f));
+            iButtonStyle = registry.AddStyle<IButton>(builder => builder.Set(c => c.MinimumWidth, value: 30f));
+        });
+
+        IReadOnlyList<IStyle<Button<String>>> styles = context.GetStyling<Button<String>>();
+
+        Assert.Equal(expected: 3, styles.Count);
+        Assert.Same(iControlStyle, styles[0]);
+        Assert.Same(controlStyle, styles[1]);
+        Assert.Same(iButtonStyle, styles[2]);
+    }
+
+    [Fact]
     public void GetContentTemplate_ReturnsRegisteredTemplate()
     {
         ContentTemplate<String>? template = null;

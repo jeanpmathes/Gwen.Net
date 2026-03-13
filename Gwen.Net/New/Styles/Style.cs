@@ -19,7 +19,7 @@ public static class Styling
     /// </param>
     /// <typeparam name="T">The element type this style is for.</typeparam>
     /// <returns>A new instance of the <see cref="Style{T}" /> class.</returns>
-    public static Style<T> Create<T>(Action<IBuilder<T>> build) where T : Control
+    public static Style<T> Create<T>(Action<IBuilder<T>> build) where T : IControl
     {
         Builder<T> builder = new();
 
@@ -34,8 +34,8 @@ public static class Styling
     /// <summary>
     ///     The builder interface for styles. This is used to build styles in a fluent way.
     /// </summary>
-    /// <typeparam name="TElement">The element type this style is for.</typeparam>
-    public interface IBuilder<out TElement> where TElement : Control
+    /// <typeparam name="TControl">The control type this style is for.</typeparam>
+    public interface IBuilder<out TControl> : ITriggerBuilder<TControl> where TControl : IControl
     {
         /// <summary>
         ///     Set a property value for a style.
@@ -44,23 +44,67 @@ public static class Styling
         /// <param name="value">The value the style should set for the property.</param>
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <returns>The builder instance for chaining.</returns>
-        public IBuilder<TElement> Set<TValue>(Func<TElement, Property<TValue>> property, TValue value);
-    }
-
-    private class Builder<TControl> : IBuilder<TControl> where TControl : Control
-    {
-        private readonly List<(Func<TControl, Property>, Object)> properties = [];
+        public IBuilder<TControl> Set<TValue>(Func<TControl, Property<TValue>> property, TValue value);
 
         /// <summary>
-        ///     Add a property assignment to the style being built.
+        ///     Set a property binding for a style.
         /// </summary>
-        /// <param name="property">Selector for the control property to set.</param>
-        /// <param name="value">Value to assign when the style is applied.</param>
-        /// <typeparam name="TValue">The property value type.</typeparam>
-        /// <returns>The same builder instance for fluent chaining.</returns>
+        /// <param name="property">The property the style should set.</param>
+        /// <param name="binding">The binding the style should set for the property.</param>
+        /// <typeparam name="TValue">The type of the property value.</typeparam>
+        /// <returns>The builder instance for chaining.</returns>
+        public IBuilder<TControl> Set<TValue>(Func<TControl, Property<TValue>> property, Binding<TValue> binding);
+    }
+
+    /// <summary>
+    /// Variant of <see cref="IBuilder{TControl}"/> which can only set triggers.
+    /// </summary>
+    /// <typeparam name="TControl">The control type this style is for.</typeparam>
+    public interface ITriggerBuilder<out TControl> where TControl : IControl
+    {
+        /// <summary>
+        ///     Set a trigger for a style. This creates a property setter which uses the passed value only if a condition is met.
+        ///     Otherwise, the previously applied value is used.
+        /// </summary>
+        /// <remarks>
+        ///     Triggers are always applied after all setters, no matter the order of declaration.
+        /// </remarks>
+        /// <param name="condition">The condition which determines whether the style value or the previously applied value is used.</param>
+        /// <param name="property">The property the style should set.</param>
+        /// <param name="value">The value the style should set for the property if the condition is met.</param>
+        /// <typeparam name="TValue">The type of the property value.</typeparam>
+        /// <returns>>The builder instance for chaining.</returns>
+        public ITriggerBuilder<TControl> Trigger<TValue>(Func<TControl, IValueSource<Boolean>> condition, Func<TControl, Property<TValue>> property, TValue value);
+    }
+
+    private class Builder<TControl> : IBuilder<TControl> where TControl : IControl
+    {
+        private readonly List<(Func<TControl, Property>, Object)> setters = [];
+        private readonly List<(Func<TControl, Property>, Func<TControl, Object>)> triggers = [];
+
+        /// <inheritdoc />
         public IBuilder<TControl> Set<TValue>(Func<TControl, Property<TValue>> property, TValue value)
         {
-            properties.Add((property, value)!);
+            setters.Add((property, value)!);
+
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IBuilder<TControl> Set<TValue>(Func<TControl, Property<TValue>> property, Binding<TValue> binding)
+        {
+            setters.Add((property, binding));
+
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public ITriggerBuilder<TControl> Trigger<TValue>(Func<TControl, IValueSource<Boolean>> condition, Func<TControl, Property<TValue>> property, TValue value)
+        {
+            triggers.Add((property, control =>
+            {
+                return Binding.To(condition(control)).Parametrize<TValue>((original, isConditionMet) => isConditionMet ? value : original);
+            }));
 
             return this;
         }
@@ -71,7 +115,7 @@ public static class Styling
         /// <param name="builder">The builder containing style assignments.</param>
         public static implicit operator Style<TControl>(Builder<TControl> builder)
         {
-            return new Style<TControl>(builder.properties);
+            return new Style<TControl>(builder.setters, builder.triggers);
         }
     }
 }
@@ -91,7 +135,7 @@ public abstract class Style
 ///     Interface for styles, allowing to apply and clear styles from elements.
 /// </summary>
 /// <typeparam name="T">The element type this style is for.</typeparam>
-public interface IStyle<in T> where T : Control
+public interface IStyle<in T> where T : IControl
 {
     /// <summary>
     ///     Apply the style to an element.
@@ -111,17 +155,20 @@ public interface IStyle<in T> where T : Control
 ///     Styles can be used to set default values for properties of element.
 /// </summary>
 /// <typeparam name="T">The element type this style is for.</typeparam>
-public class Style<T> : Style, IStyle<T> where T : Control
+public class Style<T> : Style, IStyle<T> where T : IControl
 {
-    private readonly (Func<T, Property>, Object)[] properties;
+    private readonly (Func<T, Property>, Object)[] setters;
+    private readonly (Func<T, Property>, Func<T, Object>)[] triggers;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="Style{T}" /> class.
     /// </summary>
-    /// <param name="properties">The properties to set for the style.</param>
-    public Style(List<(Func<T, Property>, Object)> properties)
+    /// <param name="setters">The setters of the style.</param>
+    /// <param name="triggers">The triggers of the style.</param>
+    public Style(List<(Func<T, Property>, Object)> setters, List<(Func<T, Property>, Func<T, Object>)> triggers)
     {
-        this.properties = properties.ToArray();
+        this.setters = setters.ToArray();
+        this.triggers = triggers.ToArray();
     }
 
     /// <inheritdoc />
@@ -133,10 +180,16 @@ public class Style<T> : Style, IStyle<T> where T : Control
     /// <param name="element">The element to apply the style to.</param>
     public void Apply(T element)
     {
-        foreach ((Func<T, Property> getProperty, Object value) in properties)
+        foreach ((Func<T, Property> getProperty, Object value) in setters)
         {
             Property property = getProperty(element);
             property.Style(value);
+        }
+
+        foreach ((Func<T, Property> getProperty, Func<T, Object> getValue) in triggers)
+        {
+            Property property = getProperty(element);
+            property.Style(getValue(element));
         }
     }
 
@@ -146,7 +199,13 @@ public class Style<T> : Style, IStyle<T> where T : Control
     /// <param name="element">The element to clear the style from.</param>
     public void Clear(T element)
     {
-        foreach ((Func<T, Property> getProperty, _) in properties)
+        foreach ((Func<T, Property> getProperty, _) in setters)
+        {
+            Property property = getProperty(element);
+            property.ClearStyle();
+        }
+
+        foreach ((Func<T, Property> getProperty, _) in triggers)
         {
             Property property = getProperty(element);
             property.ClearStyle();

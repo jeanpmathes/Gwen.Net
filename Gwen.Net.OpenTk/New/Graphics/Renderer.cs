@@ -94,8 +94,6 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         bitmap = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
         graphics = System.Drawing.Graphics.FromImage(bitmap);
 
-        graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-
         if (isClipping && clipStack.Count > 0)
         {
             ApplyClippingRectangle(clipStack.Peek());
@@ -381,6 +379,8 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         if (thickness.IsUniform)
         {
+            if (thickness == ThicknessF.Zero) return;
+
             Pen? systemPen = GetPen(brush, thickness.Left);
             if (systemPen == null) return;
 
