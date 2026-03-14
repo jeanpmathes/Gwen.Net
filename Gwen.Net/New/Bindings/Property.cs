@@ -282,7 +282,8 @@ public sealed class Property<T> : Property, IValueSource<T>
                 Style(binding);
                 break;
             case Binding<T, T> trigger:
-                Style(trigger.Apply(effectiveBinding));
+                // The coercion will be applied to the value provided by the trigger, so we do not need to pass the coerced binding.
+                Style(trigger.Apply(selectedBinding));
                 break;
             default:
                 throw new ArgumentException($"Invalid style value for property of type {typeof(T)}: {value}", nameof(value));
