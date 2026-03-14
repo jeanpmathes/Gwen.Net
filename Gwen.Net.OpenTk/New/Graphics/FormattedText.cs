@@ -31,10 +31,12 @@ public sealed class FormattedText(Renderer renderer, String text, Font font, Tex
 
     private static StringFormat CreateStringFormat(TextOptions options)
     {
-        StringFormat format = new();
+        StringFormat format = (StringFormat) StringFormat.GenericTypographic.Clone();
 
         if (options.Wrapping == TextWrapping.NoWrap)
             format.FormatFlags |= StringFormatFlags.NoWrap;
+
+        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
 
         format.Alignment = options.Alignment switch
         {
@@ -43,6 +45,8 @@ public sealed class FormattedText(Renderer renderer, String text, Font font, Tex
             TextAlignment.Trailing => StringAlignment.Far,
             _ => StringAlignment.Near
         };
+
+        format.LineAlignment = StringAlignment.Near;
 
         format.Trimming = options.Trimming switch
         {

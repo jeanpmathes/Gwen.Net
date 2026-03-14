@@ -335,9 +335,29 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         System.Drawing.Font systemFont = GetFont(text.Font);
 
-        SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
+        if (String.IsNullOrEmpty(text.Text))
+        {
+            SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
+            return ApplyInverseScale(measuredSize);
+        }
 
-        return ApplyInverseScale(measuredSize);
+        RectangleF layoutRectangle = new(PointF.Empty, availableSize);
+
+        using StringFormat stringFormat = (StringFormat) text.StringFormat.Clone();
+        stringFormat.SetMeasurableCharacterRanges([new CharacterRange(First: 0, Length: text.Text.Length)]);
+
+        Region[] regions = graphics.MeasureCharacterRanges(text.Text, systemFont, layoutRectangle, stringFormat);
+
+        try
+        {
+            RectangleF bounds = regions[0].GetBounds(graphics);
+            return ApplyInverseScale(bounds.Size);
+        }
+        finally
+        {
+            foreach (Region region in regions)
+                region.Dispose();
+        }
     }
 
     public void DrawText(FormattedText text, RectangleF rectangle, Brush brush)
