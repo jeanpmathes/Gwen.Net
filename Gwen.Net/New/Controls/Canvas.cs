@@ -26,13 +26,7 @@ public sealed class Canvas : SingleChildControl<Canvas>, IDisposable
     {
         onlyRenderer = renderer;
 
-        inputBinding = Binding.To(Visualization).Compute(visualization =>
-        {
-            if (visualization is Visuals.Canvas canvas)
-                return canvas.Input;
-
-            return null;
-        });
+        inputBinding = Binding.To(Visualization).Cast<Visuals.Canvas>().Select(canvas => canvas?.Input, defaultValue: null);
 
         Context = new Context(registry, this);
     }

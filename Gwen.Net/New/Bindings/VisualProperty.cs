@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Gwen.Net.New.Visuals;
 
 namespace Gwen.Net.New.Bindings;
@@ -224,12 +225,13 @@ public sealed class VisualProperty<T> : VisualProperty, IValueSource<T>
 
     private void UpdateCachedValue(Boolean notify)
     {
-        T value = targetBinding.GetValue();
+        T? oldValue = cachedValue;
+        T newValue = targetBinding.GetValue();
 
-        if (isCacheValid && Equals(cachedValue, value))
+        if (isCacheValid && EqualityComparer<T>.Default.Equals(oldValue, newValue))
             return;
 
-        cachedValue = value;
+        cachedValue = newValue;
         isCacheValid = true;
 
         if (notify)

@@ -1,10 +1,7 @@
 using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.New.Bindings;
-
-// todo: add more situations where we stop change propagation, e.g. in binding, binding2 and relay
-// todo: maybe relay is not needed as it uses bindings
-// todo: could be accomplished by having correct value changed events with new and old value in there as well
 
 /// <summary>
 ///     Utility class for defining bindings.
@@ -73,16 +70,15 @@ public static class Binding
     }
 
     /// <summary>
-    ///     Bind directly to a parametrized value source, using another value source as input.
+    /// Bind directly to a parametrized value source, creating a parametrized binding.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="inputSource"></param>
-    /// <typeparam name="TIn"></typeparam>
-    /// <typeparam name="TOut"></typeparam>
-    /// <returns></returns>
-    public static Binding<TOut> To<TIn, TOut>(IValueSource<TIn, TOut> source, IValueSource<TIn> inputSource)
+    /// <param name="source">The parametrized value source.</param>
+    /// <typeparam name="TIn">The type of the input parameter of the value source.</typeparam>
+    /// <typeparam name="TOut">The type of value stored in the binding.</typeparam>
+    /// <returns>The created parametrized binding.</returns>
+    public static Binding<TIn, TOut> To<TIn, TOut>(IValueSource<TIn, TOut> source)
     {
-        return new Binding<TOut>(() => source.GetValue(inputSource.GetValue()), setter: null, [source, inputSource]);
+        return new Binding<TIn, TOut>(source.GetValue, [source]);
     }
 
     /// <summary>
@@ -188,13 +184,15 @@ public static class Binding
 /// <summary>
 ///     Binds a property to a slot.
 /// </summary>
-/// <typeparam name="TValue">The type of value stored in the binding.</typeparam>
-public sealed class Binding<TValue> : IValueSource<TValue>
+/// <typeparam name="T">The type of value stored in the binding.</typeparam>
+public sealed class Binding<T> : IValueSource<T>
 {
-    private readonly Func<TValue> getter;
-    private readonly Action<TValue>? setter;
+    private readonly Func<T> getter;
+    private readonly Action<T>? setter;
+    private T? cachedValue;
+    private Boolean isCacheValid;
 
-    internal Binding(Func<TValue> getter, Action<TValue>? setter, IValueSource[] dependencies)
+    internal Binding(Func<T> getter, Action<T>? setter, IValueSource[] dependencies)
     {
         this.getter = getter;
         this.setter = setter;
@@ -204,9 +202,15 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     }
 
     /// <inheritdoc />
-    public TValue GetValue()
+    public T GetValue()
     {
-        return getter();
+        if (!isCacheValid)
+        {
+            cachedValue = getter();
+            isCacheValid = true;
+        }
+
+        return cachedValue!;
     }
 
     /// <inheritdoc />
@@ -214,6 +218,15 @@ public sealed class Binding<TValue> : IValueSource<TValue>
 
     private void OnDependencyValueChanged(Object? sender, EventArgs e)
     {
+        T? oldValue = cachedValue;
+        T newValue = getter();
+
+        if (isCacheValid && EqualityComparer<T>.Default.Equals(oldValue, newValue))
+            return;
+
+        cachedValue = newValue;
+        isCacheValid = true;
+
         ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -228,14 +241,14 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// </param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>>The created binding.</returns>
-    public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>> selector)
+    public Binding<TSelected> Select<TSelected>(Func<T, IValueSource<TSelected>> selector)
     {
-        Relay<TSelected> relay = new();
+        Relay<TSelected> relay = new(default!);
 
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
 
-        return new Binding<TSelected>(() => relay.Inner!.GetValue(), setter: null, [relay]);
+        return Binding.To(relay);
     }
 
     /// <summary>
@@ -251,14 +264,14 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <param name="defaultValue">The value to return when the selected inner source is <c>null</c>.</param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TSelected> Select<TSelected>(Func<TValue, IValueSource<TSelected>?> selector, TSelected defaultValue)
+    public Binding<TSelected> Select<TSelected>(Func<T, IValueSource<TSelected>?> selector, TSelected defaultValue)
     {
-        Relay<TSelected> relay = new();
+        Relay<TSelected> relay = new(defaultValue);
 
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
 
-        return new Binding<TSelected>(() => relay.Inner != null ? relay.Inner.GetValue() : defaultValue, setter: null, [relay]);
+        return Binding.To(relay);
     }
 
     /// <summary>
@@ -274,14 +287,14 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <typeparam name="TIn">The type of the input parameter of the selected value source.</typeparam>
     /// <typeparam name="TOut">The type of the value stored in the selected value source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TIn, TOut> Select<TIn, TOut>(Func<TValue, IValueSource<TIn, TOut>> selector)
+    public Binding<TIn, TOut> Select<TIn, TOut>(Func<T, IValueSource<TIn, TOut>> selector)
     {
-        Relay<TIn, TOut> relay = new();
+        Relay<TIn, TOut> relay = new(default!);
 
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
 
-        return new Binding<TIn, TOut>(input => relay.Inner!.GetValue(input), [relay]);
+        return Binding.To(relay);
     }
 
     /// <summary>
@@ -299,14 +312,14 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <typeparam name="TIn">The type of the input parameter of the selected value source.</typeparam>
     /// <typeparam name="TOut">The type of the value stored in the selected value source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TIn, TOut> Select<TIn, TOut>(Func<TValue, IValueSource<TIn, TOut>?> selector, TOut defaultValue)
+    public Binding<TIn, TOut> Select<TIn, TOut>(Func<T, IValueSource<TIn, TOut>?> selector, TOut defaultValue)
     {
-        Relay<TIn, TOut> relay = new();
+        Relay<TIn, TOut> relay = new(defaultValue);
 
         ValueChanged += (_, _) => relay.SetInner(selector(GetValue()));
         relay.SetInner(selector(GetValue()));
 
-        return new Binding<TIn, TOut>(input => relay.Inner != null ? relay.Inner.GetValue(input) : defaultValue, [relay]);
+        return Binding.To(relay);
     }
 
     /// <summary>
@@ -319,9 +332,19 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// </param>
     /// <typeparam name="TSelected">The type of the selected value.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TSelected> Compute<TSelected>(Func<TValue, TSelected> computer)
+    public Binding<TSelected> Compute<TSelected>(Func<T, TSelected> computer)
     {
         return new Binding<TSelected>(() => computer(GetValue()), setter: null, [this]);
+    }
+
+    /// <summary>
+    /// Create a new binding that safely casts a value using <c>as</c>, potentially returning null.
+    /// </summary>
+    /// <typeparam name="TTarget">The target type to cast to.</typeparam>
+    /// <returns>The casting binding.</returns>
+    public Binding<TTarget?> Cast<TTarget>() where TTarget : class
+    {
+        return new Binding<TTarget?>(() => GetValue() as TTarget, setter: null, [this]);
     }
 
     /// <summary>
@@ -330,9 +353,9 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <param name="other">The other value source to combine with this binding.</param>
     /// <typeparam name="TOther">The type of the value in the other source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<(TValue, TOther)> Combine<TOther>(IValueSource<TOther> other)
+    public Binding<(T, TOther)> Combine<TOther>(IValueSource<TOther> other)
     {
-        return new Binding<(TValue, TOther)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
+        return new Binding<(T, TOther)>(() => (GetValue(), other.GetValue()), setter: null, [this, other]);
     }
 
     /// <summary>
@@ -343,9 +366,9 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <typeparam name="TOther1">The type of the value in the first other source.</typeparam>
     /// <typeparam name="TOther2">The type of the value in the second other source.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<(TValue, TOther1, TOther2)> Combine<TOther1, TOther2>(IValueSource<TOther1> other1, IValueSource<TOther2> other2)
+    public Binding<(T, TOther1, TOther2)> Combine<TOther1, TOther2>(IValueSource<TOther1> other1, IValueSource<TOther2> other2)
     {
-        return new Binding<(TValue, TOther1, TOther2)>(() => (GetValue(), other1.GetValue(), other2.GetValue()), setter: null, [this, other1, other2]);
+        return new Binding<(T, TOther1, TOther2)>(() => (GetValue(), other1.GetValue(), other2.GetValue()), setter: null, [this, other1, other2]);
     }
 
     /// <summary>
@@ -355,7 +378,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     /// <typeparam name="TIn">The type of the input parameter.</typeparam>
     /// <typeparam name="TOut">The type of value stored in the created binding.</typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TIn, TOut> Parametrize<TIn, TOut>(Func<TIn, TValue, TOut> operation)
+    public Binding<TIn, TOut> Parametrize<TIn, TOut>(Func<TIn, T, TOut> operation)
     {
         return new Binding<TIn, TOut>(input => operation(input, GetValue()), [this]);
     }
@@ -369,7 +392,7 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     ///     binding.
     /// </typeparam>
     /// <returns>The created binding.</returns>
-    public Binding<TInAndOut, TInAndOut> Parametrize<TInAndOut>(Func<TInAndOut, TValue, TInAndOut> operation)
+    public Binding<TInAndOut, TInAndOut> Parametrize<TInAndOut>(Func<TInAndOut, T, TInAndOut> operation)
     {
         return new Binding<TInAndOut, TInAndOut>(input => operation(input, GetValue()), [this]);
     }
@@ -379,69 +402,97 @@ public sealed class Binding<TValue> : IValueSource<TValue>
     {
         return $"{{{GetValue()?.ToString()}}}";
     }
+}
 
-    private sealed class Relay<T> : IValueSource<T>
+internal sealed class Relay<T>(T defaultValue) : IValueSource<T>
+{
+    private T? cachedValue;
+    private Boolean isCacheValid;
+
+    private IValueSource<T>? Inner { get; set; }
+
+    T IValueSource<T>.GetValue()
     {
-        internal IValueSource<T>? Inner { get; private set; }
-
-        T IValueSource<T>.GetValue()
+        if (!isCacheValid)
         {
-            return Inner != null ? Inner.GetValue() : default!;
+            cachedValue = ComputeValue();
+            isCacheValid = true;
         }
 
-        public event EventHandler? ValueChanged;
-
-        internal void SetInner(IValueSource<T>? newInner)
-        {
-            if (ReferenceEquals(Inner, newInner)) return;
-
-            if (Inner != null)
-                Inner.ValueChanged -= OnInnerValueChanged;
-
-            Inner = newInner;
-
-            if (Inner != null)
-                Inner.ValueChanged += OnInnerValueChanged;
-
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnInnerValueChanged(Object? sender, EventArgs e)
-        {
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-        }
+        return cachedValue!;
     }
 
-    private sealed class Relay<TIn, TOut> : IValueSource<TIn, TOut>
+    public event EventHandler? ValueChanged;
+
+    private T ComputeValue()
     {
-        internal IValueSource<TIn, TOut>? Inner { get; private set; }
+        return Inner != null ? Inner.GetValue() : defaultValue;
+    }
 
-        TOut IValueSource<TIn, TOut>.GetValue(TIn input)
-        {
-            return Inner != null ? Inner.GetValue(input) : default!;
-        }
+    internal void SetInner(IValueSource<T>? newInner)
+    {
+        if (ReferenceEquals(Inner, newInner)) return;
 
-        public event EventHandler? ValueChanged;
+        if (Inner != null)
+            Inner.ValueChanged -= OnInnerValueChanged;
 
-        internal void SetInner(IValueSource<TIn, TOut>? newInner)
-        {
-            if (ReferenceEquals(Inner, newInner)) return;
+        Inner = newInner;
 
-            if (Inner != null)
-                Inner.ValueChanged -= OnInnerValueChanged;
+        if (Inner != null)
+            Inner.ValueChanged += OnInnerValueChanged;
 
-            Inner = newInner;
+        OnInnerValueChanged();
+    }
 
-            if (Inner != null)
-                Inner.ValueChanged += OnInnerValueChanged;
+    private void OnInnerValueChanged(Object? sender, EventArgs e)
+    {
+        OnInnerValueChanged();
+    }
 
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-        }
+    private void OnInnerValueChanged()
+    {
+        T? oldValue = cachedValue;
+        T newValue = ComputeValue();
 
-        private void OnInnerValueChanged(Object? sender, EventArgs e)
-        {
-            ValueChanged?.Invoke(this, EventArgs.Empty);
-        }
+        if (isCacheValid && EqualityComparer<T>.Default.Equals(oldValue, newValue))
+            return;
+
+        cachedValue = newValue;
+        isCacheValid = true;
+
+        ValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+internal sealed class Relay<TIn, TOut>(TOut defaultValue) : IValueSource<TIn, TOut>
+{
+    private IValueSource<TIn, TOut>? Inner { get; set; }
+
+    TOut IValueSource<TIn, TOut>.GetValue(TIn input)
+    {
+        return Inner != null ? Inner.GetValue(input) : defaultValue;
+    }
+
+    public event EventHandler? ValueChanged;
+
+    internal void SetInner(IValueSource<TIn, TOut>? newInner)
+    {
+        if (ReferenceEquals(Inner, newInner)) return;
+
+        if (Inner != null)
+            Inner.ValueChanged -= OnInnerValueChanged;
+
+        Inner = newInner;
+
+        if (Inner != null)
+            Inner.ValueChanged += OnInnerValueChanged;
+
+        ValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnInnerValueChanged(Object? sender, EventArgs e)
+    {
+        ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 }
 

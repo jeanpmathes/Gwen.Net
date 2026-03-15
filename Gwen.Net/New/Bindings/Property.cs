@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Gwen.Net.New.Controls;
 
@@ -105,7 +106,7 @@ public sealed class Property<T> : Property, IValueSource<T>
     private void SetEffectiveBinding()
     {
         effectiveBinding = coercionBinding != null
-            ? Bindings.Binding.To(coercionBinding, selectedBinding)
+            ? coercionBinding.Apply(selectedBinding)
             : selectedBinding;
     }
 
@@ -175,12 +176,13 @@ public sealed class Property<T> : Property, IValueSource<T>
 
     private void UpdateCachedValue(Boolean notify)
     {
-        T value = effectiveBinding.GetValue();
+        T? oldValue = cachedValue;
+        T newValue = effectiveBinding.GetValue();
 
-        if (isCacheValid && Equals(cachedValue, value))
+        if (isCacheValid && EqualityComparer<T>.Default.Equals(oldValue, newValue))
             return;
 
-        cachedValue = value;
+        cachedValue = newValue;
         isCacheValid = true;
 
         if (notify)

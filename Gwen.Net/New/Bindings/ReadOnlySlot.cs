@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Gwen.Net.New.Bindings;
 
@@ -37,10 +38,13 @@ public class ReadOnlySlot<T> : IValueSource<T>
     /// <param name="newValue">The new value to set.</param>
     protected void SetValue(T newValue)
     {
-        if (Equals(value, newValue))
+        T oldValue = value;
+
+        if (EqualityComparer<T>.Default.Equals(oldValue, newValue))
             return;
 
         value = newValue;
+
         ValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
