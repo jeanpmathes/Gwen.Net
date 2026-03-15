@@ -329,17 +329,17 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
     public SizeF MeasureText(FormattedText text, SizeF availableSize)
     {
-        availableSize = ApplyScale(availableSize);
-
         if (graphics == null) return SizeF.Empty;
 
-        System.Drawing.Font systemFont = GetFont(text.Font);
+        availableSize = ApplyScale(availableSize);
+
+        if (availableSize.Width <= 0.0f || availableSize.Height <= 0.0f)
+            availableSize = SizeF.Empty;
 
         if (String.IsNullOrEmpty(text.Text))
-        {
-            SizeF measuredSize = graphics.MeasureString(text.Text, systemFont, availableSize, text.StringFormat);
-            return ApplyInverseScale(measuredSize);
-        }
+            return SizeF.Empty;
+
+        System.Drawing.Font systemFont = GetFont(text.Font);
 
         RectangleF layoutRectangle = new(PointF.Empty, availableSize);
 
