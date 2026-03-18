@@ -90,25 +90,37 @@ public interface IRenderer
     ///     Draw a filled rectangle.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
+    /// <param name="corners">The radius of the corners to draw.</param>
     /// <param name="brush">The brush to use.</param>
-    public void DrawFilledRectangle(RectangleF rectangle, Brush brush);
+    public void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush);
+
+    /// <summary>
+    ///     Draw a rectangle with non-rounded corners.
+    /// </summary>
+    /// <param name="rectangle">The rectangle to draw.</param>
+    /// <param name="brush">The brush to use.</param>
+    public void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    {
+        DrawFilledRectangle(rectangle, RadiusF.Zero, brush);
+    }
 
     /// <summary>
     ///     Draw a rectangle outline with the specified border thickness.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="thickness">The thickness of each edge.</param>
+    /// <param name="corners">The radius of the corners to draw.</param>
     /// <param name="brush">The brush to use.</param>
-    public void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush);
+    public void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush);
 
     /// <summary>
-    ///     Draw a rectangle outline with a default border thickness of 1 unit.
+    ///     Draw a rectangle outline with a default border thickness of 1 unit and non-rounded corners.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="brush">The brush to use.</param>
     public void DrawLinedRectangle(RectangleF rectangle, Brush brush)
     {
-        DrawLinedRectangle(rectangle, ThicknessF.One, brush);
+        DrawLinedRectangle(rectangle, ThicknessF.One, RadiusF.Zero, brush);
     }
 
     /// <summary>

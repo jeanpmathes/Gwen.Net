@@ -17,6 +17,7 @@ public abstract class BorderBase<TControl> : SingleChildControl<TControl> where 
     protected BorderBase()
     {
         BorderThickness = Property.Create(this, ThicknessF.One);
+        BorderRadius = Property.Create(this, RadiusF.Zero);
     }
 
     #region PROPERTIES
@@ -25,6 +26,11 @@ public abstract class BorderBase<TControl> : SingleChildControl<TControl> where 
     ///     The thickness of the border drawn around the child control.
     /// </summary>
     public Property<ThicknessF> BorderThickness { get; }
+
+    /// <summary>
+    ///     The radius of the corners of the drawn border.
+    /// </summary>
+    public Property<RadiusF> BorderRadius { get; }
 
     #endregion PROPERTIES
 }

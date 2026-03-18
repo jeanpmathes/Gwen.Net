@@ -18,6 +18,7 @@ public class Border : Visual
     {
         BorderBrush = VisualProperty.Create(this, BindToOwnerForeground(), Invalidation.Render);
         BorderThickness = VisualProperty.Create(this, ThicknessF.One, Invalidation.Measure);
+        BorderRadius = VisualProperty.Create(this, RadiusF.Zero, Invalidation.Render);
     }
 
     /// <summary>
@@ -26,7 +27,7 @@ public class Border : Visual
     public Visual? Child
     {
         get => Children.Count > 0 ? Children[0] : null;
-        set => SetChild(value);
+        init => SetChild(value);
     }
 
     /// <inheritdoc />
@@ -59,9 +60,8 @@ public class Border : Visual
     /// <inheritdoc />
     protected override void OnRender()
     {
-        base.OnRender();
-
-        Renderer.DrawLinedRectangle(RenderBounds, BorderThickness.GetValue(), BorderBrush.GetValue());
+        Renderer.DrawFilledRectangle(RenderBounds, BorderRadius.GetValue(), Background.GetValue());
+        Renderer.DrawLinedRectangle(RenderBounds, BorderThickness.GetValue(), BorderRadius.GetValue(), BorderBrush.GetValue());
     }
 
     #region PROPERTIES
@@ -75,6 +75,11 @@ public class Border : Visual
     ///     The thickness of the border.
     /// </summary>
     public VisualProperty<ThicknessF> BorderThickness { get; }
+
+    /// <summary>
+    ///     The radius of the corners. This affects both the background and the border.
+    /// </summary>
+    public VisualProperty<RadiusF> BorderRadius { get; }
 
     #endregion PROPERTIES
 }

@@ -7,18 +7,8 @@ namespace Gwen.Net.New.Utilities;
 ///     Describes the thickness of a frame around a rectangle.
 ///     Uses include margins, padding, and borders.
 /// </summary>
-public readonly struct ThicknessF : IEquatable<ThicknessF>
+public readonly record struct ThicknessF
 {
-    /// <summary>
-    ///     Get a thickness with all sides set to zero.
-    /// </summary>
-    public static ThicknessF Zero { get; } = new(0);
-
-    /// <summary>
-    ///     Get a thickness with all sides set to one.
-    /// </summary>
-    public static ThicknessF One { get; } = new(1);
-
     /// <summary>
     ///     Create a thickness with the specified left, top, right, and bottom thicknesses.
     /// </summary>
@@ -34,6 +24,16 @@ public readonly struct ThicknessF : IEquatable<ThicknessF>
     ///     Create a thickness with the specified uniform thickness for all sides.
     /// </summary>
     public ThicknessF(Single uniform) : this(uniform, uniform, uniform, uniform) {}
+
+    /// <summary>
+    ///     Get a thickness with all sides set to zero.
+    /// </summary>
+    public static ThicknessF Zero { get; } = new(0);
+
+    /// <summary>
+    ///     Get a thickness with all sides set to one.
+    /// </summary>
+    public static ThicknessF One { get; } = new(1);
 
     /// <summary>
     ///     Check whether all sides of the thickness are equal, meaning the thickness is uniform on all sides.
@@ -102,44 +102,6 @@ public readonly struct ThicknessF : IEquatable<ThicknessF>
     {
         return new RectangleF(rectangle.X + thickness.Left, rectangle.Y + thickness.Top, rectangle.Width - thickness.Left - thickness.Right, rectangle.Height - thickness.Top - thickness.Bottom);
     }
-
-    #region EQUALITY
-
-    /// <inheritdoc />
-    public Boolean Equals(ThicknessF other)
-    {
-        return Left.Equals(other.Left) && Top.Equals(other.Top) && Right.Equals(other.Right) && Bottom.Equals(other.Bottom);
-    }
-
-    /// <inheritdoc />
-    public override Boolean Equals(Object? obj)
-    {
-        return obj is ThicknessF other && Equals(other);
-    }
-
-    /// <inheritdoc />
-    public override Int32 GetHashCode()
-    {
-        return HashCode.Combine(Left, Top, Right, Bottom);
-    }
-
-    /// <summary>
-    ///     The equality operator.
-    /// </summary>
-    public static Boolean operator ==(ThicknessF left, ThicknessF right)
-    {
-        return left.Equals(right);
-    }
-
-    /// <summary>
-    ///     The inequality operator.
-    /// </summary>
-    public static Boolean operator !=(ThicknessF left, ThicknessF right)
-    {
-        return !left.Equals(right);
-    }
-
-    #endregion EQUALITY
 
     /// <inheritdoc />
     public override String ToString()

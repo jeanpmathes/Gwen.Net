@@ -38,9 +38,9 @@ public class MockRenderer : Renderer
         return new MockFormattedText();
     }
 
-    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush) {}
+    public override void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush) {}
 
-    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush) {}
+    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush) {}
 
     public override void Resize(Size size) {}
 }

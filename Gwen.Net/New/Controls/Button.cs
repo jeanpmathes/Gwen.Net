@@ -20,6 +20,9 @@ public interface IButton : IContentControl
     /// <inheritdoc cref="Button{TContent}.BorderThickness" />
     public Property<ThicknessF> BorderThickness { get; }
 
+    /// <inheritdoc cref="Button{TContent}.BorderRadius" />
+    public Property<RadiusF> BorderRadius { get; }
+
     /// <inheritdoc cref="ButtonBase{TContent,TControl}.IsPressed" />
     public ReadOnlySlot<Boolean> IsPressed { get; }
 }
@@ -46,6 +49,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
     {
         BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute((foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
         BorderThickness = Property.Create(this, new ThicknessF(1.0f));
+        BorderRadius = Property.Create(this, RadiusF.Zero);
 
         Foreground.OverrideDefault(old => old
             .Combine(Enablement)
@@ -73,6 +77,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
         {
             BorderBrush = {Binding = Binding.To(control.BorderBrush)},
             BorderThickness = {Binding = Binding.To(control.BorderThickness)},
+            BorderRadius = {Binding = Binding.To(control.BorderRadius)},
 
             Child = new ChildPresenter()
         });
@@ -89,6 +94,11 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
     ///     The thickness of the button's border.
     /// </summary>
     public Property<ThicknessF> BorderThickness { get; }
+
+    /// <summary>
+    ///     The radius of the corners of the button's border.
+    /// </summary>
+    public Property<RadiusF> BorderRadius { get; }
 
     #endregion PROPERTIES
 }

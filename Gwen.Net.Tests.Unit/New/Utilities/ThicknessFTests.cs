@@ -87,44 +87,4 @@ public class ThicknessFTests
         Assert.Equal(expected: 96f, result.Width);
         Assert.Equal(expected: 44f, result.Height);
     }
-
-    [Fact]
-    public void Equals_ReturnsTrueForIdenticalThicknesses()
-    {
-        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-
-        Assert.True(a.Equals(b));
-    }
-
-    [Fact]
-    public void Equals_ReturnsFalseWhenAnySideDiffers()
-    {
-        ThicknessF reference = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-
-        Assert.False(reference.Equals(new ThicknessF(left: 0f, top: 2f, right: 3f, bottom: 4f)));
-        Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 0f, right: 3f, bottom: 4f)));
-        Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 2f, right: 0f, bottom: 4f)));
-        Assert.False(reference.Equals(new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 0f)));
-    }
-
-    [Fact]
-    public void Equals_AlignsWithEqualityOperator()
-    {
-        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF c = new(left: 0f, top: 0f, right: 0f, bottom: 0f);
-
-        Assert.True(a == b);
-        Assert.False(a == c);
-    }
-
-    [Fact]
-    public void GetHashCode_ReturnsSameValueForEqualThicknesses()
-    {
-        ThicknessF a = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-        ThicknessF b = new(left: 1f, top: 2f, right: 3f, bottom: 4f);
-
-        Assert.Equal(a.GetHashCode(), b.GetHashCode());
-    }
 }

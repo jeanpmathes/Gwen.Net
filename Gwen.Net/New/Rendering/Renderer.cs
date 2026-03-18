@@ -50,10 +50,10 @@ public abstract class Renderer : IRenderer
     public abstract IFormattedText CreateFormattedText(String text, Font font, TextOptions options);
 
     /// <inheritdoc />
-    public abstract void DrawFilledRectangle(RectangleF rectangle, Brush brush);
+    public abstract void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush);
 
     /// <inheritdoc />
-    public abstract void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush);
+    public abstract void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush);
 
     /// <inheritdoc />
     public abstract void Resize(Size size);

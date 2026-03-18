@@ -4,6 +4,7 @@ using Gwen.Net.New.Controls;
 using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Resources;
 using Gwen.Net.New.Styles;
+using Gwen.Net.New.Utilities;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
@@ -37,6 +38,7 @@ public class ClassicLight(ResourceRegistry registry) : IResourceBundle<ClassicLi
     public Style<IButton> ButtonStyle { get; } = registry.AddStyle<IButton>(b => b
         .Set(x => x.Opacity, value: 1.0f)
         .Set(x => x.BorderBrush, buttonBorderBrush)
+        .Set(x => x.BorderRadius, new RadiusF(5.0f))
         .Set(x => x.Background, buttonBackgroundBrush)
         .Trigger(x => x.IsHovered, x => x.Background, buttonHoveredBackgroundBrush)
         .Trigger(x => x.IsPressed, x => x.Background, buttonPressedBackgroundBrush)

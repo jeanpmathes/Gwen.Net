@@ -94,6 +94,10 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         bitmap = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
         graphics = System.Drawing.Graphics.FromImage(bitmap);
 
+        graphics.SmoothingMode = SmoothingMode.HighQuality;
+        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
         if (isClipping && clipStack.Count > 0)
         {
             ApplyClippingRectangle(clipStack.Peek());
@@ -377,7 +381,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
     #region RECTANGLES
 
-    public override void DrawFilledRectangle(RectangleF rectangle, Brush brush)
+    public override void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
 
@@ -385,10 +389,17 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         rectangle = ApplyScale(rectangle);
 
-        graphics?.FillRectangle(systemBrush, rectangle);
+        if (corners == RadiusF.Zero)
+        {
+            graphics?.FillRectangle(systemBrush, rectangle);
+        }
+        else
+        {
+            graphics?.FillRoundedRectangle(systemBrush, rectangle, new SizeF(corners.X, corners.Y));
+        }
     }
 
-    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, Brush brush)
+    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
 
@@ -404,8 +415,17 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
             Pen? systemPen = GetPen(brush, thickness.Left);
             if (systemPen == null) return;
 
-            Single halfT = thickness.Left / 2f;
-            graphics?.DrawRectangle(systemPen, rectangle.X + halfT, rectangle.Y + halfT, rectangle.Width - thickness.Left, rectangle.Height - thickness.Left);
+            Single halfWidth = thickness.Left / 2f;
+            RectangleF adjustedRectangle = new(rectangle.X + halfWidth, rectangle.Y + halfWidth, rectangle.Width - thickness.Left, rectangle.Height - thickness.Left);
+
+            if (corners == RadiusF.Zero)
+            {
+                graphics?.DrawRectangle(systemPen, adjustedRectangle);
+            }
+            else
+            {
+                graphics?.DrawRoundedRectangle(systemPen, adjustedRectangle, new SizeF(corners.X, corners.Y));
+            }
         }
         else
         {
@@ -459,7 +479,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         return systemBrush;
     }
 
-    private Pen? GetPen(Brush brush, Single thickness)
+    private Pen? GetPen(Brush brush, Single width)
     {
         Byte? alpha = TryGetEffectiveAlpha(brush);
 
@@ -470,7 +490,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         if (systemPens.TryGetValue(key, out Pen? systemPen))
         {
-            systemPen.Width = thickness;
+            systemPen.Width = width;
             return systemPen;
         }
 
@@ -478,7 +498,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         if (systemBrush == null) return null;
 
-        systemPen = new Pen(systemBrush, thickness);
+        systemPen = new Pen(systemBrush, width);
         systemPens[key] = systemPen;
 
         return systemPen;
