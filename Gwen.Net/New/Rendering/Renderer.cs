@@ -53,7 +53,7 @@ public abstract class Renderer : IRenderer
     public abstract void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush);
 
     /// <inheritdoc />
-    public abstract void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush);
+    public abstract void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush);
 
     /// <inheritdoc />
     public abstract void Resize(Size size);
@@ -120,6 +120,26 @@ public abstract class Renderer : IRenderer
     }
 
     /// <summary>
+    ///     Apply the scale factor to a radius, scaling both the X and Y values accordingly.
+    /// </summary>
+    /// <param name="radius">The radius to scale.</param>
+    /// <returns>The scaled radius.</returns>
+    protected RadiusF ApplyScale(RadiusF radius)
+    {
+        return new RadiusF(radius.X * scale, radius.Y * scale);
+    }
+
+    /// <summary>
+    ///     Apply the scale factor to a width, scaling it accordingly.
+    /// </summary>
+    /// <param name="width">The width to scale.</param>
+    /// <returns>The scaled width.</returns>
+    protected WidthF ApplyScale(WidthF width)
+    {
+        return new WidthF(width.Value * scale);
+    }
+
+    /// <summary>
     ///     Apply the inverse of the scale factor to a point, effectively unscaling it.
     /// </summary>
     /// <param name="point">The point to unscale.</param>
@@ -172,5 +192,25 @@ public abstract class Renderer : IRenderer
             thickness.Top / scale,
             thickness.Right / scale,
             thickness.Bottom / scale);
+    }
+
+    /// <summary>
+    ///     Apply the inverse of the scale factor to a radius, effectively unscaling it.
+    /// </summary>
+    /// <param name="radius">The radius to unscale.</param>
+    /// <returns>The unscaled radius.</returns>
+    protected RadiusF ApplyInverseScale(RadiusF radius)
+    {
+        return new RadiusF(radius.X / scale, radius.Y / scale);
+    }
+
+    /// <summary>
+    ///     Apply the inverse of the scale factor to a width, effectively unscaling it. 
+    /// </summary>
+    /// <param name="width">The width to unscale.</param>
+    /// <returns>The unscaled width.</returns>
+    protected WidthF ApplyInverseScale(WidthF width)
+    {
+        return new WidthF(width.Value / scale);
     }
 }

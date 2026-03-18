@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Gwen.Net.New.Utilities;
 
@@ -38,6 +39,12 @@ public readonly record struct RadiusF
     /// The radius of the corner on the Y axis.
     /// </summary>
     public Single Y { get; }
+
+    /// <summary>
+    /// Convert the radius to a <see cref="SizeF"/>.
+    /// </summary>
+    /// <returns>>A <see cref="SizeF"/> with the same X and Y values as the radius.</returns>
+    public SizeF ToSizeF() => new(X, Y);
 
     /// <inheritdoc />
     public override String ToString()

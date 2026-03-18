@@ -17,8 +17,8 @@ public interface IButton : IContentControl
     /// <inheritdoc cref="Button{TContent}.BorderBrush" />
     public Property<Brush> BorderBrush { get; }
 
-    /// <inheritdoc cref="Button{TContent}.BorderThickness" />
-    public Property<ThicknessF> BorderThickness { get; }
+    /// <inheritdoc cref="Button{TContent}.BorderWidth" />
+    public Property<WidthF> BorderWidth { get; }
 
     /// <inheritdoc cref="Button{TContent}.BorderRadius" />
     public Property<RadiusF> BorderRadius { get; }
@@ -48,7 +48,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
     public Button()
     {
         BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute((foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
-        BorderThickness = Property.Create(this, new ThicknessF(1.0f));
+        BorderWidth = Property.Create(this, new WidthF(1.0f));
         BorderRadius = Property.Create(this, RadiusF.Zero);
 
         Foreground.OverrideDefault(old => old
@@ -76,7 +76,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
         return ControlTemplate.Create<Button<TContent>>(static control => new Visuals.Border
         {
             BorderBrush = {Binding = Binding.To(control.BorderBrush)},
-            BorderThickness = {Binding = Binding.To(control.BorderThickness)},
+            BorderWidth = {Binding = Binding.To(control.BorderWidth)},
             BorderRadius = {Binding = Binding.To(control.BorderRadius)},
 
             Child = new ChildPresenter()
@@ -91,9 +91,9 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
     public Property<Brush> BorderBrush { get; }
 
     /// <summary>
-    ///     The thickness of the button's border.
+    ///     The width of the button's border.
     /// </summary>
-    public Property<ThicknessF> BorderThickness { get; }
+    public Property<WidthF> BorderWidth { get; }
 
     /// <summary>
     ///     The radius of the corners of the button's border.

@@ -2,7 +2,6 @@
 using Gwen.Net.New;
 using Gwen.Net.New.Commands;
 using Gwen.Net.New.Controls;
-using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Texts;
 using Gwen.Net.New.Utilities;
 
@@ -25,7 +24,7 @@ public static class UnitTestHarnessView
                 {
                     new Border
                     {
-                        BorderThickness = {Value = new ThicknessF(3)},
+                        BorderWidth = {Value = new WidthF(3)},
                         MinimumWidth = {Value = 500f},
                         MinimumHeight = {Value = 250f},
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},

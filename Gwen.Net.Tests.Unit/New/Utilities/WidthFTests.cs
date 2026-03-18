@@ -2,7 +2,7 @@
 
 namespace Gwen.Net.Tests.Unit.New.Utilities;
 
-public class RadiusFTests
+public class WidthFTests
 {
     [Fact]
     public void UniformConstructor_SetsXAndYToSameValue()
@@ -16,12 +16,12 @@ public class RadiusFTests
     [Fact]
     public void ToString_Zero_ReturnsExpectedFormat()
     {
-        Assert.Equal(expected: "RadiusF.Zero", RadiusF.Zero.ToString());
+        Assert.Equal(expected: "WidthF.Zero", WidthF.Zero.ToString());
     }
 
     [Fact]
     public void ToString_NonZero_ReturnsExpectedFormat()
     {
-        Assert.Equal(expected: "RadiusF(X: 2, Y: 3)", new RadiusF(x: 2f, y: 3f).ToString());
+        Assert.Equal(expected: "WidthF(Value: 5)", new WidthF(5.0f).ToString());
     }
 }

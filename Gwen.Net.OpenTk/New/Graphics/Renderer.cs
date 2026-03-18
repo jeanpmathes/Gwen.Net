@@ -388,6 +388,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         if (systemBrush == null) return;
 
         rectangle = ApplyScale(rectangle);
+        corners = ApplyScale(corners);
 
         if (corners == RadiusF.Zero)
         {
@@ -395,44 +396,35 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         }
         else
         {
-            graphics?.FillRoundedRectangle(systemBrush, rectangle, new SizeF(corners.X, corners.Y));
+            graphics?.FillRoundedRectangle(systemBrush, rectangle, corners.ToSizeF());
         }
     }
 
-    public override void DrawLinedRectangle(RectangleF rectangle, ThicknessF thickness, RadiusF corners, Brush brush)
+    public override void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
 
         if (systemBrush == null) return;
 
         rectangle = ApplyScale(rectangle);
-        thickness = ApplyScale(thickness);
+        width = ApplyScale(width);
+        corners = ApplyScale(corners);
 
-        if (thickness.IsUniform)
+        if (width == WidthF.Zero) return;
+
+        Pen? systemPen = GetPen(brush, width.Value);
+        if (systemPen == null) return;
+
+        Single halfWidth = width.Value / 2f;
+        RectangleF adjustedRectangle = new(rectangle.X + halfWidth, rectangle.Y + halfWidth, rectangle.Width - width.Value, rectangle.Height - width.Value);
+
+        if (corners == RadiusF.Zero)
         {
-            if (thickness == ThicknessF.Zero) return;
-
-            Pen? systemPen = GetPen(brush, thickness.Left);
-            if (systemPen == null) return;
-
-            Single halfWidth = thickness.Left / 2f;
-            RectangleF adjustedRectangle = new(rectangle.X + halfWidth, rectangle.Y + halfWidth, rectangle.Width - thickness.Left, rectangle.Height - thickness.Left);
-
-            if (corners == RadiusF.Zero)
-            {
-                graphics?.DrawRectangle(systemPen, adjustedRectangle);
-            }
-            else
-            {
-                graphics?.DrawRoundedRectangle(systemPen, adjustedRectangle, new SizeF(corners.X, corners.Y));
-            }
+            graphics?.DrawRectangle(systemPen, adjustedRectangle);
         }
         else
         {
-            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y, thickness.Left, rectangle.Height);
-            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y, rectangle.Width, thickness.Top);
-            graphics?.FillRectangle(systemBrush, rectangle.X + rectangle.Width - thickness.Right, rectangle.Y, thickness.Right, rectangle.Height);
-            graphics?.FillRectangle(systemBrush, rectangle.X, rectangle.Y + rectangle.Height - thickness.Bottom, rectangle.Width, thickness.Bottom);
+            graphics?.DrawRoundedRectangle(systemPen, adjustedRectangle, corners.ToSizeF());
         }
     }
 

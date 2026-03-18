@@ -87,4 +87,16 @@ public class ThicknessFTests
         Assert.Equal(expected: 96f, result.Width);
         Assert.Equal(expected: 44f, result.Height);
     }
+
+    [Fact]
+    public void ToString_Zero_ReturnsExpectedFormat()
+    {
+        Assert.Equal(expected: "ThicknessF.Zero", ThicknessF.Zero.ToString());
+    }
+
+    [Fact]
+    public void ToString_NonZero_ReturnsExpectedFormat()
+    {
+        Assert.Equal(expected: "ThicknessF(Left: 1, Top: 2, Right: 3, Bottom: 4)", new ThicknessF(left: 1f, top: 2f, right: 3f, bottom: 4f).ToString());
+    }
 }

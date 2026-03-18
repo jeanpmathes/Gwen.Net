@@ -36,11 +36,6 @@ public readonly record struct ThicknessF
     public static ThicknessF One { get; } = new(1);
 
     /// <summary>
-    ///     Check whether all sides of the thickness are equal, meaning the thickness is uniform on all sides.
-    /// </summary>
-    public Boolean IsUniform => Left.Equals(Top) && Left.Equals(Right) && Left.Equals(Bottom);
-
-    /// <summary>
     ///     The left thickness.
     /// </summary>
     public Single Left { get; init; }

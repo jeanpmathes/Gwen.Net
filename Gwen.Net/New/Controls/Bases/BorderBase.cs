@@ -16,16 +16,16 @@ public abstract class BorderBase<TControl> : SingleChildControl<TControl> where 
     /// </summary>
     protected BorderBase()
     {
-        BorderThickness = Property.Create(this, ThicknessF.One);
+        BorderWidth = Property.Create(this, WidthF.One);
         BorderRadius = Property.Create(this, RadiusF.Zero);
     }
 
     #region PROPERTIES
 
     /// <summary>
-    ///     The thickness of the border drawn around the child control.
+    ///     The width of the border drawn around the child control.
     /// </summary>
-    public Property<ThicknessF> BorderThickness { get; }
+    public Property<WidthF> BorderWidth { get; }
 
     /// <summary>
     ///     The radius of the corners of the drawn border.
