@@ -53,7 +53,7 @@ public abstract class Renderer : IRenderer
     public abstract void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush);
 
     /// <inheritdoc />
-    public abstract void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush);
+    public abstract void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, StrokeStyle stroke, Brush brush);
 
     /// <inheritdoc />
     public abstract void Resize(Size size);

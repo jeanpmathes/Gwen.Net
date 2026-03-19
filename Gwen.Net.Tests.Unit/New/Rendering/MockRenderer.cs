@@ -40,7 +40,7 @@ public class MockRenderer : Renderer
 
     public override void DrawFilledRectangle(RectangleF rectangle, RadiusF corners, Brush brush) {}
 
-    public override void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush) {}
+    public override void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, StrokeStyle stroke, Brush brush) {}
 
     public override void Resize(Size size) {}
 }

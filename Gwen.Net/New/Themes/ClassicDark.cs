@@ -40,6 +40,7 @@ public class ClassicDark(ResourceRegistry registry) : IResourceBundle<ClassicDar
         .Trigger(x => x.IsHovered, x => x.BorderBrush, hoveredBackgroundBrush)
         .Trigger(x => x.IsPressed, x => x.BorderBrush, pressedBackgroundBrush)
         .Trigger(x => x.IsKeyboardFocused, x => x.BorderBrush, focusedOutlineBrush)
+        .Trigger(x => x.IsKeyboardFocused, x => x.BorderStrokeStyle, StrokeStyle.Squared)
         .Trigger(x => x.IsHovered, x => x.Foreground, hoveredForegroundBrush)
         .Trigger(x => x.IsPressed, x => x.Foreground, pressedForegroundBrush)
         .Trigger(x => Binding.To(x.Enablement).Compute(v => v.IsDisabled), x => x.Foreground, disabledForegroundBrush)

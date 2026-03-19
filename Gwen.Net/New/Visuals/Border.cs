@@ -19,6 +19,7 @@ public class Border : Visual
         BorderBrush = VisualProperty.Create(this, BindToOwnerForeground(), Invalidation.Render);
         BorderWidth = VisualProperty.Create(this, WidthF.One, Invalidation.Measure);
         BorderRadius = VisualProperty.Create(this, RadiusF.Zero, Invalidation.Render);
+        BorderStrokeStyle = VisualProperty.Create(this, StrokeStyle.Solid, Invalidation.Render);
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ public class Border : Visual
     protected override void OnRender()
     {
         Renderer.DrawFilledRectangle(RenderBounds, BorderRadius.GetValue(), Background.GetValue());
-        Renderer.DrawLinedRectangle(RenderBounds, BorderWidth.GetValue(), BorderRadius.GetValue(), BorderBrush.GetValue());
+        Renderer.DrawLinedRectangle(RenderBounds, BorderWidth.GetValue(), BorderRadius.GetValue(), BorderStrokeStyle.GetValue(), BorderBrush.GetValue());
     }
 
     #region PROPERTIES
@@ -80,6 +81,11 @@ public class Border : Visual
     ///     The radius of the corners. This affects both the background and the border.
     /// </summary>
     public VisualProperty<RadiusF> BorderRadius { get; }
+
+    /// <summary>
+    ///     The style of the border stroke.
+    /// </summary>
+    public VisualProperty<StrokeStyle> BorderStrokeStyle { get; }
 
     #endregion PROPERTIES
 }

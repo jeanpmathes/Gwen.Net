@@ -19,8 +19,8 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
     private readonly Shader shader;
     private readonly Boolean restoreRenderState;
 
-    private readonly Dictionary<(Brush Brush, Byte Alpha), System.Drawing.Brush> systemBrushes = [];
-    private readonly Dictionary<(Brush Brush, Byte Alpha), Pen> systemPens = [];
+    private readonly Dictionary<(Brush brush, Byte alpha), System.Drawing.Brush> systemBrushes = [];
+    private readonly Dictionary<(Brush brush, Byte alpha, Single width, StrokeStyle stroke), Pen> systemPens = [];
     private readonly Dictionary<Font, System.Drawing.Font> systemFonts = [];
 
     private Int32 vao;
@@ -96,7 +96,6 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         graphics.SmoothingMode = SmoothingMode.HighQuality;
         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
         if (isClipping && clipStack.Count > 0)
         {
@@ -400,7 +399,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         }
     }
 
-    public override void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush)
+    public override void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, StrokeStyle stroke, Brush brush)
     {
         System.Drawing.Brush? systemBrush = GetBrush(brush);
 
@@ -412,7 +411,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
 
         if (width == WidthF.Zero) return;
 
-        Pen? systemPen = GetPen(brush, width.Value);
+        Pen? systemPen = GetPen(brush, width.Value, stroke);
         if (systemPen == null) return;
 
         Single halfWidth = width.Value / 2f;
@@ -454,7 +453,7 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         if (alpha is null or 0)
             return null;
 
-        (Brush Brush, Byte Alpha) key = (brush, alpha.Value);
+        (Brush, Byte) key = (brush, alpha.Value);
 
         if (systemBrushes.TryGetValue(key, out System.Drawing.Brush? systemBrush))
             return systemBrush;
@@ -471,26 +470,25 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
         return systemBrush;
     }
 
-    private Pen? GetPen(Brush brush, Single width)
+    private Pen? GetPen(Brush brush, Single width, StrokeStyle stroke)
     {
         Byte? alpha = TryGetEffectiveAlpha(brush);
 
         if (alpha is null or 0)
             return null;
 
-        (Brush Brush, Byte Alpha) key = (brush, alpha.Value);
+        (Brush, Byte, Single, StrokeStyle) key = (brush, alpha.Value, width, stroke);
 
         if (systemPens.TryGetValue(key, out Pen? systemPen))
-        {
-            systemPen.Width = width;
             return systemPen;
-        }
 
         System.Drawing.Brush? systemBrush = GetBrush(brush);
 
         if (systemBrush == null) return null;
 
         systemPen = new Pen(systemBrush, width);
+        ApplyStrokeStyleToPen(systemPen, stroke);
+
         systemPens[key] = systemPen;
 
         return systemPen;
@@ -521,6 +519,32 @@ public sealed class Renderer : Net.New.Rendering.Renderer, IDisposable
     private static FontStyle GetFontStyleFromTextsWeight(Weight weight)
     {
         return weight >= Weight.SemiBold ? FontStyle.Bold : FontStyle.Regular;
+    }
+
+    private static void ApplyStrokeStyleToPen(Pen pen, StrokeStyle strokeStyle)
+    {
+        switch (strokeStyle)
+        {
+            case StrokeStyle.Solid:
+                pen.DashStyle = DashStyle.Solid;
+                pen.DashCap = DashCap.Flat;
+                break;
+            case StrokeStyle.Dashes:
+                pen.DashStyle = DashStyle.Dash;
+                pen.DashCap = DashCap.Flat;
+                break;
+            case StrokeStyle.Squared:
+                pen.DashStyle = DashStyle.Dot;
+                pen.DashCap = DashCap.Flat;
+                break;
+            case StrokeStyle.Dotted:
+                pen.DashStyle = DashStyle.Dot;
+                pen.DashCap = DashCap.Round;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(strokeStyle), strokeStyle, message: null);
+        }
     }
 
     #endregion MAPPINGS

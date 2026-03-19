@@ -105,22 +105,23 @@ public interface IRenderer
     }
 
     /// <summary>
-    ///     Draw a rectangle outline with the specified border thickness.
+    ///     Draw a rectangle outline with the specified line thickness.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="width">The width of the line.</param>
     /// <param name="corners">The radius of the corners to draw.</param>
+    /// <param name="stroke">The style of the line.</param>
     /// <param name="brush">The brush to use.</param>
-    public void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, Brush brush);
+    public void DrawLinedRectangle(RectangleF rectangle, WidthF width, RadiusF corners, StrokeStyle stroke, Brush brush);
 
     /// <summary>
-    ///     Draw a rectangle outline with a default border thickness of 1 unit and non-rounded corners.
+    ///     Draw a solid rectangle line with a default border thickness of 1 unit and non-rounded corners.
     /// </summary>
     /// <param name="rectangle">The rectangle to draw.</param>
     /// <param name="brush">The brush to use.</param>
     public void DrawLinedRectangle(RectangleF rectangle, Brush brush)
     {
-        DrawLinedRectangle(rectangle, WidthF.One, RadiusF.Zero, brush);
+        DrawLinedRectangle(rectangle, WidthF.One, RadiusF.Zero, StrokeStyle.Solid, brush);
     }
 
     /// <summary>

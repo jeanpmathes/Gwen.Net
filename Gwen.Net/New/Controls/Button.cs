@@ -23,6 +23,9 @@ public interface IButton : IContentControl
     /// <inheritdoc cref="Button{TContent}.BorderRadius" />
     public Property<RadiusF> BorderRadius { get; }
 
+    /// <inheritdoc cref="Button{TContent}.BorderStrokeStyle" />
+    public Property<StrokeStyle> BorderStrokeStyle { get; }
+
     /// <inheritdoc cref="ButtonBase{TContent,TControl}.IsPressed" />
     public ReadOnlySlot<Boolean> IsPressed { get; }
 }
@@ -50,6 +53,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
         BorderBrush = Property.Create(this, Binding.To(Foreground).Combine(IsKeyboardFocused).Compute((foreground, isFocused) => isFocused ? ButtonDefaults.FocusedBorderBrush : foreground));
         BorderWidth = Property.Create(this, new WidthF(1.0f));
         BorderRadius = Property.Create(this, RadiusF.Zero);
+        BorderStrokeStyle = Property.Create(this, StrokeStyle.Solid);
 
         Foreground.OverrideDefault(old => old
             .Combine(Enablement)
@@ -78,6 +82,7 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
             BorderBrush = {Binding = Binding.To(control.BorderBrush)},
             BorderWidth = {Binding = Binding.To(control.BorderWidth)},
             BorderRadius = {Binding = Binding.To(control.BorderRadius)},
+            BorderStrokeStyle = {Binding = Binding.To(control.BorderStrokeStyle)},
 
             Child = new ChildPresenter()
         });
@@ -99,6 +104,11 @@ public class Button<TContent> : ButtonBase<TContent, Button<TContent>>, IButton 
     ///     The radius of the corners of the button's border.
     /// </summary>
     public Property<RadiusF> BorderRadius { get; }
+
+    /// <summary>
+    ///     The stroke style of the button's border.
+    /// </summary>
+    public Property<StrokeStyle> BorderStrokeStyle { get; }
 
     #endregion PROPERTIES
 }
