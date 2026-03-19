@@ -2,6 +2,7 @@
 using Gwen.Net.New;
 using Gwen.Net.New.Commands;
 using Gwen.Net.New.Controls;
+using Gwen.Net.New.Graphics;
 using Gwen.Net.New.Texts;
 using Gwen.Net.New.Utilities;
 
@@ -29,6 +30,8 @@ public static class UnitTestHarnessView
                         MinimumHeight = {Value = 250f},
                         HorizontalAlignment = {Value = HorizontalAlignment.Center},
                         VerticalAlignment = {Value = VerticalAlignment.Center},
+
+                        BorderRadius = {Value = new RadiusF(10)},
                     },
                     new Text
                     {
