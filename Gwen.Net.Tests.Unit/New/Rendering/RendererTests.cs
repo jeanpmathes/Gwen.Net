@@ -58,6 +58,29 @@ public class RendererTests
     }
 
     [Fact]
+    public void Scale_ApplyScale_ScalesRadius()
+    {
+        MockRenderer renderer = new();
+        renderer.Scale(2f);
+
+        RadiusF result = renderer.ApplyScale(new RadiusF(x: 3f, y: 5f));
+
+        Assert.Equal(expected: 6f, result.X);
+        Assert.Equal(expected: 10f, result.Y);
+    }
+
+    [Fact]
+    public void Scale_ApplyScale_ScalesWidth()
+    {
+        MockRenderer renderer = new();
+        renderer.Scale(2f);
+
+        WidthF result = renderer.ApplyScale(new WidthF(value: 3f));
+
+        Assert.Equal(expected: 6f, result.Value);
+    }
+
+    [Fact]
     public void Scale_ApplyInverseScale_UnscalesPoint()
     {
         MockRenderer renderer = new();
@@ -109,6 +132,29 @@ public class RendererTests
         Assert.Equal(expected: 4f, result.Bottom);
     }
 
+    [Fact]
+    public void Scale_ApplyInverseScale_UnscalesRadius()
+    {
+        MockRenderer renderer = new();
+        renderer.Scale(2f);
+
+        RadiusF result = renderer.ApplyInverseScale(new RadiusF(x: 6f, y: 10f));
+
+        Assert.Equal(expected: 3f, result.X);
+        Assert.Equal(expected: 5f, result.Y);
+    }
+
+    [Fact]
+    public void Scale_ApplyInverseScale_UnscalesWidth()
+    {
+        MockRenderer renderer = new();
+        renderer.Scale(2f);
+
+        WidthF result = renderer.ApplyInverseScale(new WidthF(value: 6f));
+
+        Assert.Equal(expected: 3f, result.Value);
+    }
+
     private sealed class MockRenderer : Rendering.MockRenderer
     {
         public new PointF ApplyScale(PointF point)
@@ -131,6 +177,16 @@ public class RendererTests
             return base.ApplyScale(thickness);
         }
 
+        public new RadiusF ApplyScale(RadiusF radius)
+        {
+            return base.ApplyScale(radius);
+        }
+
+        public new WidthF ApplyScale(WidthF width)
+        {
+            return base.ApplyScale(width);
+        }
+
         public new PointF ApplyInverseScale(PointF point)
         {
             return base.ApplyInverseScale(point);
@@ -149,6 +205,16 @@ public class RendererTests
         public new ThicknessF ApplyInverseScale(ThicknessF thickness)
         {
             return base.ApplyInverseScale(thickness);
+        }
+
+        public new RadiusF ApplyInverseScale(RadiusF radius)
+        {
+            return base.ApplyInverseScale(radius);
+        }
+
+        public new WidthF ApplyInverseScale(WidthF width)
+        {
+            return base.ApplyInverseScale(width);
         }
     }
 }
