@@ -20,13 +20,6 @@ namespace Gwen.Net.Tests;
 
 public class UnitTestGameWindow : GameWindow
 {
-    public enum Theme
-    {
-        Default,
-        Light,
-        Dark
-    }
-
     private const Int32 MaxFrameSampleSize = 10000;
 
     private readonly ResourceRegistry registry;
@@ -166,5 +159,12 @@ public class UnitTestGameWindow : GameWindow
         window.VSync = VSyncMode.Off;
 
         window.Run();
+    }
+
+    private enum Theme
+    {
+        Default,
+        Light,
+        Dark
     }
 }
