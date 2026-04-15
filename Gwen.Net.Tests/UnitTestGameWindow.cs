@@ -1,13 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using Collections.Generic;
-using Gwen.Net.New.Controls;
-using Gwen.Net.New.Controls.Templates;
-using Gwen.Net.New.Resources;
-using Gwen.Net.New.Themes;
-using Gwen.Net.OpenTk.New;
-using Gwen.Net.Tests.Components.New;
+using Gwen.Net.OpenTk;
+using Gwen.Net.Tests.Components;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -16,155 +13,109 @@ using Boolean = System.Boolean;
 
 [assembly: SupportedOSPlatform("windows")]
 
-namespace Gwen.Net.Tests;
-
-public class UnitTestGameWindow : GameWindow
+namespace Gwen.Net.Tests
 {
-    private const Int32 MaxFrameSampleSize = 10000;
-
-    private readonly ResourceRegistry registry;
-    private readonly IGwenGui gui;
-
-    private readonly CircularBuffer<Double> renderFrameTimes;
-    private readonly CircularBuffer<Double> updateFrameTimes;
-
-    private UnitTestHarness? harness;
-
-    private UnitTestGameWindow(Theme theme, GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
-        : base(gameWindowSettings, nativeWindowSettings)
+    public class UnitTestGameWindow : GameWindow
     {
-        UpdateFrequency = 30;
+        private const Int32 MaxFrameSampleSize = 10000;
+        private readonly IGwenGui gui;
+        private readonly CircularBuffer<Double> renderFrameTimes;
 
-        registry = new ResourceRegistry();
+        private readonly CircularBuffer<Double> updateFrameTimes;
 
-        switch (theme)
+        private UnitTestHarnessControls unitTestControls;
+
+        public UnitTestGameWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
+            : base(gameWindowSettings, nativeWindowSettings)
         {
-            case Theme.Light:
-                registry.AddBundle<ClassicLight>();
-                break;
+            UpdateFrequency = 30;
 
-            case Theme.Dark:
-                registry.AddBundle<ClassicDark>();
-                break;
+            gui = GwenGuiFactory.CreateFromGame(
+                this,
+                GwenGuiSettings.Default.From(settings =>
+                {
+                    //Have the skin come from somewhere else.
+                    settings.SkinFile = new FileInfo("DefaultSkin2.png");
+                }));
+
+            updateFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
+            renderFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
         }
 
-        gui = GwenGuiFactory.CreateFromGame(this, registry);
-
-        updateFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
-        renderFrameTimes = new CircularBuffer<Double>(MaxFrameSampleSize);
-    }
-
-    protected override void Dispose(Boolean disposing)
-    {
-        gui.Dispose();
-        registry.Dispose();
-
-        base.Dispose(disposing);
-    }
-
-    protected override void OnLoad()
-    {
-        GL.ClearColor(Color4.White);
-
-        gui.Load();
-
-        harness = new UnitTestHarness();
-
-        gui.Root?.Child = new ContentControl<UnitTestHarness>
+        protected override void Dispose(Boolean disposing)
         {
-            Content = {Value = harness},
-            ContentTemplate = {Value = ContentTemplate.Create<UnitTestHarness>(UnitTestHarnessView.Create)}
-        };
-
-        gui.Root?.SetDebugOutlines(false);
-    }
-
-    protected override void OnResize(ResizeEventArgs e)
-    {
-        gui.Resize(e.Size);
-    }
-
-    protected override void OnUpdateFrame(FrameEventArgs args)
-    {
-        if (UpdateFrequency == 0)
-        {
-            updateFrameTimes.Put(args.Time);
-
-            if (updateFrameTimes.Sum(t => t) < 1) return;
-
-            Int32 frames = updateFrameTimes.Count();
-            updateFrameTimes.Clear();
-            harness?.UpdateFps.SetValue(frames);
+            gui.Dispose();
+            base.Dispose(disposing);
         }
-        else
+
+        protected override void OnLoad()
         {
-            harness?.UpdateFps.SetValue(UpdateFrequency);
+            GL.ClearColor(Color4.MidnightBlue);
+            gui.Load();
+            unitTestControls = new UnitTestHarnessControls(gui.Root);
         }
-    }
 
-    protected override void OnRenderFrame(FrameEventArgs args)
-    {
-        GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-        gui.Render();
-        SwapBuffers();
-
-        if (UpdateFrequency == 0)
+        protected override void OnResize(ResizeEventArgs e)
         {
-            renderFrameTimes.Put(args.Time);
-
-            if (renderFrameTimes.Sum(t => t) < 1) return;
-
-            Int32 frames = renderFrameTimes.Count();
-            renderFrameTimes.Clear();
-            harness?.RenderFps.SetValue(frames);
+            gui.Resize(e.Size);
         }
-        else
+
+        protected override void OnUpdateFrame(FrameEventArgs args)
         {
-            harness?.RenderFps.SetValue(UpdateFrequency);
+            if (UpdateFrequency == 0)
+            {
+                updateFrameTimes.Put(args.Time);
+
+                if (updateFrameTimes.Sum(t => t) >= 1)
+                {
+                    Int32 frames = updateFrameTimes.Count();
+                    updateFrameTimes.Clear();
+                    unitTestControls.UpdateFps = frames;
+                }
+            }
+            else
+            {
+                unitTestControls.UpdateFps = UpdateFrequency;
+            }
         }
-    }
 
-    [STAThread]
-    public static void Main(String[] args)
-    {
-        GameWindowSettings? gameWindowSettings = GameWindowSettings.Default;
-        NativeWindowSettings? nativeWindowSettings = NativeWindowSettings.Default;
+        protected override void OnRenderFrame(FrameEventArgs args)
+        {
+            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
+            gui.Render();
+            SwapBuffers();
 
-        nativeWindowSettings.Profile = ContextProfile.Core;
+            if (UpdateFrequency == 0)
+            {
+                renderFrameTimes.Put(args.Time);
 
-        Vector2i position = new(x: 0, y: 0);
+                if (renderFrameTimes.Sum(t => t) >= 1)
+                {
+                    Int32 frames = renderFrameTimes.Count();
+                    renderFrameTimes.Clear();
+                    unitTestControls.RenderFps = frames;
+                }
+            }
+            else
+            {
+                unitTestControls.RenderFps = UpdateFrequency;
+            }
+        }
 
-        if (args.Contains("-p1"))
-            position = new Vector2i(x: 0, y: 0);
-        else if (args.Contains("-p2"))
-            position = new Vector2i(x: 960, y: 0);
-        else if (args.Contains("-p3"))
-            position = new Vector2i(x: 0, y: 540);
-        else if (args.Contains("-p4"))
-            position = new Vector2i(x: 960, y: 540);
+        [STAThread]
+        public static void Main()
+        {
+            var gameWindowSettings = GameWindowSettings.Default;
+            var nativeWindowSettings = NativeWindowSettings.Default;
 
-        nativeWindowSettings.Location = position;
-        nativeWindowSettings.ClientSize = new Vector2i(960 - 0, 540 - 32);
+            nativeWindowSettings.Profile = ContextProfile.Core;
 
-        Theme theme = Theme.Default;
+            using UnitTestGameWindow window = new(gameWindowSettings, nativeWindowSettings);
 
-        if (args.Contains("--light"))
-            theme = Theme.Light;
-        else if (args.Contains("--dark"))
-            theme = Theme.Dark;
+            window.Title = "Gwen.net OpenTK Unit Test";
+            window.VSync = VSyncMode.Off; // to measure performance
 
-        using UnitTestGameWindow window = new(theme, gameWindowSettings, nativeWindowSettings);
-
-        window.Title = $"Gwen.net OpenTK Unit Test [{String.Join(" ", args)}]";
-        window.VSync = VSyncMode.Off;
-
-        window.Run();
-    }
-
-    private enum Theme
-    {
-        Default,
-        Light,
-        Dark
+            window.Run();
+        }
     }
 }

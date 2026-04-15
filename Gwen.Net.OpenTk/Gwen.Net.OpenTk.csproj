@@ -8,7 +8,6 @@
         <RepositoryUrl>https://github.com/jeanpmathes/Gwen.Net</RepositoryUrl>
         <PackageLicense>https://raw.githubusercontent.com/jeanpmathes/Gwen.Net/refs/heads/main/LICENSE</PackageLicense>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +22,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="Shaders\gui.gl40.frag"/>
+        <EmbeddedResource Include="Shaders\gui.gl40.vert"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="OpenTK" Version="4.9.4"/>
         <PackageReference Include="System.Drawing.Common" Version="10.0.2"/>
         <PackageReference Include="TextCopy" Version="6.2.1"/>
@@ -33,22 +37,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Legacy/Shaders\gui.gl40.frag"/>
-        <EmbeddedResource Include="Legacy/Shaders\gui.gl40.vert"/>
-        <EmbeddedResource Update="Legacy/StringResources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Include="New\Graphics\gui.frag"/>
-        <EmbeddedResource Include="New\Graphics\gui.vert"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Legacy/StringResources.Designer.cs">
+        <Compile Update="StringResources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>StringResources.resx</DependentUpon>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="StringResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>

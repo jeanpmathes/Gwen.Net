@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <LangVersion>14</LangVersion>
         <PackageVersion>0.5.7</PackageVersion>
         <Title>Gwen.Net</Title>
         <Description>Gwen.Net is a port of Gwen.Net which is a .Net port of GWEN. GWEN is a lightweight GUI library aimed at games. It contains rich widget collection and most functionality you'd expect from a GUI framework.
@@ -11,18 +12,7 @@
         </Description>
         <RepositoryUrl>https://github.com/jeanpmathes/Gwen.Net</RepositoryUrl>
         <PackageLicense>https://raw.githubusercontent.com/jeanpmathes/Gwen.Net/refs/heads/main/LICENSE</PackageLicense>
-        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Gwen.Net.Analyzers\Gwen.Net.Analyzers.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="xunit.assert" Version="2.9.3"/>
-        <PackageReference Include="xunit.extensibility.core" Version="2.9.3"/>
-    </ItemGroup>
 
 </Project>
